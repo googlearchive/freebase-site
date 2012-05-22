@@ -75,32 +75,108 @@ function links_sort(a, b, filters) {
 };
 
 function links_incoming(id, filters, next, creator_clause) {
-  var q = [h.extend({
+    filters = filters || {};
+    var promises = {        
+        links_incoming_master: 
+                links_incoming_master(id, filters, next, creator_clause)
+    };
+    if (filters.domain || filters.type || filters.property) {
+        /**
+         * When filtering by domain, type, or property, 
+         * we need to also consider the incoming master's
+         * reverse_property. 
+         * 
+         * For example, the reverse_property of 
+         * /music/album/artist is /music/artist/album.
+         * So when the filter property=/music/artist/album,
+         * we need to pick up the /music/album/artist links.
+         * 
+         * However, in order to prevent duplicates in
+         * links_incoming_master and link_incoming_reverse,
+         * we need to "forbid" the domain or type 
+         * the reverse_property belongs to.
+         * 
+         * For example, when the filter domain=/music,
+         * We will get both /music/album/artist (master_property)
+         * and /music/artist/album (reverse_property), which are
+         * the same links.
+         */
+        var forbid_clause;
+        if (filters.domain) {
+            forbid_clause = {
+                "forbid:master_property": {
+                        schema: {
+                            domain: {
+                                id: filters.domain,
+                                optional: "forbidden"
+                            }
+                        }
+                }
+            };
+        }
+        else if (filters.type) {
+            forbid_clause = {
+                "forbid:master_property": {
+                        schema: {
+                            id: filters.type,
+                            optional: "forbidden"
+                        }
+                    }
+            };
+        }        
+        promises.links_incoming_reverse = 
+            links_incoming_reverse(id, filters, next, creator_clause, forbid_clause);
+    }
+    return deferred.all(promises)
+        .then(function(r) {
+            var incoming = r.links_incoming_master || [];
+            if (r.links_incoming_reverse) {
+                incoming = links_sort(incoming, r.links_incoming_reverse, filters);
+            }  
+            return incoming;
+        });
+};
+
+function links_incoming_master(id, filters, next, creator_clause, extend_clause) {
+    var q = h.extend(links_incoming_query(id), creator_clause, extend_clause);
+    if (next) {
+        q['next:timestamp<'] = next;
+    }
+    apply_filters(q, filters);
+    return freebase.mqlread([q], mqlread_options(filters))
+        .then(function(env) {
+            return env.result;
+        });
+};
+
+function links_incoming_reverse(id, filters, next, creator_clause, extend_clause) {
+    var q = h.extend(links_incoming_query(id), creator_clause, extend_clause);
+    q.master_property.reverse_property = {
+        id: null
+    };
+    if (next) {
+        q['next:timestamp<'] = next;
+    }
+    apply_filters(q, filters);
+    return freebase.mqlread([q], mqlread_options(filters))
+        .then(function(env) {
+            return env.result;
+        });
+};
+
+function links_incoming_query(target) {
+  return {
     type: "/type/link",
     master_property: {
-      id: null,
-      unit: {
-        optional: true,
-        id: null,
-        type: "/type/unit",
-        "/freebase/unit_profile/abbreviation": null
-      }
+      id: null
     },
     source: {id:null, mid:null, guid:null, name:i18n.mql.query.name()},
-    "me:target": {id:id, guid:null},
+    "me:target": {id:target, guid:null},
     target_value: {},
     timestamp: null,
     sort: "-timestamp",
     optional: true
-  }, creator_clause)];
-  if (next) {
-    q[0]["next:timestamp<"] = next;
-  }
-  apply_filters(q[0], filters);
-  return freebase.mqlread(q, mqlread_options(filters))
-    .then(function(env) {
-      return env.result;
-    });
+  };
 };
 
 function links_outgoing(id, filters, next, creator_clause) {
@@ -267,16 +343,42 @@ function apply_historical(clause, historical) {
 };
 
 function apply_domain_type_property(clause, domain, type, property) {
-  if (domain) {
-    clause["filter:master_property"] = {schema:{domain:domain}};
-  }
-  else if (type) {
-    clause["filter:master_property"] = {schema:type};
-  }
-  else if (property) {
-    clause["filter:master_property"] = property;
-  }
-  return clause;
+    clause = clause || {};
+    if (clause.master_property && clause.master_property.reverse_property) {
+        // apply filter on master_property.reverse_property if it 
+        // exists
+        if (domain) {
+            clause["filter:master_property"] = {
+                reverse_property: {
+                    schema:{domain:domain}
+                }
+            };
+        }
+        else if (type) {
+            clause["filter:master_property"] = {
+                reverse_property: {
+                    schema:type
+                }
+            };
+        }
+        else if (property) {
+            clause["filter:master_property"] = {
+                reverse_property: property
+            };
+        }
+    }
+    else {
+        if (domain) {
+            clause["filter:master_property"] = {schema:{domain:domain}};
+        }
+        else if (type) {
+            clause["filter:master_property"] = {schema:type};
+        }
+        else if (property) {
+            clause["filter:master_property"] = property;
+        }
+    }
+    return clause;
 };
 
 function mqlread_options(filters) {

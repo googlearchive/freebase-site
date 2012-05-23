@@ -1,0 +1,179 @@
+/*
+* Copyright 2012, Google Inc.
+* All rights reserved.
+*
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions are
+* met:
+*
+*     * Redistributions of source code must retain the above copyright
+* notice, this list of conditions and the following disclaimer.
+*     * Redistributions in binary form must reproduce the above
+* copyright notice, this list of conditions and the following disclaimer
+* in the documentation and/or other materials provided with the
+* distribution.
+*     * Neither the name of Google Inc. nor the names of its
+* contributors may be used to endorse or promote products derived from
+* this software without specific prior written permission.
+*
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+* A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+* LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+* DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+* THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+* OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+.cuecard-outputPane-tabs {
+  position: relative;
+  z-index: 100;
+  border-bottom: solid 1px #E4E6E7;
+}
+
+.cuecard-outputPane-tabs ul.section-tabset {
+  height: 29px;
+}
+
+div.cuecard-outputPane-tabBody {
+  width: 100%;
+  height: 100%;
+  background: white;
+  overflow: auto;
+}
+
+.cuecard-outputPane-tabBody pre {
+  white-space: pre-wrap;
+  font-family: monospace;
+  font-size: 13px;
+  line-height: auto;
+  color: black;
+  padding: 10px;
+}
+
+div.cuecard-outputPane-status {
+  float: right;
+  text-align: right;
+  height: 100%;
+  overflow: auto;
+}
+
+div.cuecard-outputPane-help {
+  height: 100%;
+  overflow: auto;
+}
+
+div.cuecard-outputPane-json .panel-content {
+  overflow: hidden;
+}
+
+div.cuecard-outputPane-json iframe {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: monospace;
+  font-size: 10pt;
+  background-color: white;
+}
+
+div.cuecard-outputPane-json .panel-header {
+  border-top: 1px solid #ddd;
+}
+
+div.cuecard-outputPane-json .drawer-content {
+  overflow: auto;
+}
+
+div.cuecard-outputPane-list {
+  width: 100%;
+  height: 100%;
+}
+
+div.cuecard-outputPane-list iframe {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-size: 10pt;
+  background-color: white;
+  overflow: auto;
+}
+
+.cuecard-outputPane-responseHeaders {
+  padding: 0 2em;
+}
+
+.cuecard-outputPane-helpContent {
+  padding: 1em 2em;
+}
+
+.cuecard-outputPane-responseHeaders a {
+  text-decoration: underline;
+}
+
+.cuecard-outputPane-responseHeaders h3 {
+  margin: 1em 0;
+}
+
+.cuecard-outputPane-responseHeaders table {
+  width: 100%;
+  margin-bottom: 1em;
+}
+
+.cuecard-outputPane-odd {
+  background: #eee;
+}
+
+.cuecard-outputPane-even {
+}
+
+.cuecard-outputPane-cost-important td {
+  font-weight: bold;
+  color: #f33;
+}
+
+/*
+ *  Examples
+ */
+ 
+h1.title {
+   color: #f1f2f3;
+   font-size: 21px;
+}
+ 
+a.cuecard-examples-example {
+    display: block;
+    text-decoration: none;
+    padding: 0.25em 15px;
+    -webkit-transition: all 0.2s;
+    -moz-transition: all 0.2s;
+    transition: all 0.2s;
+}
+
+a.cuecard-examples-example:hover {
+    background: #eee;
+}
+
+.cuecard-examples-example-selected {
+    background: #FFFFE0;
+}
+
+a.cuecard-examples-technique {
+    display: block;
+    text-decoration: none;
+    padding: 0.25em 0.5em;
+    border-bottom: 1px solid #ddd;
+}
+
+a.cuecard-examples-technique:hover {
+    background: #eee;
+}
+
+.cuecard-examples-technique-selected {
+    background: #FFFFE0;
+}

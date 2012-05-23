@@ -125,7 +125,7 @@ function topic_structure(id, options) {
                 var types_seen = {};
                 for (var pid in topic_props) {
                     // skip reverse properties (!/.../.../...)
-                    if (pid.indexOf("!") !== 0) {
+                    if (proploader.is_prop_id(pid)) {
                         var t = proploader.get_type_id(pid);
                         if (!types_seen[t]) {
                             types.push(t);

@@ -100,7 +100,7 @@ function loads(prop_ids, lang) {
  * get_type_id("/a/b/c") ==> "/a/b"
  */
 function get_type_id(prop_id) {
-    assert(is_prop_id(prop_id), "Expected a fully qualified property id");
+    assert(is_prop_id(prop_id), "Expected a valid property id: " + prop_id);
     var parts = prop_id.split("/");
     parts.pop();
     var type_id = parts.join("/");

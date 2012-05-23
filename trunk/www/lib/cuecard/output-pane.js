@@ -122,7 +122,7 @@ CueCard.OutputPane.prototype.getTabIndex = function(key) {
 CueCard.OutputPane.prototype.setJSONContent = function(o, jsonizingSettings, query) {
   this._jsonResult = o;
     
-  if (o.result) {
+  if ("result" in o) {
     this._setJsonText(CueCard.jsonize(o, jsonizingSettings || { indentCount: 2 }));
     query = JSON.parse(query);
     if (this._list) this._list_content.acre(fb.acre.current_script.app.path + "/cuecard/output-pane.mjt", "list", [o, query]);    

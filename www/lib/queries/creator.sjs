@@ -158,6 +158,9 @@ function by(ids, type) {
       res.forEach(function(c) {
         creators = creators.concat(c);
       });
+      if (!creators.length) {
+        throw new Error(h.sprintf("Couldn't find attribtuion nodes for the ids: %s", ids.join(",")));
+      }
       return extend({}, creators);
     });
 };

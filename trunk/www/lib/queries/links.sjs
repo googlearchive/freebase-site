@@ -249,6 +249,8 @@ function writes(id, object_type, filters, next) {
         .then(function(env) {
           return env.result;
         });
+    }, function() {
+      return [];
     });
 };
 

@@ -43,13 +43,13 @@
 </acre:block>
 
 <acre:block def="page_content()">
-  <acre:block if="c.apps && c.apps.length">
-    <div class="table-header">
-      <div class="button-group edit">
-        <a class="button primary" href="${h.fb_url('/appeditor#create=app')}">Create new app</a>
-      </div>
-      <h2 class="table-title">${h.template_sprintf(_("%s is contributing to %s apps"), i18n.display_name(c.object), i18n_c.number(c.apps.length))}</h2>
+  <div class="table-header">
+    <div class="button-group edit">
+      <a class="button primary" href="${h.fb_url('/appeditor#create=app')}">Create new app</a>
     </div>
-    ${ac.render_app_list(c.apps)}
-  </acre:block>
+    <h2 class="table-title">
+      ${h.template_sprintf(_("%s has contributed to %s apps"), i18n.display_name(c.object), i18n_c.number(c.apps ? c.apps.length : 0))}
+    </h2>
+  </div>
+  ${ac.render_app_list(c.apps)}
 </acre:block>

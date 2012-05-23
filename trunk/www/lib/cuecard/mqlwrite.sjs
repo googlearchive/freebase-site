@@ -35,6 +35,7 @@ try {
   var envelope = JSON.parse(qparam);
   var query = envelope.query;
   delete envelope.query;
+  acre.oauth.get_authorization();
   result = acre.freebase.mqlwrite(query, envelope);
 } catch (e if (e instanceof acre.freebase.Error)) {
   result = e;

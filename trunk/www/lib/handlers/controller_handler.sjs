@@ -174,7 +174,15 @@ function render(service_result, spec, scope) {
         h.extend(exports.c, o.c);
       }
 
-      return template[o.def].apply(template, o.def_args);
+      try {
+        return template[o.def].apply(template, o.def_args);
+      } catch(e) {
+        // Since we've gotten this far already, try to run
+        // the error script inside of our base template
+        var error_args = acre.require("error/error.mjt");
+        error_args.c.einfo = e;
+        return template[o.def].apply(template, [error_args]);
+      }
     });
 };
 

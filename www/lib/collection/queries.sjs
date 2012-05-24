@@ -254,7 +254,7 @@ function collection(topic_ids, pids, lang, limit) {
         "id|=": topic_ids
       };
       props.forEach(function(prop) {
-        var prop_query = ph.mqlread_query(null, prop, null, lang, {limit:limit});
+        var prop_query = ph.mqlread_query(null, prop, null, lang, null, {limit:limit});
         h.extend(q, prop_query);
       });
       return freebase.mqlread([q])

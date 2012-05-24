@@ -270,6 +270,65 @@
            []);
     });
 
+    test("unique-key", function() {
+        var structure = {
+            id: "/my/key",
+            unique: true,
+            expected_type: {id:"/type/key"}
+        };
+
+        // change key value
+        same(ep.diff(structure,
+                     [{value:"foo", namespace:"/bar"}],
+                     [{value:"baz", namespace:"/bar"}]),
+             [{value:"foo", namespace:"/bar", connect:"delete"}, {value:"baz", namespace:"/bar", connect:"replace"}]);
+
+        // change namespace
+        same(ep.diff(structure,
+                     [{value:"foo", namespace:"/bar"}],
+                     [{value:"foo", namespace:"/baz"}]),
+             [{value:"foo", namespace:"/bar", connect:"delete"}, {value:"foo", namespace:"/baz", connect:"replace"}]);
+
+        // no-op
+        same(ep.diff(structure,
+                     [{value:"foo", namespace:"/bar"}],
+                     [{value:"foo", namespace:"/bar"}]),
+             []);      
+
+        expect_exception(ep.Invalid, function() {
+            ep.diff(structure,
+                    [{value:"foo"}],
+                    [{value:"foo", namespace:"/bar"}]);
+            });
+
+    });
+
+    test("non-unique-key", function() {
+        var structure = {
+            id: "/my/key",
+            expected_type: {id:"/type/key"}
+        };
+
+        same(ep.diff(structure,
+                     [{value:"foo", namespace:"/bar"}, {value:"baz", namespace:"/bam/bam"}],
+                     [{value:"foo", namespace:"/bar"}, {value:"baz", namespace:"/bam/bam"}, {value:"bap", namespace:"/kim"}]),
+                     [{value:"bap", namespace:"/kim", connect:"insert"}]);
+
+        same(ep.diff(structure,
+                     [{value:"foo", namespace:"/bar"}, {value:"baz", namespace:"/bam/bam"}],
+                     [{value:"foo", namespace:"/bar"}, {value:"bap", namespace:"/kim"}]),
+                     [{value:"baz", namespace:"/bam/bam", connect:"delete"}, {value:"bap", namespace:"/kim", connect:"insert"}]);        
+
+        same(ep.diff(structure,
+                     [{value:"foo", namespace:"/bar"}, {value:"baz", namespace:"/bam/bam"}],
+                     []),
+                     [{value:"foo", namespace:"/bar", connect:"delete"}, {value:"baz", namespace:"/bam/bam", connect:"delete"}]);
+
+        same(ep.diff(structure,
+                     [{value:"foo", namespace:"/bar"}, {value:"baz", namespace:"/bam/bam"}],
+                     [{value:"foo", namespace:"/bar"}, {value:"baz", namespace:"/bam/bam"}]),
+                     []);
+    });
 
     test("unique-non-literal", function() {
       var structure = {
@@ -1420,6 +1479,67 @@
         }]
       }]);
     });
+
+    test("type-object-key-insert", function() {
+        // /type/object/key
+        var context = $("#type-object-key-insert");
+        $(".data-input", context).data_input({lang:"/lang/en"});
+        var structure = {
+            id:"/type/object/key",
+            expected_type: {id:"/type/key"},
+            values: []
+        };
+        same(ep.parse(structure, context), []);
+        $(".fb-input.key-value", context).val("bar");
+        fb_select($(".fb-input.key-namespace", context), "/foo/ns");
+        same(ep.parse(structure, context), [{value:"bar", namespace:"/foo/ns", connect:"insert"}]);
+    });
+
+    test("type-object-key-delete", function() {
+        // /type/object/key
+        var context = $("#type-object-key-delete");
+        $(".data-input", context).data_input({lang:"/lang/en"});
+        var structure = {
+            id:"/type/object/key",
+            expected_type: {id:"/type/key"},
+            values: [{namespace:"/en", value:"bob_dylan"}]
+        };
+        same(ep.parse(structure, context), []);
+        $(".fb-input.key-value", context).val("");
+        $(".fb-input.key-namespace", context).val("");
+        same(ep.parse(structure, context), [{value:"bob_dylan", namespace:"/en", connect:"delete"}]);
+    });
+
+    test("type-object-key-replace", function() {
+        // /type/object/key
+        var context = $("#type-object-key-replace");
+        $(".data-input", context).data_input({lang:"/lang/en"});
+        var structure = {
+            id:"/type/object/key",
+            expected_type: {id:"/type/key"},
+            values: [{namespace:"/en", value:"bob_dylan"}]
+        };
+        same(ep.parse(structure, context), []);
+        $(".fb-input.key-value", context).val("bobby_rullo");
+        fb_select($(".fb-input.key-namespace", context), "/fr");
+        same(ep.parse(structure, context), [{value:"bob_dylan", namespace:"/en", connect:"delete"},
+                                            {value:"bobby_rullo", namespace:"/fr", connect:"insert"}]);
+    });
+
+    test("type-object-key-noop", function() {
+        // /type/object/key
+        var context = $("#type-object-key-noop");
+        $(".data-input", context).data_input({lang:"/lang/en"});
+        var structure = {
+            id:"/type/object/key",
+            expected_type: {id:"/type/key"},
+            values: [{namespace:"/en", value:"bob_dylan"}]
+        };
+        same(ep.parse(structure, context), []);
+        $(".fb-input.key-value", context).val("bob_dylan");
+        same(ep.parse(structure, context), []);
+    });
+
   };
 
   /**

@@ -52,6 +52,9 @@
   var VIEW_SCHEMA = _("View schema");
   var EDIT = _("Edit");
   var DELETE = _("Delete");
+  var NAMESPACE = _("Namespace");
+  var OBJECT = _("Object");
+  var VALUE = _("Value");
  </acre:script>
 
 <acre:block def="topicbox(topic, lang)">
@@ -317,9 +320,6 @@
   </acre:script>
   <acre:block if="h.is_literal_type(ect)">
     <acre:script>
-      if (!("value" in prop_value)) {
-        prop_value.value = prop_value.text;
-      }
       var attrs = h.extend({}, microdata.value(prop_structure, prop_value));
       attrs["class"] = "property-value";
     </acre:script>
@@ -331,6 +331,13 @@
       <acre:block if="prop_structure.unit">
         ${prop_structure.unit.abbreviation || ""}
       </acre:block>
+    </acre:block>
+    <acre:block elif="ect === '/type/key'">
+      <acre:script>
+        attrs["data-namespace"] = prop_value.namespace;
+       attrs["title"] = prop_value.namespace;
+      </acre:script>
+      <span acre:attrs="attrs" data-value="${prop_value.value}">${prop_value.value}</span>
     </acre:block>
     <acre:block else="">
       <span acre:attrs="attrs" data-value="${prop_value.value}">${prop_value.value}</span>
@@ -577,6 +584,9 @@ propbox edit forms
         if (type_id === "/type/text") {
           data.lang = prop_value.lang;
         }
+        else if (type_id === "/type/key") {
+          data.namespace = prop_value.namespace;
+        }
       }
       else {
         data.id = prop_value.id;
@@ -620,6 +630,24 @@ propbox edit forms
   <acre:block elif="type === 'topic'">
     <span class="data-input topic ${JSON.stringify(data)}">
       <input class="fb-input" type="text" name="${name}" acre:attrs="prop_value ? {value:prop_value.text} : {}"/>
+    </span>
+  </acre:block>
+  <acre:block elif="type === 'key'">
+    <span class="data-input key ${JSON.stringify(data)}">
+      <label>
+        <acre:block if="name === '/type/namespace/keys'">
+          ${_("Object:")}
+        </acre:block>
+        <acre:block else="">
+          ${_("Namespace:")}
+        </acre:block>    
+        <input class="fb-input topic key-namespace" type="text" name="namespace" 
+               acre:attrs="prop_value && prop_value.namespace ? {value:prop_value.namespace} : {}">
+      </label>
+      <label>
+        ${_("Key:")}
+        <input class="fb-input key-value" type="text" name="${name}" acre:attrs="prop_value ? {value:prop_value.value} : {}"/>
+      </label>
     </span>
   </acre:block>
   <acre:block else="">

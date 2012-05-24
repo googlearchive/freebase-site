@@ -82,9 +82,13 @@ var SPEC = {
     return deferred.all(promises)
       .then(function(result) {
           var topic = result.topic;
+          // temporary until topic api returns canoncial ids
+          result.id = id;
           if (topic) {
               result.notability = topic_api.get_notability(topic);
               result.linkcount = topic_api.get_linkcount(topic);
+              // temporary until topic api returns canoncial ids
+              topic.id = id;
           }
           return result;
       });

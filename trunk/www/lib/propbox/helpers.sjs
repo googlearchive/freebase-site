@@ -114,6 +114,9 @@ function minimal_prop_value(prop_structure, prop_data, lang) {
     if (prop_data.lang) {
       value.lang = prop_data.lang;
     }
+    else if (prop_data.namespace) {
+      value.namespace = prop_data.namespace;
+    }
   }
   else {
     var name = prop_data.name;
@@ -270,11 +273,11 @@ function to_prop_values(prop_structure, prop_data, lang) {
   return values;
 };
 
-function mqlread_query(topic_id, prop_structure, prop_value, lang, options) {
+function mqlread_query(topic_id, prop_structure, prop_value, lang, namespace, options) {
   var clause = {
     id: topic_id
   };
-  var prop_clause = mqlread_clause(prop_structure, prop_value, lang, options);
+  var prop_clause = mqlread_clause(prop_structure, prop_value, lang, namespace, options);
   var properties = prop_structure.properties;
   if (properties) {
     properties.forEach(function(subprop_structure) {
@@ -292,7 +295,7 @@ function mqlread_query(topic_id, prop_structure, prop_value, lang, options) {
 };
 
 
-function mqlread_clause(prop_structure, prop_value, lang, options) {
+function mqlread_clause(prop_structure, prop_value, lang, namespace, options) {
   var ect = prop_structure.expected_type;
   var is_literal = h.is_literal_type(ect.id);
   var clause = {optional:true};
@@ -304,6 +307,9 @@ function mqlread_clause(prop_structure, prop_value, lang, options) {
       else {
         clause.lang = null;
       }
+    }
+    else if (ect.id === "/type/key") {
+        clause.namespace = namespace || null;
     }
     clause.value = literal_validator(ect.id)(prop_value, {if_empty:null});
   }

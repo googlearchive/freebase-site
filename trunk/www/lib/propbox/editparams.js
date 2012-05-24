@@ -254,6 +254,7 @@
       var ect_id = structure.expected_type.id;
       var is_unique = structure.unique;
       var is_text = ect_id === "/type/text";
+      var is_key = ect_id === "/type/key";
       if (is_unique) {
         if (is_text) {
           // TODO: assert one value per lang in old_values and new_values
@@ -275,6 +276,9 @@
         keys_to_compare.push("value");
         if (is_text) {
           keys_to_compare.push("lang");
+        }
+        else if (is_key) {
+          keys_to_compare.push("namespace");
         }
       }
       else {
@@ -310,6 +314,10 @@
                 deletes.splice(index, 1);
               }
             }
+            else if (is_key) {
+              // we need to delete existing key/namespaces like the non-unique case
+              // so no-op.
+            }
             else {
               return [ep.clause(new_value, "replace", ect)];
             }
@@ -328,9 +336,12 @@
           throw new ep.Empty(structure, data);
         }
         else {
-            if (ect === "/type/text" && ep.isEmpty(data.lang)) {
-              throw new ep.Invalid(structure, data, "Expected data.lang for /type/text");
-            }
+          if (ect === "/type/text" && ep.isEmpty(data.lang)) {
+            throw new ep.Invalid(structure, data, "Expected data.lang for /type/text");
+          }
+          else if (ect === "/type/key" && ep.isEmpty(data.namespace)) {
+            throw new ep.Invalid(structure, data, "Expected data.namespace for /type/key");
+          }
           if (ect === "/type/int" || ect === "/type/float") {
             if ($.type(data.value) !== "number") {
               throw new ep.Invalid(structure, data, "Expected number data.value for " + ect);
@@ -412,6 +423,9 @@
         clause.value = value.value;
         if (value.lang) {
           clause.lang = value.lang;
+        }
+        else if (value.namespace) {
+          clause.namespace = value.namespace;
         }
       }
       return clause;

@@ -157,6 +157,7 @@
         }
         return;
       }
+
       $.ajax($.extend(ajax_options, {
         onsuccess: function(data) {
           var new_row = $(data.result.html);
@@ -191,6 +192,7 @@
           s: propbox.options.id,
           p: prop_section.attr("data-id"),
           replace: value,
+          namespace: prop_value.attr("data-namespace"),
           lang: propbox.options.lang
         },
         onsuccess: function(data) {
@@ -280,6 +282,7 @@
         }
         return;
       }
+
       $.ajax($.extend(ajax_options, {
         onsuccess: function(data) {
           var new_row = $(data.result.html);
@@ -312,7 +315,8 @@
         s: propbox.options.id,
         p: prop_section.attr("data-id"),
         o: value,
-        lang: propbox.options.lang
+        lang: propbox.options.lang,
+        namespace: prop_value.attr("data-namespace")
       };
 
       $.ajax($.extend(formlib.default_submit_ajax_options(), {

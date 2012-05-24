@@ -47,17 +47,23 @@ var SPEC = {
   auth: true,
 
   validate: function(params) {
+    var namespace = null;
+    if (params.p === "/type/object/key" || params.p === "/type/namespace/keys") {
+      // namespace is required when editing keys
+      namespace = validators.MqlId(params, "namespace", {required:null});
+    }
     var args = [
       validators.MqlId(params, "s", {required:true}),            // subject id
       validators.MqlId(params, "p", {required:true}),            // property id
       validators.String(params, "o", {required:true}),           // object id or value
-      validators.LangId(params, "lang", {if_empty:"/lang/en"})   // lang
+      validators.LangId(params, "lang", {if_empty:"/lang/en"}),  // lang
+      namespace
     ];
 
     return args;
   },
 
-  run: function(s, p, o, lang) {
+  run: function(s, p, o, lang, namespace) {
     return queries.prop_structure(p, lang)
       .then(function(prop_structure) {
         var q = {
@@ -72,6 +78,9 @@ var SPEC = {
           clause.value = h.to_literal_value(ect, o);
           if (ect === "/type/text") {
             clause.lang = lang;
+          }
+          else if (ect === "/type/key") {
+            clause.namespace = namespace;
           }
         }
         else {

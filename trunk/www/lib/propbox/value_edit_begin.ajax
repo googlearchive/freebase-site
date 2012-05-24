@@ -46,15 +46,21 @@ var SPEC = {
   auth: true,
 
   validate: function(params) {
+    var namespace = null;
+    if (params.p === "/type/object/key" || params.p === "/type/namespace/keys") {
+      // namespace is required when editing keys
+      namespace = validators.MqlId(params, "namespace", {required:null});
+    }
     return [
       validators.MqlId(params, "s", {required:true}),           // subject id
       validators.MqlId(params, "p", {required:true}),           // property id
       validators.String(params, "replace", {required:true}),    // object value/id (being edited)
-      validators.LangId(params, "lang", {if_empty:"/lang/en"})  // lang id
+      validators.LangId(params, "lang", {if_empty:"/lang/en"}), // lang id
+      namespace
     ];
   },
 
-  run: function(s, p, replace, lang) {
+  run: function(s, p, replace, lang, namespace) {
     return queries.prop_structure(p, lang)
       .then(function(prop_structure) {
         var ect = prop_structure.expected_type.id;
@@ -65,7 +71,7 @@ var SPEC = {
           return SPEC.run_image(s, prop_structure, replace, lang);
         }
         else {
-          return SPEC.run_default(s, prop_structure, replace, lang);
+          return SPEC.run_default(s, prop_structure, replace, lang, namespace);
         }
       }); 
   },
@@ -125,10 +131,10 @@ var SPEC = {
     };
   },
 
-  run_default: function(s, prop_structure, replace, lang) {
+  run_default: function(s, prop_structure, replace, lang, namespace) {
     // default inline form
     var promises = [];
-    promises.push(queries.prop_values(s, prop_structure, replace, lang));
+    promises.push(queries.prop_values(s, prop_structure, replace, lang, namespace));
     promises.push(queries.get_enumerated_types(prop_structure, lang));
     return deferred.all(promises)
       .then(function([prop_values, enum_types]) {

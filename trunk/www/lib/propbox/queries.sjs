@@ -93,7 +93,7 @@ function prop_structures(pids, lang) {
  * @param value - if null, get all values
  * @param lang - the language to constrain all object names and /type/text values
  */
-function prop_data(topic_id, prop /** pid or prop_structure **/, value, lang) {
+function prop_data(topic_id, prop /** pid or prop_structure **/, value, lang, namespace) {
   var promise;
   if (typeof prop === "string") {
     promise = prop_structure(prop, lang);
@@ -103,7 +103,7 @@ function prop_data(topic_id, prop /** pid or prop_structure **/, value, lang) {
   }
   return promise
     .then(function(prop_structure) {
-       var q = ph.mqlread_query(topic_id, prop_structure, value, lang);
+       var q = ph.mqlread_query(topic_id, prop_structure, value, lang, namespace);
        return freebase.mqlread(q)
          .then(function(env) {
            return env.result[prop_structure.id];
@@ -123,7 +123,7 @@ function prop_data(topic_id, prop /** pid or prop_structure **/, value, lang) {
  * @param value - if null, get all values
  * @param lang - the language to constrain all object names and /type/text values
  */
-function prop_values(topic_id, prop /** pid or prop_structure **/, value, lang) {
+function prop_values(topic_id, prop /** pid or prop_structure **/, value, lang, namespace) {
   var promise;
   if (typeof prop === "string") {
     promise = prop_structure(prop, lang);
@@ -133,7 +133,7 @@ function prop_values(topic_id, prop /** pid or prop_structure **/, value, lang) 
   }
   return promise
     .then(function(prop_structure) {
-      return prop_data(topic_id, prop_structure, value, lang)
+      return prop_data(topic_id, prop_structure, value, lang, namespace)
         .then(function(prop_data) {
           return ph.to_prop_values(prop_structure, prop_data, lang);
         });

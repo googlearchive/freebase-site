@@ -54,8 +54,8 @@
       extraLocale: locales.slice(1)
     };
   </script>
-  <script src="${h.lib_base_url('dojo')}/dojo/dojo.xd.js"></script>
-  <script src="${h.lib_base_url('suggest')}/suggest.min.js"></script>
+  <script src="${h.lib_base_url('dojo')}/dojo/dojo.js"></script>
+  <script src="suggest/suggest.js"></script>
   <script src="template/jquery.metadata.js"></script> 
   <script src="i18n/i18n.js"></script> 
   <script src="propbox/jquery.validate_input.js"></script>  
@@ -567,6 +567,40 @@
     <acre:block for="season in seasons">
       ${pb.data_input("/tv/tv_series_season", "/tv/regular_tv_appearance/seasons", season)}
     </acre:block>
+  </div>
+
+  <div id="type-object-key-insert">
+    ${pb.data_input("/type/key", "/type/object/key", null)}
+  </div>
+
+  <div id="type-object-key-delete">
+    <acre:script>
+      var prop_value = {
+        namespace: "/en",
+        value: "bob_dylan"
+      };
+    </acre:script>
+    ${pb.data_input("/type/key", "/type/object/key", prop_value)}
+  </div>
+
+  <div id="type-object-key-replace">
+    <acre:script>
+      var prop_value = {
+        namespace: "/en",
+        value: "bob_dylan"
+      };
+    </acre:script>
+    ${pb.data_input("/type/key", "/type/object/key", prop_value)}
+  </div>
+
+  <div id="type-object-key-noop">
+    <acre:script>
+      var prop_value = {
+        namespace: "/en",
+        value: "bob_dylan"
+      };
+    </acre:script>
+    ${pb.data_input("/type/key", "/type/object/key", prop_value)}
   </div>
 
 </acre:block>

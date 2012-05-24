@@ -85,6 +85,9 @@
             if (self.metadata.type === "/type/text") {
               mydata.lang = self.metadata.lang || o.lang;
             }
+            else if (self.metadata.type === "/type/key") {
+              mydata.namespace = data.namespace;
+            }
           }
           function compatible_callback() {
             self.container.data("data", mydata);
@@ -183,6 +186,9 @@
       else if (c.is(".enumeration")) {  // /type/enumeration
         i.validate_input({validator: $.validate_input.mqlkey});
       }
+      else if (c.is(".key")) {
+        i.validate_key(o, this.metadata);
+      }
       else if (c.is(".rawstring")) {
         i.validate_input({validator: $.validate_input.text});
       }
@@ -201,7 +207,8 @@
       $.each(["$.validate_topic",
               "$.validate_input",
               "$.validate_enumerated",
-              "$.validate_boolean"], function(i, name) {
+              "$.validate_boolean",
+              "$.validate_key"], function(i, name) {
         var validator = input.data(name);
         if (validator) {
           validator.validate(true);
@@ -422,7 +429,7 @@
       t.data("$.validate_boolean", inst);
     }
     else {
-      // TODO: assert 2 radio buttons
+      throw "$.fn.validate_boolean requires two radios: true and false";
     }
     return this;
   };
@@ -467,6 +474,142 @@
         this.empty();
       }
     }
+  };
+
+  $.fn.validate_key = function(options, data) {
+      var key_namespace_input;
+      var key_value_input;
+      this.each(function() {
+          var $this = $(this);
+          if ($this.is(":text")) {
+              if ($this.is(".key-namespace")) {
+                  key_namespace_input = $this;
+              }
+              else if ($this.is(".key-value")) {
+                  key_value_input = $this;
+              }
+          }
+      });
+      if (key_namespace_input && key_value_input) {
+          var inst = key_value_input.data("$.validate_key");
+          if (inst) {
+              inst._destroy();
+          }
+          inst = new $.validate_key(key_namespace_input, key_value_input, options);
+          key_namespace_input.data("$.validate_key", inst);
+          if (data && data.namespace && data.value) {
+              // initial data
+              key_namespace_input.data("data.suggest", {id:data.namespace});
+              key_value_input.val(data.value);
+          }
+      }
+      else {
+          throw "$.fn.validate_key requires two inputs: namespace and value";
+      }
+      return this;
+  };
+
+  $.validate_key = function(key_namespace_input, key_value_input, options) {
+      this.options = $.extend(true, {}, options);
+      this.key_namespace_input = key_namespace_input;
+      this.key_value_input = key_value_input;
+      // this.input is the "primary" input that will trigger the
+      // valid, invalid, empty events
+      this.input = this.key_namespace_input; 
+      this.init();
+  };
+
+  $.validate_key.prototype = {
+      init: function() {
+          var self = this;
+          var suggest_options = null;
+          if (this.options.suggest_impl) {
+
+              if (this.key_value_input.attr("name") === "/type/namespace/keys") {
+                  // autocomplete on anything
+                  suggest_options = this.options.suggest_impl.all("without:fus");
+              }
+              else {
+                  // autocomplete on namespace
+                  suggest_options =
+                      this.options.suggest_impl.instance("/type/namespace");
+
+              }
+          }
+          this.key_namespace_input
+              .suggest(suggest_options)
+              .bind("fb-textchange.validate_key", function() {
+                  self.validate();
+              })
+              .bind("fb-select.validate_key", function(e, data) {
+                  self.key_namespace_input.val(data.name || data.id);
+                  self.validate();
+              });
+
+          this.key_value_input.validate_input({validator: $.validate_input.mqlkey})
+              .bind("valid", function(e, data) {
+                  e.stopPropagation();
+                  self.validate();
+              })
+              .bind("invalid", function(e, msg) {
+                  e.stopPropagation();
+                  self.validate();
+              })
+              .bind("empty", function(e) {
+                  e.stopPropagation();
+                  self.validate();
+              });
+      },
+
+      _destroy: function() {
+          this.key_namespace_input.unbind(".validate_key");
+          this.key_value_input.unbind();
+      },
+
+      invalid: function() {
+          this.input.trigger("invalid");
+      },
+
+      valid: function(data) {
+          this.input.trigger("valid", data);
+      },
+
+      empty: function() {
+          this.input.trigger("empty");
+      },
+
+      validate: function(force) {
+          if (this.is_valid_key_namespace() &&
+              this.is_valid_key_value()) {
+              this.valid({
+                  namespace: this.key_namespace_input.data("data.suggest").id,
+                  value: this.key_value_input.val(),
+                  text: this.key_value_input.val()
+              });
+          }
+          else if (this.key_namespace_input.val() === "" &&
+                   this.key_value_input.val() === "") {
+              this.empty();
+          }
+          else {
+
+              this.invalid();
+          }
+      },
+
+      is_valid_key_namespace: function() {
+          return this.key_namespace_input.data("data.suggest") != null;
+      },
+
+      is_valid_key_value: function() {
+          try {
+              $.validate_input.mqlkey(this.key_value_input.val());
+              return true;
+          }
+          catch (ex) {
+              return false;
+          }
+      }
   };
 
 })(jQuery);

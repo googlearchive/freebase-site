@@ -66,8 +66,7 @@ var SPEC = {
     }
 
     // If we're using a custom provider, we're done
-    // If we're using a custom provider, we're done
-    if (provider !== freebase_provider.name) {
+    if (freebase_provider.name !== h.account_provider().name) {
       h.temporary_redirect(onsucceed);
     }
 

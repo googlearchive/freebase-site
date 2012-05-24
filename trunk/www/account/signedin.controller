@@ -66,8 +66,11 @@ var SPEC = {
     }
 
     // If we're using a custom provider, we're done
-    if (provider) h.temporary_redirect(onsucceed);
-    
+    // If we're using a custom provider, we're done
+    if (provider !== freebase_provider.name) {
+      h.temporary_redirect(onsucceed);
+    }
+
     // Custom user_info function in account helpers
     // is necessary to handle specific error conditions
     // (i.e., account not linked) that the acre.freebase

@@ -1158,6 +1158,8 @@
           // the original filter may be a single filter param (string)
           filter = [filter];
       }
+      // clone original filters so that we don't modify it
+      filter = filter.slice();
       if (o.advanced) {
           // parse out additional filters in input value
           var structured = $.suggest.parse_input(query);

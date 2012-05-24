@@ -950,8 +950,17 @@ function ObjectRouter(app_labels) {
 
       if (o) {
 
-        if (o.replaced_by && (req_id.indexOf("/guid") !== 0)) {
+        // Special case guid IDs to not redirect
+        if (req_id.indexOf("/guid/") === 0) {
+          o.id = req_id;
+        }
+        // Redirect topics that have been merged
+        else if (o.replaced_by) {
           return h.redirect(self, o.replaced_by.mid);
+        }
+        // For topics and some other types, we always to force mids
+        else if (rule.use_mid) {
+          o.id = o.mid;
         }
 
         // Build type map for object
@@ -968,11 +977,6 @@ function ObjectRouter(app_labels) {
             rule = h.extend(true, {}, route);
             break;
           }
-        }
-
-        // For topics and some other types, we always want to use mids
-        if (rule.use_mid) {
-          o.id = o.mid;
         }
 
         // Turn tab config arrays into something more useful

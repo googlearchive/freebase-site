@@ -334,10 +334,21 @@
     </acre:block>
     <acre:block elif="ect === '/type/key'">
       <acre:script>
-        attrs["data-namespace"] = prop_value.namespace;
-       attrs["title"] = prop_value.namespace;
+        if (prop_structure.id === "/type/namespace/keys") {
+          object_id = prop_value.namespace;
+        }
+        else {
+          object_id = prop_value.namespace + "/" + prop_value.value;
+        }
+        h.extend(attrs, {
+          "data-namespace": prop_value.namespace,
+          "data-id": object_id,
+          "data-value": prop_value.value,
+          "title": object_id,
+          "href": h.fb_url(true, object_id)
+        });
       </acre:script>
-      <span acre:attrs="attrs" data-value="${prop_value.value}">${prop_value.value}</span>
+      <a acre:attrs="attrs">${prop_value.value}</a>
     </acre:block>
     <acre:block else="">
       <span acre:attrs="attrs" data-value="${prop_value.value}">${prop_value.value}</span>

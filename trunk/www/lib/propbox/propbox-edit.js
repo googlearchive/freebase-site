@@ -184,7 +184,7 @@
       }
       else {
         var prop_value = $(".property-value:first", prop_row);
-        value = prop_value.attr("data-id") || prop_value.attr("data-value") || prop_value.attr("datetime");
+        value = prop_value.attr("data-value") || prop_value.attr("data-id") || prop_value.attr("datetime");
       }
       $.ajax($.extend(formlib.default_begin_ajax_options(), {
         url: propbox.options.base_ajax_url +  "/value_edit_begin.ajax",
@@ -309,7 +309,7 @@
       }
       else {
         var prop_value = $(".property-value:first", prop_row);
-        value = prop_value.attr("data-id") || prop_value.attr("data-value") || prop_value.attr("datetime");
+        value = prop_value.attr("data-value") || prop_value.attr("data-id") || prop_value.attr("datetime");
       }
       var submit_data = {
         s: propbox.options.id,

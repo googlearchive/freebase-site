@@ -29,10 +29,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-(function($, i18n) {
+(function($, i18n, status) {
 
    // requires:
    // i18n.js @see lib/i18n/i18n.js
+   // status (@see freebase.status)
 
    var formlib = window.formlib = {
 
@@ -579,10 +580,23 @@
      },
 
      default_submit_ajax_options: function(options) {
-       var ajax_options = formlib._default_ajax_options("POST");
-       if (options) {
-         $.extend(ajax_options, options.ajax);
-         var submit_content = options.submit_row || options.form;
+       options = options || {};
+       var ajax_options = $.extend(formlib._default_ajax_options("POST"), options.ajax, {
+           beforeSend: function() {
+               status.doing("Saving...");
+               if (options.beforeSend) {
+                   options.beforeSend.apply(null, arguments);
+               }
+           },
+           complete: function() {
+               status.clear();
+               if (options.complete) {
+                   options.complete.apply(null, arguments);
+               }
+           }
+       });
+       var submit_content = options.submit_row || options.form;
+       if (submit_content) {
          $("input[type=hidden]", submit_content).each(function() {
            ajax_options.data[this.name] = this.value;
          });
@@ -676,4 +690,4 @@
      }
    };
 
-})(jQuery, window.i18n);
+})(jQuery, window.i18n, window.freebase.status);

@@ -127,7 +127,7 @@ function topic_structure(id, options) {
                     // skip reverse properties (!/.../.../...)
                     if (proploader.is_prop_id(pid)) {
                         var t = proploader.get_type_id(pid);
-                        if (!types_seen[t]) {
+                        if (t && !types_seen[t]) {
                             types.push(t);
                             types_seen[t] = true;
                         }
@@ -138,7 +138,7 @@ function topic_structure(id, options) {
                 if (instanceof_types) {
                     instanceof_types.forEach(function(t) {
                         var id = t.id;
-                        if (!types_seen[id]) {
+                        if (id && !types_seen[id]) {
                             types.push(id);
                             types_seen[id] = true;
                         }

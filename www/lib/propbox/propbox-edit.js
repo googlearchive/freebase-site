@@ -111,7 +111,7 @@
         })
         .bind(event_prefix + "success", function() {
           if (structure.unique) {
-            edit_row.trigger(form.event_prefix + "cancel");
+            edit_row.trigger(options.event_prefix + "cancel");
           }
         });
       formlib.init_inline_add_form(options);
@@ -178,13 +178,15 @@
      * Edit an existing value (topic, literal, cvt).
      */
     value_edit_begin: function(prop_section, prop_row) {
-      var value;
+      var value = null;
+      var namespace = null;
       if (prop_row.is("tr")) {
         value = prop_row.attr("data-id");
       }
       else {
         var prop_value = $(".property-value:first", prop_row);
         value = prop_value.attr("data-value") || prop_value.attr("data-id") || prop_value.attr("datetime");
+        namespace = prop_value.attr("data-namespace");
       }
       $.ajax($.extend(formlib.default_begin_ajax_options(), {
         url: propbox.options.base_ajax_url +  "/value_edit_begin.ajax",
@@ -192,7 +194,7 @@
           s: propbox.options.id,
           p: prop_section.attr("data-id"),
           replace: value,
-          namespace: prop_value.attr("data-namespace"),
+          namespace: namespace,
           lang: propbox.options.lang
         },
         onsuccess: function(data) {
@@ -303,20 +305,22 @@
      * Delete an exiting value (topic, literal, cvt).
      */
     value_delete_begin: function(prop_section, prop_row) {
-      var value;
+      var value = null;
+      var namespace = null;
       if (prop_row.is("tr")) {
         value = prop_row.attr("data-id");
       }
       else {
         var prop_value = $(".property-value:first", prop_row);
         value = prop_value.attr("data-value") || prop_value.attr("data-id") || prop_value.attr("datetime");
+        namespace = prop_value.attr("data-namespace");
       }
       var submit_data = {
         s: propbox.options.id,
         p: prop_section.attr("data-id"),
         o: value,
         lang: propbox.options.lang,
-        namespace: prop_value.attr("data-namespace")
+        namespace: namespace
       };
 
       $.ajax($.extend(formlib.default_submit_ajax_options(), {

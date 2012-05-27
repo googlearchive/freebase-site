@@ -239,7 +239,6 @@ LANGS.forEach(function(l) {
 var lang;
 var bundle;
 var bundle_path;
-var undefined;
 
 
 ///////////

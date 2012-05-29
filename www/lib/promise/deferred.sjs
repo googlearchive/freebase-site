@@ -125,11 +125,14 @@ var RequestCanceled, RequestTimeout;
     //  by coercing the value into an error
     var reject = this.reject = function(error) {
       if (!(error instanceof Error)) {
-        error = new Error(""+error);
+        if (typeof error !== "string") {
+          console.warn("Coerced error to string:", error);
+          error = "" + error;
+        }
+        error = new Error(error);
       }
       console.warn('Deferred: '+error.toString(), error);
-      resolve(error);
-      return promise;
+      return resolve(error);
     };
 
     // Adds a new success and/or failure listener to this deferred's promise

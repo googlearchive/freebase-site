@@ -501,13 +501,7 @@ function init_site_rules(lib) {
           "name": _("Links"),
           "key": "links",
           "app": "triples",
-          "script": "triples.tab",
-          "promises": [{
-              "key": "notability",
-              "app": "lib",
-              "script": "queries/topic.sjs",
-              "promise": "notability"
-          }]
+          "script": "triples.tab"
         },
         {
           "name": _("Identifiers"),
@@ -671,7 +665,6 @@ function init_site_rules(lib) {
     {
       "name": _("Object"),
       "type": "/type/object",
-      "use_mid": true,
       "promises":  h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
@@ -943,51 +936,45 @@ function ObjectRouter(app_labels) {
         .then(function(obj) {
           o = obj;
         });
-
       acre.async.wait_on_results();
 
-      d.cleanup();
+      // No object found
+      if (!o) return false;
 
-      if (o) {
+      // Build type map for object
+      var obj_types = h.map_array(o.type, "id");
+      obj_types["/type/object"] = true; // all valid IDs are /type/object
 
-        // Build type map for object
-        var obj_types = h.map_array(o.type, "id");
-        obj_types["/type/object"] = true; // all valid IDs are /type/object
-
-        var rule, i, l;
-        // Find correct rule for this object
-        for (i=0,l=route_list.length; i<l; i++) {
-          var route = route_list[i];
-          var type = route.type;
-          if (obj_types[type]) {
-            // clone tabs spec so we don't overwrite it
-            rule = h.extend(true, {}, route);
-            break;
-          }
+      // Find correct rule for this object
+      var rule, i, l;
+      for (i=0,l=route_list.length; i<l; i++) {
+        var route = route_list[i];
+        var type = route.type;
+        if (obj_types[type]) {
+          // clone tabs spec so we don't overwrite it
+          rule = h.extend(true, {}, route);
+          break;
         }
-
-        // Special case guid IDs to not redirect
-        if (req_id.indexOf("/guid/") === 0) {
-          o.id = req_id;
-        }
-        // Redirect topics that have been merged
-        else if (o.replaced_by) {
-          return h.redirect(self, o.replaced_by.mid);
-        }
-        // For topics and some other types, we always to force mids
-        else if (rule.use_mid) {
-          o.id = o.mid;
-        }
-
-        // Turn tab config arrays into something more useful
-        if (!rule) {
-          throw "Missing rule configuration for this object";
-        }
-
-        acre.write(freebase_object.main(rule, o));
-        acre.exit();
-
       }
+      if (!rule) {
+        throw "Missing rule configuration for this object";
+      }
+
+      // Special case guid IDs to not redirect
+      if (req_id.indexOf("/guid/") === 0) {
+        o.id = req_id;
+      }
+      // Redirect topics that have been merged
+      else if (o.replaced_by) {
+        return h.redirect(self, o.replaced_by.mid);
+      }
+      // For topics and some other types, we always to force mids
+      else if (rule.use_mid) {
+        o.id = o.mid;
+      }
+
+      acre.write(freebase_object.main(rule, o));
+      acre.exit();
     }
   };
 

@@ -86,9 +86,20 @@ function run_spec(spec, scope) {
     .then(function(service_result) {
       return render(service_result.result, spec, scope);
     })
+    .then(null, function(service_error) {
+      // propagate acre.route() and acre.exit()
+      if (service_error instanceof acre.errors.AcreRouteException ||
+          service_error instanceof acre.errors.AcreExitException) {
+        return service_error;
+      }
+      // otherwise, render the error
+      spec.template = acre.require("error/error.mjt");
+      return render({einfo: service_error}, spec, scope);
+    })
     .then(function(render_result) {
       result = acre.markup.stringify(render_result);
     });
+
   acre.async.wait_on_results();
   d.cleanup();
   return result;
@@ -121,13 +132,13 @@ function render(service_result, spec, scope) {
     throw "template needs to be defined";
   }
 
-  return deferred.all(o.c || {}, true)  // resolve all promises in c
+  return deferred.all(o.c || {})  // resolve all promises in c
     .then(function(c) {
       o.c = c;
 
       var all_args = [];
-      all_args.push(deferred.all(o.template_base_args || {}, true)); // resolve all promises in template_base_args
-      all_args.push(deferred.all(o.def_args || [], true)); // resolve all promises in def_args
+      all_args.push(deferred.all(o.template_base_args || {})); // resolve all promises in template_base_args
+      all_args.push(deferred.all(o.def_args || [])); // resolve all promises in def_args
 
       return deferred.all(all_args);
     })
@@ -174,15 +185,7 @@ function render(service_result, spec, scope) {
         h.extend(exports.c, o.c);
       }
 
-      try {
-        return template[o.def].apply(template, o.def_args);
-      } catch(e) {
-        // Since we've gotten this far already, try to run
-        // the error script inside of our base template
-        var error_args = acre.require("error/error.mjt");
-        error_args.c.einfo = e;
-        return template[o.def].apply(template, [error_args]);
-      }
+      return template[o.def].apply(template, o.def_args);
     });
 };
 

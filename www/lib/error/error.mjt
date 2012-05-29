@@ -62,7 +62,7 @@
       <acre:block else="">
         <acre:script>
           var einfo = c.einfo;
-          console.error(einfo)
+          console.error(einfo);
 
           function is_user_script(e) {
               var filename = e.filename || e.fileName;
@@ -109,17 +109,6 @@
           <p class="line" acre:if="user_script">
             at ${sourcelink(einfo, user_script)}
           </p>
-
-          <ul>
-            <acre:block for="frame in einfo.stack">
-              <acre:script>
-                var user_script = is_user_script(frame);
-              </acre:script>
-              <li acre:attrs="user_script?{}:{'class':'internal'}">
-                ${sourcelink(frame, user_script)}
-              </li>
-            </acre:block>
-          </ul>
         </div>
 
         <div acre:if="'x-metaweb-tid' in acre.request.headers" class='tid'>
@@ -132,11 +121,12 @@
 
 <acre:script>
   var c = this.exports.c = {};
+
   // We're running as a traditional error page
-  if (acre.request.script === acre.request.current_script) {
+  if (acre.error) {
     c.einfo = acre.error;
     var template = acre.require("template/freebase.mjt");
-    template["page"].apply(template, [this.exports]);
+    acre.write(template["page"].apply(template, [this.exports]));
   }
 </acre:script>
 

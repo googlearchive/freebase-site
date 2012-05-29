@@ -460,9 +460,3 @@
     ${that_exports.acre_javascript_vars()}
   </acre:block>
 </acre:block>
-
-<acre:block def="fb_search_input_params()">
-  <acre:block if="c.current_tab && c.current_tab.key">
-    <input type="hidden" name="${c.current_tab.key}" value=""/>
-  </acre:block>
-</acre:block>

@@ -46,11 +46,32 @@ function main(rule, object) {
   // look in tabs and more_tabs to find a routing match
   var tabs = [];
   var more_tabs = [];
-  var current_tab, hidden;
+  var current_tab = null;
+
+  var referer_params = {};
+  if (acre.request.headers.referer && 
+      acre.request.headers.referer.indexOf(acre.request.app_url) === 0) {
+      /**
+       * Are we coming from within our own domain/site?
+       * If so, we want to stay within the same tab/context.
+       * 
+       * For example, if a user is looking at the "Links" tab
+       * of a topic and uses the main search suggest to navigate to an object,
+       * we want to go to the "Links" tab of that object.
+       * 
+       * To accomplish this we want to look at the referer and it's query
+       * string parameters.
+       */
+      var referer_query_string = acre.request.headers.referer.indexOf("?");
+      if (referer_query_string !== -1) {
+          referer_query_string = acre.request.headers.referer.substring(referer_query_string + 1);
+          referer_params = acre.form.decode(referer_query_string);
+      }
+  }
+
   rule.tabs.forEach(function(t) {
     if (t.key in acre.request.params || t.path === acre.request.path_info) {
       current_tab = t;
-      hidden = t.hidden;
     }
     if (!t.hidden) {
       if (t.more) {
@@ -60,6 +81,19 @@ function main(rule, object) {
       }
     }
   });
+
+  /**
+   * Try to find the best tab looking at the referer if a tab is not specified.
+   */
+  if (!current_tab) {
+    rule.tabs.every(function(t) {
+        if (t.key in referer_params) {
+          current_tab = t;
+          return false;
+        }
+        return true;
+    });
+  }
 
   if (!current_tab && tabs.length) {
     current_tab = tabs[0];
@@ -98,7 +132,7 @@ function main(rule, object) {
   topscope.acre.request.script = script.acre.current_script;
 
   var spec = script.SPEC;
-  if (current_tab && !hidden) {
+  if (current_tab && !current_tab.hidden) {
     spec.template_base = spec.template_base || "site/template/object.mjt";
   }
   spec.template_base_args = template_base_args;

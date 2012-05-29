@@ -53,20 +53,28 @@
       ifexec = o["if"];
     }
     if (h.isFunction(ifexec)) {
-      ifexec = o["if"] = ifexec.apply(scope);
+      try {
+        ifexec = o["if"] = ifexec.apply(scope);
+      } catch(e) {
+        console.error("Error in routing rule function", e);
+        ifexec = false;
+      }
     }
     if (ifexec) {
       for (var key in o) {
         if (key === "if") continue;
         var val = o[key];
-        if (h.isFunction(val)) o[key] = val.apply(scope);
+        if (h.isFunction(val)) {
+          try {
+            o[key] = val.apply(scope);
+          } catch(e) {
+            console.error("Error in routing rule function", e);
+            ifexec = false;
+          }
+        }
       }
-      return true;
     }
-    else {
-      return false;
-    }
-
+    return ifexec;
   };
 </acre:script>
 
@@ -261,18 +269,23 @@
             </span>
           </acre:block>
 
-          <!!-- Show topic MID -->
+          <!!-- Show object IDs and nav_keys -->
           <div class="meta">
-            <span class="key">
-              <strong><abbr title="${_('ID')}">${_("id")}</abbr></strong>:
+            <span acre:if="c.object.id !== c.object.mid" class="key">
+              <strong>${_("id")}</strong>:
               <span>${c.object.id}</span>
             </span>
-            <span acre:for="nk in c.nav_keys" class="key">
-              <acre:block if="exec(nk, c)">
-                <strong>${nk.label}:</strong> 
-                <a acre:if="nk.url" href="$nk.url">${nk.key}</a>
-                <acre:block else="">${nk.key}</acre:block>
-              </acre:block>
+            <span class="key">
+              <strong>${_("mid")}</strong>:
+              <span>${c.object.mid}</span>
+            </span>
+            <span acre:for="nk in c.nav_keys" 
+                  acre:if="(exec(nk, c) && nk.key)" class="key">
+              <strong>${nk.label}:</strong> 
+              <span acre:if="nk.url" >
+                <a href="$nk.url">${nk.key}</a>
+              </span>
+              <span acre:else="">${nk.key}</span>
             </span>
           </div>
 
@@ -379,7 +392,7 @@
         </a>
       </span>
       <ul class="row-menu submenu right object-settings">
-        <acre:block for="nav in c.gear">
+        <acre:block for="nav in c.gear" if="exec(nav, c)">
           ${nav_item(nav)}
         </acre:block>
       </ul>
@@ -389,7 +402,6 @@
 
 <acre:block def="nav_item(nav)">
   <acre:script>
-    exec(nav, c);
     var key = nav.key || nav.name.toLowerCase().replace(/\s+/g, '-');
     var href, onclick;
     if (nav.url) {

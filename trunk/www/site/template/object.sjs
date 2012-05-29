@@ -103,7 +103,6 @@ function main(rule, object) {
   }
   spec.template_base_args = template_base_args;
 
-  // TODO (culbertson): try/catch and render error tab content on failure
   return controller.run_spec(spec, script);
 };
 

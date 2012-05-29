@@ -47,7 +47,13 @@ function type(o) {
   };
   return freebase.mqlread(q)
     .then(function(env) {
-      return env.result.domain;
+      return env.result;
+    })
+    .then(function(r) {
+      if (!r) {
+        return {};
+      }
+      return r.domain;
     });
 };
 
@@ -67,6 +73,9 @@ function property(o) {
       return env.result;
     })
     .then(function(r) {
+      if (!r) {
+        return {};
+      }
       return {
         type: r.schema,
         domain: r.schema.domain

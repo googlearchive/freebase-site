@@ -54,8 +54,14 @@ function object(id, options) {
     };
     return deferred.all(promises)
         .then(function(r) {
-            r.object["/common/topic/article"] = r.article;
-            return callback(r.object);
+          if (!r.object) {
+            return new Error(h.sprintf("%s not found", id));
+          }
+          return r;
+        })
+        .then(function(r) {
+          r.object["/common/topic/article"] = r.article;
+          return callback(r.object);
         });
 };
 

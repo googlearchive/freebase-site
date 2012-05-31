@@ -391,12 +391,12 @@
 
 <acre:block def="type_menu(topic, type_structure)">
   <span class="wrapper">
-    <span class="type-label">
+    <span class="type-label mark">
       <a href="${h.fb_url(topic.id, [['type', type_structure.id]])}">${type_structure.text}</a>
     </span>
     <ul class="inline-menu combo-menu nicemenu">
       <li class="inline-menu-item nicemenu-item">
-        <span class="mark headmenu">
+        <span class="headmenu">
           <a href="javascript:void(0)" class="more-action">menu</a>
         </span>
         <ul class="row-menu submenu">  
@@ -412,7 +412,7 @@
     var ect = prop_structure.expected_type.id;
   </acre:script>
   <span class="wrapper">
-    <span class="property-label">
+    <span class="property-label mark">
       <a href="${h.fb_url(topic.id, [['property', prop_structure.id]])}">${prop_structure.text}</a>
     </span>
     <ul class="inline-menu combo-menu nicemenu">

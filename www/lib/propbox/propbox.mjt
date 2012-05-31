@@ -90,7 +90,7 @@
       </span>
       <h1 class="kbs">
         <span class="mark">
-          <a href="${h.fb_url(domain_structure.id)}" title="${domain_structure.id}">${domain_structure.text}</a>
+          <a href="${h.fb_url(topic.id, [['domain', domain_structure.id]])}" title="${domain_structure.id}">${domain_structure.text}</a>
         </span>
       </h1>
     </div>    
@@ -139,7 +139,6 @@
   <div class="property-section" data-id="${prop_structure.id}">
     <div class="sub-foobar kbs">
       <a href="${h.fb_url(topic.id, [['property', prop_structure.id]])}" class="more"><span>${VIEW_ALL_PROPERTY_VALUES}</span></a>
-<!!--      <a href="${ph.build_query_url(topic.id, prop_structure, prop_structure.expected_type.id === '/type/text' ? null : lang)}" class="more"><span>${VIEW_ALL_PROPERTY_VALUES}</span></a>!!-->
       <span class="header-label">
         ${prop_menu(topic, prop_structure, prop_values, lang)}
       </span>
@@ -391,17 +390,21 @@
 </acre:block>
 
 <acre:block def="type_menu(topic, type_structure)">
-  <ul class="inline-menu nicemenu">
-    <li class="inline-menu-item nicemenu-item">
-      <span class="mark headmenu">
-        <a href="#" class="menu-trigger" onclick="return false;" title="${type_structure.id}">${type_structure.text}</a>
-      </span>
-      <ul class="row-menu submenu">  
-        <li class="row-menu-item"><a href="${h.fb_url(topic.id, [['type',type_structure.id]])}">${FILTER_TYPE}</a></li>
-        <li class="row-menu-item"><a href="${h.fb_url(type_structure.id, [['schema']])}">${VIEW_SCHEMA}</a></li>
-      </ul>
-    </li>
-  </ul>  
+  <span class="wrapper">
+    <span class="type-label">
+      <a href="${h.fb_url(topic.id, [['type', type_structure.id]])}">${type_structure.text}</a>
+    </span>
+    <ul class="inline-menu combo-menu nicemenu">
+      <li class="inline-menu-item nicemenu-item">
+        <span class="mark headmenu">
+          <a href="javascript:void(0)" class="more-action">menu</a>
+        </span>
+        <ul class="row-menu submenu">  
+          <li class="row-menu-item"><a href="${h.fb_url(type_structure.id, [['schema']])}">${VIEW_SCHEMA}</a></li>
+        </ul>
+      </li>
+    </ul>
+  </span>
 </acre:block>
 
 <acre:block def="prop_menu(topic, prop_structure, prop_values, lang)">

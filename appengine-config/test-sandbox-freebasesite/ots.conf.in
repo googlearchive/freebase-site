@@ -1,0 +1,52 @@
+[
+  {
+   "host": null,
+   "rules": [
+     {
+        "from": {
+          "path": "/_fs_routing" 
+        },
+        "to": {
+          "route_as": "script",
+          "location": "//environments.svn.freebase-site.googlecode.dev/@ACRE_SITE_HOST@/_fs_routing"
+        } 
+     
+     },
+     {
+        "from": {
+          "path": "/robots.txt" 
+        },
+        "to": {
+          "route_as": "script",
+          "location": "//environments.svn.freebase-site.googlecode.dev/@ACRE_SITE_HOST@/robots.txt"
+        } 
+     
+     },
+     {
+        "from": {
+          "path": "/flyout2" 
+        },
+        "to": {
+          "route_as": "script",
+          "location": "//environments.svn.freebase-site.googlecode.dev/flyout2"
+        } 
+     
+     }
+
+   ]
+  },
+  {
+    "host": [".@ACRE_SITE_HOST@", "@ACRE_SITE_HOST@"],
+    "rules": [
+      {
+        "from": {
+          "path": "/" 
+        },
+        "to": {
+          "route_as": "script",
+          "location": "//environments.svn.freebase-site.googlecode.dev/@ACRE_SITE_HOST@"
+        } 
+      }
+    ]
+  }
+]

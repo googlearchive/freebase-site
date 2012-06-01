@@ -3,7 +3,6 @@
 // If you make changes to this file, please adjust ActionCreateRoutes.__call__ in there too.
 
 var codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
-var codebase = ".www.tags.svn.freebase-site.googlecode.dev";
 
 var environment_rules = {
 

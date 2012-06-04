@@ -29,24 +29,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var editcomponents = acre.require("index_editcomponents.mjt");
+var editcomponents = acre.require("schema/editcomponents.mjt");
+var validators = acre.require("validator/validators.sjs");
 
 /**
  * create base form
  */
 var SPEC = {
 
-  method: "GET",
+    method: "GET",
 
-  auth: true,
+    auth: true,
 
-  validate: function(params) {
-    return null;
-  },
+    validate: function(params) {
+        return [
+            validators.LangId(params, "lang", {if_empty:"/lang/en"})
+        ];
+    },
 
-  run: function() {
-    return {
-      html: acre.markup.stringify(editcomponents.add_domain_form())
-    };
-  }
+    run: function(lang) {
+        return {
+            html: acre.markup.stringify(editcomponents.create_domain_form(lang))
+        };
+    }
 };

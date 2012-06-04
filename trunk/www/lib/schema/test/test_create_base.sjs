@@ -42,14 +42,13 @@
  */
 acre.require('/test/lib').enable(this);
 
-acre.require("lib/test/mock")
-    .playback(this, "test/playback_test_create_base.json");
+acre.require("test/mock")
+    .playback(this, "schema/test/playback_test_create_base.json");
 
-var h = acre.require("lib/helper/helpers.sjs");
-var schema_helpers = acre.require("helpers");
-var test_helpers = acre.require("lib/test/helpers");
-var create_base = acre.require("create_base").create_base;
-var freebase = acre.require("lib/promise/apis").freebase;
+var h = acre.require("helper/helpers.sjs");
+var test_helpers = acre.require("test/helpers.sjs");
+var create_base = acre.require("schema/create_base.sjs").create_base;
+var freebase = acre.require("promise/apis.sjs").freebase;
 
 // this test requires user to be logged in
 var user;
@@ -121,7 +120,7 @@ function delete_base(key) {
 
 test("create_base", {bug: "Skip create/delete domain test until create_group API on googleapis"}, function() {
   var name = get_name();
-  var key = schema_helpers.generate_domain_key(name);
+  var key = test_helpers.generate_key(name);
   var base;
   delete_base(key)
     .then(function() {
@@ -215,7 +214,7 @@ test("create base with existing key", {bug: "Skip create/delete domain test unti
 
 test("create base with description", {bug: "Skip create/delete domain test until create_group API on googleapis"}, function() {
   var name = get_name();
-  var key = schema_helpers.generate_domain_key(name);
+  var key = test_helpers.generate_key(name);
   var base;
   delete_base(key)
     .then(function() {

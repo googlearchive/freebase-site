@@ -1127,11 +1127,13 @@ function account_provider(name, opts) {
   return provider;
 }
 
+/**
+ * Check keystore for "freebase_writeuser" credentials
+ */
 function enable_writeuser() {
   if (!acre.oauth.has_credentials("freebase_writeuser")) {
     throw "Can't proceed without freebase_writeuser credentials.";
   }
-  acre.oauth.get_authorization("freebase_writeuser");
 };
 
 

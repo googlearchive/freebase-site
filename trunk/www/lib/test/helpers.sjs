@@ -370,3 +370,16 @@ function create_property2(type_id, options) {
         });
     });
 };
+
+
+function generate_key(name) {
+  var key = h.trim(name).toLowerCase();
+  key = key.replace(/[^a-z0-9]/g, '_');    // remove all non-alphanumeric
+  key = key.replace(/\_\_+/g, '_');        // replace __+ with _
+  key = key.replace(/[^a-z0-9]+$/, '');    // strip ending non-alphanumeric
+  key = key.replace(/^[^a-z]+/, '');       // strip beginning non-alpha
+  if (validators.reserved_word(key)) {
+    key = "x_" + key;
+  }
+  return key;
+};

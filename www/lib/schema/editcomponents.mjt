@@ -30,11 +30,12 @@
  !!-->
 
 <acre:script>
-  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n = acre.require("i18n/i18n.sjs");
   var _ = i18n.gettext;
+  var form = acre.require("propbox/form.mjt");
 </acre:script>
 
-<acre:block def="add_domain_form()">
+<acre:block def="create_domain_form(lang)">
   <div class="modal">
     <div class="modal-inner">
       <h1 class="modal-title">
@@ -46,7 +47,7 @@
           <h2 class="modal-help-title">${_('What are domains?')}</h2>
           <p>${_('Creating a domain is generally the first step in building a data model. A useful way to think of a Domain is as the bucket in which you create your Types, as they provide a common namespace in which you build your schema.')}</p> 
           <p>
-            <a href="http://wiki.freebase.com/wiki/Domain">${_("Read more")} &raquo;</a>
+            <a href="http://wiki.freebase.com/wiki/Domain" target="_blank">${_("Read more")} &raquo;</a>
           </p>
         </div>
         <div class="form-group clear">
@@ -76,8 +77,8 @@
       </div>
     </div>
     <div class="modal-buttons">
-      <button class="button save" type="submit">Save</button>
-      <button class="button cancel">Cancel</button>
+      <input type="hidden" name="lang" value="${lang}"/>
+      ${form.submit_buttons()}
     </div>
   </div>
 </acre:block>

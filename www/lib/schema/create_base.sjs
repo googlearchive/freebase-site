@@ -28,11 +28,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-var h = acre.require("lib/helper/helpers.sjs");
-var deferred = acre.require("lib/promise/deferred");
-var freebase = acre.require("lib/promise/apis").freebase;
-var create_article = acre.require("lib/queries/create_article").create_article;
-var validators = acre.require("lib/validator/validators");
+var h = acre.require("helper/helpers.sjs");
+var apis = acre.require("promise/apis.sjs");
+var freebase = apis.freebase;
+var deferred = apis.deferred;
+var create_article = acre.require("queries/create_article.sjs").create_article;
+var validators = acre.require("validator/validators.sjs");
 
 /**
  * Create a new base:
@@ -97,11 +98,11 @@ function create_base(options) {
           lang: o.lang
         },
         owners: {
-          id: group.id
+          id: group.mid
         },
         create: "unconditional"
       };
-      return freebase.mqlwrite(q, {use_permission_of: group.id})
+      return freebase.mqlwrite(q, {use_permission_of: group.mid})
         .then(function(env) {
           return env.result;
         });
@@ -109,8 +110,8 @@ function create_base(options) {
     .then(function(created) {
 
       /**
-       * Now add the key to /base using /freebas/site/schema app's permitted user,
-       * /user/appeditoruser
+       * Now add the key to /base using /user/fb_writeuser,
+       * permitted to write to /base.
        *
        * mqlwrite(q, null, {http_sign: "keystore"}
        */

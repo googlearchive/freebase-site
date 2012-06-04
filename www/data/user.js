@@ -28,40 +28,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+;(function($, fb) {
 
-var h = acre.require("lib/helper/helpers.sjs");
-var validators = acre.require("lib/validator/validators.sjs");
-var create_base = acre.require("create_base.sjs").create_base;
+    var user = {
 
-/**
- * create base
- */
-var SPEC = {
+        init: function() {
+            $("#create-domain").click(function(e) {
+                user.create_domain_begin(e);
+                return false;
+            });
+        },
 
-  method: "POST",
+        create_domain_begin: function(e) {
+            fb.get_script(fb.h.static_url("user-edit.mf.js"), function() {
+                fb.schema.create_domain_begin(e);
+            });
+        }
 
-  auth: true,
+    };
 
-  validate: function(params) {
-    return [
-      validators.String(params, "name", {required:true}),        // name of base
-      validators.DomainKey(params, "key", {required:true}),      // base key
-      validators.String(params, "description", {if_emtpy:null}), // description
-      validators.LangId(params, "lang", {if_empty:"/lang/en"})   // name,description lang
-    ];
-  },
 
-  run: function(name, key, description, lang) {
-    return create_base({
-      name: name,
-      key: key,
-      description: description,
-      lang: lang
-    })
-    .then(function(domain) {
-      return {
-        location: h.fb_url("/schema", domain.id)
-      };
-    });
-  }
-};
+    $(user.init);
+
+})(jQuery, window.freebase);

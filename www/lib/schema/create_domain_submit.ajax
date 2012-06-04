@@ -29,30 +29,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var queries = acre.require("queries.sjs");
-var validators = acre.require("lib/validator/validators.sjs");
+var h = acre.require("helper/helpers.sjs");
+var validators = acre.require("validator/validators.sjs");
+var create_base = acre.require("schema/create_base.sjs").create_base;
 
+/**
+ * create base
+ */
 var SPEC = {
 
-  cache_policy: "public",
+    method: "POST",
 
-  template: "index.mjt",
+    auth: true,
 
-  validate: function(params) {
-    return [
-      validators.MqlId(params, "user_id", {if_empty:null})
-    ];
-  },
+    validate: function(params) {
+        return [
+            validators.String(params, "name", {required:true}),        // name of base
+            validators.DomainKey(params, "key", {required:true}),      // base key
+            validators.String(params, "description", {if_emtpy:null}), // description
+            validators.LangId(params, "lang", {if_empty:"/lang/en"})   // name,description lang
+        ];
+    },
 
-  run: function(user_id) {
-    var data = {};
-    if (user_id) {
-      data.domains = queries.user_domains(user_id);
+    run: function(name, key, description, lang) {
+        return create_base({
+            name: name,
+            key: key,
+            description: description,
+            lang: lang
+        })
+        .then(function(domain) {
+           return {
+               location: h.fb_url(domain.id, [["schema"]])
+           };
+        });
     }
-    else {
-      data.domains = queries.common_domains();
-    }
-    return data;
-  }
-
 };

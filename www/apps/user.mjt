@@ -45,7 +45,7 @@
 <acre:block def="page_content()">
   <div class="table-header">
     <div class="button-group edit">
-      <a class="button primary" href="${h.fb_url('/appeditor#create=app')}">Create new app</a>
+      <a class="button primary" href="${h.fb_url('/appeditor#create=app')}">${_("Create new")}</a>
     </div>
     <h2 class="table-title">
       ${h.template_sprintf(_("%s has contributed to %s apps"), i18n.display_name(c.object), i18n_c.number(c.apps ? c.apps.length : 0))}

@@ -1589,6 +1589,7 @@ function set_app_release(resource, version) {
 
 function register_host(resource, hostname, user) {
   var appid = resource.appid;
+  h.enable_writeuser();
 
   // Lets make absolutely sure we're working off the latest state of the graph
   return freebase.touch()
@@ -1630,7 +1631,7 @@ function register_host(resource, hostname, user) {
               }
 
               // delete all existing hosts on the default domain
-              deletes.push(delete_all_hosts(appid, app.hosts));
+              deletes.push(delete_all_hosts(resource, app.hosts));
 
               return deferred.all(deletes, true)
                 .then(function() {

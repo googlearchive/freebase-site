@@ -188,8 +188,8 @@ function init_site_rules(lib) {
       "more": true
     }, 
     {
-      "name": _("Identifiers"),
-      "key": "ids",
+      "name": _("Keys"),
+      "key": "keys",
       "app": "sameas",
       "script": "sameas.tab",
       "more": true
@@ -504,8 +504,8 @@ function init_site_rules(lib) {
           "script": "triples.tab"
         },
         {
-          "name": _("Identifiers"),
-          "key": "ids",
+          "name": _("Keys"),
+          "key": "keys",
           "app": "sameas",
           "script": "sameas.tab",
           "promises": [{
@@ -593,8 +593,8 @@ function init_site_rules(lib) {
           "script": "triples.tab"
         },
         {
-          "name": _("Identifiers"),
-          "key": "ids",
+          "name": _("Keys"),
+          "key": "keys",
           "app": "sameas",
           "script": "sameas.tab"
         }
@@ -624,8 +624,8 @@ function init_site_rules(lib) {
           "script": "triples.tab"
         },
         {
-          "name": _("Identifiers"),
-          "key": "ids",
+          "name": _("Keys"),
+          "key": "keys",
           "app": "sameas",
           "script": "sameas.tab"
         }
@@ -655,8 +655,8 @@ function init_site_rules(lib) {
           "script": "triples.tab"
         },
         {
-          "name": _("Identifiers"),
-          "key": "ids",
+          "name": _("Keys"),
+          "key": "keys",
           "app": "sameas",
           "script": "sameas.tab"
         }
@@ -680,8 +680,8 @@ function init_site_rules(lib) {
           "script": "triples.tab"
         },
         {
-          "name": _("Identifiers"),
-          "key": "ids",
+          "name": _("Keys"),
+          "key": "keys",
           "app": "sameas",
           "script": "sameas.tab"
         }

@@ -52,8 +52,8 @@ test("load_paths", function() {
                           "/basketball/basketball_roster_position/number");
 });
 
-test("load_paths error", function() {
-    // second proprty cannot be a mediator
+test("load_paths ignore nested (sub) mediator", function() {
+    // ignore second proprty if mediator
     var paths = [
         "/basketball/basketball_roster_position/player.former_teams",
         "/basketball/basketball_player/position_s./basketball/basketball_position/player_roster_position"
@@ -63,9 +63,12 @@ test("load_paths error", function() {
              var result;
              proploader.load_paths([path])
                  .then(function(props) {
-                     ok(false, "Expected an error");
+                     var first_prop = path.split(".")[0];
+                     ok(props[first_prop]);
+                     ok(!props[first_prop].expected_type.properties ||
+                        props[first_prop].expected_type.properties.length === 0);
                  }, function(err) {
-                     ok(true, err);
+                     ok(false, err);
                  });
              acre.async.wait_on_results();
          })();

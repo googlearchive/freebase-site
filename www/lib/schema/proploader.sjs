@@ -236,10 +236,11 @@ function load_paths(paths, lang) {
                     if (is_prop_id(second)) {
                         prop2 = props[second];
                         assert(prop2, "Second property did not load", second);
-                        assert(!prop2.expected_type["/freebase/type_hints/mediator"],
-                               "Second property cannot be a mediator: " + path);
                         prop2 = h.extend(true, {}, prop2);
-                        result[first]._properties[i] = prop2;
+                        if (!prop2.expected_type["/freebase/type_hints/mediator"]) {
+                            // Nested (sub) mediator is not yet supported
+                            result[first]._properties[i] = prop2;
+                        }
                         // Arbitrary depth not yet supported
                         delete prop2.expected_type.properties;
                     }
@@ -285,16 +286,18 @@ function load_paths(paths, lang) {
                     .then(function(props) {
                         relative_ids.forEach(function(relative_id) {
                             var prop2 = props[relative_id];
-                            // Arbitrary depth not yet supported
-                            delete prop2.expected_type.properties;
                             assert(prop2, "Second property did not load", relative_id);
-                            assert(!prop2.expected_type["/freebase/type_hints/mediator"],
-                                   "Second property cannot be a mediator: " + prop2.id);
-                            relative_map[relative_id].forEach(function(r) {
-                                var i = r[0];
-                                var prop1 = r[1];
-                                prop1._properties[i] = h.extend(true, {}, prop2);
-                            });                            
+                            var prop2 = h.extend(true, {}, prop2);
+                            if (!prop2.expected_type["/freebase/type_hints/mediator"]) {
+                                // Nested (sub) mediator is not yet supported
+                                relative_map[relative_id].forEach(function(r) {
+                                    var i = r[0];
+                                    var prop1 = r[1];
+                                    prop1._properties[i] = prop2;
+                                });   
+                            }       
+                            // Arbitrary depth not yet supported
+                            delete prop2.expected_type.properties;                  
                         });
                         return get_result();
                     });

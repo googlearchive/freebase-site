@@ -9,6 +9,7 @@ var METADATA = {
   "owners": [
     "jasondouglas@google.com",
     "masouras@google.com",
+    "bneutra@google.com",
     "daepark@google.com",
     "kconragan@google.com"
   ],

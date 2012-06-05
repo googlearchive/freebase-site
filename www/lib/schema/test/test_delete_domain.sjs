@@ -41,11 +41,11 @@
  */
 acre.require('/test/lib').enable(this);
 
-acre.require("lib/test/mock").playback(this, "test/playback_test_delete_domain.json");
+acre.require("test/mock").playback(this, "schema/test/playback_test_delete_domain.json");
 
-var freebase = acre.require("lib/promise/apis").freebase;
-var test_helpers = acre.require("lib/test/helpers");
-var delete_domain = acre.require("delete_domain").delete_domain;
+var freebase = acre.require("promise/apis").freebase;
+var test_helpers = acre.require("test/helpers");
+var delete_domain = acre.require("schema/delete_domain").delete_domain;
 
 // this test requires user to be logged in
 var user;

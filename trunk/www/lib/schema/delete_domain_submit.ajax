@@ -29,40 +29,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var h = acre.require("lib/helper/helpers.sjs");
-var validators = acre.require("lib/validator/validators.sjs");
-var queries = acre.require("queries.sjs");
-var editcomponents = acre.require("type_editcomponents.mjt");
-var deferred = acre.require("lib/promise/deferred.sjs");
+var h = acre.require("helper/helpers.sjs");
+var validators = acre.require("validator/validators.sjs");
+var delete_domain = acre.require("schema/delete_domain.sjs").delete_domain;
 
 /**
- * domain settings form
+ * delete domain
  */
 var SPEC = {
 
-    method: "GET",
+    method: "POST",
 
     auth: true,
 
     validate: function(params) {
         return [
-            validators.MqlId(params, "id", {required:true}),    // type id
-            validators.LangId(params, "lang", {if_empty:"/lang/en"})    
+            validators.MqlId(params, "id", {required:true}),         // domain to delete
+            params.auth_user.id
         ];
     },
 
-    run: function(id) {
-        var promises = [];
-        promises.push(queries.load_type(id, lang));
-        promises.push(queries.type_used(id));
-        return deferred.all(promises)
-            .then(function(result) {
-                var type = result[0];
-                type.used = result[1];
+    run: function(domain_id, user_id) {
+        return delete_domain(domain_id, user_id)
+            .then(function(deleted) {
                 return {
-                    html: acre.markup.stringify(editcomponents.type_settings_form(type))
+                    location: h.fb_url(user_id)
                 };
             });
     }
-
 };

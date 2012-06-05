@@ -105,14 +105,6 @@
       }
     },
 
-    type_settings: function(e, type_id) {
-      var trigger = $(this);
-      fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
-        t.edit.type_settings_begin(trigger, type_id);
-      });
-      return false;
-    },
-
     reorder_property: function(e, type_id) {
       var trigger = $(this);
       if (trigger.is(".editing")) { // are we already editing?

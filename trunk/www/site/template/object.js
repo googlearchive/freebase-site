@@ -67,7 +67,7 @@
    */
   fb.nav_ajax = function(nav) {
     $.getScript(nav.href, function() {
-      fb.nav_ajax.begin(nav);
+      console.log("fb.nav_ajax script loaded", nav.href);
     });
     return false;
   };

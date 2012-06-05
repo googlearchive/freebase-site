@@ -269,6 +269,12 @@ function init_site_rules(lib) {
         {
           "name": _("<b>Discuss</b> Domain"),
           "url": (function() { return h.legacy_fb_url("/discuss/threads", this.object.id); })
+        },
+        {
+          "name": _("<b>Delete</b> Domain"),
+          "app": "lib",
+          "ajax": "schema/delete_domain.mf.js",
+          "auth": true // add "edit" class if authorized to delete the domain
         }
       ]
     },
@@ -399,12 +405,6 @@ function init_site_rules(lib) {
         {
           "name": _("<b>Discuss</b> with this user"),
           "url": (function() { return h.legacy_fb_url("/discuss/threads", this.object.id); })
-        },
-        {
-          "name": _("Edit Profile"),
-          "app": "users",
-          "ajax": "settings.mf.js",
-          "auth": true // add "edit" class
         }
       ]
     },

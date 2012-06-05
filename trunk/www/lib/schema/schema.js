@@ -34,6 +34,10 @@
 
     $.extend(fb.schema, {
 
+        /**
+         * Create domain flow
+         */
+
         create_domain_begin: function(e) {
             var ajax_options = $.extend(formlib.default_begin_ajax_options(), {
                 url: fb.h.ajax_url("lib/schema/create_domain_begin.ajax"),
@@ -127,6 +131,64 @@
             }));
         },
 
+
+        /**
+         * Delete domain flow
+         */
+
+        delete_domain_begin: function(id) {
+            var ajax_options = $.extend(formlib.default_begin_ajax_options(), {
+                url: fb.h.ajax_url("lib/schema/delete_domain_begin.ajax"),
+                data: {id:id, lang:fb.lang},
+                onsuccess: function(data) {
+                    var html = $(data.result.html);
+                    var event_prefix = "fb.schema.delete_domain.";
+                    var form_options = {
+                        event_prefix: event_prefix,
+                        // callbacks
+                        init: fb.schema.delete_domain_init,
+                        validate: fb.schema.delete_domain_validate,
+                        submit: fb.schema.delete_domain_submit,
+                        // submit ajax options
+                        ajax: {
+                            url: fb.h.ajax_url("lib/schema/delete_domain_submit.ajax")
+                        },
+                        // jQuery objects
+                        form: html
+                    };
+                    formlib.init_modal_form(form_options);
+                }
+            });
+            $.ajax(ajax_options);
+        },
+
+        delete_domain_init: function(options) {
+            var can_delete = $("input[name=force]", options.form);
+            if (can_delete.length) {
+                formlib.enable_submit(options);
+            }
+        },
+
+        delete_domain_validate: function(options) {
+            var can_delete = $("input[name=force]", options.form);
+            return can_delete.length;
+        },
+
+        delete_domain_submit: function(options, ajax_options) {
+            $.ajax($.extend(ajax_options, {
+                onsuccess: function(data) {
+                    window.location = data.result.location;
+                },
+                onerror: function(errmsg) {
+                    options.form.trigger(options.event_prefix + "error", errmsg);
+                }
+            }));
+        },
+
+
+        /**
+         * modal help dialog initialization
+         */
         init_modal_help: function(context) {
             // Show/Hide help menu in domain creation dialog
             $(".modal-help-toggle", context).click(function() {

@@ -28,36 +28,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+;(function($, fb) {
 
-var h = acre.require("lib/helper/helpers.sjs");
-var validators = acre.require("lib/validator/validators.sjs");
-var queries = acre.require("queries.sjs");
-var editcomponents = acre.require("domain_editcomponents.mjt");
-var freebase = acre.require("lib/promise/apis.sjs").freebase;
+    // requires lib/schema/schema.mf.js
 
-/**
- * domain settings form
- */
-var SPEC = {
+    fb.schema.delete_domain_begin(fb.c.id);
 
-  method: "GET",
-
-  auth: true,
-
-  validate: function(params) {
-    return [
-      validators.MqlId(params, "id", {required:true}),    // domain id
-      validators.LangId(params, "lang", {if_empty:"/lang/en"})    
-    ];
-  },
-
-  run: function(id, lang) {
-      return queries.load_domain(id, lang)
-          .then(function(domain) {
-              return {
-                  html: acre.markup.stringify(editcomponents.domain_settings_form(domain))
-              };
-          });
-  }
-
-};
+})(jQuery, window.freebase);

@@ -29,33 +29,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var h = acre.require("lib/helper/helpers.sjs");
-var validators = acre.require("lib/validator/validators.sjs");
-var delete_domain = acre.require("delete_domain.sjs").delete_domain;
+var editcomponents = acre.require("schema/editcomponents.mjt");
+var validators = acre.require("validator/validators.sjs");
+var delete_domain = acre.require("schema/delete_domain.sjs");
 
 /**
- * delete domain
+ * create base form
  */
 var SPEC = {
 
-  method: "POST",
+    method: "GET",
 
-  auth: true,
+    auth: true,
 
-  validate: function(params) {
-    return [
-      validators.MqlId(params, "id", {required:true}),           // domain to delete
-      validators.MqlId(params, "user", {required:true}),         // user performing the delete
-      validators.StringBool(params, "dry_run", {if_empty:false}) // see what will be deleted
-    ];
-  },
+    validate: function(params) {
+        return [
+            validators.MqlId(params, "id", {required:true}),
+            params.auth_user.id,
+            validators.LangId(params, "lang", {if_empty:"/lang/en"})
+        ];
+    },
 
-  run: function(id, user, dry_run) {
-    return delete_domain(id, user, dry_run)
-      .then(function(deleted) {
-        return {
-          location: h.fb_url("/schema")
-        };
-      });
-  }
+    run: function(domain_id, user_id, lang) {
+        return delete_domain.domain_info(domain_id, user_id)
+            .then(function(info) {
+                return {
+                    html: acre.markup.stringify(editcomponents.delete_domain_form(info, lang))
+                };
+            });
+    }
 };

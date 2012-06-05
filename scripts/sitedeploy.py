@@ -789,8 +789,6 @@ class ActionSpeedTest:
     csv_file.write(','.join(['http','time','size','url'] + self._labels) + '\n')
 
     for r in responses:
-      if r['c'] == 500:
-        continue
       u =  r['url'].replace('http://%s'%self.context.options.host, '')
       csv_file.write(','.join( [str(r['c']),
                                 str(r['d'])[:4],

@@ -128,12 +128,22 @@
                     </li>
                   </ul>
                 </acre:block>
-              </acre:block>           
-              <acre:block elif="cell.structure.expected_type.id === '/common/image'">
+              </acre:block>
+              <acre:block elif="cell.images">
                 <ul class="data-list">
                   <li>
                     <span class="wrapper">
                       ${pb.value(tbody.value, cell.structure, tbody.value, i18n.lang)}
+                      <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
+                    </span>
+                  </li>
+                </ul>
+              </acre:block>
+              <acre:block elif="cell.docs">
+                <ul class="data-list">
+                  <li>
+                    <span class="wrapper">
+                      <p acre:if="cell.docs.length" class="load-blurb" data-id="${cell.docs[0].id}"></p>
                       <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
                     </span>
                   </li>

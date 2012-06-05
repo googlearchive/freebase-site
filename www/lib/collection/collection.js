@@ -30,6 +30,8 @@
         var next = data.result.cursor;
         var html = $(data.result.html);
         i18n.ize(html);
+        collection.init_menus(html);
+        collection.load_blurbs(html);
         table.append(html);
         if (next) {
           table.attr("data-next", next);
@@ -58,6 +60,24 @@
       row.hover(collection.row_menu_hoverover, collection.row_menu_hoverout);
       $(".nicemenu .headmenu", context)
         .add($(".nicemenu .default-action", context));
+    },
+
+    // load collection blurbs client-side
+    load_blurbs: function(context) {
+      var word_length = 30;
+      $(".load-blurb", context).each(function(i, el) {
+        var url = [
+          fb.acre.freebase.googleapis_url,
+          "/text",
+           $(el).attr("data-id"),
+          "?key=",
+          fb.acre.freebase.api_key
+        ].join("");
+        $.getJSON(url, function(data) {
+          var words = data.result.split(/\s+/);
+          $(el).text(words.slice(0, word_length).join(" "));
+        });
+      });
     },
 
     // show row menu button on hover
@@ -90,6 +110,7 @@
     init: function() {
       collection.init_infinitescroll();
       collection.init_menus();
+      collection.load_blurbs();
       return collection;
     }
 

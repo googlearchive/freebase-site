@@ -79,7 +79,7 @@
           <a class="button primary edit" href="${h.fb_url('/queryeditor')}">${_("Create a new query")}</a>
         </div>
         <h1>
-          ${_('Recently created queries')}
+          ${_('Recently updated queries')}
         </h1>
       </div>
       <table cellspacing="0" class="table">
@@ -87,8 +87,8 @@
           <tr>
             <th scope="col" class="column-header first">${_('Query')}</th>
             <th scope="col" class="column-header">${_('Type')}</th>
-            <th scope="col" class="column-header">${_('Domain')}</th>
-            <th scope="col" class="column-header">${_('Created by')}</th>
+            <th scope="col" class="column-header">${_('User')}/${_('Domain')}</th>
+            <th scope="col" class="column-header">${_('Updated by')}</th>
           </tr>
         </thead>
         <tbody>

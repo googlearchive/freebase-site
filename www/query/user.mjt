@@ -66,7 +66,8 @@
             <a href="${h.fb_url(q.id)}">${i18n.display_name(q)}</a>
           </th>
           <td class="even">
-            <a href="${h.fb_url(q.type.id)}">${i18n.display_name(q.type)}</a>
+            <a acre:if="q.type" href="${h.fb_url(q.type.id)}">${i18n.display_name(q.type)}</a>
+            <acre:block else="">—</acre:block>
           </td>
           <td class="odd">
             <a acre:if="q.domain" href="${h.fb_url(q.domain.id, [['queries']])}">${i18n.display_name(q.domain)}</a>
@@ -74,7 +75,6 @@
           </td>
           <td class="even">
             ${h.relative_date(q.timestamp)}
-            <!--${i18n_c.datetime(obj.timestamp, [["class","published"],["data-format","medium"]])}-->
           </td>
         </tr>
       </tbody>

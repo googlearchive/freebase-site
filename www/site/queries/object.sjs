@@ -89,7 +89,7 @@ function blurb(o) {
  * promise to get saved queries
  */
 function query(o) {
-  return freebase.get_blob(o.id)
+  return freebase.get_blob(o["/common/document/content"].id)
     .then(function(ret){
       return JSON.parse(ret.body);
     });
@@ -144,6 +144,10 @@ function mql(id) {
       id: null,
       limit: 1
     }],
+    "/common/document/content": {
+      optional: true,
+      id: null
+    },
     permission: null,
     timestamp: null,
     "/dataworld/gardening_hint/replaced_by": {

@@ -447,9 +447,9 @@ test("handle_service run promise dictionary error", function() {
       error = e;
     });
   console.log("result", result, "error", error);
-  ok(!result, "expected error");
-  ok(error, "expected error: " + error.toString());
-  equal(error.message, "catch me", "expected error: " + error);
+  ok(result, "expected result");
+  ok(!error, "didn't expect error");
+  equal(result.result.p2.message, "catch me", "expected error: " + result.result.p2);
 });
 
 test("handle_service run promise array", function() {
@@ -493,9 +493,9 @@ test("handle_service run promise array error", function() {
       error = e;
     });
   console.log("result", result, "error", error);
-  ok(!result, "expected error");
-  ok(error, "expected error: " + error.toString());
-  equal(error.message, "catch me", "expected error: " + error);
+  ok(result, "expected result");
+  ok(!error, "didn't expect error");
+  equal(result.result[0].message, "catch me", "expected error: " + result.result[0]);
 });
 
 acre.test.report();

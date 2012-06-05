@@ -63,13 +63,9 @@ function new_cell(structure, opts) {
   if (structure.expected_type && structure.expected_type.id === "/common/image") {
     css_class.push("image");
   }
-  // TODO: what is this for? This seems to not work as intended
-  /**
-  if (start_column && ((column - start_column) === 0)) {
-    css_class.push("first-column");
+  if (structure.expected_type && structure.expected_type.id === "/common/document") {
+    css_class.push("document");
   }
-   **/
-
   return h.extend(true, {}, {
     structure: structure,
     value: null,
@@ -82,21 +78,22 @@ function new_cell(structure, opts) {
 };
 
 function prop_structures_to_head(prop_structures) {
-  var head = [],
-      subprops = false,
-      primary_head = [],
-      secondary_head = [],
-      column = 0;
+  var head = [];
+  var subprops = false;
+  var primary_head = [];
+  var secondary_head = [];
+  var column = 0;
 
   prop_structures.forEach(function(prop_structure) {
-    var subprop_structures = prop_structure.properties || [],
-        mediator = prop_structure.expected_type.mediator === true,
-        is_image = prop_structure.expected_type.id === "/common/image",
-        colspan = 1,
-        primary_cell = new_cell(prop_structure, {column: column});
+    var subprop_structures = prop_structure.properties || [];
+    var mediator = prop_structure.expected_type.mediator === true;
+    var is_image = prop_structure.expected_type.id === "/common/image";
+    var is_doc = prop_structure.expected_type.id === "/common/document";
+    var colspan = 1;
+    var primary_cell = new_cell(prop_structure, {column: column});
 
-    if (is_image) {
-      // just show <img>, no disambiguating props
+    if (is_image || is_doc) {
+      // just show content, no disambiguating props
       column += 1;
     }
     else if (subprop_structures.length) {
@@ -119,8 +116,9 @@ function prop_structures_to_head(prop_structures) {
   if (secondary_head.length) {
     primary_head.forEach(function(cell) {
       var is_image = cell.structure.expected_type.id === "/common/image";
+      var is_doc = cell.structure.expected_type.id === "/common/document";
       var subprops = cell.structure.properties && cell.structure.properties.length;
-      if (is_image || !subprops) {
+      if (is_image || is_doc || !subprops) {
         cell.attrs.rowspan = 2;
       }
     });
@@ -130,22 +128,29 @@ function prop_structures_to_head(prop_structures) {
 };
 
 function value_to_rows(prop_structures, value, start_column) {
-  var rows = [],
-      column = start_column || 0,
-      last_vals = [];
+  var rows = [];
+  var column = start_column || 0;
+  var last_vals = [];
 
   prop_structures.forEach(function(prop_structure) {
-    var prop_values = value[prop_structure.id] && value[prop_structure.id].values || [],
-        subprop_structures = prop_structure.properties || [],
-        expected_type = prop_structure.expected_type || {},
-        is_image = expected_type.id === "/common/image",
-        mediator = expected_type.mediator === true,
-        is_literal = h.is_literal_type(expected_type.id),
-        row = ensure_row(rows, 0),
-        cell = new_cell(prop_structure, {column: column});
+    var prop_values = value[prop_structure.id] && value[prop_structure.id].values || [];
+    var subprop_structures = prop_structure.properties || [];
+    var expected_type = prop_structure.expected_type || {};
+    var is_image = expected_type.id === "/common/image";
+    var is_doc = expected_type.id === "/common/document";
+    var mediator = expected_type.mediator === true;
+    var is_literal = h.is_literal_type(expected_type.id);
+    var row = ensure_row(rows, 0);
+    var cell = new_cell(prop_structure, {column: column});
 
     if (is_image) {
       cell.images = prop_values;
+      last_vals[column] = cell;
+      row.push(cell);
+      column += 1;
+    }
+    else if (is_doc) {
+      cell.docs = prop_values;
       last_vals[column] = cell;
       row.push(cell);
       column += 1;
@@ -174,7 +179,7 @@ function value_to_rows(prop_structures, value, start_column) {
             };
             prop_value["/type/object/name"] = {values:[value]};
           }
-          var sub_rows = value_to_rows(structures, prop_value, column);
+          var sub_rows = value_to_rows(structures, prop_value.property, column);
           sub_rows.last_vals.forEach(function(last_val) {
             last_val.row = last_val.row + current_row;
             last_vals[column] = last_val;

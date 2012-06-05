@@ -128,7 +128,6 @@ function clean_clause(q) {
     "/type/object/id" : true,
     "/type/object/mid": true,
     "/type/object/name": true,
-    "/common/topic/article": true,
     "/type/value/value": true,
     "/type/text/lang": true,
 

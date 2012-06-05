@@ -110,10 +110,13 @@
 
       $.ajax($.extend(ajax_options, {
         onsuccess: function(data) {
+          formlib.cancel_modal_form(options);
+          fb.status.info("Saved");
           window.location = data.result.url;
         },
         onerror: function(errmsg) {
-          options.form.trigger(options.event_prefix + "error", errmsg);
+          formlib.cancel_modal_form(options);
+          fb.status.error(errmsg);
         }
       }));
     },

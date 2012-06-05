@@ -86,16 +86,11 @@ function recent_queries(days) {
       return env.result || [];
     })
     .then(function(queries) {
-      return queries.map(function(q) {
-        return {
-          id: q.id,
-          name: q.name,
-          creator: q.creator,
-          domain: (q.key ? q.key.namespace.key.namespace : null),
-          type: q["/freebase/query_hints/related_type"],
-          timestamp: q.timestamp
-        };
+      queries.forEach(function(q) {
+        clean_query(q);
+        q.domain = q.key ? q.key.namespace.key.namespace : null;
       });
+      return queries;
     });
 };
 
@@ -122,10 +117,11 @@ function domain_queries_mql(domain, editors) {
     },
     "/common/document/content": {
       "id": null,
-      "limit": 0
+      "link": {
+        "timestamp": null
+      }
     },
-    "timestamp": null,
-    "sort": "-timestamp",
+    "sort": "-/common/document/content.link.timestamp",
     "creator": null
   }];
 };
@@ -172,11 +168,11 @@ function recent_queries_mql(days) {
     "name": i18n.mql.query.name(),
     "creator": null,
     "type": "/freebase/query",
-    /*"timestamp>": timestamp,*/
-    "timestamp": null,
-    "sort": "-timestamp",
     "/common/document/content": {
-      "id": null
+      "id": null,
+      "link": {
+        "timestamp": null
+      }
     },
     "/freebase/query_hints/related_type": {
       "id": null,
@@ -201,6 +197,7 @@ function recent_queries_mql(days) {
       "value": "topic",
       "optional": "forbidden"
     },
+    "sort": "-/common/document/content.link.timestamp",
     "limit": 100
   }];
   return q;

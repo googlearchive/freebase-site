@@ -50,7 +50,8 @@ var SPEC = {
     if (type === "/common/image") {
       result.image = acre.freebase.imgurl(o.id, 960);
     } else {
-      result.html = freebase.get_blob(o.id, "html")
+      var id = o["/common/document/content"] ? o["/common/document/content"].id : o.id;
+      result.html = freebase.get_blob(id, "html")
         .then(function(env) {
           return env.body;
         }, function() {

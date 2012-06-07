@@ -127,6 +127,13 @@
 	    opacity: 0.5
 	  }
       });
+
+
+      // show all domains link
+      $("#show-all-domains-link").click(function() {
+          $(":checkbox", ".filter-form.all-data-toggle").click();
+          return false;
+      });
     },
 
     init_manage_types: function() {

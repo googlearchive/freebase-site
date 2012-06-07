@@ -185,7 +185,7 @@ function get_bar_graph_data(filters, linkcount) {
       return null;
   }
   else {
-      data = get_linkcount_all(linkcount, filters.domains === "all");
+      data = get_linkcount_all(linkcount, true);
       next_filter = "domain";
   }
   if (data) {

@@ -43,18 +43,27 @@ test("i18n", function() {
 
 test("i18n.mql.langs", function() {
   var langs = i18n.mql.langs();
-  var map = h.map_array(langs, "id");
+  var lang_ids = langs.map(function(l) {return l.id;});
   var result;
   // ensure we have lang codes in freebase
   freebase.mqlread([{
     id: null,
-    "id|=": [lang.id for each (lang in langs)],
+    "id|=": lang_ids,
     type: "/type/lang"
   }])
   .then(function(env) {
     result = env.result;
   });
   acre.async.wait_on_results();
+  var mql_langs = {};
+  result.forEach(function(l) {
+       mql_langs[l.id] = l;
+  });
+  lang_ids.forEach(function(id) {
+      if (!mql_langs[id]) {
+          ok(false, "Expected lang from MQL: " + id);
+      }
+  });
   equal(langs.length, result.length);
 });
 

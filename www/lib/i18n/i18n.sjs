@@ -221,6 +221,82 @@ var LANGS = [
   {
     "id": "/lang/es-419",
     "name": "Latin American Spanish"
+  },
+  {
+    "id": "/lang/af",
+    "name": "Afrikaans"
+  },
+  {
+    "id": "/lang/am",
+    "name": "Amharic"
+  },
+  {
+    "id": "/lang/bn",
+    "name": "Bengali"
+  },
+  {
+    "id": "/lang/et",
+    "name": "Estonian"
+  },
+  {
+    "id": "/lang/is",
+    "name": "Icelandic"
+  },
+  {
+    "id": "/lang/ms",
+    "name": "Malay"
+  },
+  {
+    "id": "/lang/mr",
+    "name": "Marathi"
+  },
+  {
+    "id": "/lang/sw",
+    "name": "Swahili"
+  },
+  {
+    "id": "/lang/ta",
+    "name": "Tamil"
+  },
+  {
+    "id": "/lang/zu",
+    "name": "Zulu"
+  },
+  {
+    "id": "/lang/eu",
+    "name": "Basque"
+  },
+  {
+    "id": "/lang/zh-hk",
+    "name": "Chinese (Mandarin, Hong Kong)"
+  },
+  {
+    "id": "/lang/fr-ca",
+    "name": "French (Canadian)"
+  },
+  {
+    "id": "/lang/gl",
+    "name": "Galician"
+  },
+  {
+    "id": "/lang/gu",
+    "name": "Gujarati"
+  },
+  {
+    "id": "/lang/kn",
+    "name": "Kannada"
+  },
+  {
+    "id": "/lang/ml",
+    "name": "Malayalam"
+  },
+  {
+    "id": "/lang/te",
+    "name": "Telugu"
+  },
+  {
+    "id": "/lang/ur",
+    "name": "Urdu"
   }
 ];
 var LANGS_BY_ID = {};

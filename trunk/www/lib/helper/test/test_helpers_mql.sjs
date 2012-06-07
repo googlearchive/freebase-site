@@ -225,8 +225,8 @@ test("text_lang_sort", function() {
 
   same(texts.sort(function(a, b) { return h.text_lang_sort(a, b, "/lang/en", true); }),
        [{lang:"/lang/en", value:"b"}, {lang:"/lang/en", value:"d"},
-        {lang:"/lang/et", value:"w"},
         {lang:"/lang/zh", value:"a"},
+        {lang:"/lang/et", value:"w"},
         {lang:"/lang/ko", value:"c"}, {lang:"/lang/ko", value:"y"}, {lang:"/lang/ko", value:"z"}]);
 
   same(texts.sort(function(a, b) { return h.text_lang_sort(a, b, "/lang/zh", true); }),

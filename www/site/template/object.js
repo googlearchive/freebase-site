@@ -36,6 +36,18 @@
     // Initialize all nicemenus
     $(".nicemenu").nicemenu();
 
+    // Decide whether gear menu is empty and show message if it is.
+    // Need to do this client-side because it's permission-dependent.
+    $(window).bind("fb.permission.has_permission", function(e, has_permission) {
+      var selector = ".nav-utilities > li > .submenu > li:not(.no-settings)";
+      if (!has_permission) {
+        selector += ":not(.edit)";
+      }
+      if (!$(selector).length) {
+        $("li.no-settings").show();
+      }
+   });
+
     // DAE: Can we do this in CSS?
     $("#description").css('height', 'auto');
 

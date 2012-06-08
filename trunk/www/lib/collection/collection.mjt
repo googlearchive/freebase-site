@@ -183,13 +183,13 @@
 </acre:block>
 
 
-<acre:block def="row_edit_form(s, prop_structures, prop_values, lang, nav)">
+<acre:block def="row_edit_form(topic, prop_structures, prop_values, lang, nav)">
   <acre:block if="nav">
-    ${row_edit_form_content(s, prop_structures, prop_values, lang)}
+    ${row_edit_form_content(topic, prop_structures, prop_values, lang)}
   </acre:block>
   <acre:block else="">
     <div class="modal" id="propbox-edit-dialog">
-      ${row_edit_form_content(s, prop_structures, prop_values, lang)}
+      ${row_edit_form_content(topic, prop_structures, prop_values, lang)}
       <div class="modal-buttons">
         ${form.submit_buttons(null, _("Close"))}
       </div>
@@ -197,8 +197,8 @@
   </acre:block>
 </acre:block>
 
-<acre:block def="row_edit_form_content(s, prop_structures, prop_values, lang)">
-  <div class="modal-inner">
+<acre:block def="row_edit_form_content(topic, prop_structures, prop_values, lang)">
+  <div class="modal-inner${topic.mediator ? ' mediator' : ''}">
     <div class="pagination">
       <a href="javascript:void(0);" style="visibility:hidden;" class="modal-nav modal-nav-prev">&laquo;${_("prev")}</a>
       <a href="javascript:void(0);" style="visibility:hidden;" class="modal-nav modal-nav-next">${_("next")}&raquo;</a>
@@ -209,14 +209,29 @@
           mode: 'fillcropmid'
         }
       </acre:script>
-      ${image.image_thumb(s, 30, options)}
-      <span class="modal-nav-title" style="visibility:hidden;">${s}</span>
+      ${image.image_thumb(topic.id, 30, options)}
+      <span class="wrapper">
+        <span class="modal-nav-title">
+          ${i18n.display_name(topic)}
+        </span>
+        <acre:block if="!topic.mediator">
+          <ul class="combo-menu nicemenu">
+            <li class="nicemenu-item">
+              <span class="headmenu">
+                <a href="javascript:void(0)" class="more-action">menu</a>
+              </span>
+              <ul class="submenu row-menu">
+                <li class="row-menu-item">
+                  <a href="#" class="edit-localized" onclick="return i18n.text_edit(this, '${h.ajax_url('lib/i18n')}', '${topic.id}', '/type/object/name', '${lang}', false)">${_("Edit localized...")}</a>          
+                </li>
+              </ul>
+            </li>          
+          </ul>
+        </acre:block>
+      </span>
     </h1>
     <div class="modal-content">
       <acre:block for="i,prop_structure in prop_structures">
-        <acre:script>
-          var topic = {id:s};
-        </acre:script>
         ${pb.propbox(topic, prop_structure, prop_values[i], lang)}
       </acre:block>
     </div>

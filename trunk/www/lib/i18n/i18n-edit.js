@@ -33,7 +33,7 @@
 
   i18n.edit = {
 
-    text_edit_begin: function(base_url, id, prop_id, lang) {
+    text_edit_begin: function(trigger, base_url, id, prop_id, lang, reload) {
       var submit_data = {
         s: id,
         p: prop_id,
@@ -63,40 +63,13 @@
             add_lang: $(".lang-select", form),
 
             structure: form.metadata(),
-            base_url: base_url
+            base_url: base_url,
+            trigger: trigger,
+            reload: reload
           };
           formlib.init_modal_form(options);
         }
       }));
-/**
-      $.ajax({
-        url: base_url + "/text_edit_begin.ajax",
-        data: submit_data,
-        dataType: "json",
-        success: function(data, status, xhr) {
-          var html = $(data.result.html);
-          var form = {
-            form: html,
-            ajax: {
-              base_url: base_url,
-              data: $.extend({}, submit_data),
-              url: base_url + "/text_edit_submit.ajax"
-            },
-            // add new input elements
-            add_input: $(".data-input:first", html).data_input(),
-            add_lang: $(".lang-select", html),
-
-            structure: html.metadata()
-          };
-          // TODO: assert structure
-          i18n.edit.text_edit_init(form);
-        },
-        error: function(xhr) {
-          // TODO: handle error
-          console.error("text_edit_begin", xhr);
-        }
-      });
-*/
     },
 
     text_edit_init: function(options) {
@@ -246,7 +219,14 @@
       if (o.length) {
         $.ajax($.extend(ajax_options, {
           onsuccess: function(data) {
-            window.location.reload(true);
+              if (options.reload) {
+                  window.location.reload(true);
+              }
+              else {
+                  // close the modal dialog
+                  options.form.trigger(options.event_prefix + "cancel");
+                  options.trigger.trigger(options.event_prefix + "success");
+              }
           },
           onerror: function(errmsg) {
             options.form.trigger(options.event_prefix + "error", errmsg);

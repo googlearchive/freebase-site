@@ -184,9 +184,17 @@
       }
     },
 
-    text_edit: function(context, base_url, id, prop_id, lang) {
+    /**
+     * @param context - The context of the trigger (HTMLElement)
+     * @param base_url - The base_url to the text_edit_begin.ajax and text_edit_submit.ajax
+     * @param id - The topic (subject) id
+     * @param prop_id - The text property
+     * @param lang - The initial language to edit the text property in
+     * @param reload - If TRUE, reload the page on submit/sucess.
+     */
+    text_edit: function(context, base_url, id, prop_id, lang, reload) {
       i18n._get_edit_script(base_url, function() {
-        i18n.edit.text_edit_begin(base_url, id, prop_id, lang);
+        i18n.edit.text_edit_begin($(context), base_url, id, prop_id, lang, reload);
       });
       return false;
     }

@@ -69,9 +69,18 @@
         overlay: options.overlay.getOverlay()
       });
 
-      // update display name
-      var name = $(".property-value:first", options.row).text();
-      $(".modal-nav-title").text(name).css("visibility", "visible");
+      // if mediator, update display name/title with 
+      // the first property value in the row
+      if ($(".modal-inner.mediator", options.form).length) {
+          var name = $(".property-value:first", options.row).text();
+          $(".modal-nav-title", options.form).text(name);
+      }
+
+      // edit localized name trigger update current row/form
+      $(".edit-localized", options.form)
+          .bind("i18n.edit.text_edit.success", function() {
+              edit._row_edit_begin(options.row, options);
+          });
 
       // update navs
       var prev = $(".modal-nav-prev", options.form).unbind();
@@ -155,12 +164,20 @@
             };
             // There is no submit button for this form
             $("button[type=submit]", form).hide();
-            // reload query result page after form goes away
             form
+              .ajaxSuccess(function(e, xhr, ajaxOptions) {
+                  if (ajaxOptions.type === "POST") {
+                      // if a successful POST (write), we need to reload
+                      $(this).data("reload", true);
+                  }
+              })
               .bind(event_prefix + "cancel", function() {
-                window.location.reload(true);
+                  options.row.removeClass("editing");
+                  if ($(this).data("reload")) {
+                      window.location.reload(true);
+                  }
               });
-            formlib.init_modal_form(options);
+            formlib.init_modal_form(options);            
           }
         }
       }));

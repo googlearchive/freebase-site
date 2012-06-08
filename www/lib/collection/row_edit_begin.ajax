@@ -32,16 +32,17 @@ var h = acre.require("helper/helpers.sjs");
 var validators = acre.require("validator/validators.sjs");
 var propbox = acre.require("propbox/propbox.mjt");
 var queries = acre.require("propbox/queries.sjs");
-var deferred = acre.require("promise/deferred.sjs");
 var collection = acre.require("collection/collection.mjt");
-
+var apis = acre.require("promise/apis.sjs");
+var freebase = apis.freebase;
+var deferred = apis.deferred;
+var i18n = acre.require("i18n/i18n.sjs");
 
 var IGNORE_PROPS = {
   "/type/object/name": 1,
   "/common/topic/image": 1,
   "/common/topic/article": 1
 };
-
 
 /**
  * prop add form
@@ -66,37 +67,60 @@ var SPEC = {
       return !IGNORE_PROPS[pid];
     });
 
-    if (!p.length) {
-      return {
-        html: acre.markup.stringify(collection.row_edit_form(s, [], [], lang, nav))
-      };
-    }
+    var q = {
+        id: s,
+        name: i18n.mql.text_clause(lang),
+        "mediator:type": {
+            // is this a mediator?
+            optional: true,
+            id: null,
+            "/freebase/type_hints/mediator": true,
+            limit: 1
+        }
+    };
+      
+    return freebase.mqlread(q)
+        .then(function(env) {
+            return env.result || {id: s};                  
+        })
+        .then(function(topic) {
+            // is this a mediator?
+            topic.mediator = topic["mediator:type"] ? true : false;
 
-    return queries.prop_structures(p, lang)
-      .then(function(prop_structures) {
-        var promises = [];
-        prop_structures.forEach(function(prop_structure) {
-          promises.push(queries.prop_values(s, prop_structure, null, lang));
+            if (!p.length) {
+              return {
+                html: acre.markup.stringify(collection.row_edit_form(topic, [], [], lang, nav))
+              };
+            }
+
+            return queries.prop_structures(p, lang)
+              .then(function(prop_structures) {
+                var promises = [];
+                prop_structures.forEach(function(prop_structure) {
+                  promises.push(queries.prop_values(topic.id, prop_structure, null, lang));
+                });
+                return deferred.all(promises)
+                  .then(function(prop_values) {
+                    prop_structures.forEach(function(prop_structure, i) {
+                      prop_structure.values = prop_values[i];
+                      // TODO: support deep properties
+                      // for now, splice deep properties out of prop_structures
+                      if (!prop_structure.expected_type.mediator) {
+                        delete prop_structure.properties;
+                      }
+                    });
+                    // TODO: assert prop_structures.length === prop_values.length
+                    return {
+                      // <debug>
+                      prop_structures: prop_structures,
+                      prop_values: prop_values,
+                      // </debug>
+                      html: acre.markup.stringify(collection.row_edit_form(topic, prop_structures, prop_values, lang, nav))
+                    };
+                  });
+              });
         });
-        return deferred.all(promises)
-          .then(function(prop_values) {
-            prop_structures.forEach(function(prop_structure, i) {
-              prop_structure.values = prop_values[i];
-              // TODO: support deep properties
-              // for now, splice deep properties out of prop_structures
-              if (!prop_structure.expected_type.mediator) {
-                delete prop_structure.properties;
-              }
-            });
-            // TODO: assert prop_structures.length === prop_values.length
-            return {
-              // <debug>
-              prop_structures: prop_structures,
-              prop_values: prop_values,
-              // </debug>
-              html: acre.markup.stringify(collection.row_edit_form(s, prop_structures, prop_values, lang, nav))
-            };
-          });
-      });
+
+
   }
 };

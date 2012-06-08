@@ -44,6 +44,8 @@ var environment_rules = {
         {prefix:"/test_query",              app:"query", script:"test"},
         {prefix:"/test_flyout",             app:"flyout", script:"test"},
 
+        {prefix:"/warmer",                   app:"lib", script:"schema/warmer.controller"},
+
         // sample app
         {prefix:"/sample",             app:"sample"}
     ]

@@ -395,6 +395,9 @@
         <acre:block for="nav in c.gear" if="exec(nav, c)">
           ${nav_item(nav)}
         </acre:block>
+        <li class="no-settings">
+          <a name="no-settings"><span>${_("No settings for this object")}</span></a>
+        </li>
       </ul>
     </li>
   </ul>

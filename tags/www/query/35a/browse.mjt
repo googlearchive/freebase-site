@@ -1,0 +1,149 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+  var components = acre.require("lib/template/components.mjt");
+  var image = acre.require("lib/template/imagecomponents.mjt");
+
+  var SAMPLE_QUERIES = [
+    {
+      name: _("Books written by Stephen King"),
+      query: [{
+        "name": null,
+        "type": "/book/written_work",
+        "author": {
+          "id": "/en/stephen_king"
+        }
+      }]
+    },
+    {
+      name: _("The capitals of U.S States"),
+      query: [{
+        "type": "/location/us_state",
+        "name": null,
+        "capital": null
+      }]
+    },
+    {
+      name: _("Celebrities on Twitter"),
+      query: [{
+        "name": null,
+        "type": "/celebrities/celebrity",
+        "key": [{
+          "namespace": "/authority/twitter",
+          "value": null
+        }]
+      }]
+    }
+  ];
+</acre:script>
+
+<acre:block def="page_content()">
+  <div id="content-wrapper" class="clear">
+    <section role="main" id="content-main">
+      <div class="table-header">
+        <div class="button-group">
+          <a class="button primary edit" href="${h.fb_url('/queryeditor')}">${_("Create a new query")}</a>
+        </div>
+        <h1>
+          ${_('Recently updated queries')}
+        </h1>
+      </div>
+      <table cellspacing="0" class="table">
+        <thead>
+          <tr>
+            <th scope="col" class="column-header first">${_('Query')}</th>
+            <th scope="col" class="column-header">${_('Type')}</th>
+            <th scope="col" class="column-header">${_('User')}/${_('Domain')}</th>
+            <th scope="col" class="column-header">${_('Updated by')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr acre:for="q in c.queries">
+            <th class="row-header odd" scope="row">
+              <a href="${h.fb_url(q.id)}">${i18n.display_name(q)}</a>
+            </th>
+            <td class="even" scope="row">
+              <acre:block if="q.type">
+                <a href="${h.fb_url(q.type.id)}">${i18n.display_name(q.type)}</a>
+              </acre:block>
+              <acre:block else="">-</acre:block>
+            </td>
+            <td class="odd" scope="row">
+              <acre:block if="q.domain">
+                <a href="${h.fb_url(q.domain.id,[['queries']])}">${i18n.display_name(q.domain)}</a>
+              </acre:block>
+              <acre:block else="">-</acre:block>
+            </td>
+            <td class="even">
+              ${image.user_image_tiny(q.creator)}
+              ${components.creator_link(q.creator)}
+              ${i18n_c.relative_date(q.timestamp)}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    <aside class="secondary">
+      <div class="wrapper">
+        <h3><span>${_('Understanding queries')}</span></h3>
+        <div class="sub-section">
+          <h4>${_("What are queries?")}</h4>
+          <p>${h.template_sprintf(_("Queries allow you to retrieve structed information about topics or collections of topics from Freebase via %s, our JSON-based query language."), mql_help_text())}</p>
+        </div>
+        <div class="sub-section">
+          <h4>${_("Some examples")}</h4>
+          <p>${_("The best way to learn to write queries is by example. Here are a few to get you started:")}</p>
+          <ul>
+            <li acre:for="q in SAMPLE_QUERIES">
+              <a href="${h.fb_url('/query', [['q', JSON.stringify(q.query)], ['autorun', 1]])}">${q.name}</a>
+            </li>
+          </ul>
+          <p>${h.template_sprintf(_("There are lots more examples you can play with in our %s, a web-based tool for writing MQL queries."), queryeditor_help_text())}</p>
+        </div>
+      </div>
+    </aside>
+  </div>
+    
+</acre:block>
+
+<acre:block def="mql_help_text()">
+<a href="http://wiki.freebase.com/wiki/Mql"><abbr title="${_('Metaweb Query Language')}">${_("MQL")}</abbr></a>
+</acre:block>
+
+<acre:block def="queryeditor_help_text()">
+<a href="${h.fb_url('/query')}">${_("Query Editor")}</a>
+</acre:block>

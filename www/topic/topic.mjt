@@ -189,12 +189,8 @@
         <div class="column middle">
           <h2 class="modal-sub-title">Editing</h2>
           <dl class="key-map">
-            <dt class="key-symbol">${_("a")}</dt>
-            <dd class="key-desc">${_("add new value")}</dd>
-          </dl>
-          <dl class="key-map">
             <dt class="key-symbol">${_("e")}</dt>
-            <dd class="key-desc">${_("edit value")}</dd>
+            <dd class="key-desc">${_("edit / add new value")}</dd>
           </dl>
         </div>
       </div>

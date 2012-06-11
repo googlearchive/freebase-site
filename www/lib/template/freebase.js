@@ -475,8 +475,7 @@
         var o = $.extend({}, fb.suggest_options.service_defaults, {
           status: null,
           parent: "#site-search-box",
-          align: "right",
-          filter: "(all without:fus)" // new suggest
+          align: "right"
         });
         return o;
       },
@@ -510,10 +509,7 @@
           o = fb.suggest_options.any.apply(null, filters);
         }
         else {
-          // filter=(should type:ect)&filter=(all without:fus without:inst)
-          var should_ect = fb.suggest_options.filter.should.apply(null, filters);
-          o = fb.suggest_options.all.apply(null, ["without:fus", "without:inst"]);
-          o.filter = [should_ect, o.filter];
+          var o = fb.suggest_options.should.apply(null, filters);
           if (create_new) {
             // only "Create new" for non metaweb system types
             o.suggest_new = "Create new";
@@ -544,12 +540,6 @@
 
           // TODO: without cvt and enum. not yet supported by search
         ];
-        if (fb.user) {
-          filters.push("(any without:hidden source:" + fb.user.id + ")");
-        }
-        else {
-          filters.push("without:hidden");
-        }
         return $.extend({scoring:"schema"}, fb.suggest_options.all.apply(null, filters));
       },
 
@@ -568,13 +558,6 @@
         var filters = [
           "type:/type/type"
         ];
-        if (fb.user) {
-          // A user can use types in their hidden domain
-          filters.push("(any without:hidden source:" + fb.user.id + ")");
-        }
-        else {
-          filters.push("without:hidden");
-        }
         return $.extend({scoring:"schema"}, fb.suggest_options.all.apply(null, filters));
       },
 
@@ -588,13 +571,6 @@
           // can't delegate to properties in /type/object
           "(not namespace:/type/object)"
         ];
-        if (fb.user) {
-          // A user can delegate to properties within their hidden domain
-          filters.push("(any without:hidden source:" + fb.user.id + ")");
-        }
-        else {
-          filters.push("without:hidden");
-        }
         return $.extend({scoring:"schema"}, fb.suggest_options.all.apply(null, filters));
       }
     };

@@ -524,16 +524,12 @@
           var self = this;
           var suggest_options = null;
           if (this.options.suggest_impl) {
-
-              if (this.key_value_input.attr("name") === "/type/namespace/keys") {
-                  // autocomplete on anything
-                  suggest_options = this.options.suggest_impl.all("without:fus");
-              }
-              else {
-                  // autocomplete on namespace
-                  suggest_options =
-                      this.options.suggest_impl.instance("/type/namespace");
-
+              if (this.key_value_input.attr("name") != "/type/namespace/keys") {
+                  suggest_options = this.options.suggest_impl.instance("/type/namespace");
+              } else {
+                  // we want the default freebase-site suggest options like 
+                  // search service url, api key, current language, etc.
+                  suggest_options = $.extend({}, fb.suggest_options.service_defaults);
               }
           }
           this.key_namespace_input

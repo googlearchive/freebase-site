@@ -105,4 +105,14 @@ test("loads", function() {
     });
 });
 
+test("loads empty", function() {
+    var result;
+    typeloader.loads([])
+        .then(function(r) {
+            result = r;
+        });
+    ok(result, "Got result");
+    ok(h.isEmptyObject(result), "Empty result");
+});
+
 acre.test.report();

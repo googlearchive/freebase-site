@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 var h = acre.require("helper/helpers.sjs");
-var apis = acre.require("promise/apis").freebase;
+var apis = acre.require("promise/apis.sjs");
 var freebase = apis.freebase;
 var deferred = apis.deferred;
 var typeloader = acre.require("schema/typeloader.sjs");
@@ -91,6 +91,66 @@ function loads(prop_ids, lang) {
                 });
             }
             return result;
+        })
+        .then(function(loaded) {
+            // Did we load all the prop_ids?
+            // If not, for each property that was NOT loaded,
+            // try to load its /type/property/schema, instead
+            // of relying on the property id prefix as the type.
+            var not_loaded = prop_ids.filter(function(prop_id) {
+                return !loaded[prop_id];
+            });
+            if (!not_loaded.length) {
+                // Everything was loaded.
+                return loaded;
+            }
+            var q = [{
+                id: null,
+                "id|=": not_loaded,
+                type: "/type/property",
+                key: [{
+                    namespace: null,
+                    value: null
+                }],
+                schema: {
+                    id: null,
+                    type: "/type/type"
+                }
+            }];
+            return freebase.mqlread(q)
+                .then(function(env) {
+                    var not_loaded_props = env.result || [];
+                    var sameas = {};
+                    type_ids = [];
+                    seen = {};
+                    not_loaded_props.forEach(function(p) {
+                        var type_id = p.schema.id;
+                        if (!seen[type_id]) {
+                            type_ids.push(type_id);
+                            seen[type_id] = true;
+                        }
+                        // We want to keep track of all the 
+                        // ids that resolve to the same property
+                        // by inspecting all of the key namespace, value pairs.
+                        sameas[p.id] = p.id;
+                        p.key.forEach(function(k) {
+                            var pid = k.namespace + "/" + k.value;
+                            sameas[pid] = p.id;
+                        });
+                    });
+                    return typeloader.loads(type_ids, lang)
+                        .then(function(types) {
+                            for (var type_id in types) {
+                                var type = types[type_id];
+                                type.properties.forEach(function(prop) {
+                                    if (sameas[prop.id]) {
+                                        loaded[sameas[prop.id]] = prop;
+                                    }
+                                });
+                            }
+                            return loaded;
+                        });
+                });
         });
 };
 

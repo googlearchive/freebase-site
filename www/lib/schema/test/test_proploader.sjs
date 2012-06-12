@@ -86,4 +86,24 @@ test("loads", function() {
     });
 });
 
+test("loads empty", function() {
+    var result;
+    proploader.loads([])
+        .then(function(r) {
+            result = r;
+        });
+    ok(result, "Got result");
+    ok(h.isEmptyObject(result), "Empty result");
+});
+
+test("load SITE-1023: multiple key/id property", function() {
+    var schema;
+    var pid = "/film/film/imdb_id";  // also resolves to "/imdb/topic/title_id"
+    proploader.loads([pid])
+        .then(function(r) {
+            schema = r[pid];
+        });
+    ok(schema, "Got property schema");
+});
+
 acre.test.report();

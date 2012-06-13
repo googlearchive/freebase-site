@@ -70,6 +70,8 @@
           self.container.removeClass("focus");
         })
         .bind("valid.data_input", function(e, data) {
+          // don't propagate data_input events
+          e.stopPropagation();
           var mydata = {
             name: self.input.attr("name")
           };
@@ -94,7 +96,8 @@
             self.container.removeClass("error").addClass("valid");
             self.container.trigger("valid");
           }
-          if (data.id && self.metadata.type && self.options.incompatible_types) {
+          if (data.id && !self.container.is(".enumerated") && 
+              self.metadata.type && self.options.incompatible_types) {
             // perform incompatible type check
             self.options.incompatible_types.check(data.id, self.metadata.type, {
                 compatible: compatible_callback,
@@ -107,12 +110,16 @@
             compatible_callback();
           }
         })
-        .bind("invalid.data_input", function() {
+        .bind("invalid.data_input", function(e) {
+          // don't propagate data_input events
+          e.stopPropagation();
           self.container.removeData("data");
           self.container.removeClass("valid").addClass("error");
           self.container.trigger("invalid");
         })
         .bind("empty.data_input", function() {
+          // don't propagate data_input events
+          e.stopPropagation();
           var mydata = {
             name: self.input.attr("name")
           };

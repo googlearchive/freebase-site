@@ -576,7 +576,15 @@
       */
 
      default_begin_ajax_options: function() {
-       return formlib._default_ajax_options("GET");
+       var ajax_options = $.extend(formlib._default_ajax_options("GET"), {
+           beforeSend: function() {
+               status.doing("Loading...");
+           },
+           complete: function() {
+               status.clear();
+           }
+       });
+       return ajax_options;
      },
 
      default_submit_ajax_options: function(options) {

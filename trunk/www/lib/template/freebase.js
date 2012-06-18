@@ -270,6 +270,8 @@
       return {
           doing : function(str, tid) {  _show('notice',str, 2000 * SECONDS, tid); return ''; },
           info  : function(str, tid) {  _show('info', str,    4 * SECONDS, tid); return ''; },
+          warning  : function(str, tid) {  _show('warning', str,    4 * SECONDS, tid); return ''; },
+          success : function(str, tid) {  _show('success',str,    6 * SECONDS, tid); return ''; },
           error : function(str, tid) {  _show('error',str,    6 * SECONDS, tid); return ''; },
           clear : _clear
       };

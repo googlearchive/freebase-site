@@ -57,7 +57,7 @@
         var status = $("<span>&nbsp;loading...</span>");
 
         $.ajax({
-            url: "/warmer",
+            url: "/_schema_warmer",
             data: {
                 id: domain_id,
                 lang: fb.lang

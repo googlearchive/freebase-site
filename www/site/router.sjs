@@ -88,7 +88,15 @@ function init_site_rules(lib) {
 
   // Defaults to trunk lib if not specified.
   if (!lib) {
-      lib = rules["labels"]["lib"];
+    lib = rules["labels"]["lib"];
+  }
+  var site = acre.current_script.app.path;
+
+  // *********** UTIL *************
+  rules["util"] = {
+    fs_routing: lib + "/routing/rules_dump.sjs",
+    schema_warmer: lib + "/schema/warmer.controller",
+    script_warmer: lib + "/scripts/warmer.controller"
   }
 
 
@@ -858,7 +866,8 @@ function set_app(item, app_labels) {
  *   Note: to debug the homepage, use the /homepage prefix rule
  *         (e.g., /homepage?acre.console=1)
  */
-function CustomRouter(app_labels) {
+function CustomRouter(rules) {
+  var app_lables = rules.labels;
   var rule, route_map;
 
   this.add = function(rules) {
@@ -893,7 +902,8 @@ function CustomRouter(app_labels) {
 
 };
 
-function ObjectRouter(app_labels) {
+function ObjectRouter(rules) {
+  var app_labels = rules.labels;
   var object_query = acre.require("queries/object.sjs");
   var freebase_object = acre.require("template/object.sjs");
 

@@ -28,22 +28,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
-var result;
-try {
-  var qparam = acre.request.body_params.query || acre.request.params.query;
-  var envelope = JSON.parse(qparam);
-  var query = envelope.query;
-  delete envelope.query;
-  acre.oauth.get_authorization();
-  result = acre.freebase.mqlwrite(query, envelope);
-} catch (e if (e instanceof acre.freebase.Error)) {
-  result = e;
-} catch (e) {
-  result = {
-    message: e.message || e
-  };
-  result.code = (result.message.indexOf("OAuth credentials") !== -1) ? 401 : 500;
-}
 
-acre.write(JSON.stringify(result, null, 2));
+if (rules && rules.dumped_rules) {
+	acre.response.status = 200;
+	acre.response.set_header('content-type', 'text/javascript; charset=utf-8');
+	acre.write(JSON.stringify(rules.dumped_rules, null, 2));
+}

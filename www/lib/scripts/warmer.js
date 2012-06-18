@@ -28,21 +28,75 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+;(function($, fb) {
 
-var result;
-try {
-  var qparam = acre.request.body_params.query || acre.request.params.query;
-  var envelope = JSON.parse(qparam);
-  var query = envelope.query;
-  delete envelope.query;
-  result = acre.freebase.mqlread(query, envelope);
-} catch (e if (e instanceof acre.freebase.Error)) {
-  result = e;
-} catch (e) {
-  result = {
-    code: 500,
-    message: e.message || e
+
+  function init() {
+    // warm one domain at a time
+    warm_next();
   };
-}
 
-acre.write(JSON.stringify(result, null, 2));
+
+  function warm_next(current) {
+    var next = null;
+    if (current) {
+      next = current.next(".warmer");
+    }
+    else {
+      next = $(".warmer:first");
+    }
+    if (next.length) {
+      warm(next);
+    }
+  };
+
+  function warm(row) {
+
+    var app_path = row.attr("data-id");
+
+    var status = $("<span>&nbsp;loading...</span>");
+
+    $.ajax({
+      url: "/_script_warmer",
+      data: {
+        app: app_path
+      },
+      dataType: "jsonp",
+      beforeSend: function() {
+        row.addClass("warmer-loading");
+        row.append(status);
+      },
+      success: function(data) {
+        var files = loaded_files(data.files || []).hide();
+        row.append(files);
+        files.slideDown(function() {
+          status.html("<span>&nbsp;loaded</span>");
+          row.addClass("warmer-success");
+        });                
+      },
+      error: function() {
+        status.html("<span>&nbsp;error</span>");
+        row.addClass("warmer-error");
+      },
+      complete: function() {
+        row.removeClass("warmer-loading");
+        warm_next(row);
+      }
+    });
+  };
+
+  function loaded_files(files) {
+    var ul = $("<ul>");
+    $.each(files, function(i, f) {
+      var li = $("<li>");
+      li.append("<span>" + f.file + "</span>");
+      ul.append(li);
+    });
+    return ul;
+  };
+
+
+  $(init);
+
+
+})(jQuery, window.freebase);

@@ -58,17 +58,26 @@
   @param reverse_button - If TRUE, the order is [cancel] [save]. Defaults to [save] [cancel] order.
 !!-->
 <acre:block def="submit_buttons(save, cancel, reverse_button)">
-  <acre:script>
-    var save = save || _('Save');
-    var cancel = cancel || _('Cancel');
-    // TODO: other/extra buttons
-  </acre:script>
   <acre:block if="reverse_button">
-    <button class="button cancel">${cancel}</button>
-    <button class="button save" type="submit">${save}</button>
+    ${cancel_button(cancel)}
+    ${save_button(save)}
   </acre:block>
   <acre:block else="">
-    <button class="button save" type="submit">${save}</button>
-    <button class="button cancel">${cancel}</button>
+    ${save_button(save)}
+    ${cancel_button(cancel)}
   </acre:block>
+</acre:block>
+
+<acre:block def="save_button(save)">
+  <acre:script>
+    var label = save || _('Save');
+  </acre:script>
+  <button class="button save" type="submit">${label}</button>
+</acre:block>
+
+<acre:block def="cancel_button(cancel)">
+  <acre:script>
+    var label = cancel || _('Cancel');
+  </acre:script>
+  <button class="button cancel">${label}</button>
 </acre:block>

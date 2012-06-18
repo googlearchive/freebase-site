@@ -36,52 +36,52 @@ var q = acre.require("queries.sjs");
 
 acre.require("lib/test/mock").playback(this, "test/playback_test_queries.json");
 
-function assert_key(keys, authority_id, ns_id, key, url) {
+function assert_incoming_key(keys, namespace, value) {
   for (var i=0,l=keys.length; i<l; i++) {
     var k = keys[i];
-    if (k.authority &&
-        k.authority.id === authority_id &&
-        k.namespace === ns_id &&
-        k.value === key &&
-        k.url == url) {
+    var incoming = k["me:source"] ? true : false;
+    if (incoming && 
+        k.target.id === namespace &&
+        k.target_value.value === value) {
       return true;
     }
   }
   return false;
 };
 
-test("keys", function() {
+function assert_outgoing_key(keys, namespace, value) {
+  for (var i=0,l=keys.length; i<l; i++) {
+    var k = keys[i];
+    var outgoing = k["me:target"] ? true : false;
+    if (outgoing &&
+        k.source.id === namespace &&
+        k.target_value.value === value) {
+      return true;
+    }
+  }
+  return false;
+};
+
+test("keys_incoming", function() {
   var keys;
-  q.keys("/en/barack_obama")
+  q.keys_incoming("/film")
     .then(function(r) {
       keys = r;
     });
   acre.async.wait_on_results();
   ok(h.isArray(keys) && keys.length, "Got keys");
-  ok(assert_key(keys,
-                "/en/wikipedia",
-                "/wikipedia/en_id",
-                "534366",
-                "http://en.wikipedia.org/wiki/index.html?curid=534366"), "found wikipedia key");
-  ok(assert_key(keys,
-                "/en/facebook",
-                "/authority/facebook",
-                "barackobama",
-                "http://www.facebook.com/barackobama"), "found facebook key");
+  ok(assert_incoming_key(keys, "/film/film", "film"));
 });
 
-
-test("key", function() {
-  var key;
-  q.key("/en/google", "/wikipedia/en_id", "1092923")
+test("keys_outgoing", function() {
+  var keys;
+  q.keys_outgoing("/film")
     .then(function(r) {
-      return key = r;
+      keys = r;
     });
   acre.async.wait_on_results();
-  ok(h.isArray(key) && key.length === 1, "Got /wikipedia/en/google");
-  ok(assert_key(key, "/en/wikipedia", "/wikipedia/en_id", "1092923",
-                "http://en.wikipedia.org/wiki/index.html?curid=1092923"),
-     "found /wikipedia/en/google");
+  ok(h.isArray(keys) && keys.length, "Got keys");
+  ok(assert_outgoing_key(keys, "/", "film"));
 });
 
 acre.test.report();

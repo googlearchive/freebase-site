@@ -74,12 +74,46 @@
   });
 
   /**
-   * This is the onclick handler for all nav "ajax" actions.
-   * Assumes nav.href is a javascript that will be invoked with $.getScript
+   * This is the onclick handler for all nav "get_script" actions.
+   * @param nav:HTMLElement (required) - The anchor element where nav.href 
+   *     is the javascript that will be dynamically loaded with $.getScript.
+   * @param method:String (optional) - This is the namespaced function 
+   *     that will be invoked with args. E.g., "foo.bar" will mapped to the 
+   *     function specified by window.freebase["foo"]["bar"].
+   * @param args:Array (optional) - This is the arguments to the method.
    */
-  fb.nav_ajax = function(nav) {
-    $.getScript(nav.href, function() {
-      console.log("fb.nav_ajax script loaded", nav.href);
+  fb.nav_get_script = function(nav, method, args) {
+      $.ajax({
+          url: nav.href,
+          dataType: "script",
+          beforeSend: function() {
+              fb.status.doing("Loading...");
+          },
+          success: function() {
+              fb.status.clear();
+              if (method) {
+                  var namespaces = method.split(".");
+                  if (namespaces.length) {
+                      var m = fb;            
+                      namespaces.every(function(ns) {
+                          if (m[ns]) {
+                              m = m[ns];
+                              return true;
+                          }
+                          else {
+                              m = null;
+                              return false;
+                          }
+                      });
+                      if ($.isFunction(m) && $.isArray(args)) {
+                          m.apply(null, args);
+                      }
+                  }
+              }
+          },
+          error: function() {
+              fb.status.error("Error retrieving script");
+          }
     });
     return false;
   };

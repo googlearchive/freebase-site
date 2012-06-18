@@ -33,22 +33,35 @@ var apis = acre.require("promise/apis.sjs");
 var freebase = apis.freebase;
 var deferred = apis.deferred;
 var h = acre.require("helper/helpers.sjs");
+var typeloader = acre.require("schema/typeloader.sjs");
 
-function delete_domain(domain_id, user_id) {
-    return domain_info(domain_id, user_id)
+function delete_type(type_id, user_id) {
+    return type_info(type_id, user_id)
         .then(function(info) {
             if (!info.has_permission) {
-                return deferred.rejected(h.sprintf("User %s does not have permission on %s", user_id, domain_id));
+                return deferred.rejected(h.sprintf("User %s does not have permission on %s", user_id, type_id));
             }
-            else if (info.types.length) {
-                return deferred.rejected(h.sprintf("You must first delete all types in %s", domain_id));
+            else if (info.properties > 0) {
+                return deferred.rejected(h.sprintf("You must first delete all properties in %s", type_id));
+            }
+            else if (info.instance > 0) {
+                return deferred.rejected(h.sprintf("You must first un-type all instances of %s", type_id));
+            }
+            else if (info.expected_by > 0) {
+                return deferred.rejected(h.sprintf("You must first resolve all properties expecting %s", type_id));
+            }
+            else if (info.included_by > 0) {
+                return deferred.rejected(h.sprintf("You must remove %s as an included type of %s type(s)", type_id, info.included_by));
             }
             else if (info["not_permitted:key"].length) {
-                return deferred.rejected(h.sprintf("User %s does not have permission to remove the domain from the following namespace(s): %s"), user_id, info["not_permitted:key"].map(function(k) {return k.namespace;}).join(", "));
+                return deferred.rejected(h.sprintf("User %s does not have permission to remove the type from the following namespace(s): %s"), user_id, info["not_permitted:key"].map(function(k) {return k.namespace;}).join(", "));
             }
             var q = {
                 id: info.guid, // use guid since we're deleting keys                
-                type: {id:"/type/domain", connect:"delete"}
+                type: {id:"/type/type", connect:"delete"}
+            };
+            if (info.domain) {
+                q["/type/type/domain"] = {id:info.domain, connect:"delete"};
             };
             if (info["permitted:key"].length) {
                 q.key = info["permitted:key"].map(function(k) {
@@ -61,86 +74,86 @@ function delete_domain(domain_id, user_id) {
             }
             return freebase.mqlwrite(q)
                 .then(function(env) {
-                    // do we need to remove /base keys?
-                    // if so, use fb_writeuser
-                    if (info["base:key"].length) {
-                        h.enable_writeuser();
-                        q = {
-                            id: info.guid,
-                            key: info["base:key"].map(function(k) {
-                                return {
-                                    namespace: k.namespace,
-                                    value: k.value,
-                                    connect: "delete"
-                                };
-                            })
-                        };
-                        return freebase.mqlwrite(q, null, {
-                            http_sign: "keystore"
-                        })
-                        .then(function(env) {
-                            return info;
-                        });                        
-                    }
-                    else {
-                        return info;
-                    }
+                    // invalidate type/schema cache
+                    typeloader.invalidate(type_id);
+                    return info;
                 });
         });
 };
 
 /**
- * A query to check if a domain is being "used" and the user
- * has permission to possibly delete the domain.
+ * A query to check if a type is being "used" and the user
+ * has permission to possibly delete the type.
  */
-function domain_info(domain_id, user_id) {
+function type_info(type_id, user_id) {
     var q = {
-        id: domain_id,
+        id: type_id,
         guid: null,
-        /**
-         * Can't delete domains with types. Delete the types first
-         */
-        "/type/domain/types": [],
-        /**
-         * Are there any /base key(s)? 
-         * We need to remove these with fb_writeuser.
-         */
-        "base:key": [{
+        "/type/type/domain": {
             optional: true,
-            namespace: "/base",
-            value: null
+            id: null
+        },
+        /**
+         * Can't delete types with properties.
+         * Delete the properties first.
+         */
+        "/type/type/properties": [{
+            optional: true,
+            "return": "count"
         }],
         /**
-         * Can't delete domains with key(s) in namespace(s)
-         * that the user does not have permission on (except /base).
+         * Can't delete types with instance-of links.
+         * Delete the instance-of links first.
          */
-        "other:key": [{
+        "/type/type/instance": [{
+            optional: true,
+            "return": "count"
+        }],
+        /**
+         * Can't delete types that is /type/type/expected_by
+         * other properties.
+         */
+        "/type/type/expected_by": [{
+            optional: true,
+            "return": "count"
+        }],
+        /**
+         * Can't delete types that are /freebase/type_hints/included_types
+         * by other types
+         */
+        "!/freebase/type_hints/included_types": [{
+            optional: true,
+            "return": "count"
+        }],
+        /**
+         * Can't delete types with key(s) in namespace(s)
+         * that the user does not have permission on.
+         */
+        key: [{
             optional: true,
             namespace: {
                 id: null,                
                 permission: [{optional:true, permits: [{member: {id: user_id}}]}]
             },
-            "forbid:namespace": {
-                id: "/base",
-                optional: "forbidden"
-            },
             value: null
         }],
         /**
-         * Can't delete domains that the user does not have permission on
+         * Can't delete types that the user does not have permission on
          */
         permission: [{optional:true, permits: [{member: {id: user_id}}]}]
     };
     return freebase.mqlread(q)
         .then(function(env) {
             var r = env.result;
-            r.types = r["/type/domain/types"];
+            r.domain = r["/type/type/domain"] && r["/type/type/domain"].id || null;
+            r.properties = r["/type/type/properties"] || 0;
+            r.instance = r["/type/type/instance"] || 0;
+            r.expected_by = r["/type/type/expected_by"] || 0;
+            r.included_by = r["!/freebase/type_hints/included_types"] = 0;
             r.has_permission = r.permission.length ? true : false;
-
             r["permitted:key"] = [];
             r["not_permitted:key"] = [];
-
-            r["other:key"].forEach(function(k) {
+            r["key"].forEach(function(k) {
                 var key = {
                     namespace: k.namespace.id,
                     value: k.value

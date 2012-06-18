@@ -281,7 +281,9 @@ function init_site_rules(lib) {
         {
           "name": _("<b>Delete</b> Domain"),
           "app": "lib",
-          "ajax": "schema/delete_domain.mf.js",
+          "script": "schema/schema.mf.js",
+          "method": "schema.delete_domain_begin",
+          "args": (function() { return [this.object.id]; }),
           "auth": true // add "edit" class if authorized to delete the domain
         }
       ]
@@ -334,6 +336,14 @@ function init_site_rules(lib) {
           "app": "create",
           "script": "type.controller",
           "show": "can_create"
+        },
+        {
+          "name": _("<b>Delete</b> Type"),
+          "app": "lib",
+          "script": "schema/schema.mf.js",
+          "method": "schema.delete_type_begin",
+          "args": (function() { return [this.object.id]; }),
+          "auth": true // add "edit" class if authorized to delete the domain
         }
       ]
     },
@@ -375,6 +385,16 @@ function init_site_rules(lib) {
           "label": _("domain"),
           "key": (function() { return this.schema.domain.id; }),
           "url": (function() { return h.fb_url(this.schema.domain.id, [['schema']]); })
+        }
+      ],
+      "gear": [
+        {
+          "name": _("<b>Delete</b> Property"),
+          "app": "lib",
+          "script": "schema/schema.mf.js",
+          "method": "schema.delete_property_begin",
+          "args": (function() { return [this.object.id]; }),
+          "auth": true // add "edit" class if authorized to delete the domain
         }
       ]
     },

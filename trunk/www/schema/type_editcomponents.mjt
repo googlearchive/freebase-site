@@ -367,17 +367,6 @@
   </table>
 </acre:block>
 
-<acre:block def="delete_property_result(prop_info)">
-  <tr class="row-msg row-msg-info">
-    <td colspan="4">
-      <a class="close-msg" href="#" onclick="return freebase.dispatch(event, freebase.schema.close_message, ['.row-msg:first'], this);">${_("Close")}</a>
-      ${h.template_sprintf(_("The property %s has been deleted."), tag_strong(prop_info.name || prop_info.id))}
-      <a href="#" onclick="return freebase.dispatch(event, freebase.schema.type.undo_delete_property, null, this);"
-         class="${JSON.stringify(prop_info)}">${_("Undo")}</a>
-    </td>
-  </tr>
-</acre:block>
-
 <acre:block def="add_included_type_form(type_id)">
   <table class="edit-form clear">
     <tbody>

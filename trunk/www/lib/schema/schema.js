@@ -28,7 +28,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-;(function($, fb, formlib) {
+;(function($, fb, formlib, i18n) {
 
     fb.schema = fb.schema || {};
 
@@ -187,10 +187,121 @@
 
 
         /**
+         * Delete type flow
+         */
+
+        delete_type_begin: function(id) {
+            var ajax_options = $.extend(formlib.default_begin_ajax_options(), {
+                url: fb.h.ajax_url("lib/schema/delete_type_begin.ajax"),
+                data: {id:id, lang:fb.lang},
+                onsuccess: function(data) {
+                    var html = $(data.result.html);
+                    var event_prefix = "fb.schema.delete_type.";
+                    var form_options = {
+                        event_prefix: event_prefix,
+                        // callbacks
+                        init: fb.schema.delete_type_init,
+                        validate: fb.schema.delete_type_validate,
+                        submit: fb.schema.delete_type_submit,
+                        // submit ajax options
+                        ajax: {
+                            url: fb.h.ajax_url("lib/schema/delete_type_submit.ajax")
+                        },
+                        // jQuery objects
+                        form: html
+                    };
+                    formlib.init_modal_form(form_options);
+                }
+            });
+            $.ajax(ajax_options);
+        },
+
+        delete_type_init: function(options) {
+            var can_delete = $("input[name=force]", options.form);
+            if (can_delete.length) {
+                formlib.enable_submit(options);
+            }
+            // i18n'ize numbers in the form
+            i18n.ize(options.form);
+        },
+
+        delete_type_validate: function(options) {
+            var can_delete = $("input[name=force]", options.form);
+            return can_delete.length;
+        },
+
+        delete_type_submit: function(options, ajax_options) {
+            $.ajax($.extend(ajax_options, {
+                onsuccess: function(data) {
+                    window.location = data.result.location;
+                },
+                onerror: function(errmsg) {
+                    options.form.trigger(options.event_prefix + "error", errmsg);
+                }
+            }));
+        },
+
+        /**
+         * Delete property flow
+         */
+
+        delete_property_begin: function(id) {
+            var ajax_options = $.extend(formlib.default_begin_ajax_options(), {
+                url: fb.h.ajax_url("lib/schema/delete_property_begin.ajax"),
+                data: {id:id, lang:fb.lang},
+                onsuccess: function(data) {
+                    var html = $(data.result.html);
+                    var event_prefix = "fb.schema.delete_property.";
+                    var form_options = {
+                        event_prefix: event_prefix,
+                        // callbacks
+                        init: fb.schema.delete_property_init,
+                        validate: fb.schema.delete_property_validate,
+                        submit: fb.schema.delete_property_submit,
+                        // submit ajax options
+                        ajax: {
+                            url: fb.h.ajax_url("lib/schema/delete_property_submit.ajax")
+                        },
+                        // jQuery objects
+                        form: html
+                    };
+                    formlib.init_modal_form(form_options);
+                }
+            });
+            $.ajax(ajax_options);
+        },
+
+        delete_property_init: function(options) {
+            var can_delete = $("input[name=force]", options.form);
+            if (can_delete.length) {
+                formlib.enable_submit(options);
+            }
+            // i18n'ize numbers in the form
+            i18n.ize(options.form);
+        },
+
+        delete_property_validate: function(options) {
+            var can_delete = $("input[name=force]", options.form);
+            return can_delete.length;
+        },
+
+        delete_property_submit: function(options, ajax_options) {
+            $.ajax($.extend(ajax_options, {
+                onsuccess: function(data) {
+                    window.location = data.result.location;
+                },
+                onerror: function(errmsg) {
+                    options.form.trigger(options.event_prefix + "error", errmsg);
+                }
+            }));
+        },
+
+
+        /**
          * modal help dialog initialization
          */
         init_modal_help: function(context) {
-            // Show/Hide help menu in domain creation dialog
+            // Show/Hide help menu in schema editing modal dialogs
             $(".modal-help-toggle", context).click(function() {
                 var $link = $(this);
                 var $help_pane = $link.parents().find(".modal-help");
@@ -207,4 +318,4 @@
 
     });
 
-})(jQuery, window.freebase, window.formlib);
+})(jQuery, window.freebase, window.formlib, window.i18n);

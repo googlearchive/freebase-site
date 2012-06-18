@@ -31,12 +31,11 @@
 
 acre.require('/test/lib').enable(this);
 
-acre.require("lib/test/mock").playback(this, "test/playback_test_delete_type.json");
+acre.require("test/mock").playback(this, "schema/test/playback_test_delete_type.json");
 
-var test_helpers = acre.require("lib/test/helpers");
-var freebase = acre.require("lib/promise/apis").freebase;
-var delete_type = acre.require("delete_type").delete_type;
-var undo = acre.require("delete_type").undo;
+var test_helpers = acre.require("test/helpers.sjs");
+var freebase = acre.require("promise/apis.sjs").freebase;
+var delete_type = acre.require("schema/delete_type.sjs").delete_type;
 
 // this test requires user to be logged in
 var user;
@@ -64,15 +63,13 @@ test("delete_type", function() {
   acre.async.wait_on_results();
   ok(type, "test type created");
 
-  var info, result;
+  var info;
   delete_type(type.mid, user.id)
-    .then(function([i, r]) {
-      info = i;
-      result = r;
+    .then(function(deleted) {
+      info = deleted;
     });
   acre.async.wait_on_results();
   ok(info, "got delete_type info");
-  ok(result, "got delete_type result");
 
   var check_result;
   freebase.mqlread({
@@ -89,88 +86,6 @@ test("delete_type", function() {
     "/type/type/domain": {
       id: type.domain.id,
       optional: "forbidden"
-    },
-    "/dataworld/gardening_task/async_delete": true
-  })
-  .then(function(env) {
-    check_result = env.result;
-  });
-  acre.async.wait_on_results();
-  ok(check_result, "got check result");
-});
-
-test("delete_type dry_run", function() {
-  var type;
-  test_helpers.create_type2(user_domain)
-    .then(function(created) {
-      type = created;
-    });
-  acre.async.wait_on_results();
-  ok(type, "test type created");
-
-  var info, result;
-  delete_type(type.mid, user.id, true)
-    .then(function([i, r]) {
-      info = i;
-      result = r;
-    });
-  acre.async.wait_on_results();
-  ok(info, "got delete_type info");
-  ok(!result, "did not expect delete_type result");
-
-  equal(info.guid, type.guid, "type info.guid: " + info.guid);
-});
-
-test("undo", function() {
-  var type;
-  test_helpers.create_type2(user_domain)
-    .then(function(created) {
-      type = created;
-    });
-  acre.async.wait_on_results();
-  ok(type, "test type created");
-
-  var info, result;
-  delete_type(type.mid, user.id)
-    .then(function([i, r]) {
-      info = i;
-      result = r;
-    });
-  acre.async.wait_on_results();
-  ok(info, "got delete_type info");
-  ok(result, "got delete_type result");
-
-  // assert deleted
-  ok(result.type.id === "/type/type" && result.type.connect === "deleted", "/type/type deleted");
-
-  // undo
-  var undo_info, undo_result;
-  undo(info)
-    .then(function([i, r]) {
-      undo_info = i;
-      undo_result = r;
-    });
-  acre.async.wait_on_results();
-  ok(undo_info, "get undo info");
-  ok(undo_result, "got undo result");
-
-
-  var check_result;
-  freebase.mqlread({
-    id: type.mid,
-    type: {
-      id: "/type/type"
-    },
-    key: {
-      namespace: type.key.namespace,
-      value: type.key.value
-    },
-    "/type/type/domain": {
-      id: type.domain.id
-    },
-    "/dataworld/gardening_task/async_delete": {
-      value: true,
-      optional: "forbidden"
     }
   })
   .then(function(env) {
@@ -179,6 +94,7 @@ test("undo", function() {
   acre.async.wait_on_results();
   ok(check_result, "got check result");
 });
+
 
 test("delete_type expected_by property", function() {
   var type;
@@ -205,47 +121,15 @@ test("delete_type expected_by property", function() {
   acre.async.wait_on_results();
   ok(prop, "test property created");
 
-  var info, result;
-  delete_type(type2.mid, user.id, false, true)
-    .then(function([i, r]) {
-      info = i;
-      result = r;
+  var info, error;
+  delete_type(type2.mid, user.id)
+    .then(function(deleted) {
+      info = deleted;
+    }, function(e) {
+      error = e;
     });
   acre.async.wait_on_results();
-  ok(info, "got delete_type info");
-  ok(result, "got delete_type result");
-
-  // prop.expected_type should have been deleted since user has permission on it
-  var check_ect;
-  freebase.mqlread({
-    id: prop.mid,
-    "/type/property/expected_type": {
-      id: null,
-      optional: "forbidden"
-    }
-  })
-  .then(function(env) {
-    check_ect = env.result;
-  });
-  acre.async.wait_on_results();
-  ok(check_ect, "did not expect ect");
-
-  // undo
-  undo(info);
-  acre.async.wait_on_results();
-
-  var check_undo;
-  freebase.mqlread({
-    id: prop.mid,
-    "/type/property/expected_type": {
-      id:type2.mid
-    }
-  })
-  .then(function(env) {
-    check_undo = env.result;
-  });
-  acre.async.wait_on_results();
-  ok(check_undo, "got check undo result");
+  ok(error, "got delete_type error: " + error);
 });
 
 acre.test.report();

@@ -121,13 +121,4 @@
   ${add_type_form(type.domain.id, type.mediator, type)}
 </acre:block>
 
-<acre:block def="delete_type_result(type_info)">
-  <tr class="row-msg row-msg-info">
-    <td colspan="5">
-      <a class="close-msg" href="#" onclick="return freebase.dispatch(event, freebase.schema.close_message, ['.row-msg:first'], this);">${_('Close')}</a>
-      ${h.sprintf(_("%s has been deleted."), type_info.name || type_info.id)}
-      <a href="#" onclick="return freebase.dispatch(event, freebase.schema.domain.undo_delete_type, null, this);"
-         class="${JSON.stringify(type_info)}">${_('Undo')}</a>
-    </td>
-  </tr>
-</acre:block>
+

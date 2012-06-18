@@ -28,44 +28,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-var h = acre.require("lib/helper/helpers.sjs");
-var validators = acre.require("lib/validator/validators.sjs");
-var delete_type = acre.require("delete_type.sjs").delete_type;
-var editcomponents = acre.require("domain_editcomponents.mjt");
+
+var editcomponents = acre.require("schema/editcomponents.mjt");
+var validators = acre.require("validator/validators.sjs");
+var delete_type = acre.require("schema/delete_type.sjs");
 
 /**
- * delete type
+ * create base form
  */
 var SPEC = {
 
-  method: "POST",
+    method: "GET",
 
-  auth: true,
+    auth: true,
 
-  validate: function(params) {
-    return [
-      validators.MqlId(params, "id", {required:true}),            // type to delete
-      validators.MqlId(params, "user", {required:true}),          // user performing the delete
-      validators.StringBool(params, "dry_run", {if_empty:false}), // dry run to see what will be deleted
-      validators.StringBool(params, "force", {if_empty:true}),    // force delete if "used"
+    validate: function(params) {
+        return [
+            validators.MqlId(params, "id", {required:true}),
+            params.auth_user.id,
+            validators.LangId(params, "lang", {if_empty:"/lang/en"})
+        ];
+    },
 
-      validators.StringBool(params, "redirect", {if_empty:false})  // if true redirect to type domain after delete
-    ];
-  },
-
-  run: function(id, user, dry_run, force, redirect) {
-    return delete_type(id, user, dry_run, force)
-      .then(function([type_info, result]) {
-        if (redirect) {
-          return {
-            location: h.fb_url("/schema", type_info.domain.id)
-          };
-        }
-        else {
-          return {
-            html: acre.markup.stringify(editcomponents.delete_type_result(type_info))
-          };
-        }
-      });
-  }
+    run: function(type_id, user_id, lang) {
+        return delete_type.type_info(type_id, user_id)
+            .then(function(info) {
+                return {
+                    html: acre.markup.stringify(editcomponents.delete_type_form(info, lang))
+                };
+            });
+    }
 };

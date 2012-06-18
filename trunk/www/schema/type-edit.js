@@ -448,67 +448,6 @@
       }
     },
 
-
-    /**
-     * delete property
-     */
-    delete_property_begin: function(trigger, prop_id) {
-      var row = trigger.parents("tr:first");
-      var table = row.parents("table:first");
-      $.ajax({
-        url: fb.h.ajax_url("delete_property_submit.ajax"),
-        data: {id: prop_id, user: fb.user.id, lang:fb.lang},
-        type: "POST",
-        dataType: "json",
-        success: function(data, status, xhr) {
-          if (data.code === "/api/status/error") {
-            return se.ajax_error_handler(xhr, row);
-          }
-          var new_row = $(data.result.html).addClass("new-row");
-          row.before(new_row);
-          new_row.hide();
-          row.remove();
-          new_row.showRow();
-          te.toggle_reorder_link(table);
-        },
-        error: function(xhr) {
-          se.ajax_error_handler(xhr, row);
-        }
-      });
-    },
-
-    /**
-     * undo delete type
-     */
-    undo_delete_property_begin: function(trigger, prop_info) {
-      var row = trigger.parents("tr:first");
-      var table = row.parents("table:first");
-      $.ajax({
-        url: fb.h.ajax_url("undo_delete_property_submit.ajax"),
-        data: {prop_info: JSON.stringify(prop_info), lang:fb.lang},
-        type: "POST",
-        dataType: "json",
-        success: function(data, status, xhr) {
-          if (data.code === "/api/status/error") {
-            return se.ajax_error_handler(xhr, row);
-          }
-          var new_row = $(data.result.html).addClass("new-row");
-          row.before(new_row);
-          new_row.hide();
-          row.remove();
-          new_row.showRow(function() {
-            fb.schema.init_row_menu(new_row);
-            // show edit controls in tooltip
-            $(".edit", new_row).show();
-            te.toggle_reorder_link(table);
-          }, null, "slow");
-        },
-        error: function(xhr) {
-          se.ajax_error_handler(xhr, row);
-        }
-      });
-    },
-
     /**
      * add included_type
      */

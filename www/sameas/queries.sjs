@@ -36,169 +36,117 @@ var freebase = apis.freebase;
 var deferred = apis.deferred;
 var fh = acre.require("lib/filter/helpers.sjs");
 var creator = acre.require("lib/queries/creator.sjs");
+var links_sort = acre.require("lib/queries/links.sjs").links_sort;
 
-function keys(id, lang, limit, filters) {
-  lang = lang || i18n.lang;
-  limit = limit || 1000;
-  var q = {
-    id: id,
-    name: { // need this for {name} substitution
-      lang: "/lang/en", 
-      value: null, 
-      optional: true
-    },
-    key: [{
-      namespace: {
-        id: null,
-        unique: null,
-        "/base/sameas/web_id/authority": {
-          optional: true,
-          limit: 1,
-          id: null,
-          type: "/base/sameas/api_provider",
-          name: i18n.mql.text_clause(lang)
-        },
-        "!/common/uri_template/ns": {
-          optional: true,
-          limit: 1,
-          type: "/common/uri_template",
-          template: null
-        }
-      },
-      value: null,
-      link: creator.extend({
-        timestamp: null
-      }),
-      limit: limit,
-      optional: true
-    }]
-  };
-  apply_filters(q, filters);
-  return freebase.mqlread(q, mqlread_options(filters))
-    .then(function(env) {
-      return keys_result(env.result, lang);
-    });
+function keys(id, filters, next, lang) {
+    filters = h.extend({}, filters);
+    return creator.by(filters.creator, "/type/user")
+        .then(function(creator_clause) {
+            var promises = {};
+            if (filters.property === "/type/namespace/keys") {
+                promises.incoming = keys_incoming(id, filters, next, lang, creator_clause);
+                promises.outgoing = deferred.resolved([]);
+            }
+            else if (filters.property === "/type/object/key") {
+                promises.incoming = deferred.resolved([]);
+                promises.outgoing = keys_outgoing(id, filters, next, lang, creator_clause);
+            }
+            else {
+                promises.incoming = keys_incoming(id, filters, next, lang, creator_clause);
+                promises.outgoing = keys_outgoing(id, filters, next, lang, creator_clause);
+            }
+            return deferred.all(promises)
+                .then(function(result) {
+                    return keys_sort(result.incoming, result.outgoing, filters);
+                });
+        });
 };
 
-function keys_result(result, lang) {
-  var keys = []; 
-  var encoded_name = null;
-  if (result.name) { 
-    // for {name} substitution
-    encoded_name = acre.form.encode({name: result.name.value}).substring(5);
-  }
-  result.key.forEach(function(k) {
-    var namespace = k.namespace;
-    var key = {
-      authority: namespace["/base/sameas/web_id/authority"],
-      namespace: namespace.id,
-      value: k.value,
-      unique: namespace.unique, // is namespace unique?
-      attribution: h.get_attribution(k.link),
-      timestamp: k.link.timestamp
-    };
-    var template = namespace["!/common/uri_template/ns"];
-    template = template && template.template;
-    if (template) {
-      key.template = template;
-      key.url = template.replace(/\{key\}/g, k.value);
-      if (encoded_name) {
-          key.url = key.url.replace(/\{name\}/g, encoded_name);
-      }
-    }
-    keys.push(key);
-  });
-  function compare_key(a, b) {
-    if (a.namespace === b.namespace) {
-      return b.value < a.value;
-    }
-    return b.namespace < a.namespace;
-  };
-  keys.sort(function(a, b) {
-    if (a.authority && b.authority) {
-      if (a.authority.id === b.authority.id) {
-        return compare_key(a, b);
-      }
-      return sort_by_name(a.authority, b.authority, lang);
-    }
-    else if (a.authority) {
-      return -1;
-    }
-    else if (b.authority) {
-      return 1;
-    }
-    else {
-      return compare_key(a, b);
-    }
-  });
-  return keys;
+function keys_sort(a, b, filters) {
+    return links_sort(a, b, filters);
 };
 
 /**
- * get specific key in authority/namespace
+ * /type/namespace/keys
  */
-function key(id, namespace, key, lang) {
-  lang = lang || i18n.lang;
-  var q = {
-    id: id,
-    name: { // need this for {name} substitution
-      lang: "/lang/en", 
-      value: null, 
-      optional: true
-    },
-    key: [{
-      namespace: {
-        id: namespace,
-        unique: null,
-        "/base/sameas/web_id/authority": {
-          optional: true,
-          limit: 1,
-          id: null,
-          type: "/base/sameas/api_provider",
-          name: i18n.mql.text_clause(lang)
+function keys_incoming(id, filters, next, lang, creator_clause, extend_clause) {
+    var q = h.extend({
+        type: "/type/link",
+        master_property: "/type/namespace/keys",
+        "me:source": {id:id},
+        target: {
+            // this is the object that has the key in this namespace (e.g. id)
+            id: null,
+            mid: null,
+            name: i18n.mql.text_clause(lang),
+            "topic:type": {
+                id: "/common/topic",
+                optional: true
+            }
         },
-        "!/common/uri_template/ns": {
-          optional: true,
-          limit: 1,
-          type: "/common/uri_template",
-          template: null
-        }
-      },
-      value: key,
-      link: creator.extend({
-        timestamp: null
-      })
-    }]
-  };
-  return freebase.mqlread(q)
-    .then(function(env) {
-      return keys_result(env.result, lang);
-    });
+        target_value: {
+            // this is the key value
+            value: null
+        },
+        timestamp: null,
+        sort: "-timestamp",
+        optional: true
+    }, creator_clause, extend_clause);
+    if (next) {
+        q['next:timestamp<'] = next;
+    }
+    apply_filters(q, filters);
+    return freebase.mqlread([q], mqlread_options(filters))
+        .then(function(env) {
+            return env.result;
+        });
+};
+
+/**
+ * /type/object/key
+ */
+function keys_outgoing(id, filters, next, lang, creator_clause, extend_clause) {
+    var q = h.extend({
+        type: "/type/link",
+        master_property: "/type/namespace/keys",
+        "me:target": {id:id},
+        source: {
+            // this object (e.g., id) has a key in this namespace
+            id: null,
+            mid: null,
+            name: i18n.mql.text_clause(lang),
+            "topic:type": {
+                id: "/common/topic",
+                optional: true
+            }
+        },        
+        target_value: {
+            // this is the key value
+            value: null
+        },
+        timestamp: null,
+        sort: "-timestamp",
+        optional: true
+    }, creator_clause, extend_clause);
+    if (next) {
+        q['next:timestamp<'] = next;
+    }
+    apply_filters(q, filters);
+    return freebase.mqlread([q], mqlread_options(filters))
+        .then(function(env) {
+            return env.result;
+        });
 };
 
 function apply_filters(q, filters) {
   if (!filters) {
     return q;
   }
-  // We don't want to filter by authority in MQL since we want to get
-  // all authority count.
-  // Authority filter will be applied in template when we render
-  //apply_authority(q, filters.authority);
   apply_timestamp(q, filters.timestamp);
   apply_creator(q, filters.creator);
+  apply_historical(q, filters.historical);
 };
 
-function apply_authority(q, authority) {
-  if (authority) {
-    if (!h.isArray(authority)) {
-      authority = [authority];
-    }
-    if (authority.length) {
-      q.key[0].namespace["/base/sameas/web_id/authority"]["filter:id|="] = authority;
-    }
-  }
-  return q;
-};
 
 function apply_timestamp(q, timestamp) {
   if (timestamp) {
@@ -234,6 +182,14 @@ function apply_creator(q, creator) {
   return q;
 };
 
+function apply_historical(clause, historical) {
+  if (historical) {
+    clause.valid = null;
+    clause.operation = null;
+  }
+  return clause;
+};
+
 function mqlread_options(filters) {
   var options = {};
   if (!filters) {
@@ -244,17 +200,3 @@ function mqlread_options(filters) {
   }
   return options;
 };
-
-
-function sort_by_id(a, b) {
-  return b.id < a.id;
-};
-
-function sort_by_name(a, b, lang) {
-  var a_name = i18n.mql.get_text(lang, a.name);
-  a_name = a_name && a_name.value || a.id;
-  var b_name = i18n.mql.get_text(lang, b.name);
-  b_name = b_name && b_name.value || b.id;
-  return b_name < a_name;
-};
-

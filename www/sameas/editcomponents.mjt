@@ -34,108 +34,173 @@
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var _ = i18n.gettext;
   var form = acre.require("lib/propbox/form.mjt");
+  var propbox = acre.require("lib/propbox/form.mjt");
 </acre:script>
 
-<acre:block def="add_key_form(id, authorities)">
-  <tbody>
-    <tr class="edit-row-head">
-      <td colspan="5">
-        ${form.row_msg(_("Add a new key to this Topic"))}
-      </td>
-    </tr>
-    <tr class="edit-row">
-      <td colspan="5">
-        <div class="form-field">
-          <label>
-            <span class="form-label">${_('Authority/Namespace')}</span>
-            <select name="namespace" data-placeholder="${_('Choose')}&hellip;">
-              <option></option>
-              <acre:block for="authority in authorities">
-                <optgroup label="${i18n.display_name(authority)}">
-                  <acre:block for="namespace in authority.ns">
-                    <option value="${namespace.id}">${namespace.id}</option>
-                  </acre:block>
-                </optgroup>
-              </acre:block>
+<acre:block def="add_key_form(id, is_ns, lang)">
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <a href="javascript:void(0);" class="modal-help-toggle">[ + ] Show Help</a>
+        <span>${_('Create a new key')}</span>
+      </h1>
+      <div class="modal-content">
+        <div class="modal-help">
+          <h2 class="modal-help-title">${_('What are keys?')}</h2>
+          <p>${_('Every key exists in a namespace (directory) and the hierarchy of namespaces and associated keys forms a path which uniquely identifies a single graph node.')}</p> 
+          <p>
+            <a href="http://wiki.freebase.com/wiki/Keys" target="_blank">${_("Read more")} &raquo;</a>
+          </p>
+        </div>
+        <div class="form-group clear">
+          <div class="form-row">
+            <select name="p">
+              <option value="/type/namespace/keys" 
+                      acre:attrs="is_ns ? {selected:'selected'} : {}">
+                ${_("&#8678; /type/namespace/keys")}
+              </option>
+              <option value="/type/object/key" 
+                      acre:attrs="!is_ns ? {selected:'selected'} : {}">
+                ${_("&#8680; /type/object/key")}</option>
             </select>
-          </label>
-        </div>
-        <div class="form-field">
-          <label>
-            <span class="form-label">${_('Key')}</span>
-            <input name="key" type="text" class="text-input"/>
+          </div>
+          <div class="form-row">
+            <acre:block if="is_ns">
+              <label class="form-label form-label-object">${_('object')}</label>
+              <label class="form-label form-label-namespace"
+                     style="display:none;">${_('namespace')}</label>
+            </acre:block>
+            <acre:block else="">
+              <label class="form-label form-label-object"
+                     style="display:none;">${_('object')}</label>
+              <label class="form-label form-label-namespace">${_('namespace')}</label>
+            </acre:block>
+            <input class="text-input" type="text" name="namespace"/>
+          </div>
+          <div class="form-row">
+            <label class="form-label" for="domain-key">
+              ${_('key')}
+            </label>
+            <input class="text-input" type="text" name="value"/>
             <span class="key-status"></span>
-          </label>
+          </div>
         </div>
-      </td>
-    </tr>
-    <tr class="edit-row-submit">
-      <td colspan="5">
-        <input type="hidden" name="s" value="${id}"/>
-        <input type="hidden" name="p" value="/type/object/key"/>
-        <input type="hidden" name="lang" value="${h.lang_code(i18n.lang)}"/>
-        ${form.submit_buttons()}
-      </td>
-    </tr>
-  </tbody>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <input type="hidden" name="s" value="${id}"/>
+      <input type="hidden" name="lang" value="${lang}"/>
+      ${form.submit_buttons()}
+    </div>
+  </div>
 </acre:block>
 
-<acre:block def="edit_key_form(id, key)">
-  <tbody>
-    <tr class="edit-row-head">
-      <td colspan="5">
-        ${form.row_msg(_("Edit key"))}
-      </td>
-    </tr>
-    <tr class="edit-row">
-      <td colspan="5">
-        <div class="form-field">
-          <label>
-            <span class="form-label">${_('Key')}</span>
-            <input type="text" name="key" value="${key.value}" class="text-input"/>
+<acre:block def="edit_key_form(id, property, namespace, value, lang)">
+  <acre:script>
+    var is_ns = property === "/type/namespace/keys";
+  </acre:script>
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <a href="javascript:void(0);" class="modal-help-toggle">[ + ] Show Help</a>
+        <span>${_('Edit key')}</span>
+      </h1>
+      <div class="modal-content">
+        <div class="modal-help">
+          <h2 class="modal-help-title">${_('What are keys?')}</h2>
+          <p>${_('Every key exists in a namespace (directory) and the hierarchy of namespaces and associated keys forms a path which uniquely identifies a single graph node.')}</p> 
+          <p>
+            <a href="http://wiki.freebase.com/wiki/Keys" target="_blank">${_("Read more")} &raquo;</a>
+          </p>
+        </div>
+        <div class="form-group clear">
+          <div class="form-row">
+            <select name="p" disabled="disabled">
+              <option value="/type/namespace/keys" 
+                      acre:attrs="is_ns ? {selected:'selected'} : {}">
+                ${_("&#8678; /type/namespace/keys")}
+              </option>
+              <option value="/type/object/key" 
+                      acre:attrs="!is_ns ? {selected:'selected'} : {}">
+                ${_("&#8680; /type/object/key")}</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <acre:block if="is_ns">
+              <label class="form-label form-label-object">${_('object')}</label>
+              <label class="form-label form-label-namespace"
+                     style="display:none;">${_('namespace')}</label>
+            </acre:block>
+            <acre:block else="">
+              <label class="form-label form-label-object"
+                     style="display:none;">${_('object')}</label>
+              <label class="form-label form-label-namespace">${_('namespace')}</label>
+            </acre:block>
+            <input class="text-input" type="text" name="namespace"
+                   value="${namespace}" disabled="disabled"/>
+          </div>
+          <div class="form-row">
+            <label class="form-label" for="domain-key">
+              ${_('key')}
+            </label>
+            <input class="text-input" type="text" name="value" value="${value}"/>
             <span class="key-status"></span>
-          </label>
+          </div>
         </div>
-        <div class="form-field">
-          <label>
-            <span class="form-label">${_('Namespace')}</span>
-            <input type="text" name="namespace"
-                   class="text-input"
-                   data-unique="${key.unique === true}"
-                   value="${key.namespace}" class="text-input" disabled="disabled"/>
-          </label>
-        </div>
-        <div acre:if="key.authority" class="form-field">
-          <label>
-            <span class="form-label">${_('Authority')}</span>
-            <input type="text"
-                   class="text-input"
-                   name="authority"
-                   value="${i18n.display_name(key.authority)}"
-                   disabled="disabled"/>
-          </label>
-        </div>
-      </td>
-    </tr>
-    <tr class="edit-row-submit">
-      <td colspan="5">
-        <input type="hidden" name="s" value="${id}"/>
-        <input type="hidden" name="p" value="/type/object/key"/>
-        <input type="hidden" name="lang" value="${h.lang_code(i18n.lang)}"/>
-        ${form.submit_buttons()}
-      </td>
-    </tr>
-  </tbody>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <input type="hidden" name="s" value="${id}"/>
+      <input type="hidden" name="replace" value="${value}"/>
+      <input type="hidden" name="lang" value="${lang}"/>
+      ${form.submit_buttons()}
+    </div>
+  </div>
 </acre:block>
 
 
-<acre:block def="deleted_key(undo_data, namespace, value)">
-  <tr class="edit-row-head row-msg row-msg-info">
-    <td colspan="5">
-      <acre:script>
-        var msg = h.sprintf(_("%(value)s has been removed from %(namespace)s."), {namespace:namespace, value:value});
-      </acre:script>
-      ${form.row_msg(msg, ".edit-row-head")}
-    </td>
-  </tr>
+<acre:block def="edit_key_not_permitted_form(not_permitted, lang)">
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <span>${_('Edit key not permitted')}</span>
+      </h1>
+      <div class="modal-content">
+        <div class="form-group clear">
+          <div class="form-row">
+            ${_("You do not have permission to edit this key. Please contact the key namespace administrator(s).")}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      ${form.submit_buttons()}
+    </div>
+  </div>
 </acre:block>
+
+
+<acre:block def="delete_key_form(id, property, namespace, value, lang)">
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <span>${_('Delete key')}</span>
+      </h1>
+      <div class="modal-content">       
+        <div class="form-group clear">
+          <h3>${_("Are you sure you want to delete this key?")}</h3>
+          <p>${_('This cannot be undone.')}</p>
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <input type="hidden" name="s" value="${id}"/>
+      <input type="hidden" name="p" value="${property}"/>
+      <input type="hidden" name="namespace" value="${namespace}"/>
+      <input type="hidden" name="value" value="${value}"/>
+      <input type="hidden" name="lang" value="${lang}"/>
+      ${form.submit_buttons(_("Delete"))}
+    </div>
+  </div>
+</acre:block>
+

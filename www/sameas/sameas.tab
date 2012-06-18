@@ -37,9 +37,13 @@ var filters = acre.require("lib/filter/filters.sjs");
 var filter_validators = acre.require("lib/filter/validators.sjs");
 
 var myfilters = {
-  authority: {
-    validator: validators.MultiValue,
-    options: {validator: validators.MqlId, if_empty:null}
+  property: {
+    validator: validators.OneOf,
+    options: {
+        oneof: ["/type/object/key", "/type/namespace/keys"],
+        if_empty: null,
+        if_invalid: null
+    }
   },
   timestamp: {
     validator: validators.MultiValue,
@@ -52,6 +56,10 @@ var myfilters = {
   creator: {
     validator: validators.MultiValue,
     options: {validator: validators.MqlId, if_empty:null}
+  },
+  historical: {
+    validator: validators.StringBool,
+    options: {if_empty:null}
   }
 };
 
@@ -66,64 +74,17 @@ var SPEC = {
         var f = filters.validate(params, myfilters);
         f[params.current_tab.key] = "";
         return f;
-      })()
+      })(),
+      validators.LangId(params, "lang", {if_empty:"/lang/en"})
     ];
   },
 
-  run: function(object, f) {
-    return queries.keys(object.id, i18n.lang, null, f)
-      .then(function(keys) {
-        return {
+  run: function(object, f, lang) {
+      return {
           id: object.id,
           object: object,
           filters: f,
-          keys: filter_authority(keys, f),
-          authority_count: get_count(keys)
-        };
-      });
+          keys: queries.keys(object.id, f, null, lang)
+      };
   }
-};
-
-// get count by authorities
-function get_count(keys) {
-  var authorities = [];
-  var authorities_count = {};
-  keys.forEach(function(key) {
-    var a = key.authority;
-    if (a) {
-      var c = authorities_count[a.id];
-      if (!c) {
-        c = authorities_count[a.id] = {name:a.name, id:a.id, count:0};
-        authorities.push(c);
-      }
-      c.count += 1;
-    }
-  });
-  return authorities.sort(function(a, b) {
-    if (b.count === a.count) {
-      return i18n.display_name(b) < i18n.display_name(a);
-    }
-    else {
-      return b.count - a.count;
-    }
-  });
-};
-
-
-function filter_authority(keys, f) {
-  if (f.authority && f.authority.length) {
-    var authorities = {};
-    f.authority.forEach(function(a) {
-      authorities[a] = 1;
-    });
-    var filtered = [];
-    keys.forEach(function(key) {
-      var a = key.authority;
-      if (a && authorities[a.id]) {
-        filtered.push(key);
-      }
-    });
-    return filtered;
-  }
-  return keys;
 };

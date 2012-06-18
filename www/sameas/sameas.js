@@ -48,6 +48,59 @@
 
       // Initialize filters
       propbox.init_menus();
+
+      sameas.init_infinitescroll();
+    },
+
+    init_infinitescroll: function() {
+      var tbody = $("#infinitescroll > tbody");
+      var next = tbody.attr("data-next");
+      if (!next) {
+        // nothing to scroll
+        return;
+      }
+      var a_next = $("#infinitescroll-next");
+      tbody.infinitescroll({
+        //debug: true,
+        loading: {
+          msgText: "Fetching more links",
+          img: fb.h.static_url("lib/template/horizontal-loader.gif")
+        },
+        nextSelector: "#infinitescroll-next",
+        navSelector: "#infinitescroll-next",
+        dataType: "json",
+        pathParse: function() {
+          return [
+            a_next[0].href + "&" + $.param({next:tbody.attr("data-next")}) + "&page=",
+            ""
+          ];
+        },
+        appendCallback: false
+      }, function(data) {
+        data = JSON.parse(data);
+        var html = $(data.result.html);
+        var next = html.attr("data-next");
+        if (next) {
+          var new_rows = $(">tr", html);
+          tbody.append(new_rows);
+          new_rows.each(function() {
+              propbox.init_menus(this, true);              
+          });
+          tbody.attr("data-next", next);
+          // update links count
+          var len = $(">tr", tbody).length;
+          var context = $("[name=infinitescroll-count]");
+          $(".number", context).attr("data-value", len);
+          i18n.ize_number(context);
+          // re-init tablesorter
+          tbody.parent("table").trigger("update");
+        }
+        else {
+          //console.log("STOP INFINITE SCROLL!!!");
+          $(window).unbind('.infscr');
+        }
+      });
+      $(window).trigger("scroll");
     },
 
     add_key: function(e) {
@@ -57,7 +110,7 @@
       }
       trigger.addClass("editing");
       fb.get_script(fb.h.static_url("sameas-edit.mf.js"), function() {
-        sameas.edit.add_key_begin(trigger, trigger.parents("table:first").find("tbody:first"));
+        sameas.edit.add_key_begin(trigger, $("#infinitescroll > tbody:first"));
       });
       return false;
     },

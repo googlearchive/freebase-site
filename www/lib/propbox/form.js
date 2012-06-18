@@ -445,11 +445,11 @@
        });
        // submit/cancel on ENTER/ESCAPE
        $(":input", form_content)
-         .keypress(function(e) {
+/**         .keypress(function(e) {
            if (e.keyCode === 13 && !e.isDefaultPrevented()) { // enter
              form_content.trigger(event_prefix + "submit");
            }
-         })
+         })**/
          .keyup(function(e) {
            if (e.keyCode === 27) { // escape
              form_content.trigger(event_prefix + "cancel");

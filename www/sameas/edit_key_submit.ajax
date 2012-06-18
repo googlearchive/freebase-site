@@ -32,92 +32,81 @@ var i18n = acre.require("lib/i18n/i18n.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
 var queries = acre.require("queries.sjs");
 var editcomponents = acre.require("editcomponents.mjt");
-var promise_apis = acre.require("lib/promise/apis.sjs");
-var freebase = promise_apis.freebase;
-var deferred = promise_apis.deferred;
+var apis = acre.require("lib/promise/apis.sjs");
+var freebase = apis.freebase;
+var deferred = apis.deferred;
 var t = acre.require("sameas.mjt");
-
-/** connected responses corresponding to "insertions" **/
-var CONNECTED = {
-  "inserted": 1,
-  "updated": 1,
-  "present": 1
-};
+var creator = acre.require("lib/queries/creator.sjs");
 
 /**
- * prop add form
+ * key add form
  */
 var SPEC = {
 
-  method: "POST",
+    method: "POST",
 
-  auth: true,
+    auth: true,
 
-  validate: function(params) {
-    var args = [
-      validators.MqlId(params, "s", {required:true}),            // subject id
-      validators.OneOf(params, "p", {required:true, oneof:["/type/object/key"]}), // property id
-      validators.Array(validators.Json(params, "o", {required:true})), // object operations
-      validators.LangId(params, "lang", {if_empty:"/lang/en"})  // lang
-    ];
-    return args;
-  },
+    validate: function(params) {
+        return [
+            validators.MqlId(params, "s", {required:true}), // subject id
+            validators.OneOf(params, "p", {                 // property id
+                required: true, 
+                oneof: ["/type/object/key", "/type/namespace/keys"]
+            }), 
+            validators.MqlId(params, "namespace", {required:true}),
+            validators.MqlKey(params, "value", {required:true}),
+            validators.MqlKey(params, "replace", {if_empty:null}),
+            validators.LangId(params, "lang", {if_empty:"/lang/en"})  // lang
+        ];
+    },
 
-  run: function(s, p, o, lang) {
-    var q = {id:s};
-    // TODO: assert o (object operations), > 0
-    q[p] = o;
-    return freebase.mqlwrite(q)
-      .then(function(env) {
-        // TODO: check write result
-        return env.result;
-      })
-      .then(function(result) {
-        // the new object value that we just inserted
-        // which is the first operation != connect:"delete"
-        var clauses = result[p];
-        if (clauses.length === 1 && !CONNECTED[clauses[0].connect]) {
-          // deleted
-          var clause = clauses[0];
-          var namespace = clause.namespace;
-          var value = clause.value;
-          // TODO: assert namespace and value
-          var undo_data = {
-            s: s,
-            p: p,
-            o: [{
-              namespace: namespace,
-              value: value,
-              connect: "update"
-            }],
-            lang: lang
-          };
-          return {
-            html: acre.markup.stringify(editcomponents.deleted_key(undo_data, namespace, value))
-          };
+    run: function(s, p, namespace, value, replace, lang) {       
+        var promise = null;
+        var q = null;
+        if (replace) {
+            q = {id:s};
+            q[p] = {
+                namespace: namespace,
+                value: replace,
+                connect: "delete"
+            };
+            promise = freebase.mqlwrite(q);
         }
         else {
-          // inserted/updated
-          var namespace;
-          var value;
-          for (var i=0,l=clauses.length; i<l; i++) {
-            var clause = clauses[i];
-            if (!clause.connect || CONNECTED[clause.connect]) {
-              namespace = clause.namespace;
-              value = clause.value;
-              break;
-            }
-          }
-          // TODO: assert namespace and value
-          return queries.key(s, namespace, value, lang)
-            .then(function(key) {
-              // TODO: assert key.length === 1
-              key = key[0];
-              return {
-                html: acre.markup.stringify(t.topic_key(key))
-              };
-            });
+            promise = deferred.resolved(true);
         }
-      });
-  }
+        return promise.then(function() {
+            q = {
+                id: s
+            };
+            q[p] = {
+                namespace: namespace,
+                value: value,
+                connect: "insert"
+            };
+            return freebase.mqlwrite(q)
+                .then(function(env) {
+                    var creator_clause = creator.extend({});
+                    promise = null;
+                    if (p === "/type/namespace/keys") {
+                        promise = queries.keys_incoming(s, {}, null, lang, creator_clause, {
+                            "incoming:target": {id: namespace},
+                            "incoming:target_value": {value: value}
+                        });
+                    }
+                    else {
+                        promise = queries.keys_outgoing(s, {}, null, lang, creator_clause, {
+                            "outgoing:source": {id: namespace},
+                            "outgoing:target_value": {value: value}
+                        });
+                    }
+                    return promise.then(function(key) {
+                        return {
+                            html: acre.markup.stringify(t.keys_body(s, key, {}))
+                        };
+                    });
+                });
+            });
+    }
 };

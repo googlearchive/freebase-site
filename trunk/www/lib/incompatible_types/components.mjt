@@ -45,7 +45,7 @@
       </div>
     </div>
     <div class="modal-buttons right">
-      ${form.submit_buttons(_("Yes, add Type"), _("Cancel"), false, true)}
+      ${form.submit_buttons(_("Yes, add Type"))}
     </div>
   </div>
 </acre:block>
@@ -58,7 +58,7 @@
       </div>
     </div>
     <div class="modal-buttons right">
-      ${form.submit_buttons(_("Yes, add Type"), _("Cancel"), false, true)}
+      ${form.submit_buttons(_("Yes, add Type"))}
     </div>
   </div>
 </acre:block>

@@ -78,8 +78,16 @@
 
       // edit localized name trigger update current row/form
       $(".edit-localized", options.form)
-          .bind("i18n.edit.text_edit.success", function() {
-              edit._row_edit_begin(options.row, options);
+          .click(function() {
+              // We don't want to have a modal on modal dialog.
+              // Close the collection row edit dialog.
+              options.form.trigger(options.event_prefix + "cancel");
+              return false;
+          })
+          .bind("i18n.edit.text_edit.cancel", function() {
+              // Once the i18n text edit dialog closes,
+              // reopen the collection row edit dialog
+              edit.row_edit_begin(options.row);
           });
 
       // update navs
@@ -168,13 +176,13 @@
               .ajaxSuccess(function(e, xhr, ajaxOptions) {
                   if (ajaxOptions.type === "POST") {
                       // if a successful POST (write), we need to reload
-                      $(this).data("reload", true);
+                      $(window).data("reload.collection", true);
                   }
               })
               .bind(event_prefix + "cancel", function() {
                   options.row.removeClass("editing");
-                  if ($(this).data("reload")) {
-                      window.location.reload(true);
+                  if ($(window).data("reload.collection")) {
+                      fb.status.success("Please reload to see your changes.");
                   }
               });
             formlib.init_modal_form(options);            

@@ -67,6 +67,12 @@
             trigger: trigger,
             reload: reload
           };
+
+          form.bind(event_prefix + "cancel", function() {
+             // notify trigger, this is closing
+             trigger.trigger(event_prefix + "cancel");
+          });
+
           formlib.init_modal_form(options);
         }
       }));
@@ -225,7 +231,6 @@
               else {
                   // close the modal dialog
                   options.form.trigger(options.event_prefix + "cancel");
-                  options.trigger.trigger(options.event_prefix + "success");
               }
           },
           onerror: function(errmsg) {
@@ -234,6 +239,7 @@
         }));
       }
       else {
+        // close the modal dialog
         options.form.trigger(options.event_prefix + "cancel");
       }
     },

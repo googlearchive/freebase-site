@@ -49,7 +49,7 @@
           <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.edit_type, ['${type.id}'], this);"><span class="edit-icon">${_('Edit type')}</span></a>
         </li>
         <li class="row-menu-item edit">
-          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.delete_type, ['${type.id}'], this);"><span class="delete-icon">${_('Delete type')}</span></a>
+          <a href="${h.static_url('lib/schema/schema.mf.js')}" class="icon-link" onclick="return freebase.nav_get_script(this, 'schema.delete_type_begin', ['${type.id}']);"><span class="delete-icon">${_('Delete type')}</span></a>
         </li>
         <li class="row-menu-item"><a href="${h.fb_url(type.id, [['links']])}">${_('Inspect Type')}</a></li>
         <li class="row-menu-item">

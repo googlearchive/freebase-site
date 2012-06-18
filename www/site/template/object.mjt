@@ -413,9 +413,15 @@
     else if (nav.key) {
       href = "?" + nav.key;
     }
-    else if (nav.app && nav.ajax) {
-      href = h.reentrant_url("/ajax", nav.app, "/", nav.ajax, nav.params);
-      onclick = "return fb.nav_ajax(this);";
+    else if (nav.app && nav.script) {
+      href = h.reentrant_url("/static", nav.app, "/", nav.script);
+      onclick = [
+        "return fb.nav_get_script(this,",
+        JSON.stringify(nav.method || null),
+        ",",
+        JSON.stringify(nav.args || null),
+        ");"
+      ].join("");
     }
     else if (nav.onclick) {
       href = "#";
@@ -430,9 +436,16 @@
   <acre:block if="show">
     <li acre:attrs="nav.auth ? {'class':'edit'} : {}">               
       <acre:block if="href">
-        <a href="${href}" acre:attrs="onclick ? {onclick:onclick} : {}">
-          <span>${acre.markup.bless(nav.name)}</span>
-        </a>
+        <acre:block if="onclick">
+          <a href="${href}" onclick="${onclick}">
+            <span>${acre.markup.bless(nav.name)}</span>
+          </a>
+        </acre:block>
+        <acre:block else="">
+          <a href="${href}">
+            <span>${acre.markup.bless(nav.name)}</span>
+          </a>
+        </acre:block>
       </acre:block>
       <acre:block else="">
         <label>${acre.markup.bless(nav.name)}</label>

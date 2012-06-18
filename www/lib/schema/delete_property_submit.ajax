@@ -28,40 +28,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-var i18n = acre.require("lib/i18n/i18n.sjs");
-var validators = acre.require("lib/validator/validators.sjs");
-var delete_type_undo = acre.require("delete_type.sjs").undo;
-var components = acre.require("domain_components.mjt");
-var queries = acre.require("queries.sjs");
+
+var h = acre.require("helper/helpers.sjs");
+var validators = acre.require("validator/validators.sjs");
+var delete_property = acre.require("schema/delete_property.sjs").delete_property;
 
 /**
- * undo delete type
+ * delete property
  */
 var SPEC = {
 
-  method: "POST",
+    method: "POST",
 
-  auth: true,
+    auth: true,
 
-  validate: function(params) {
-    return [
-      validators.String(params, "type_info", {required:true})  // type_info returned by delete_type
-    ];
-  },
+    validate: function(params) {
+        return [
+            validators.MqlId(params, "id", {required:true}),         // property to delete
+            params.auth_user.id
+        ];
+    },
 
-  run: function(type_info) {
-    type_info = JSON.parse(type_info);
-    return delete_type_undo(type_info)
-      .then(function([info, result]) {
-         return queries.load_type(type_info.id, i18n.lang, {
-             article: true,
-             instance_count: true
-         });
-      })
-      .then(function(type) {
-        return {
-          html: acre.markup.stringify(components.domain_type_row(type))
-        };
-      });
-  }
+    run: function(property_id, user_id) {
+        return delete_property(property_id, user_id)
+            .then(function(deleted) {
+                return {
+                    location: deleted.schema ? h.fb_url(deleted.schema, [["schema"]]) : h.fb_url(user_id)
+                };
+            });
+    }
 };

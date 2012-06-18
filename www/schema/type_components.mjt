@@ -41,6 +41,8 @@
 
   var EDIT_PROPERTY = _('Edit property');
   var DELETE_PROPERTY = _('Delete property');
+  var INSPECT_PROPERTY = _('Inspect Property');
+  var BUILD_QUERY = _('Build query');
 </acre:script>
 
 <acre:block def="type_property_row(prop, type_id)">
@@ -50,14 +52,15 @@
       <a href="javascript:void(0);" class="row-menu-trigger">+</a>
       <ul class="row-menu tooltip">
         <li class="row-menu-item edit">
-          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.edit_property, ['${prop.id}'], this);"><span class="edit-icon">${_('Edit property')}</span></a>
+          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.edit_property, ['${prop.id}'], this);"><span class="edit-icon">${EDIT_PROPERTY}</span></a>
         </li>
         <li class="row-menu-item edit">
-          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.delete_property, ['${prop.id}'], this);"><span class="delete-icon">${_('Delete property')}</span></a>
+          <a href="${h.static_url('lib/schema/schema.mf.js')}" class="icon-link" onclick="return freebase.nav_get_script(this, 'schema.delete_property_begin', ['${prop.id}']);"><span class="delete-icon">${DELETE_PROPERTY}</span></a>
         </li>
-        <li class="row-menu-item"><a href="${h.fb_url(prop.id, [['links']])}">${_('Inspect Property')}</a></li>
+
+        <li class="row-menu-item"><a href="${h.fb_url(prop.id, [['links']])}">${INSPECT_PROPERTY}</a></li>
         <li class="row-menu-item last">
-          <a href="${sh.build_query_url(type_id, prop.id)}">${_('Build query')}</a>
+          <a href="${sh.build_query_url(type_id, prop.id)}">${BUILD_QUERY}</a>
         </li>
       </ul>
     </th>

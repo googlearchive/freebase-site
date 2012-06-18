@@ -28,34 +28,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-var validators = acre.require("lib/validator/validators.sjs");
-var editcomponents = acre.require("type_editcomponents.mjt");
-var delete_property = acre.require("delete_property.sjs").delete_property;
+
+var editcomponents = acre.require("schema/editcomponents.mjt");
+var validators = acre.require("validator/validators.sjs");
+var delete_property = acre.require("schema/delete_property.sjs");
 
 /**
- * delete property
+ * create base form
  */
 var SPEC = {
 
-  method: "POST",
+    method: "GET",
 
-  auth: true,
+    auth: true,
 
-  validate: function(params) {
-    return [
-      validators.MqlId(params, "id", {required:true}),             // property id
-      validators.MqlId(params, "user", {required:true}),          // user performing the delete
-      validators.StringBool(params, "dry_run", {if_empty:false}), // dry run to see what will be deleted
-      validators.StringBool(params, "force", {if_empty:true})     // force delete if "used"
-    ];
-  },
+    validate: function(params) {
+        return [
+            validators.MqlId(params, "id", {required:true}),
+            params.auth_user.id,
+            validators.LangId(params, "lang", {if_empty:"/lang/en"})
+        ];
+    },
 
-  run: function(id, user, dry_run, force) {
-    return delete_property(id, user, dry_run, force)
-      .then(function([prop_info, result]) {
-        return {
-          html: acre.markup.stringify(editcomponents.delete_property_result(prop_info))
-        };
-      });
-  }
+    run: function(property_id, user_id, lang) {
+        return delete_property.property_info(property_id, user_id)
+            .then(function(info) {
+                return {
+                    html: acre.markup.stringify(editcomponents.delete_property_form(info, lang))
+                };
+            });
+    }
 };

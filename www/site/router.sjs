@@ -704,6 +704,7 @@ function init_site_rules(lib) {
     {prefix:"/robots.txt",         app:"site", script:"robots.sjs"},
 
     {prefix:"/flyout",             app:"lib", script:"flyout/flyout.controller"},
+    {prefix:"/account/claim"       app:"account", script:"claim.controller"},
     //
     // Redirects for legacy urls
     //

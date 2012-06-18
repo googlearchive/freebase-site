@@ -29,6 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+var topscope = this.__proto__;
 
 // fix acre.freebase.site_host to reflect the current acre.reqest.protocol
 if (acre.request.protocol === "https" &&
@@ -144,10 +145,7 @@ function route_path(path, context) {
   acre.exit();
 };
 
-
 function StaticRouter() {
-  var add = this.add = function(routes) {};
-
   var route = this.route = function(req, scope) {
     var qs = req.query_string;
     var segs = req.path_info.split("/");
@@ -171,8 +169,6 @@ function StaticRouter() {
 
 
 function AjaxRouter() {
-  var add = this.add = function(routes){};
-
   var route = this.route = function(req, scope) {
     var qs = req.query_string;
     var segs = req.path_info.split("/");
@@ -189,7 +185,6 @@ function AjaxRouter() {
     }
 
     var path = "//" + segs.join("/") + (qs ? "?" + qs : "");
-    // console.log("AjaxRouter path", path);
     route_path(path, true);
   };
 };
@@ -202,7 +197,8 @@ function AjaxRouter() {
       there can only be one route per app, script combo
    2. Find the route for request path with router.route_for_path(path)
  */
-function PrefixRouter(app_labels) {
+function PrefixRouter(rules) {
+  var app_labels = rules.labels;
   var route_list = [];
   var routing_tree = {};
 
@@ -338,7 +334,38 @@ function PrefixRouter(app_labels) {
 
 };
 
+/**
+   ---- Utility script router ---
+   Used when a script needs access to routing rules
+   after they've been processed by other routers
+   (e.g., test introspection or cache warmers).
 
+   Utility scripts are assumed to be at the root and
+   start with '_'.
+ */
+
+function UtilRouter(rules) {
+  var utils;
+
+  var add = this.add = function(u) {
+    utils = u || {};
+  };
+
+  var route = this.route = function(req, scope) {
+    var m = req.path_info.match(/\/\_(.*)/);
+    var util = m ? utils[m[1]] : null;
+    if(!util) {
+      return false;
+    }
+    scope.rules = rules;
+    acre.write(acre.include.call(scope, util));
+    acre.exit();
+  };
+
+  var dump = this.dump = function() {
+    return h.extend({}, utils);
+  };
+};
 
 /**
 * Extend the default rules for this site with the environment specific rules.
@@ -348,32 +375,24 @@ function extend_rules(rules, environment_rules) {
   // Here we handle configuration overrides from specific environments.
 
   // Labels environment override.
-
   if (environment_rules["labels"]) {
     if (!("labels" in rules)) rules["labels"] = {};
     h.extend(rules["labels"], environment_rules["labels"]);
-    for (var app_label in environment_rules["labels"]) {
-      rules["labels"][app_label] = environment_rules["labels"][app_label];
-    }
   }
 
   // Prefix environment override.
-
   if (environment_rules["prefix"]) {
     if (!("prefix" in rules)) rules["prefix"] = [];
 
     // Holds prefix -> index in prefix routing array.
     var prefix_index = {};
-    var i = 0;
-    rules["prefix"].forEach(function(route) {
+    rules["prefix"].forEach(function(route, i) {
       if (!route["prefix"]) {
         throw("You can not define a prefix routing rule without a prefix.");
         exit(-1);
       }
       prefix_index[route.prefix] = i;
-      i++;
     });
-
     environment_rules["prefix"].forEach(function(route) {
       if (!route["prefix"]) {
         throw("You can not define a prefix routing rule without a prefix.");
@@ -388,17 +407,13 @@ function extend_rules(rules, environment_rules) {
     });
   }
 
-  // Routers
-
-  // default order if not specified
-  if (!rules["routers"]) {
-    rules["routers"] = default_routers;
+  // Util override
+  if (environment_rules["util"]) {
+    h.extend(rules["util"], environment_rules["util"]);
   }
 
-  // override with the environment rules if specified.
-  if (environment_rules["routers"]) {
-    rules["routers"] = environment_rules["routers"];
-  }
+  // only want one set of routers
+  rules["routers"] = environment_rules["routers"] || rules["routers"] || default_routers;
 
   var tmp_routers = [];
   for (var i in rules["routers"]) {
@@ -426,40 +441,39 @@ function route(rules, scope) {
   var error_page_path = scope.acre.resolve(scope.acre.get_metadata().error_page);
   acre.response.set_error_page(error_page_path);
 
-  var dump = acre.request.base_path === "/_fs_routing";
-
-  var rules_dump = {};
-
-  if (rules["routers"]) {
-    routers = rules["routers"];
-  }
-
-  for (var i=0,l=routers.length; i<l; i++) {
-    var name = routers[i][0];
-    var router_class = routers[i][1];
-    var router = new router_class(rules["labels"]);
+  function do_router(router) {
+    var name = router[0];
+    var router_class = router[1];
+    var router = new router_class(rules);
     var rule = rules[name];
-    if (rule) {
-      // to over-ride or add to existing rules defined in the specific router
+    if (router.add) {
       router.add(rule);
     }
-
-    if (dump && "dump" in router) {
-      rules_dump[name] = router.dump();
+    if (is_util && router.dump) {
+      rules.dumped_rules[name] = router.dump();
     }
     else {
       router.route(scope.acre.request, scope);
     }
+  };
+
+  // For utility scripts, still run all routers
+  // to get the dumped rules, then run UtilRouter 
+  var is_util = (scope.acre.request.path_info.indexOf("/_") == 0);
+  if (is_util) {
+    rules.dumped_rules = {};
   }
 
-  if (dump) {
-    rules_dump['apps'] = rules["labels"];
-    scope.acre.write(JSON.stringify(rules_dump, null, 2));
-    scope.acre.exit();
+  var routers = rules["routers"];
+  routers.forEach(do_router);
+
+  if (is_util) {
+    is_util = false;
+    do_router(["util", UtilRouter]);
   }
-  else {
-    acre.response.status = 404;
-    acre.write(acre.include(not_found_path));
-    acre.exit();
-  }
+
+  // No routing rule handled the request, so render not found page
+  acre.response.status = 404;
+  acre.write(acre.include(not_found_path));
+  acre.exit();
 };

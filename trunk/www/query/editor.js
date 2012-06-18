@@ -60,26 +60,6 @@
 
       queryEditorOptions = {
         focusOnReady: true,
-        onUnauthorizedMqlWrite: function() {
-          if (window.confirm("Query editor needs to be authorized to write data on your behalf. Proceed to authorization?")) {
-            saveQuery();
-
-            var url = document.location.href;
-            var hash = url.indexOf("#");
-            if (hash > 0) {
-              url = url.substr(0, hash);
-            } else {
-              var question = url.indexOf("?");
-              if (question > 0) {
-                url = url.substr(0, question);
-              }
-            }
-
-            var url2 = "/signin/login?mw_cookie_scope=domain&onsignin=" + encodeURIComponent(url);
-
-            document.location = url2;
-          }
-        },
         codeMirror: {
           parserfile: [$("#codemirror-js").attr("href")],
           stylesheet: [$("#codemirror-css").attr("href")]

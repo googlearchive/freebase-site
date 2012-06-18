@@ -30,50 +30,26 @@
  !!-->
 
 <acre:script>
-  var h = acre.require("lib/helper/helpers.sjs");
-  var propbox = acre.require("lib/propbox/propbox.mjt");
-  var ph = acre.require("lib/propbox/helpers.sjs");
-  var image = acre.require("lib/template/imagecomponents");
-  var i18n = acre.require("lib/i18n/i18n.sjs");
-  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var c = this.exports.c = {};
+  var h = acre.require("helper/helpers.sjs");
+  var i18n = acre.require("i18n/i18n.sjs");
   var _ = i18n.gettext;
-  var lang = i18n.lang;
-  var collection = acre.require("lib/propbox/collection.mjs");
-  var qc = acre.require("lib/propbox/queries_collection.sjs");
-
-  var topics = [
-    "/m/083gwkc",
-    "/m/083gwkn",
-    "/m/083gwk6",
-    "/m/09sd771",
-    "/m/0cg5lcv",
-    "/m/0cf_lfy",
-    "/m/0f_6z63",
-    "/m/0f_6z67",
-    "/m/0f_6z6c",
-    "/m/0f_6z6k",
-    "/m/0f_6z6s",
-    "/m/0f_6z6y",
-    "/m/0f_6z74",
-    "/m/0f_6z7f",
-    "/m/0gdkyfx"
-  ];
-  var pids = [
-    "/film/performance/actor",
-    "/film/performance/character",
-    "/film/performance/character_note",
-    "/film/performance/special_performance_type"
-  ];
-
-
-  var c = this.exports.c = {
-    collection: qc.collection(topics, pids, lang)
-  };
-
 </acre:script>
 
-
-<acre:block def="content_body()">
-  ${collection.collection(c.collection.structures, c.collection.values, lang)}
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="scripts/warmer.css" />
 </acre:block>
 
+<acre:block def="content_body()">
+  <ul>
+    <acre:block for="app in c.apps">
+      <li class="warmer" data-id="${app}">
+        <span>${app}</span>
+      </li>
+    </acre:block>
+  </ul>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="scripts/warmer.js"></script>
+</acre:block>

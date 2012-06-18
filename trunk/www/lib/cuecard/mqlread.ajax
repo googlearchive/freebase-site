@@ -29,6 +29,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- if (acre.current_script === acre.request.script) {
-	acre.write("User-agent: *\nDisallow: /");
-}
+var h = acre.require("helper/helpers.sjs");
+var validators = acre.require("validator/validators.sjs");
+var apis = acre.require("promise/apis.sjs");
+var freebase = apis.freebase;
+
+var SPEC = {
+
+  method: "GET",
+
+  auth: false,
+
+  validate: function(params) {
+    var envelope = validators.Json(params, "query", {required: true});
+    var query = envelope.query;
+    delete envelope.query;
+    return [
+      query,
+      envelope
+    ];
+  },
+
+  run: function(query, envelope) {
+    return freebase.mqlread(query, envelope);
+  }
+};

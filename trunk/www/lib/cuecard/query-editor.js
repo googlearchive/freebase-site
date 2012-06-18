@@ -320,6 +320,12 @@ CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
         var q = CueCard.jsonize(envelope, this.getJsonizingSettings({ breakLines: false, variables: this._getVariables(), resolveVariables: true }));
         
         if (this._confirmWriteQuery(options)) {
+            if (!fb.user) {
+                if (window.confirm("You need to be signed in to write.\nDo you want to signin now?")) {
+                    $(window).trigger("fb.user.unauthorized");
+                }
+                return;
+            }
             if (window.confirm("Your query will write data into Freebase.\nAre you sure you want to do that?")) {
                 this._warnWrites = true;
             } else {
@@ -330,22 +336,15 @@ CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
         var url = CueCard.apiProxy.base + CueCard.apiProxy[options.isWriteQuery ? 'write' : 'read'];
         
         var self = this;
-        var onDone = function(o) {            
-            // TODO - re handle error messages
-            if ((o.code == 401) || (o.status && o.status.indexOf("401") == 0)) {
-                console.log("unauthorized");
-                self._outputPane.setStatus("Query editor is not authorized to write on your behalf.");
-                self._options.onUnauthorizedMqlWrite();
-            } else {
-                var options = {};
-                if (self._controlPane != null && self._controlPane.getSetting("multilineErrorMessages") && 
-                    ("messages" in o || "message" in o)) {
-                    options["encodeJavascriptString"] = function(x) { return x; };
-                }
-                self._outputPane.setJSONContent(o, self.getJsonizingSettings(options), q);
-                if ("onRun" in self._options) {
-                    self._options["onRun"](o);
-                }
+        var onDone = function(o) {
+            var options = {};
+            if (self._controlPane != null && self._controlPane.getSetting("multilineErrorMessages") && "error" in o) {
+                options["encodeJavascriptString"] = function(x) { return x; };
+            }
+            var result = o.error || o.result || o;
+            self._outputPane.setJSONContent(result, self.getJsonizingSettings(options), q);
+            if ("onRun" in self._options) {
+                self._options["onRun"](result);
             }
         };
         var onError = function(msg) {

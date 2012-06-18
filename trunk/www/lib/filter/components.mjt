@@ -279,3 +279,19 @@
   <input acre:for="user in users" type="hidden" name="${name}" value="${user}"/>
   ${suggest_input(name, 'Start typing for suggestions')}
 </acre:block>
+
+<acre:block def="historical_filter(base_url, filters)">
+  ${filter_form(base_url, filters, 'historical', historical_input, ['historical', filters.historical])}
+</acre:block>
+
+<acre:block def="historical_input(name, checked)">
+  <h2 style="margin-top:10px;" class="filter-title">
+    <label>
+      <input acre:if="checked === true" class="historical-toggle" 
+             name="historical" value="0" type="checkbox" checked="checked" onchange="this.form.submit()"/> 
+      <input acre:else="" class="historical-toggle" 
+             name="historical" value="1" type="checkbox" onchange="this.form.submit()"/> 
+      Show historical writes
+    </label>
+  </h2>
+</acre:block>

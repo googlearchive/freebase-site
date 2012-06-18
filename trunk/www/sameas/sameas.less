@@ -50,19 +50,8 @@
     display: inline-block;
     padding: 0 45px 6px 0;
   }
-  .authority {
-    display: block;
-    padding-left: 30px;
-    background-repeat: no-repeat;
-    background-position-x: 5px;
-    background-size: 16px 16px;
-  }
 }
 
-
-.ie7 .authority {
-  padding: 0 0 0.5em 25px;
-}
 
 tr .combo-menu {
   top: -5px;
@@ -139,27 +128,6 @@ tr .combo-menu {
   font-weight: bold;
 }
 
-.authority-list-item {
-  font-size: 12px;
-  color: @link_blue;
-  line-height: 2;
-
-  &:hover{
-    background: rgba(0,0,0,0.1);
-  }
-}
-
-.authority-list-item{
-  label:hover {
-    cursor: pointer;
-  }
-  .count {
-    color: #999;
-    font-size: 10px;
-  }
-}
-
-
 /*
  * These should be in global.
  * Also, see schema.less for duplication
@@ -190,5 +158,27 @@ tr .combo-menu {
 }
 
 .key-status.valid {
-background-position: 0 -420px;
+  background-position: 0 -420px;
+}
+
+.section .button-group {
+  float: right;
+  margin-top: -7px;
+}
+
+tr.invalid th,
+tr.invalid td {
+  opacity: 0.7;
+  text-decoration: line-through;
+}
+
+tr.invalid th:first-child,
+tr.invalid td:last-child {
+  text-decoration: none;
+}
+
+tr.invalid:hover th,
+tr.invalid:hover td {
+  opacity: 1;
+  text-decoration: none;
 }

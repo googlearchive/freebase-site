@@ -28,51 +28,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-var h = acre.require("helper/helpers.sjs");
-var freebase = acre.require("promise/apis").freebase;
 
-/**
- * Return a promise to check whether or not user_id 
- * is a member of a permission group for a topic or
- * a list of topics.
- * 
- * {
- *   id: topic_id,
- *   permission: [{
- *     member: [{
- *       id: user_id
- *     }]
- *   }]
- * }
- */
-function has_permission(id_or_ids, user_id) {
-  var id = id_or_ids;
-  if (!h.isArray(id)) {
-    id = [id];
-  }
-  var q = [{
-    id: null,
-    "id|=": id,
-    permission: {
-      optional: true,
-      id: null,
-      type: "/type/permission",
-      permits: [{
-        member: [{
-          id: user_id
-        }]
-      }]
-    }
-  }];
-  return freebase.mqlread(q)
-    .then(function(env) {
-      return env.result || [];
-    })
-    .then(function(result) {
-      var permissions = {};
-      result.forEach(function(o) {
-        permissions[o.id] = o.permission !== null;
+var validators = acre.require("lib/validator/validators.sjs");
+var sameas = acre.require("sameas.mjt");
+var queries = acre.require("queries.sjs");
+var tab = acre.require("sameas.tab");
+var filters = acre.require("lib/filter/filters.sjs");
+
+var SPEC = {
+
+  validate: function(params) {
+    return [
+      validators.MqlId(params, "id", {required:true}),
+      filters.validate(params, tab.inspect_filters),
+      validators.Timestamp(params, "next", {required:true}),
+      validators.LangId(params, "lang", {if_empty:"/lang/en"})
+    ];
+  },
+
+  run: function(id, f, next, lang) {
+    return queries.keys(id, f, next)
+      .then(function(result) {
+        return {
+          html: acre.markup.stringify(sameas.keys_body(id, result, f, lang))
+        };
       });
-      return permissions;
-    });
+  }
 };
+

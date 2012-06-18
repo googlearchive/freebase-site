@@ -37,9 +37,12 @@
   var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
   var filter_components = acre.require("lib/filter/components.mjt");
+  var freebase_components = acre.require("lib/template/components.mjt");
   var fh = acre.require("lib/filter/helpers.sjs");
   var EDIT = _("Edit");
   var DELETE = _("Delete");
+  var TYPE_OBJECT_KEY = "/type/object/key";
+  var TYPE_NAMESPACE_KEYS = "/type/namespace/keys";
 </acre:script>
 
 <acre:block def="head()">
@@ -55,7 +58,7 @@
         <span>Filter this data</span>
       </h2>
       <div class="module-section alt">
-        ${authority_filter()}
+        ${property_filter()}
       </div>
       <div class="module-section alt">
         ${filter_components.timestamp_filter(c.object.id, c.filters)}
@@ -66,145 +69,180 @@
       <div class="module-section alt">
         ${filter_components.creator_filter(c.object.id, c.filters)}
       </div>
+      <div class="module-section alt">
+        ${filter_components.historical_filter(c.id, c.filters)}
+      </div>
     </div>
   </div>
-  <div class="column data">
-    ${topic_keys()}
+  <div class="column links${c.filters.historical ? ' historical' : ''}" 
+       id="keys-data" role="main">
+    ${keys(c.id, c.keys, c.filters)}
   </div>
 </acre:block>
 
-<acre:block def="authority_filter()" if="c.authority_count.length">
-  <h3 class="module-section-title"><label for="">${_("By Authorities")}:</label></h3>
-  ${filter_components.filter_form(c.object.id, c.filters, "authority", authority_list)}
+<acre:block def="property_filter()">
+  <h3 class="module-section-title"><label for="">${_("Show")}:</label></h3>
+  ${filter_components.filter_form(c.object.id, c.filters, 'property', property_filter_input, null, null)}
 </acre:block>
 
-<acre:block def="authority_list()">
-  <acre:script>
-    var authorities = {};
-    (c.filters.authority || []).forEach(function(a) {
-      authorities[a] = 1;
-    });
-  </acre:script>
-  <ul>
-    <acre:block for="authority in c.authority_count">
-      <li class="authority-list-item">
-        <label>
-          <input type="checkbox" name="authority" value="${authority.id}"
-                 acre:attrs="authorities[authority.id] ? {checked:'checked'} : {}"
-                 onchange="this.form.submit();"/>
-          ${i18n.display_name(authority)} <span class="count">(${i18n_c.number(authority.count)})</span>
-        </label>
-      </li>
+<acre:block def="property_filter_input()">
+  <select name="property" onchange="this.form.submit();">
+    <option value=""
+            acre:attrs="!c.filters.property ? {'selected':'selected'} : {}">
+      ${_("all")}
+    </option>
+    <option value="/type/namespace/keys"
+            acre:attrs="c.filters.property === '/type/namespace/keys' ? {'selected':'selected'} : {}">
+      ${_("inbound")}
+    </option>
+    <option value="/type/object/key"
+            acre:attrs="c.filters.property === '/type/object/key' ? {'selected':'selected'} : {}"> 
+      ${_("outbound")}
+    </option>
+  </select>
+</acre:block>
+
+<acre:block def="keys(id, data, filters)">
+  <div class="section">
+    <div class="button-group edit">
+      <a href="#" id="create-key" class="button primary"
+         onclick="return freebase.dispatch(event, freebase.sameas.add_key, null, this);">${_("Create new")}</a>
+    </div>
+    <h2 class="table-title clear"><a name="infinitescroll-count">${_("Keys")} (${i18n_c.number(data.length)})</a></h2>
+    <table class="table table-sortable" id="infinitescroll">
+      <thead>
+        <tr>
+          <th class="column-header" scope="col">
+            <span class="sort-icon">&harr;</span>
+          </th>
+          <th class="column-header first {sorter: 'string'}" scope="col">
+            <span class="sort-icon">${_("key")}</span>
+          </th>
+          <th class="column-header {sorter: 'string'}" scope="col">
+            <span class="sort-icon">${_("namespace/object")}</span>
+          </th>
+          <th class="column-header {sorter: 'string'}" scope="col">
+            <span class="sort-icon">${_("user")}</span>
+          </th>
+          <th class="column-header {sorter: 'string'}" scope="col">
+            <span class="sort-icon">${_("app")}</span>
+          </th>
+          <th class="column-header {sorter: 'string'}" scope="col">
+            <span class="sort-icon">${_("dataset")}</span>
+          </th>
+          <th class="column-header column-header-asc {sorter: 'string'}" scope="col">
+            <span class="sort-icon">${_("timestamp")}</span>
+          </th>
+          <th acre:if="filters.historical" class="column-header {sorter: 'string'}" scope="col">
+            <span class="sort-icon">${_("operation")}</span>
+          </th>
+        </tr>
+      </thead>
+
+      ${keys_body(id, data, filters)}
+
+      <tfoot>
+        <tr>
+          <td acre:attrs="filters.historical ? {colspan:'6'} : {colspan:'5'}">
+            <acre:script>
+              var params = {id:id};
+              for (var k in filters) {
+                if (filters[k] != null) {
+                  params[k] = filters[k];
+                }
+              }              
+            </acre:script>
+            <a id="infinitescroll-next" href="${h.ajax_url('infinitescroll.ajax', params)}">next</a>
+          </td>
+        </tr>
+      </tfoot>
+
+    </table>
+  </div>
+</acre:block>
+
+<acre:block def="keys_body(id, data, filters)">
+  <tbody acre:attrs="data.length ? {'data-next':data[data.length-1].timestamp} : {}">
+    <acre:block for="key in data">
+      ${key_row(id, key, filters)}
     </acre:block>
-  </ul>
+  </tbody>
 </acre:block>
 
-<acre:block def="topic_keys()">
+<acre:block def="key_row(id, link, filters)">
   <acre:script>
-    var keys = c.keys;
+    var outgoing = link["me:target"];
+    var attr = h.get_attribution(link);
+    var valid = link.valid === false ? ["invalid"] : ["valid"];
+    if (link.operation) {
+      valid.push(link.operation);   
+    }
   </acre:script>
-  <div class="column keys">
-    <div class="section">
-      <h1 class="table-title">${_("IDs")} (${i18n_c.number(keys.length)})</h1>
-      <table cellspacing="0" class="table table-sortable">
-         <thead>
-          <tr>
-            <th class="column-header first {sorter:'string'}" scope="column">
-              <span class="sort-icon">${_("Key")}</span>
-            </th>
-            <th class="column-header {sorter:'string'}" scope="column">
-              <span class="sort-icon">${_("Namespace")}</span>
-            </th>
-            <th class="column-header first {sorter:'string'}" scope="column">
-              <span class="sort-icon">${_("Authority")}</span>
-            </th>
-            <th class="column-header {sorter:'string'}" scope="column">
-              <span class="sort-icon">${_("Creator")}</span>
-            </th>
-            <th class="column-header {sorter:'datetime'}" scope="column">
-              <span class="sort-icon">${_("Date")}</span>
-            </th>
-          </tr>
-        </thead>
-         <tbody>
-           <acre:block for="key in keys">
-             ${topic_key(key)}
-           </acre:block>
-         </tbody>
-         <tfoot class="table-edit">
-           <tr class="trigger-row">
-             <td colspan="5">
-               <a href="javascript:void(0);"
-                  class="icon-link" onclick="return freebase.dispatch(event, freebase.sameas.add_key, null, this);">
-                 <span class="add-icon">${_('Add New')}</span>
-               </a>
-             </td>
-           </tr>
-         </tfoot>
-      </table>
-    </div>
-  </div>
-</acre:block>
-
-<acre:block def="topic_key(key)">
-  <acre:script>
-    var metadata = {namespace:key.namespace, value:key.value};
-  </acre:script>
-  <tr class="data-row ${JSON.stringify(metadata)}">
-    <th class="row-header odd">
+  <tr class="data-row ${valid.join(' ')}">
+    <th class="row-header odd" scope="row">
       <span class="wrapper">
-         <acre:block if="key.url">
-           <a href="${key.url}">${key.value}</a>
-         </acre:block>
-         <acre:block else="">
-           ${key.value}
-         </acre:block>
-         ${key_menu(key)}
+        <acre:block if="outgoing">
+          <span title="${TYPE_OBJECT_KEY}" class="arrow arrow-right key-property"
+                data-id="/type/object/key">&#8680;</span>
+        </acre:block>
+        <acre:block else="">
+          <span title="${TYPE_NAMESPACE_KEYS}" class="arrow arrow-left key-property"
+                data-id="/type/namespace/keys">&#8678;</span>
+        </acre:block>
+        ${key_menu(link)}
       </span>
     </th>
-    <td>
-      <a href="${h.fb_url(key.namespace)}">${key.namespace}</a>
+    <td class="even">
+      <span class="literal-value literal-value-key property-value key-value"
+            data-value="${link.target_value.value}">
+        ${link.target_value.value}
+      </span>
     </td>
     <td class="odd">
-      <acre:block if="key.authority">
-        <span class="authority wrapper"
-              style="background-image:url(//www.google.com/s2/u/0/favicons?domain=${h.parse_uri(key.url).host})">
-          <a href="${h.fb_url(key.authority.id)}">
-            <strong>${i18n.display_name(key.authority)}</strong>
-          </a>
-        </span>
-      </acre:block>
-      <acre:block else="">
-        <span class="wrapper">
-          <strong>-</strong>
-        </span>
-      </acre:block>
+      <acre:script>
+        var other = outgoing ? link.source : link.target;
+        var other_id, other_name;
+        if (other["topic:type"]) {
+          other_id = other.mid;
+          other_name = other.mid;
+        }
+        else {
+          other_id = other.id
+          other_name = other.id;
+        }
+      </acre:script>
+      <a class="property-value key-namespace"
+         data-id="${other_id}" href="${h.fb_url(other_id)}">${other_name}</a>
     </td>
-    <td>
-      ${components.attribution(key.attribution, true)}
+    <td class="even">
+      ${freebase_components.creator_link(attr.creator, null, [["writes"]])}
     </td>
     <td class="odd">
-      ${i18n_c.datetime(key.timestamp)}
+      ${freebase_components.app_link(attr.app, [["writes"]])}
     </td>
+    <td class="even">
+      ${freebase_components.dataset_link(attr.dataset, [["writes"]])}
+    </td>
+    <td class="odd">${link.timestamp}</td>
+    <td acre:if="filters.historical" class="even">${link.operation}</td>
   </tr>
 </acre:block>
 
-<acre:block def="key_menu(key)">
-  <acre:script>
-    var perm_obj = {id:key.namespace};
-  </acre:script>
-  <ul class="combo-menu nicemenu">
-    <li class="nicemenu-item ${JSON.stringify(perm_obj)}">
-      <span class="headmenu">
-        <a href="#" onclick="return false;" class="default-action edit-action">edit</a>
-        <a href="javascript:void(0)" class="more-action">menu</a>
-      </span>
-      <ul class="submenu row-menu">
-        <li class="row-menu-item"><a href="#" onclick="return fb.sameas.edit_key(this);">${EDIT}</a></li>
-        <li class="row-menu-item"><a href="#" onclick="return fb.sameas.delete_key(this);">${DELETE}</a></li>
-      </ul>
-    </li>
-  </ul>
+<acre:block def="key_menu(link)">
+  <acre:block if="link.valid !== false">
+    <ul class="combo-menu nicemenu">
+      <li class="nicemenu-item">
+        <span class="headmenu">
+          <a href="#" onclick="return false;" class="default-action edit-action">edit</a>
+          <a href="javascript:void(0)" class="more-action">menu</a>
+        </span>
+        <ul class="submenu row-menu">
+          <li class="row-menu-item"><a href="#" onclick="return fb.sameas.edit_key(this);">${EDIT}</a></li>
+          <li class="row-menu-item"><a href="#" onclick="return fb.sameas.delete_key(this);">${DELETE}</a></li>
+        </ul>
+      </li>
+    </ul>
+  </acre:block>
 </acre:block>
 
 <acre:block def="footer_script()">

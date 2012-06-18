@@ -67,7 +67,7 @@ var SPEC = {
             .then(function(r) {
                 if (r[s] && r[namespace]) {
                     return {
-                        html: acre.markup.stringify(editcomponents.edit_key_form(s, p, namespace, value, lang))
+                        html: acre.markup.stringify(editcomponents.delete_key_form(s, p, namespace, value, lang))
                     };
                 }
                 else {
@@ -85,3 +85,5 @@ var SPEC = {
             });
     }
 };
+
+

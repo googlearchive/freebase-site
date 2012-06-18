@@ -29,33 +29,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var i18n = acre.require("lib/i18n/i18n.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
-var queries = acre.require("lib/queries/user.sjs");
 var editcomponents = acre.require("editcomponents.mjt");
+var freebase = acre.require("lib/promise/apis.sjs").freebase;
 
 /**
  * add key form
  */
 var SPEC = {
 
-  method: "GET",
+    method: "GET",
 
-  auth: true,
+    auth: true,
 
-  validate: function(params) {
-    return [
-      validators.MqlId(params, "id", {required:true}),
-      params.auth_user.id
-    ];
-  },
+    validate: function(params) {
+        return [
+            validators.MqlId(params, "id", {required:true}),
+            validators.LangId(params, "lang", {if_empty:"/lang/en"})
+        ];
+    },
 
-  run: function(id, user_id) {
-    return queries.authority_namespaces(user_id, i18n.lang, 1000)
-      .then(function(authorities) {
-        return {
-          html: acre.markup.stringify(editcomponents.add_key_form(id, authorities))
-        };
-      });
-  }
+    run: function(id, lang) {
+        // is id a namespace?
+        return freebase.mqlread({
+            id: id,
+            type: "/type/namespace"
+        })
+        .then(function(env) {
+            var is_namespace = env.result ? true : false;
+            return {
+                html: acre.markup.stringify(editcomponents.add_key_form(id, is_namespace, lang))
+            };
+        });
+    }
 };

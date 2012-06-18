@@ -134,8 +134,15 @@
     }
     
   };
-  
-  $(qe.init());
+
+  // We need to know whther the user has permission before loading the editor
+  if ("has_permission" in fb.permission) {
+    qe.init();
+  } else {
+    $(window).bind("fb.permission.has_permission", function() {
+      qe.init();
+    });
+  }
   
 })(jQuery, window.freebase);
 

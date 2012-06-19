@@ -887,7 +887,7 @@ function set_app(item, app_labels) {
  *         (e.g., /homepage?acre.console=1)
  */
 function CustomRouter(rules) {
-  var app_lables = rules.labels;
+  var app_labels = rules.labels;
   var rule, route_map;
 
   this.add = function(rules) {

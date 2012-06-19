@@ -35,6 +35,8 @@
   var _ = i18n.gettext;
   var form = acre.require("lib/propbox/form.mjt");
   var propbox = acre.require("lib/propbox/form.mjt");
+  var INBOUND = _("&#8678; /type/namespace/keys");
+  var OUTBOUND = _("&#8680; /type/object/key");
 </acre:script>
 
 <acre:block def="add_key_form(id, is_ns, lang)">
@@ -57,11 +59,11 @@
             <select name="p">
               <option value="/type/namespace/keys" 
                       acre:attrs="is_ns ? {selected:'selected'} : {}">
-                ${_("&#8678; /type/namespace/keys")}
+                ${INBOUND}
               </option>
               <option value="/type/object/key" 
                       acre:attrs="!is_ns ? {selected:'selected'} : {}">
-                ${_("&#8680; /type/object/key")}</option>
+                ${OUTBOUND}</option>
             </select>
           </div>
           <div class="form-row">
@@ -118,11 +120,12 @@
             <select name="p" disabled="disabled">
               <option value="/type/namespace/keys" 
                       acre:attrs="is_ns ? {selected:'selected'} : {}">
-                ${_("&#8678; /type/namespace/keys")}
+                ${INBOUND}
               </option>
               <option value="/type/object/key" 
                       acre:attrs="!is_ns ? {selected:'selected'} : {}">
-                ${_("&#8680; /type/object/key")}</option>
+                ${OUTBOUND}
+              </option>
             </select>
           </div>
           <div class="form-row">

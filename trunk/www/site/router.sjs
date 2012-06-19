@@ -97,7 +97,7 @@ function init_site_rules(lib) {
     fs_routing: lib + "/routing/rules_dump.sjs",
     schema_warmer: lib + "/schema/warmer.controller",
     script_warmer: lib + "/scripts/warmer.controller"
-  }
+  };
 
 
   // *********** HOST *************
@@ -271,7 +271,7 @@ function init_site_rules(lib) {
           "key": "editors",
           "app": "users",
           "script": "group.tab"
-        },
+        }
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
       "gear": [
         {
@@ -511,6 +511,31 @@ function init_site_rules(lib) {
           "script": "writes.tab"
         }
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS))
+    },
+    {
+      "name": _("Namespace"),
+      "type": "/type/namespace",
+      "promises":  h.extend(true, [], DEFAULT_PROMISES),
+      "tabs": [
+        {
+          "name": _("Keys"),
+          "key": "keys",
+          "app": "sameas",
+          "script": "sameas.tab"
+        },
+        {
+          "name": _("Properties"),
+          "key": "props",
+          "app": "topic",
+          "script": "topic.tab"
+        },
+        {
+          "name": _("Links"),
+          "key": "links",
+          "app": "triples",
+          "script": "triples.tab"
+        }
+      ]
     },
     {
       "name": _("Topic"),

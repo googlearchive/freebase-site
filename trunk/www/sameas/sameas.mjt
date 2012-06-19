@@ -43,6 +43,8 @@
   var DELETE = _("Delete");
   var TYPE_OBJECT_KEY = "/type/object/key";
   var TYPE_NAMESPACE_KEYS = "/type/namespace/keys";
+  var INBOUND = _("&#8678; /type/namespace/keys");
+  var OUTBOUND = _("&#8680; /type/object/key");
 </acre:script>
 
 <acre:block def="head()">
@@ -93,11 +95,11 @@
     </option>
     <option value="/type/namespace/keys"
             acre:attrs="c.filters.property === '/type/namespace/keys' ? {'selected':'selected'} : {}">
-      ${_("inbound")}
+      ${INBOUND}
     </option>
     <option value="/type/object/key"
             acre:attrs="c.filters.property === '/type/object/key' ? {'selected':'selected'} : {}"> 
-      ${_("outbound")}
+      ${OUTBOUND}
     </option>
   </select>
 </acre:block>
@@ -183,11 +185,11 @@
       <span class="wrapper">
         <acre:block if="outgoing">
           <span title="${TYPE_OBJECT_KEY}" class="arrow arrow-right key-property"
-                data-id="/type/object/key">&#8680;</span>
+                data-id="/type/object/key">${OUTBOUND}</span>
         </acre:block>
         <acre:block else="">
           <span title="${TYPE_NAMESPACE_KEYS}" class="arrow arrow-left key-property"
-                data-id="/type/namespace/keys">&#8678;</span>
+                data-id="/type/namespace/keys">${INBOUND}</span>
         </acre:block>
         ${key_menu(link)}
       </span>

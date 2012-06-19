@@ -29,8 +29,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+var h = acre.require("helper/helpers.sjs");
+
 if (rules && rules.dumped_rules) {
 	acre.response.status = 200;
 	acre.response.set_header('content-type', 'text/javascript; charset=utf-8');
-	acre.write(JSON.stringify(rules.dumped_rules, null, 2));
+	var dump = h.extend({}, rules.dumped_rules);
+	dump.apps = rules.labels;
+	acre.write(JSON.stringify(dump, null, 2));
 }

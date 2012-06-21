@@ -72,7 +72,7 @@ SCENARIO = {
   'BASIC': 20
 }
 # increment this to v1 etc, as we change the test scenario
-SCENARIO_VERSION=''
+SCENARIO_VERSION='v1'
 
 def runtest(host, site_path):
   """run sitedeploy speedtest repeatedly output mwtestdb results."""

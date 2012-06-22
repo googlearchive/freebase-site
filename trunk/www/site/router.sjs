@@ -567,7 +567,7 @@ function init_site_rules(lib) {
               "script": "queries/topic.sjs",
               "promise": "notability"
           }]
-        }
+        }        
       ],
       "nav_keys": [
         {
@@ -737,7 +737,8 @@ function init_site_rules(lib) {
           "key": "keys",
           "app": "sameas",
           "script": "sameas.tab"
-        }
+        },
+        
       ]
     }
   ];
@@ -757,10 +758,15 @@ function init_site_rules(lib) {
     {prefix:"/robots.txt",         app:"site", script:"robots.sjs"},
 
     {prefix:"/flyout",             app:"lib", script:"flyout/flyout.controller"},
+
     {prefix:"/account/claim",      app:"account", script:"claim.controller"},
+
     //
     // Redirects for legacy urls
     //
+
+    // Review queue
+    {prefix:"/review/queue",       app:"review", script:"queue.controller"},    
 
     // Homepage
     {prefix:"/index",                   url:"/", redirect: 301},

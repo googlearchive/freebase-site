@@ -82,7 +82,6 @@
       //$("> .data-table > tbody > .empty-row, > .data-list > .empty-row", ls).hide();
       var body = $("> .data-table > tbody, > .data-list", ls);
 
-      var head_row = $(".edit-row-head", html);
       var edit_row = $(".edit-row", html);
       var submit_row = $(".edit-row-submit", html);
       var event_prefix = "propbox.edit.prop_add.";
@@ -99,16 +98,12 @@
         },
         // jQuery objects
         body: body,
-        head_row: head_row,
         edit_row: edit_row,
         submit_row: submit_row,
 
         structure: structure
       };
       edit_row
-        .bind(event_prefix + "cancel", function(e) {
-          prop_section.removeClass("editing");
-        })
         .bind(event_prefix + "success", function() {
           if (structure.unique) {
             edit_row.trigger(options.event_prefix + "cancel");
@@ -158,6 +153,11 @@
         return;
       }
 
+      if (!o.length) {
+          options.edit_row.trigger(options.event_prefix + "error", "Please specify a valid value");
+          return;
+      }
+
       $.ajax($.extend(ajax_options, {
         onsuccess: function(data) {
           var new_row = $(data.result.html);
@@ -165,9 +165,6 @@
           propbox.init_menus(new_row, true);
           $(".nicemenu-item.edit").show();
           propbox.kbs.set_next(null, new_row, true);
-        },
-        onerror: function(errmsg) {
-          options.edit_row.trigger(options.event_prefix + "error", errmsg);
         }
       }));
     },
@@ -218,7 +215,6 @@
     },
       
     value_edit: function(prop_section, prop_row, html, structure) {
-      var head_row = $(".edit-row-head", html);
       var edit_row = $(".edit-row", html);
       var submit_row = $(".edit-row-submit", html);
       var event_prefix = "propbox.edit.value_edit.";
@@ -234,19 +230,12 @@
         },
         // jQuery objects
         row: prop_row,
-        head_row: head_row,
         edit_row: edit_row,
         submit_row: submit_row,
 
         structure: structure
       };
       edit_row
-        .bind(event_prefix + "success", function(e) {
-          prop_section.removeClass("editing");
-        })
-        .bind(event_prefix + "cancel", function(e) {
-          prop_section.removeClass("editing");
-        })
         .bind(event_prefix + "delete", function() {
           edit_row.trigger(event_prefix + "cancel");
           propbox.edit.value_delete_begin(prop_section, prop_row);
@@ -292,9 +281,6 @@
           propbox.init_menus(new_row, true);
           $(".nicemenu-item.edit").show();
           propbox.kbs.set_next(null, new_row, true);
-        },
-        onerror: function(errmsg) {
-          options.edit_row.trigger(options.event_prefix + "error", errmsg);
         }
       }));
     },
@@ -337,7 +323,6 @@
               }
             }));
           });
-          prop_section.removeClass("editing");
         }
       }));
     },
@@ -364,10 +349,6 @@
         form: html,
         structure: structure
       };
-      html
-        .bind(event_prefix + "cancel", function(e) {
-          prop_section.removeClass("editing");
-        });
       formlib.init_modal_form(options);
     },
 
@@ -433,9 +414,6 @@
                 $(".nicemenu-item.edit").show();
                 propbox.kbs.set_next(null, new_row, true); 
                 options.form.trigger(options.event_prefix + "cancel"); 
-            },
-            onerror: function(errmsg) {
-                options.form.trigger(options.event_prefix + "error", errmsg);
             }
         }));
     },
@@ -465,10 +443,6 @@
         // can't edit document modal dialog?
         cant_edit: html.is(".cant-edit-document-form")
       };
-      html
-        .bind(event_prefix + "cancel", function(e) {
-          prop_section.removeClass("editing");
-        });
       if (options.cant_edit) {
           /**
            * You can't edit articles with /common/document/source_uri.
@@ -520,7 +494,6 @@
      */
     prop_add_image: function(prop_section) {
         alert("Add image not yet implemented");
-        prop_section.removeClass("editing");
     },
 
     /**
@@ -528,7 +501,6 @@
      */
     value_edit_image: function(prop_section) {
         alert("Edit image not yet implemented");
-        prop_section.removeClass("editing");
     },
 
 

@@ -234,45 +234,83 @@
 
   fb.status = (function(){
       var SECONDS = 1000;
+      var LOG_TYPES = ['notice', 'info', 'warning', 'success', 'error'];
+      var page_state = null;
+      var status_msg = null;
+      var close = null;
+      var timer = null;
+      var last_level = null;
+                   
+      function _hide() {
+          if (page_state) {
+              page_state.slideUp(300);
+          }
+          last_level = null;
+          return false;
+      };
 
-      var timer;
-      var hide_func;
-      var last_level;
-
-      function _show(log_type,str,duration) {
-          var el = '#page-state';
-          if (last_level && last_level === 'error') {
+      function _show(log_type, str, duration, sticky) {
+          if (page_state === null) {
+              page_state = $('#page-state');
+              status_msg = $(".status-msg", page_state);
+              close = $(".close", page_state);
+              close.click(_hide);
+          }
+          if (last_level === 'error') {
               // If we already displaying an error then don't display any more messages
               // (The previous error should have terminated all tasks, so we shouldn't get here)
-              console.error('MessagePanel: Already displaying error. Ignoring: '+log_type+': '+str);
-          } else {
-              // TODO - figure out how to get the tid
-              var tid = null;
-              $(el).hide().addClass(log_type).text(str);
+              console.warn('MessagePanel: Already displaying error. Ignoring: ', log_type, str);
+          }
+          else {
+              page_state.hide();
+              $.each(LOG_TYPES, function(i, t) {
+                  page_state.removeClass(t);
+              });
+              page_state.addClass(log_type);
+              status_msg.text(str);
               last_level = log_type;
               window.clearTimeout(timer);
-              hide_func = function(){
-                  $(el).slideUp(300).empty().removeClass(log_type);
-                  hide_func = null;
-                  last_level = null;
-              };
-              timer = window.setTimeout(hide_func, duration);
-              $(el).slideDown(300);
+              if (sticky) {
+                  close.show();
+                  page_state.slideDown(300);
+              }
+              else {
+                  close.hide();
+                  page_state.slideDown(300);
+                  timer = window.setTimeout(_hide, duration);
+              }
           }
-      }
+          return false;
+      };
 
       function _clear() {
           window.clearTimeout(timer);
-          if (hide_func) { hide_func(); }
-      }
+          if (last_level === 'error') {
+              console.warn('MessagePanel: Displaying error. Ignoring clearing status.');
+          }
+          else {
+              _hide();
+          }
+      };
 
-      // doing() is for tasks that take time - the message MUST be cancelled with info() or error()
       return {
-          doing : function(str, tid) {  _show('notice',str, 2000 * SECONDS, tid); return ''; },
-          info  : function(str, tid) {  _show('info', str,    4 * SECONDS, tid); return ''; },
-          warning  : function(str, tid) {  _show('warning', str,    4 * SECONDS, tid); return ''; },
-          success : function(str, tid) {  _show('success',str,    6 * SECONDS, tid); return ''; },
-          error : function(str, tid) {  _show('error',str,    6 * SECONDS, tid); return ''; },
+          doing: function(str) {
+              // doing() is for tasks that take time.
+              // The message should be cancelled with clear().
+              return _show('notice', str, 2000 * SECONDS);
+          },
+          info: function(str, sticky) {
+              return _show('info', str, 4 * SECONDS, sticky);
+          },
+          warning: function(str, sticky) {
+              return _show('warning', str, 4 * SECONDS, sticky);
+          },
+          success: function(str, sticky) {
+              return _show('success', str, 6 * SECONDS, sticky);
+          },
+          error: function(str, sticky) {
+              return _show('error', str, 6 * SECONDS, sticky);
+          },
           clear : _clear
       };
   })();

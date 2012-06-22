@@ -423,26 +423,33 @@ Header
   font-size: 12px;
   font-weight: bold;
   text-shadow: 0 1px 0 rgba(255,255,255,0.8);
-  text-align: center;
+  overflow: auto;
+  max-height: 50%;
+  z-index: 60;
+
   .rounded_corners_bottom;
   .box_shadow(1px,1px,3px,rgba(0,0,0,0.7);
   .diagonal_stripes_left(12px);
 
   &.notice {
     background-color: desaturate(darken(@msg_blue, 10%), 5%);
+    text-align: center;
   }
 
   &.error {
     background-color: desaturate(darken(@msg_red, 5%), 5%);
+    text-align: left;
   }
 
   &.success {
     background-color: desaturate(darken(@msg_green, 5%), 5%);
+    text-align: center;
   }
 
   &.info, 
   &.warning {
     background-color: desaturate(darken(@msg_yellow, 30%), 5%);
+    text-align: center;
   }
 
   a,
@@ -452,6 +459,12 @@ Header
   }
 }
 
+#page-state .close-msg {
+    display: inline-block;
+    display: none;
+    float: right;
+    text-align: right;
+}
 
 
 .fbs-flyout-pane {

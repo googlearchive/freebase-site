@@ -147,10 +147,6 @@
 
     add_type: function(trigger, type_id) {
       trigger = $(trigger); // suggest input
-      if (trigger.is(".editing")) { // are we already editing?
-        return false;
-      }
-      trigger.addClass("editing");
 
       // incompatible type check
       function compatible_callback() {
@@ -160,7 +156,7 @@
       };
       function cancel_callback() {
         // try again        
-        trigger.removeClass("editing").focus();
+        trigger.focus();
       }
       function onload_callback() {
         // update .incompatible-topic with the current page topic name
@@ -180,10 +176,6 @@
 
     remove_type: function(trigger, type_id) {
       trigger = $(trigger);
-      if (trigger.is(".editing")) { // are we already editing?
-        return false;
-      }
-      trigger.addClass("editing");
       fb.get_script(fb.h.static_url("manage-type.mf.js"), function() {
         topic.manage_type.remove_type_begin(trigger, type_id);
       });

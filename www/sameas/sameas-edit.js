@@ -60,10 +60,6 @@
             body: body,
             form: form
           };
-          form
-            .bind(event_prefix + "cancel", function(e) {
-                trigger.removeClass("editing");
-            });
           formlib.init_modal_form(options);
         }
       }));
@@ -116,9 +112,6 @@
                 setTimeout(function() {
                     fb.status.info("Key successfully added");
                 });
-            },
-            onerror: function(errmsg) {
-                options.form.trigger(options.event_prefix + "error", errmsg);
             }
         }));
     },
@@ -268,10 +261,6 @@
                         row: key_row
                     };
                 }
-                form
-                    .bind(event_prefix + "cancel", function(e) {
-                        key_row.removeClass("editing");
-                    });
                 formlib.init_modal_form(options);
             }
         }));
@@ -319,9 +308,6 @@
                 setTimeout(function() {
                     fb.status.info("Key successfully edited");
                 });
-            },
-            onerror: function(errmsg) {
-                options.form.trigger(options.event_prefix + "error", errmsg);
             }
         }));
     },
@@ -375,10 +361,6 @@
                         row: key_row
                     };
                 }
-                form
-                    .bind(event_prefix + "cancel", function(e) {
-                        key_row.removeClass("editing");
-                    });
                 formlib.init_modal_form(options);
             }
         }));
@@ -402,9 +384,6 @@
                 setTimeout(function() {
                     fb.status.info("Key successfully deleted");
                 });                
-            },
-            onerror: function(errmsg) {
-                options.form.trigger(options.event_prefix + "error", errmsg);
             }
         }));
     },

@@ -114,12 +114,7 @@
     },
 
     save: function(e) {
-      fb.status.doing("Saving...");
       var trigger = $(this);
-      if (trigger.is(".editing")) { // are we already editing?
-        return false;
-      }
-      trigger.addClass("editing");
       fb.get_script(fb.h.static_url("query-edit.mf.js"), function() {
         qe.edit.save_submit(this);
       });
@@ -130,7 +125,7 @@
       window.location = fb.h.fb_url('/query', {
         q: fb.queryeditor.cuecard.queryEditor._editor.getCode(),
         autorun: 1
-      })
+      });
     }
     
   };

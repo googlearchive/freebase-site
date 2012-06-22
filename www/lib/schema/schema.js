@@ -124,9 +124,6 @@
             $.ajax($.extend(ajax_options, {
                 onsuccess: function(data) {
                     window.location = data.result.location;
-                },
-                onerror: function(errmsg) {
-                    options.form.trigger(options.event_prefix + "error", errmsg);
                 }
             }));
         },
@@ -178,9 +175,6 @@
             $.ajax($.extend(ajax_options, {
                 onsuccess: function(data) {
                     window.location = data.result.location;
-                },
-                onerror: function(errmsg) {
-                    options.form.trigger(options.event_prefix + "error", errmsg);
                 }
             }));
         },
@@ -234,9 +228,6 @@
             $.ajax($.extend(ajax_options, {
                 onsuccess: function(data) {
                     window.location = data.result.location;
-                },
-                onerror: function(errmsg) {
-                    options.form.trigger(options.event_prefix + "error", errmsg);
                 }
             }));
         },
@@ -289,9 +280,6 @@
             $.ajax($.extend(ajax_options, {
                 onsuccess: function(data) {
                     window.location = data.result.location;
-                },
-                onerror: function(errmsg) {
-                    options.form.trigger(options.event_prefix + "error", errmsg);
                 }
             }));
         },

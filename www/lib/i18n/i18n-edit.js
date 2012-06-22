@@ -71,6 +71,10 @@
           form.bind(event_prefix + "cancel", function() {
              // notify trigger, this is closing
              trigger.trigger(event_prefix + "cancel");
+          })
+          .bind(event_prefix + "error", function(e, msg) {
+            // notify trigger of error
+             trigger.trigger(event_prefix + "error", msg);
           });
 
           formlib.init_modal_form(options);
@@ -232,9 +236,6 @@
                   // close the modal dialog
                   options.form.trigger(options.event_prefix + "cancel");
               }
-          },
-          onerror: function(errmsg) {
-            options.form.trigger(options.event_prefix + "error", errmsg);
           }
         }));
       }

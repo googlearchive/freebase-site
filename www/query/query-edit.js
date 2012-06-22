@@ -110,13 +110,9 @@
 
       $.ajax($.extend(ajax_options, {
         onsuccess: function(data) {
-          formlib.cancel_modal_form(options);
           fb.status.info("Saved");
-          window.location = data.result.url;
-        },
-        onerror: function(errmsg) {
           formlib.cancel_modal_form(options);
-          fb.status.error(errmsg);
+          window.location = data.result.url;
         }
       }));
     },
@@ -133,10 +129,6 @@
           fb.status.info("Saved");
           fb.queryeditor.is_dirty = false;
           $("#save-query").addClass("disabled");
-        },
-        onerror: function(errmsg) {
-          fb.status.error(errmsg);
-          console.log("error");
         }
       }));
     }

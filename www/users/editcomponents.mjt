@@ -39,11 +39,6 @@
 
 <acre:block def="add_user_form(usergroup)">
   <tbody>
-    <tr class="edit-row-head">
-      <td colspan="4">
-        ${form.row_msg(_("Add a new user to this group"))}
-      </td>
-    </tr>
     <tr class="edit-row">
       <td colspan="4">
         <div class="form-field">
@@ -65,12 +60,12 @@
 </acre:block>
 
 <acre:block def="deleted_user(undo_data, userid)">
-  <tr class="edit-row-head row-msg row-msg-info">
+  <tr class="row-msg row-msg-info">
     <td colspan="4">
       <acre:script>
         var msg = userid + " has been removed.";
       </acre:script>
-      ${form.row_msg(msg, ".edit-row-head")}
+      ${form.row_msg(msg, ".row-msg")}
     </td>
   </tr>
 </acre:block>

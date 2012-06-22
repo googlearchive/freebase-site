@@ -91,24 +91,9 @@
               mydata.namespace = data.namespace;
             }
           }
-          function compatible_callback() {
-            self.container.data("data", mydata);
-            self.container.removeClass("error").addClass("valid");
-            self.container.trigger("valid");
-          }
-          if (data.id && !self.container.is(".enumerated") && 
-              self.metadata.type && self.options.incompatible_types) {
-            // perform incompatible type check
-            self.options.incompatible_types.check(data.id, self.metadata.type, {
-                compatible: compatible_callback,
-                incompatible: self.options.incompatible_types.inline_suggest_incompatible_callback(self.input, {
-                    onConfirm: compatible_callback
-                })
-            });
-          }
-          else {
-            compatible_callback();
-          }
+          self.container.data("data", mydata);
+          self.container.removeClass("error").addClass("valid");
+          self.container.trigger("valid");
         })
         .bind("invalid.data_input", function(e) {
           // don't propagate data_input events
@@ -117,7 +102,7 @@
           self.container.removeClass("valid").addClass("error");
           self.container.trigger("invalid");
         })
-        .bind("empty.data_input", function() {
+        .bind("empty.data_input", function(e) {
           // don't propagate data_input events
           e.stopPropagation();
           var mydata = {
@@ -148,7 +133,10 @@
           suggest_options =
             o.suggest_impl.instance(type, true, self.metadata && self.metadata.lang || o.lang);
         }
-        i.validate_topic(suggest_options)
+        i.validate_topic($.extend({
+            incompatible_types: self.options.incompatible_types,
+            expected_type: type
+          }, suggest_options))
           .bind("valid.data_input", function(e, data) {
             self.fb_select(data);
           })
@@ -302,11 +290,40 @@
         })
         .bind("fb-select.validate_topic", function(e, data) {
           self.input.val(data.name != null ? data.name : data.id);
-          self.valid(data);
+          // check compatibility before making it valid
+          self.incompatible_types_check(data);
         })
         .bind("fb-select-new.validate_topic", function(e, data) {
           self.valid(data);
         });
+    },
+
+    /**
+     * Check if the fb-select'ed data.id is compatible with the expected_type.
+     * To enable this, $.validate_topic must have been initialized with options
+     * containing "expected_type" type id and "incompatible_types" implementation.
+     * (@see lib/incompatible_types/incompatible-types.js)
+     * 
+     * If either of these options are not specified, 
+     * then this check will automatically make the data "valid".
+     */
+    incompatible_types_check: function(data) {
+        var self = this;
+        if (self.options.incompatible_types && self.options.expected_type) {
+            self.options.incompatible_types.check(data.id, self.options.expected_type, {
+                compatible: function() {
+                    self.valid(data);
+                },
+                incompatible: self.options.incompatible_types.inline_suggest_incompatible_callback(self.input, {
+                    onConfirm: function() {
+                        self.valid(data);
+                    }
+                })
+            });
+        }
+        else {
+            this.valid(data);
+        }
     },
 
     invalid: function() {

@@ -70,6 +70,9 @@
              url: fb.h.ajax_url("lib/incompatible_types/incompatible_types.ajax"),
              data: {id:topic_id, type:type_id},
              dataType: "json",
+             beforeSend: function() {
+                 fb.status.doing("Checking compatibility...");
+             },
              success: function(data) {
                  var result = data.result;
                  if ($.isEmptyObject(result)) {
@@ -81,6 +84,12 @@
                      // incompatible types
                      callbacks.incompatible(topic_id, type_id, result);
                  }
+             },
+             error: function(xhr) {
+                 fb.status.error(xhr.responseText);
+             },
+             complete: function() {
+                 fb.status.clear();
              }
          });
      },

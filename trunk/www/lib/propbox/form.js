@@ -37,6 +37,9 @@
 
    var formlib = window.formlib = {
 
+     // for success/error/info/warning messages
+     status: status,
+
      /**
       * generic form
       */
@@ -50,8 +53,9 @@
                  formlib.cancel(options);
              })
              .bind(event_prefix + "error", function(e, msg) {
-                 formlib.error(options, msg);
                  options.form.removeClass("loading");
+                 formlib.disable_submit(options);
+                 status.error(msg, true);
              })
              .bind(event_prefix + "success", function() {
                  options.form.removeClass("loading");
@@ -82,9 +86,6 @@
          $(document.activeElement).blur();
        }
 
-       // clear messages
-       formlib.clear_message(options);
-
        // validate form
        if (!options.validate(options)) {
          return;
@@ -108,7 +109,7 @@
       */
 
      /**
-      * Inline add form. The form is made up of three rows: (1) head_row, (2) edit_row, and (3) submit_row.
+      * Inline add form. The form is made up of three rows: (1) edit_row, and (2) submit_row.
       * These rows are appended to the end of options.body, in order.
       * Ater successful submit, the new row will added to the end of the body right before the form rows.
       *
@@ -121,7 +122,6 @@
       * - reset:Function (required) - The callback to reset the form after a successful submit to continue add form.
       * - trigger:jQuery obj (required) - The "Add new" button that triggered the form.
       * - body:jQuery obj (required) - The list or table (<[o|u]l> or <tbody>) that will inline the form contents.
-      * - head_row:jQuery obj (required) - The heading of the form. Also used for status messages (".edit-row-head").
       * - edit_row:jQuery obj (required) - The form content including all visible inputs (".edit-row").
       * - submit_row:jQuery obj (required) - The submit buttons (submit and cancel) and hidden inputs (".edit-row-submit").
       */
@@ -137,8 +137,9 @@
            formlib.cancel_inline_add_form(options);
          })
          .bind(event_prefix + "error", function(e, msg) {
-           formlib.error(options, msg);
            options.edit_row.removeClass("loading");
+           formlib.disable_submit(options);
+           status.error(msg, true);
          })
          .bind(event_prefix + "success", function() {
            options.edit_row.removeClass("loading");
@@ -154,7 +155,6 @@
          options.trigger.parents(".trigger-row:first").hide();
        }
        options.body
-         .append(options.head_row)
          .append(options.edit_row)
          .append(options.submit_row);
        options.init(options);
@@ -176,9 +176,6 @@
          $(document.activeElement).blur();
        }
 
-       // clear messages
-       formlib.clear_message(options);
-
        // validate form
        if (!options.validate(options)) {
          return;
@@ -192,7 +189,7 @@
      },
 
      success_inline_add_form: function(options, new_row) {
-       options.head_row.before(new_row);
+       options.edit_row.before(new_row);
        // i18n'ize dates and numbers
        i18n.ize(new_row);
        options.reset(options);
@@ -200,7 +197,6 @@
      },
 
      cancel_inline_add_form: function(options) {
-       options.head_row.remove();
        options.edit_row.remove();
        options.submit_row.remove();
        if (options.trigger) {
@@ -214,7 +210,7 @@
       */
 
      /**
-      * Inline edit form. The form is made up of three rows: (1) head_row, (2) edit_row, and (3) submit_row.
+      * Inline edit form. The form is made up of three rows: (1) edit_row, and (2) submit_row.
       * These rows are appended next to options.row and options.row is hidden.
       * After successful submit, options.row will be replaced by the newly edited row.
       *
@@ -226,7 +222,6 @@
       * - submit:Function (required) - The callback to submit the form.
       *
       * - row:jQuery obj (required) - The row being edited.
-      * - head_row:jQuery obj (required) - The heading of the form. Also used for status messages (".edit-row-head").
       * - edit_row:jQuery obj (required) - The form content including all visible inputs (".edit-row").
       * - submit_row:jQuery obj (required) - The submit buttons (submit and cancel) and hidden inputs (".edit-row-submit").
       */
@@ -240,8 +235,9 @@
            formlib.cancel_inline_edit_form(options);
          })
          .bind(event_prefix + "error", function(e, msg) {
-           formlib.error(options, msg);
            options.edit_row.removeClass("loading");
+           formlib.disable_submit(options);
+           status.error(msg, true);
          })
          .bind(event_prefix + "success", function() {
            options.edit_row.removeClass("loading");
@@ -255,7 +251,6 @@
        formlib.init_submit_cancel(options);
        options.row.hide();
        options.row
-         .before(options.head_row)
          .before(options.edit_row)
          .before(options.submit_row);
        options.init(options);
@@ -276,9 +271,6 @@
        if (document.activeElement) {
          $(document.activeElement).blur();
        }
-
-       // clear messages
-       formlib.clear_message(options);
 
        // validate form
        if (!options.validate(options)) {
@@ -301,13 +293,10 @@
      },
 
      cancel_inline_edit_form: function(options) {
-       options.head_row.remove();
        options.edit_row.remove();
        options.submit_row.remove();
        options.row.show();
      },
-
-
 
      /**
       * DELETE (row)
@@ -352,8 +341,9 @@
            formlib.cancel_modal_form(options);
          })
          .bind(event_prefix + "error", function(e, msg) {
-           formlib.error(options, msg);
            options.form.removeClass("loading");
+           formlib.disable_submit(options);
+           status.error(msg, true);
          })
          .bind(event_prefix + "success", function() {
            options.form.removeClass("loading");
@@ -365,6 +355,10 @@
            formlib.disable_submit(options);
          });
        formlib.init_submit_cancel(options);
+       if (options.form.data("overlay")) {
+           // remove existing overlay data
+           options.form.removeData("overlay");
+       }
        options.form.overlay({
          close: ".modal-buttons .cancel",
          closeOnClick: false,
@@ -399,9 +393,6 @@
          $(document.activeElement).blur();
        }
 
-       // clear messages
-       formlib.clear_message(options);
-
        // validate form
        if (!options.validate(options)) {
          return;
@@ -416,6 +407,7 @@
 
      cancel_modal_form: function(options) {
        options.form.data("overlay").close();
+       options.form.next("#exposeMask").hide();
      },
 
 
@@ -542,35 +534,6 @@
        return true;
      },
 
-     error: function(options, msg) {
-       formlib.disable_submit(options);
-       return formlib.message(options, msg, "error");
-     },
-
-     message: function(options, msg, type) {
-       var msg_row = options.head_row;
-       if (!msg_row && options.form) {
-           msg_row = $(".row-msg", options.form);
-       }
-       if (msg_row && msg_row.length) {
-           msg_row.find(".close-msg").css("visibility", "visible").next().find(".msg-default").hide().next().text(msg);
-           msg_row.addClass("row-msg");
-           if (type) {
-               msg_row.addClass("row-msg-" + type);
-           }
-       }
-     },
-
-     clear_message: function(options) {
-       // TODO: handle modal messages AND inline messages
-/**
-       var msg_row = options.head_row;
-       msg_row.find(".close-msg").css("visibility", "hidden").next().find(".msg-default").show().next().html("&nbsp;");
-       msg_row.removeClass("row-msg");
-**/
-     },
-
-
      /**
       * $.ajax default ajax begin/submit options
       */
@@ -579,9 +542,11 @@
        var ajax_options = $.extend(formlib._default_ajax_options("GET"), {
            beforeSend: function() {
                status.doing("Loading...");
-           },
+           },           
            complete: function() {
-               status.clear();
+               if (!this.formlib_error) {
+                   status.clear();
+               }
            }
        });
        return ajax_options;
@@ -591,15 +556,18 @@
        options = options || {};
        var ajax_options = $.extend(formlib._default_ajax_options("POST"), options.ajax, {
            beforeSend: function() {
+               this.formlib_options = options;
                status.doing("Saving...");
-               if (options.beforeSend) {
-                   options.beforeSend.apply(null, arguments);
+               if ($.isFunction(options.beforeSend)) {
+                   options.beforeSend.apply(this, arguments);
                }
            },
            complete: function() {
-               status.clear();
-               if (options.complete) {
-                   options.complete.apply(null, arguments);
+               if (!this.formlib_error) {
+                   status.clear();
+               }
+               if ($.isFunction(options.complete)) {
+                   options.complete.apply(this, arguments);
                }
            }
        });
@@ -618,42 +586,51 @@
          dataType: "json",
          type: method || "GET",
          success: function(data, textStatus, xhr) {
-           if (!formlib.check_ajax_success.apply(this, arguments)) {
-             return this._error.apply(this, [xhr]);
+           if (!formlib.check_ajax_success(data, textStatus, xhr)) {
+             return this._error(xhr);
            }
            // onsuccess is our own success handler that's called after
            // the boiler plate check_ajax_success
-           if (this.onsuccess) {
-             this.onsuccess.apply(this, arguments);
+           if ($.isFunction(this.onsuccess)) {
+             this.onsuccess(data, textStatus, xhr);
            }
          },
          error: function(xhr) {
-           formlib.check_ajax_error.apply(this, arguments);
-           // onerror is our own success handler that's called after
-           // the boiler plate check_ajax_error
-           return this._error.apply(this, arguments);
+           return this._error(xhr);
          },
          _error: function(xhr) {
            // handle 401: Not authorized
            if (xhr.status === 401) { // unauthorized
+             status.info("Authorizing...");
              $(window).trigger("fb.user.unauthorized");
              return;
            }
-           if (this.onerror) {
-             var args = [xhr.responseText].concat(Array.prototype.slice.call(arguments));
-             this.onerror.apply(this, args);
+           console.error(xhr.responseText);
+           this.formlib_error = true;
+           var errmsg = formlib.get_error_message(xhr.responseText);
+           if ($.isFunction(this.onerror)) {
+             this.onerror(errmsg, xhr);
            }
            else {
-             var data = {};
-             var ajax_options = this;
-             $.each(["url", "data", "dataType", "type"], function(i,k) {
-               data[k] = ajax_options[k];
-             });
-             $.each(["status", "statusText", "responseText"], function(i,k) {
-               data[k] = xhr[k];
-             });
-             data.responseHeaders = xhr.getAllResponseHeaders();
-             //$(window).trigger("fb.user.feedback", data);
+             var form_content = null;
+             if (this.formlib_options) {
+                 if (this.formlib_options.form) {
+                     // This is a modal dialog. 
+                     // Close on error
+                     this.formlib_options.form.trigger(this.formlib_options.event_prefix + "cancel");
+                     form_content = this.formlib_options.form;
+                 }
+                 else {
+                     form_content = this.formlib_options.edit_row;
+                 }
+                 
+             }
+             if (form_content) {
+                 form_content.trigger(this.formlib_options.event_prefix + "error", errmsg);
+             }
+             else {
+                 status.error(errmsg, true);
+             }
            }
          }
        };
@@ -664,28 +641,14 @@
       */
      check_ajax_success: function(data, textStatus, xhr) {
        // TODO: do we need to handle any freebase api specific codes here?
-       return formlib.check_api_response.apply(this, arguments);
-     },
-
-     /**
-      * "this" is $.ajax scope
-      */
-     check_ajax_error: function(xhr) {
-       var data = xhr.responseText;
-       try {
-         data = JSON.stringify(data);
-       }
-       catch(ex) {
-         // not JSON
-       }
-       return formlib.check_api_response.apply(this, [data, xhr.statusText, xhr]);
+       return formlib.check_api_response(data, textStatus, xhr);
      },
 
      /**
       * "this" is $.ajax scope
       */
      check_api_response: function(data, textStatus, xhr) {
-       if (typeof data === "object") {
+       if ($.isPlainObject(data)) {
          // JSON
          if (data.code !== "/api/status/ok") {
            return false;
@@ -695,6 +658,26 @@
          return false;
        }
        return true;
+     },
+
+     get_error_message: function(msg) {
+         // try JSON parse and extract the error message
+         var errmsg = null;
+         try {
+             var data = JSON.parse(msg);
+             if (data && 
+                 $.isArray(data.messages) && 
+                 data.messages.length) {
+                 errmsg = data.messages[0].message;
+             }             
+         }
+         catch (ex) {
+             // ignore;
+         }
+         if (!errmsg) {
+             errmsg = msg;
+         }
+         return errmsg;
      }
    };
 

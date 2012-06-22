@@ -240,10 +240,6 @@
 
     save: function(e) {
       var trigger = $(this);
-      if (trigger.is(".editing")) { // are we already editing?
-        return false;
-      }
-      trigger.addClass("editing");
       fb.get_script(fb.h.static_url("query-edit.mf.js"), function() {
         qe.edit.create_begin(this);
       });

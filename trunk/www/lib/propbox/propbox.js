@@ -171,10 +171,6 @@
 
     prop_add: function(context, unique) {
       var prop_section = $(context).parents(".submenu").data("headmenu").parents(".property-section");
-      if (prop_section.is(".editing")) {
-        return false;
-      }
-      prop_section.addClass("editing");
       propbox.get_script("/propbox-edit.mf.js", function() {
         propbox.edit.prop_add_begin(prop_section, unique);
       });
@@ -184,10 +180,6 @@
     value_edit: function(context) {
       var prop_row = $(context).parents(".submenu").data("headmenu").parents(".data-row:first");
       var prop_section = prop_row.parents(".property-section");
-      if (prop_section.is(".editing")) {
-        return false;
-      }
-      prop_section.addClass("editing");
       propbox.get_script("/propbox-edit.mf.js", function() {
         propbox.edit.value_edit_begin(prop_section, prop_row);
       });
@@ -197,10 +189,6 @@
     value_delete: function(context) {
       var prop_row = $(context).parents(".submenu").data("headmenu").parents(".data-row:first");
       var prop_section = prop_row.parents(".property-section");
-      if (prop_section.is(".editing")) {
-        return false;
-      }
-      prop_section.addClass("editing");
       propbox.get_script("/propbox-edit.mf.js", function() {
         propbox.edit.value_delete_begin(prop_section, prop_row);
       });

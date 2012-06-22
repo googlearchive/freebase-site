@@ -43,10 +43,6 @@
     **/
     add_user: function(e) {
       var trigger = $(this);
-      if (trigger.is(".editing")) { // are we already editing?
-        return false;
-      }
-      trigger.addClass("editing");
       group.add_user_begin(trigger, trigger.parents("table:first").find("tbody:first"));
       return false;
     },
@@ -54,7 +50,7 @@
     add_user_begin: function(trigger, body) {
       var md = body.metadata();
       if (!md.id) {
-        console.error("Missing usergroup id.")
+        console.error("Missing usergroup id.");
         return false;
       }
       $.ajax($.extend(formlib.default_begin_ajax_options(), {
@@ -62,7 +58,6 @@
         data: {id: md.id},
         onsuccess: function(data) {
           var html = $(data.result.html);
-          var head_row = $(".edit-row-head", html);
           var edit_row = $(".edit-row", html);
           var submit_row = $(".edit-row-submit", html);
           var event_prefix = "fb.group.add_user.";
@@ -80,14 +75,9 @@
             // jQuery objects
             trigger: trigger,
             body: body,
-            head_row: head_row,
             edit_row: edit_row,
             submit_row: submit_row
           };
-          edit_row
-            .bind(event_prefix + "cancel", function(e) {
-              trigger.removeClass("editing");
-            });
           formlib.init_inline_add_form(options);
         }
       }));
@@ -126,16 +116,12 @@
           propbox.init_menus(new_row, true);
           $(".edit", new_row).show();
           group.check_remaining_users(options.body);
-          options.edit_row.removeClass("editing");
-        },
-        onerror: function(errmsg) {
-          options.edit_row.trigger(options.event_prefix + "error", errmsg);
         }
       }));
     },
 
     add_user_reset: function(options) {
-      var user = $(":input[name=user]", options.edit_row)
+      var user = $(":input[name=user]", options.edit_row);
       user.val("").focus().trigger("textchange");
     },
 
@@ -145,10 +131,6 @@
     **/
     remove_user: function(context) {
       var user_row = $(context).parents(".submenu").data("headmenu").parents(".data-row:first");
-      if (user_row.is(".editing")) {
-        return false;
-      }
-      user_row.addClass("editing");
       group.remove_user_begin(user_row, user_row.parents("table:first").find("tbody:first"));
       return false;
     },
@@ -185,7 +167,6 @@
             }));
           });
           group.check_remaining_users(body);
-          user_row.removeClass("editing");
         }
       }));
     },

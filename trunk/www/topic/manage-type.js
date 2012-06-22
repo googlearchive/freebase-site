@@ -54,7 +54,7 @@
             new_items.fadeIn();
           }
 
-          trigger.removeClass("editing").focus().select();
+          trigger.focus().select();
         }
       }));
     },
@@ -68,7 +68,7 @@
           var trigger_row = trigger.parent("li");
           var result = $(data.result.html);
           trigger_row.hide().before(result);
-          trigger.removeClass("editing").focus().select();
+          trigger.focus().select();
         }
       }));
     },

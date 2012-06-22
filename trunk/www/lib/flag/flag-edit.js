@@ -52,13 +52,6 @@
             // jQuery objects
             form: form
           };
-          form
-            .bind(event_prefix + "cancel", function(e) {
-              trigger.removeClass("editing");
-            })
-            .bind(event_prefix + "submit", function(e) {
-              trigger.removeClass("editing");
-            });
           formlib.init_modal_form(options);
         }
       }));
@@ -96,9 +89,6 @@
       $.ajax($.extend(ajax_options, {
         onsuccess: function(data) {
           window.location.reload(true);
-        },
-        onerror: function(errmsg) {
-          options.form.trigger(options.event_prefix + "error", errmsg);
         }
       }));
     },

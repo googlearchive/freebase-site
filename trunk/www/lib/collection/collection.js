@@ -97,10 +97,6 @@
 
     row_edit: function(context) {
       var prop_row = $(context).parents(".submenu").data("headmenu").parents(".data-row:first");
-      if (prop_row.is(".editing")) {
-        return false;
-      }
-      prop_row.addClass("editing");
       fb.get_script(fb.h.ajax_url("lib/collection/collection-edit.mf.js"), function() {
         collection.edit.row_edit_begin(prop_row);
       });

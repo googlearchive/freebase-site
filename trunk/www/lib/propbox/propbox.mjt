@@ -513,11 +513,6 @@ propbox edit forms
 
 <acre:block def="prop_add_form_simple(topic_id, prop_structure, lang)">
   <ul class="edit-form ${JSON.stringify(prop_structure)}">
-    <li class="edit-row-head">
-      <span class="wrapper">
-        ${form.row_msg("&nbsp;")}
-      </span>
-    </li>
     <li class="add-row edit-row clear">
       ${form_field(prop_structure, null, lang)}
     </li>
@@ -533,17 +528,6 @@ propbox edit forms
 <acre:block def="prop_add_form_cvt(topic_id, prop_structure, lang)">
   <table class="edit-form ${JSON.stringify(prop_structure)}">
     <tbody>
-      <tr class="edit-row-head">
-        <td colspan="${prop_structure.properties.length}">
-          <ul class="data-list">
-            <li>
-              <span class="wrapper">
-                ${form.row_msg("&nbsp;")}
-              </span>
-            </li>
-          </ul>
-        </td>
-      </tr>
       <tr class="add-cvt-row edit-row">
         <acre:block for="subprop_structure in prop_structure.properties">
           <td>
@@ -696,17 +680,6 @@ propbox edit forms
   </acre:script>
   <table class="edit-form ${JSON.stringify(structure)}">
     <tbody>
-      <tr class="edit-row-head">
-        <td colspan="${prop_structure.properties.length}">
-          <ul class="data-list">
-            <li>
-              <span class="wrapper">
-                ${form.row_msg("&nbsp;")}
-              </span>
-            </li>
-          </ul>
-        </td>
-      </tr>
       <tr class="edit-row">
         <acre:block for="subprop_structure in prop_structure.properties">
           <td>
@@ -751,11 +724,6 @@ propbox edit forms
     var structure = h.extend({}, prop_structure, {values: [prop_value]});
   </acre:script>
   <ul class="edit-form ${JSON.stringify(structure)}">
-    <li class="edit-row-head">
-      <span class="wrapper">
-        ${form.row_msg("&nbsp;")}
-      </span>
-    </li>
     <li class="edit-row clear">
       ${form_field(prop_structure, prop_value, lang)}
     </li>
@@ -775,12 +743,12 @@ propbox edit forms
     var msg = h.template_sprintf(_("%s has been deleted."), tag_strong(value));
   </acre:script>
   <acre:block if="prop_structure.properties">
-    <tr class="edit-row-head row-msg row-msg-info">
+    <tr class="row-msg row-msg-info">
       <td colspan="${prop_structure.properties.length}">
         <ul class="data-list">
           <li>
             <span class="wrapper">
-              ${form.row_msg(msg, ".edit-row-head")}
+              ${form.row_msg(msg, ".row-msg")}
             </span>
           </li>
         </ul>
@@ -788,9 +756,9 @@ propbox edit forms
     </tr>
   </acre:block>
   <acre:block else="">
-    <li class="edit-row-head row-msg row-msg-info">
+    <li class="row-msg row-msg-info">
       <span class="wrapper">
-        ${form.row_msg(msg, ".edit-row-head")}
+        ${form.row_msg(msg, ".row-msg")}
       </span>
     </li>
   </acre:block>

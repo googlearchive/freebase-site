@@ -180,7 +180,6 @@
                   }
               })
               .bind(event_prefix + "cancel", function() {
-                  options.row.removeClass("editing");
                   if ($(window).data("reload.collection")) {
                       fb.status.success("Please reload to see your changes.");
                   }

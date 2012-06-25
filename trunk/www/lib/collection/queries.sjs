@@ -179,6 +179,31 @@ function get_paths(q, depth, top_type) {
   return paths;
 };
 
+function order_paths(paths, type) {
+  var type_paths = {};
+  type.properties.forEach(function(prop, i) {
+    type_paths[prop.id] = [i];
+    if (prop.expected_type.properties) {
+      prop.expected_type.properties.forEach(function(subprop, j) {
+        type_paths[prop.id + "." + subprop.id] = type_paths[prop.id + "." + h.id_key(subprop.id)] = [i, j];
+      });
+    }
+  });
+  return paths.sort(function(a, b) {
+    a = type_paths[a] || [];
+    b = type_paths[b] || [];
+    if (a.length !== b.length) {
+      return b.length - a.length;
+    }
+    for (var i=0, len=a.length; i<len; i++) {
+      if (a[i] !== b[i]) {
+        return b[i] - a[i];
+      }
+    }
+    return 0;
+  });
+};
+
 function query(query, opts) {
   opts = opts || {};
   var MID_PROP = "collection:mid";
@@ -212,7 +237,8 @@ function query(query, opts) {
         .then(function(r) {
           var is_mediator = r["/freebase/type_hints/mediator"];
           var default_paths = is_mediator ? [] : ["/type/object/name"];
-          var props = default_paths.concat(get_paths(q, 2, typeid));
+          var props = get_paths(q, 2, typeid);
+          props = default_paths.concat(order_paths(props, r));
           result.collection = collection(mids, props, i18n.lang);
           return deferred.all(result);
         });

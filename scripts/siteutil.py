@@ -1599,9 +1599,8 @@ class Acre:
       config_dir = os.path.join(c.options.site_dir, 'appengine-config')
 
       cmd = ['./acre', '-c', target, '-d', config_dir, 'appengine-deploy']
-      self.context.run_cmd(cmd, interactive=True)
-      return True
-
+      result, stderr = self.context.run_cmd(cmd, interactive=True)
+      return result
 
   def start(self, war=False, restart=False):
 

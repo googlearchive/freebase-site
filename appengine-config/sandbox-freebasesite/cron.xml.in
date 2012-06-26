@@ -1,22 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cronentries>
   <cron>
+    <url>/_schema_warmer?id=/film</url>
+    <description>Schema cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/_schema_warmer?id=/people</url>
+    <description>Schema cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/_schema_warmer?id=/location</url>
+    <description>Schema cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/_schema_warmer?id=/book</url>
+    <description>Schema cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/_schema_warmer?id=/tv</url>
+    <description>Schema cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/_schema_warmer?id=/organization</url>
+    <description>Schema cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/_schema_warmer?id=/business</url>
+    <description>Schema cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/_schema_warmer?id=/sports</url>
+    <description>Schema cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/_schema_warmer?id=/award</url>
+    <description>Schema cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/_schema_warmer?id=/medicine</url>
+    <description>Schema cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/_schema_warmer?id=/baseball</url>
+    <description>Schema cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/_schema_warmer?id=/education</url>
+    <description>Schema cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/_schema_warmer?id=/astronomy</url>
+    <description>Schema cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
     <url>/</url>
     <description>Cache warmup.</description>
-    <schedule>every 10 minutes</schedule>
+    <schedule>every 1 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/m/0l0mk</url>
+    <description>Cache warmup. (topic Santa Cruz).</description>
+    <schedule>every 2 minutes</schedule>
   </cron>
   <cron>
     <url>/schema</url>
-    <description>Cache warmup.</description>
-    <schedule>every 10 minutes</schedule>
-  </cron>
-  <cron>
-    <url>/film?schema</url>
-    <description>Cache warmup.</description>
-    <schedule>every 10 minutes</schedule>
-  </cron>
-  <cron>
-    <url>/film/film?schema</url>
     <description>Cache warmup.</description>
     <schedule>every 10 minutes</schedule>
   </cron>
@@ -29,17 +89,7 @@
     <url>/film/film</url>
     <description>Cache warmup.</description>
     <schedule>every 10 minutes</schedule>
-  </cron>
-  <cron>
-    <url>/film?community</url>
-    <description>Cache warmup.</description>
-    <schedule>every 10 minutes</schedule>
-  </cron>
-  <cron>
-    <url>/m/0l0mk</url>
-    <description>Cache warmup. (topic Santa Cruz).</description>
-    <schedule>every 10 minutes</schedule>
-  </cron>
+  </cron> 
   <cron>
     <url>/m/01skz_?inspect</url>
     <description>Cache warmup. (inspect Neko Case).</description>
@@ -50,4 +100,10 @@
     <description>Cache warmup.</description>
     <schedule>every 10 minutes</schedule>
   </cron>
+  <cron>
+    <url>/user/narphorium</url>
+    <description>Cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+
 </cronentries>

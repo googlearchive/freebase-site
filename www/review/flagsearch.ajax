@@ -45,7 +45,7 @@ var SPEC = {
             (params.kind)    ? validators.OneOf(params, "kind", {required:true, oneof:["merge", "split", "offensive", "delete"] }) : null,
             (params.domain)  ? validators.MqlId(params, "domain", {required:true}) : null, 
             (params.admin)   ? validators.OneOf(params, "admin", {required:true, oneof:["nonadmin", "adminonly", "both"] }) : null,
-            (params.cursor)  ? validators.String(params.cursor) : null                                   
+            (params.cursor)  ? validators.String(params.cursor, {required:true}) : null                                   
         ];
     },
     run: function(user, limit, voted, created, order, kind, domain, admin, cursor) {	

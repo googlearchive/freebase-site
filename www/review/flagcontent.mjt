@@ -126,7 +126,7 @@
         <acre:block if="flagInfo.item.length === 1">
             ${tag_a(flagInfo.item[0].name, flagInfo.item[0].url)}
         </acre:block>
-		<acre:block elif="flagInfo.item.length === 2"> 
+        <acre:block elif="flagInfo.item.length === 2"> 
             ${helper.template_sprintf(_("%s vs. %s"), tag_a(flagInfo.item[0].name, flagInfo.item[0].url), tag_a(flagInfo.item[1].name, flagInfo.item[1].url))}
         </acre:block>        
         <acre:block if="flagInfo.status"><span class="flagreview-admin-message">${_("(Admin queue)")}</span></acre:block>

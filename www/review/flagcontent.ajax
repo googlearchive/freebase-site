@@ -58,7 +58,7 @@ var SPEC = {
 function flagContent(flagMid, user) {
 
     var flagPromise = reviewHelpers.flagInfoQuery(flagMid);
-    var userPromise = reviewHelpers.userPermissionQuery(user.id);
+    var userPromise = reviewHelpers.usergroupQuery(user.id);
     
     return deferred.all([flagPromise, userPromise]).then(function(result){	       
 
@@ -117,7 +117,7 @@ function flagContent(flagMid, user) {
         for( var i in flagInfo.item) {
             flagInfo.item[i].url     = helper.fb_url(flagInfo.item[i].mid, [['props']]);
             flagInfo.item[i].bareUrl = helper.fb_url(flagInfo.item[i].url, "?bare=1");
-            flagInfo.item[i].name    = _(flagInfo.item[i].name);
+            flagInfo.item[i].name    = i18n.display_name(flagInfo.item[i]);
         }        
 
         return acre.markup.stringify(reviewContent.content(flagInfo));

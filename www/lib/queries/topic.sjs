@@ -65,16 +65,13 @@ var validators = acre.require("validator/validators.sjs");
  */
 
 /**
- * Filters to get
- * /type/object/type
- * /common/topic/notable_for
- * /common/topic/notable_type
- * /freebase/object_profile/linkcount
+ * We always want to get these properties
  */
 var REQUIRED_FILTERS = [
-    "/type/object/type", 
+    "/type/object/type",
+    "/common/topic/article", 
     "/common/topic/notable_for", 
-    "/common/topic/notable_type", 
+    "/common/topic/notable_types", 
     "/freebase/object_profile/linkcount"
 ];
 
@@ -86,7 +83,7 @@ function topic_structure(id, options) {
         lang: h.lang_code(lang)
     };
     if (options.domain === "all") {
-        // the default is to get "everything" including user/base domains
+        api_options.filter = ["all"].concat(REQUIRED_FILTERS);
     }
     else if (is_mql_id(options.domain)) {
         domain_filter = options.domain;
@@ -104,8 +101,7 @@ function topic_structure(id, options) {
         api_options.limit = 200;
     }
     else {
-        // all REQUIRED_FILTERS returned with commons
-        api_options.filter = ["commons"];
+        api_options.filter = ["commons"].concat(REQUIRED_FILTERS);
     }
     return freebase.get_topic(id, api_options)
         .then(function(topic_result) {

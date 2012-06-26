@@ -253,7 +253,7 @@
           if (page_state === null) {
               page_state = $('#page-state');
               status_msg = $(".status-msg", page_state);
-              close = $(".close", page_state);
+              close = $(".close-msg", page_state);
               close.click(_hide);
           }
           if (last_level === 'error') {

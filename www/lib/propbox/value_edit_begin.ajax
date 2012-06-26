@@ -49,7 +49,7 @@ var SPEC = {
     var namespace = null;
     if (params.p === "/type/object/key" || params.p === "/type/namespace/keys") {
       // namespace is required when editing keys
-      namespace = validators.MqlId(params, "namespace", {required:null});
+      namespace = validators.MqlId(params, "namespace", {required:true});
     }
     return [
       validators.MqlId(params, "s", {required:true}),           // subject id

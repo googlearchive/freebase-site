@@ -40,7 +40,7 @@ var queries = acre.require("propbox/queries.sjs");
 var topic_api = acre.require("queries/topic.sjs");
 
 function decorate_value(value, from_value) {
-  ["text", "uri", "lang"].forEach(function(k) {
+  ["text", "uri", "lang", "creator"].forEach(function(k) {
     if (k in from_value) {
       value[k] = from_value[k];
     }

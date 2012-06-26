@@ -29,6 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+var i18n = acre.require("lib/i18n/i18n.sjs");
 var freebase = acre.require("lib/promise/apis.sjs").freebase;
 var deferred = acre.require("lib/promise/apis.sjs").deferred;
 
@@ -42,7 +43,7 @@ function flagInfoQuery(flag) {
         "status": null,
         "item":[{ 
             "mid": null,
-            "name":null,
+            "name": i18n.mql.query.name(),
             "optional":true			 
         }],
         "judgments":[{
@@ -57,6 +58,7 @@ function flagInfoQuery(flag) {
             "vote": {
                 "name":null
             },
+            "timestamp":null,
             "flag": null,
             "optional":true
         }]				
@@ -67,15 +69,30 @@ function flagInfoQuery(flag) {
     }); 
 };
 
+function escalateFlagToConflicting(flag) {
+    var query = {
+        "mid": flag,
+        "type": "/freebase/review_flag",
+        "status": {
+            "type": "/freebase/flag_status",
+            "name": "Conflicting",
+            "connect": "update"
+        }
+    };
+    return freebase.mqlwrite(query).then(function(env){
+        return env.result;
+    });
+}
+
 // Returns promise with data containing which usergroups a user is a part of
-function userPermissionQuery(user) {
-    var permissionQuery = {
+function usergroupQuery(user) {
+    var query = {
         "id": user, 
         "mid": null, 
         "type": "/type/user",
         "usergroup" : []	    
     };
-    return freebase.mqlread(permissionQuery).then(function(env) {
+    return freebase.mqlread(query).then(function(env) {
         return env.result;
     }); 
 }
@@ -183,7 +200,9 @@ function deleteEntity(mid) {
 	        var link = links[i];
 	        var prop = link.master_property 			
 	
-            if( prop == "/type/object/permission") continue;
+            if( prop == "/type/object/permission") {
+                continue;
+            }
             prop = "prop" + i + ":" + prop;
 	
             if(link.target_value != null) {                				
@@ -197,7 +216,7 @@ function deleteEntity(mid) {
             }		
         }               
         
-		return freebase.mqlwrite(deleteQuery);
+        return freebase.mqlwrite(deleteQuery);
 
 	}, function(error) {
 		return deferred.resolved("Read links error: " + error);
@@ -218,10 +237,10 @@ function deleteFlag(mid) {
         }		
         if(flagInfo.judgments) {        
 			// Delete all of the votes for the flag			
-			for(var i = 0; i < flagInfo.judgments.length; i++) {                
-				promise = deleteEntity(flagInfo.judgments[i].mid);               
-			}                      
-		}
+            for(var i = 0; i < flagInfo.judgments.length; i++) {                
+                promise = deleteEntity(flagInfo.judgments[i].mid);               
+            }                      
+        }
 
         if(!promise) {
             return deferred.resolve("No votes to delete.");
@@ -240,7 +259,7 @@ function deleteFlag(mid) {
             return deleteEntity(mid);
         }
 	}, function(error) {
-		return deferred.resolved("Error deleting votes: " + error + " : " + errorMsg);
+        return deferred.resolved("Error deleting votes: " + error + " : " + errorMsg);
 	});
 
 }

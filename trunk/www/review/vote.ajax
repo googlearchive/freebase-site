@@ -49,7 +49,11 @@ var SPEC = {
             return {
                 "result": result
             }
-        })     
+        }, function(error) {
+            return {
+                "result": error.message
+            }
+        }) 
     }
 };
 

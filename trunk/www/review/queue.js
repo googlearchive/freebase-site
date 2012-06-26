@@ -107,7 +107,9 @@
     function loadNextAvailable() {        
 
         var flagOfInterest = waitingOnContent ? currentFlag : currentFlag + preloadDirection;
-        if(flagOfInterest < 0) return;        
+        if(flagOfInterest < 0) {
+            return;        
+        }
 
         if(flagOfInterest >= loadedFlagsArray.length) {            
             if(!waitingOnFlags) {

@@ -36,6 +36,7 @@ acre.require("lib/test/mock").playback(this, "test/playback_test_processVote.jso
 
 var freebase = acre.require("lib/promise/apis.sjs").freebase;
 var h = acre.require("lib/helper/helpers.sjs");
+
 var voteSJS = acre.require("vote.sjs");
 var processVote = acre.require("vote.sjs").processVote;
 var deleteFlag = acre.require("vote.sjs").deleteFlag;
@@ -56,25 +57,24 @@ if (!user) {
 var natsuAsUser  = { id: "/user/natsu",};
 
 test("processVote - Invalid Params", function() {
-	var result = null;
+    var result = null;
+
+    processVote(null, "AGREE", "/en/mark_halperin_and_john_f_harris", natsuAsUser).then(function(r) {result = r;}, function(r){result = r}); 
+    acre.async.wait_on_results();  
+    ok(result.message === voteSJS.missingParams, "Caught invalid param." );
     
-    // Missing Params
-    processVote(null, "AGREE", "/en/mark_halperin_and_john_f_harris", natsuAsUser).then(function(r) {result = r;}); 
+    processVote("/user/natsu", null, "/en/mark_halperin_and_john_f_harris", natsuAsUser).then(function(r) {result = r;}, function(r){result = r}); 
     acre.async.wait_on_results();  
-    ok(result == voteSJS.missingParams, "Caught invalid param.");
+    ok(result.message === voteSJS.missingParams, "Caught invalid param." + result);
 
-    processVote("/user/natsu", null, "/en/mark_halperin_and_john_f_harris", natsuAsUser).then(function(r) {result = r;}); 
+    processVote("/user/natsu", "AGREE", "/en/mark_halperin_and_john_f_harris", null).then(function(r) {result = r;}, function(r){result = r}); 
     acre.async.wait_on_results();  
-    ok(result == voteSJS.missingParams, "Caught invalid param.");
-
-    processVote("/user/natsu", "AGREE", "/en/mark_halperin_and_john_f_harris", null).then(function(r) {result = r;}); 
-    acre.async.wait_on_results();  
-    ok(result == voteSJS.missingParams, "Caught invalid param.");
+    ok(result.message === voteSJS.missingParams, "Caught invalid param." + result);
 
     // Invalid vote
-    processVote("/m/09jy7p7", "BLKAJSDLKFJ", "/en/mark_halperin_and_john_f_harris", natsuAsUser).then(function(r) {result = r;}); 
+    processVote("/m/09jy7p7", "BLKAJSDLKFJ", "/en/mark_halperin_and_john_f_harris", natsuAsUser).then(function(r) {result = r;}, function(r){result = r}); 
     acre.async.wait_on_results();
-    ok(result == voteSJS.invalidVote, "Caught invalid vote: " + result);
+    ok(result.message === voteSJS.invalidVote, "Caught invalid vote: " + result);
 
 });
 
@@ -83,17 +83,17 @@ test("processVote - Valid Voting", function() {
 	var result = null;
 
 	// Normal voting
-	processVote("/m/09jy7p7", "AGREE", null, natsuAsUser).then(function(r) {result = r;}); 
+	processVote("/m/09jy7p7", "AGREE", null, natsuAsUser).then(function(r) {result = r;},  function(r){result = r}); 
 	acre.async.wait_on_results();
-	ok(result == voteSJS.success, "Sucessful agree vote: " + result);
+	ok(result == voteSJS.success, "Sucessful agree vote: " + result.message);
 
-	processVote("/m/09jy7p7", "DISAGREE", null, natsuAsUser).then(function(r) {result = r;}); 
+	processVote("/m/09jy7p7", "DISAGREE", null, natsuAsUser).then(function(r) {result = r;},  function(r){result = r}); 
 	acre.async.wait_on_results();
-	ok(result == voteSJS.success, "Sucessful disagree vote: "  + result);
+	ok(result == voteSJS.success, "Sucessful disagree vote: "  + result.message);
 
 	processVote("/m/09jy7p7", "SKIP", null, natsuAsUser).then(function(r) {result = r;}); 
 	acre.async.wait_on_results();
-	ok(result == voteSJS.success, "Sucessful skip vote: "  + result);
+	ok(result == voteSJS.success, "Sucessful skip vote: "  + result.message);
 
 	processVote("/m/0gkhbyy", "AGREE", "/m/0288nsm", natsuAsUser).then(function(r) {result = r;}); 
 	acre.async.wait_on_results();
@@ -108,7 +108,7 @@ test("processVote - Valid Voting", function() {
 	ok(result == voteSJS.success, "Successful disagree vote: "  + result);
 
 	processVote("/m/0gkhbyy", "SKIP", null, natsuAsUser).then(function(r) {result = r;}); 
-	acre.async.wait_on_results();
+    acre.async.wait_on_results();
 	ok(result == voteSJS.success, "Successful skip vote: "  + result);
 
 });
@@ -117,23 +117,24 @@ test("processVote - Invalid Voting", function() {
    	var result = null;
 
 	// Bad item mid supplied
-	processVote("/m/0gkhbyy", "AGREE", "/user/natsu", natsuAsUser).then(function(r) {result = r;}); 
+	processVote("/m/0gkhbyy", "AGREE", "/user/natsu", natsuAsUser).then(function(r) {result = r;}, function(r){result = r;}); 
    	acre.async.wait_on_results();
-   	ok(result == voteSJS.invalidItem, "Bad item mid caught: " + result);
+   	ok(result.message == voteSJS.invalidItem, "Bad item mid caught: " + result);
 
 	// Bad flag mid supplied
-	processVote("/user/natsu", "AGREE", "/en/mark_halperin_and_john_f_harris", natsuAsUser).then(function(r) {result = r;}); 
+	processVote("/user/natsu", "AGREE", "/en/mark_halperin_and_john_f_harris", natsuAsUser).then(function(r) {result = r;}, function(r){result = r}); 
     acre.async.wait_on_results();  
-   	ok(result == voteSJS.invalidFlag, "Caught invalid flag mid: " + result);
+   	ok(result.message == voteSJS.invalidFlag, "Caught invalid flag mid: " + result);
 });
 
 test("processVote - Invalid Permission", function() {
    	var result = null;
 
 	// Not priviledged 
-    processVote("/m/0j_nqs_", "AGREE", "/en/google", natsuAsUser).then(function(r) {result = r;}); 
+    processVote("/m/09jk22c", "AGREE", "/en/google", natsuAsUser).then(function(r) {result = r;}, function(r){result = r}); 
    	acre.async.wait_on_results();
-   	ok(result == voteSJS.lowPermission, "Low permission caught: " + result);
+   	ok(result.message == voteSJS.lowPermission, "Low permission caught: " + result);
+
 });
 
 acre.test.report();

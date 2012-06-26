@@ -1,0 +1,81 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<!!--
+  This is the base template for displaying a popup.
+!!-->
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("helper/helpers.sjs");
+  var i18n = acre.require("i18n/i18n.sjs");
+  var i18n_c = acre.require("i18n/components.mjt");
+  var _ = i18n.gettext;
+  var base = acre.require("template/freebase.mjt");
+  var this_exports = this.exports;
+  var that_exports;
+</acre:script>
+
+<acre:block def="page(exports)">
+  <acre:script>
+    that_exports = exports;
+  </acre:script>
+  ${base.page(this_exports)}
+</acre:block>
+
+<acre:block def="header()">
+</acre:block>
+
+<acre:block def="head()">
+  <acre:block if="that_exports.head">
+    ${that_exports.head()}
+  </acre:block>
+</acre:block>
+
+<acre:block def="title()">
+  <acre:block if="that_exports.title">
+    ${that_exports.title()}
+  </acre:block>
+</acre:block>
+
+<acre:block def="content_body(exports)">
+  <acre:block if="that_exports.content_body">
+    ${that_exports.content_body()}
+  </acre:block>
+</acre:block>
+
+<acre:block def="footer()">
+</acre:block>
+
+<acre:block def="footer_script()">
+  <acre:block if="that_exports.footer_script">
+    ${that_exports.footer_script()}
+  </acre:block>
+</acre:block>

@@ -334,24 +334,30 @@
     </acre:block>
     <acre:block elif="ect === '/type/key'">
       <acre:script>
+        var ns = prop_value.namespace || prop_value.id;
+        if (!ns && prop_value.value.indexOf("/") === 0) {
+          var ns_value = h.id_key(prop_value.value, true);
+          ns = ns_value[0];
+          prop_value.value = ns_value[1];
+        }
         if (prop_structure.id === "/type/namespace/keys") {
-          object_id = prop_value.namespace;
+          object_id = ns;
         }
         else {
-          object_id = prop_value.namespace + "/" + prop_value.value;
+          object_id = ns + "/" + prop_value.value;
         }
         h.extend(attrs, {
-          "data-namespace": prop_value.namespace,
+          "data-namespace": ns,
           "data-id": object_id,
           "data-value": prop_value.value,
           "title": object_id,
           "href": h.fb_url(true, object_id)
         });
       </acre:script>
-      <a acre:attrs="attrs">${prop_value.value}</a>
+      <a acre:attrs="attrs">${prop_value.text}</a>
     </acre:block>
     <acre:block else="">
-      <span acre:attrs="attrs" data-value="${prop_value.value}">${prop_value.value}</span>
+      <span acre:attrs="attrs" data-value="${prop_value.value}">${prop_value.text}</span>
       <acre:block if="ect === '/type/text' && prop_value.lang">
         ${i18n_c.lang_code(prop_value.lang, lang)}
       </acre:block>
@@ -593,7 +599,7 @@ propbox edit forms
           data.lang = prop_value.lang;
         }
         else if (type_id === "/type/key") {
-          data.namespace = prop_value.namespace;
+          data.namespace = prop_value.namespace || prop_value.id;
         }
       }
       else {
@@ -648,9 +654,12 @@ propbox edit forms
         </acre:block>
         <acre:block else="">
           ${_("Namespace:")}
-        </acre:block>    
+        </acre:block>
+        <acre:script>
+          var ns = prop_value ? prop_value.namespace || prop_value.id : null;
+        </acre:script>
         <input class="fb-input topic key-namespace" type="text" name="namespace" 
-               acre:attrs="prop_value && prop_value.namespace ? {value:prop_value.namespace} : {}">
+               acre:attrs="prop_value && ns ? {value:ns} : {}">
       </label>
       <label>
         ${_("Key:")}

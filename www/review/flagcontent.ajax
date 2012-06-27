@@ -120,8 +120,7 @@ function flagContent(flagMid, user) {
         flagInfo.creator     = helper.id_key(flagInfo.creator);            
 
         for(var i = 0, l = flagInfo.item.length; i < l; i++) {
-            flagInfo.item[i].url     = helper.fb_url(flagInfo.item[i].mid, [['props']]);
-            flagInfo.item[i].bareUrl = helper.fb_url(flagInfo.item[i].url, "?bare=1");
+            flagInfo.item[i].url     = helper.fb_url(flagInfo.item[i].mid, [['props'], ['embed',1]]);
             flagInfo.item[i].name    = i18n.display_name(flagInfo.item[i]);
         }        
 

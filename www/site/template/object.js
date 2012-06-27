@@ -66,10 +66,11 @@
       $("#page-content").css({"opacity": 1});
     }, 0);
 
-    /*
-     * Initialize page scroll behavior for fixed positioning on scroll
-     */
-    fb.init_page_scroll();
+    if (!$("body").is(".embed")) {
+      // Initialize page scroll behavior for fixed positioning on scroll
+      fb.init_page_scroll();
+    }
+
     fb.init_search();
   });
 

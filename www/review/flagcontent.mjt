@@ -85,7 +85,7 @@
   <div acre:if="flagInfo.item.length === 1"> 
     <div class="topic-frame">
       <div id="flag-content" class="flag-content">
-        <iframe src="${flagInfo.item[0].bareUrl}" width="100%" frameborder="0" style="height: auto; min-height: 800px;">
+        <iframe src="${flagInfo.item[0].url}" width="100%" frameborder="0" style="height: auto; min-height: 800px;">
         </iframe>
       </div>
       <div id="discuss-content" class="discuss-content">
@@ -97,11 +97,11 @@
   <div acre:else="">
     <div id="flag-content" class="flag-content">
       <div class="topic-frame topic-frame-left">
-        <iframe src="${flagInfo.item[0].bareUrl}" width="100%" frameborder="0" style="height: auto; min-height: 800px;">
+        <iframe src="${flagInfo.item[0].url}" width="100%" frameborder="0" style="height: auto; min-height: 800px;">
         </iframe>
       </div>
       <div class="topic-frame topic-frame-right">
-        <iframe src="${flagInfo.item[1].bareUrl}" width="100%" frameborder="0" style="height: auto; min-height: 800px;">
+        <iframe src="${flagInfo.item[1].url}" width="100%" frameborder="0" style="height: auto; min-height: 800px;">
         </iframe>
       </div>
     </div>

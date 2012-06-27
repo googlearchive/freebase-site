@@ -55,6 +55,10 @@ var PARAMS = {
       oneof: ["all"],
       if_invalid: null
     }
+  },
+  "embed": {
+    validator: validators.StringBool,
+    options: {if_invalid:null}
   }
 };
 

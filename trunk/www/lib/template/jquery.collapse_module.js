@@ -117,7 +117,7 @@
     
   });
   
-  var collapsed = $.localstore("filters_collapsed");
+  var collapsed = $("body").is(".embed") || $.localstore("filters_collapsed");
   $.extend(true, $.collapse_module, {
     defaults: {
       collapsed: (collapsed === null) ? true : !!collapsed,

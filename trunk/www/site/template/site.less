@@ -32,3 +32,15 @@
 .js.opacity #page-content {
   opacity: 0;
 }
+
+/**
+ * When ?embed=1, hide header, footer, tabs, etc.
+ */
+body.embed #header,
+body.embed #footer,
+body.embed #page-header .nav,
+body.embed #page-content .column.nav,
+body.embed .nicemenu,
+body.embed .edit {
+  display: none !important;
+}

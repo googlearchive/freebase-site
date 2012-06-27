@@ -45,26 +45,20 @@ var SPEC = {
             (params.voted)   ? validators.OneOf(params, "voted", {required:true, oneof:["votedon", "notvotedon", "both"] }) : null,  
             (params.admin)   ? validators.OneOf(params, "admin", {required:true, oneof:["nonadmin", "adminonly", "both"] }) : null, 
             (params.domain)  ? validators.MqlId(params, "domain", {required:true}) : null,
-            (params.flags)   ? validators.String(params, "flags", {required:true}) : null,           
+            (params.flags)   ? validators.MultiValue(validators.String(params, "flags", {required:true}).split(","), {validator:validators.MqlId, if_invalid:null, allow_null:true, required:true}) : null,           
         ];
     },
     run: function(user, kind, created, voted, admin, domain, flags) {
-    	
+        
         var flagArray = [];
         if(flags) {
-            flags = flags.split(",");
-            for(var i = 0; i < flags.length; i++) {
-                if(isValidMid(flags[i])) {
-                    if(flagArray.indexOf(flags[i]) === -1) {
-                        flagArray.push(flags[i]);
-                    }
+            flags.forEach(function(flag) {
+                if(flag !== null) {
+                    flagArray.push(flag);
                 }
-            }
+            });       
             flagArray.push(-1);                    
-        }
-        if(flagArray.length === 0) {
-            flagArray = null;
-        }
+        }        
 
         return {           
             "params" : {
@@ -79,20 +73,4 @@ var SPEC = {
         };
     }
 };
-
-// Edited from validators to not throw error
-function isValidMid(mid){
-    if (mid.charAt(0) === '/') {
-        var mqlkeys = mid.split("/");
-        mqlkeys.shift();  
-        for (var i=0, l = mqlkeys.length; i < l; i++) {
-            if (!validators.check_mqlkey(mqlkeys[i])) {
-                return false;
-            }
-        }
-        return true;
-    }
-    return false;
-}
-
 

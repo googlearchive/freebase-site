@@ -38,13 +38,19 @@ function flagInfoQuery(flag) {
     var query = { 
         "mid": flag, 
         "type": "/freebase/review_flag", 
-        "kind": null,
+        "kind": {
+            "key": {
+                "value":null,
+                "namespace":"/freebase/flag_kind"
+            },
+            "limit": 1,
+        },
         "creator": null, 
         "status": null,
         "item":[{ 
             "mid": null,
             "name": i18n.mql.query.name(),
-            "optional":true			 
+            "optional":true             
         }],
         "judgments":[{
             "creator": {
@@ -54,14 +60,18 @@ function flagInfoQuery(flag) {
             "item": {
                 "mid":null,
                 "optional":true
-            },		
+            },        
             "vote": {
-                "name":null
+                "key": {
+                    "value":null,
+                    "namespace":"/freebase/flag_vote"
+                },
+                "limit": 1,
             },
             "timestamp":null,
             "flag": null,
             "optional":true
-        }]				
+        }]                
     };    
 
     return freebase.mqlread(query).then(function(env) {
@@ -75,7 +85,10 @@ function escalateFlagToConflicting(flag) {
         "type": "/freebase/review_flag",
         "status": {
             "type": "/freebase/flag_status",
-            "name": "Conflicting",
+            "key": {
+                    "value": "conflicting",
+                    "namespace":"/freebase/flag_status"
+            },            
             "connect": "update"
         }
     };
@@ -90,7 +103,7 @@ function usergroupQuery(user) {
         "id": user, 
         "mid": null, 
         "type": "/type/user",
-        "usergroup" : []	    
+        "usergroup" : []        
     };
     return freebase.mqlread(query).then(function(env) {
         return env.result;
@@ -103,17 +116,20 @@ function createVoteQuery(flag, vote, item) {
         "type":"/freebase/flag_judgment",
         "vote":{
             "type":"/freebase/flag_vote",
-            "name": vote,
+            "key": {
+                    "value": vote,
+                    "namespace":"/freebase/flag_vote"
+            },
             "connect": "update"
-        },	    
+        },        
         "flag":{
             "mid":flag,
             "connect":"update"
-        },	
+        },    
         "create":"unconditional"
     };
     if(item) {
-        var mergePatch = { "item":{ "mid": item, "connect":"update" }	};
+        var mergePatch = { "item":{ "mid": item, "connect":"update" }    };
         acre.freebase.extend_query(voteQuery, mergePatch);
     }
     return freebase.mqlwrite(voteQuery).then(function(env) {
@@ -123,24 +139,27 @@ function createVoteQuery(flag, vote, item) {
 
 // Returns promise with results of deleting a vote
 function deleteVoteQuery(voteid, flag, vote, item) {
-    var deleteQuery = { 		    
+    var deleteQuery = {             
         "mid": voteid,
-        "type": "/freebase/flag_judgment",		    
+        "type": "/freebase/flag_judgment",            
         "flag": {
             "type":"/freebase/review_flag",
             "mid": flag,
             "connect":"delete"
-        },		    	
+        },                
         "vote": {
             "type":"/freebase/flag_vote",
-            "name": vote,
+            "key": {
+                    "value": vote,
+                    "namespace":"/freebase/flag_vote"
+            },
             "connect": "delete"
         }
-    };	
+    };    
     if(item) {
         var itempatch = { "item": { "mid": item, "connect": "delete" } };
         acre.freebase.extend_query(deleteQuery, itempatch);
-    }	
+    }    
     return freebase.mqlwrite(deleteQuery).then(function(env) {
         return env.result;
     }); 
@@ -167,26 +186,27 @@ function linksForDeleteQuery(mid) {
     }); 
 };
 
-
-// Returns true if flag is valid
 function validFlag(flagInfo) {
-	var malformed = false;		
-	if(!flagInfo.item || !flagInfo.kind) {
-        malformed = true;
-	} else {
-		if(flagInfo.kind === "Split" && flagInfo.item.length === 1) {malformed = false;} 
-		else if(flagInfo.kind === "Delete" && flagInfo.item.length === 1) {malformed = false;} 
-		else if(flagInfo.kind === "Merge" && flagInfo.item.length === 2) {malformed = false;} 
-		else if(flagInfo.kind === "Potentially Offensive" && flagInfo.item.length === 1) {malformed = false;}
-		else { malformed = true; }
-	}
-	return !malformed;	
-}
+    var malformed = true;
+    if(flagInfo.item && flagInfo.kind) {
+        if(flagInfo.kind.key.value === "split" && flagInfo.item.length === 1) {
+            malformed = false;
+        } else if(flagInfo.kind.key.value === "delete" && flagInfo.item.length === 1) {
+            malformed = false;
+        } else if(flagInfo.kind.key.value === "merge" && flagInfo.item.length === 2) {
+            malformed = false;
+        } else if(flagInfo.kind.key.value === "offensive" && flagInfo.item.length === 1) {
+            malformed = false;
+        }     
+    }
+    return !malformed;
+}   
+
 
 // Returns promise for results of completely unlinking a object
 function deleteEntity(mid) {
 
-	return linksForDeleteQuery(mid).then(function(data) {
+    return linksForDeleteQuery(mid).then(function(data) {
 
         if(!data) {
             return deferred.resolved("No links for MID " + mid + " found.");
@@ -194,18 +214,18 @@ function deleteEntity(mid) {
 
         var links = data;
         var promise = null;
-        var deleteQuery = { "mid": mid };
+        var deleteQuery = { "mid": mid };        
 
-        for(var i = 0; i < links.length; i++) {
-	        var link = links[i];
-	        var prop = link.master_property 			
-	
+        for(var i = 0, l = links.length; i < l; i++) {
+            var link = links[i];
+            var prop = link.master_property;             
+    
             if( prop == "/type/object/permission") {
                 continue;
             }
             prop = "prop" + i + ":" + prop;
-	
-            if(link.target_value != null) {                				
+    
+            if(link.target_value != null) {                                
                 deleteQuery[prop] = link.target_value;
                 deleteQuery[prop]["connect"] = "delete";
             } else {
@@ -213,54 +233,43 @@ function deleteEntity(mid) {
                     "guid": link.target.guid,
                     "connect": "delete"
                 };
-            }		
-        }               
-        
+            }        
+        }
+
         return freebase.mqlwrite(deleteQuery);
 
-	}, function(error) {
-		return deferred.resolved("Read links error: " + error);
-	});
+    }, function(error) {
+        return deferred.resolved("Read links error: " + error);
+    });
 }
 
 // Returns promise of deleting a flag
 function deleteFlag(mid) {
 
-	var errorMsg = "";
-
-	var result = flagInfoQuery(mid).then(function(flagInfo) {
-
-		var promise = null;
-
+    var result = flagInfoQuery(mid).then(function(flagInfo) {
+      
         if(!flagInfo) {
             return deferred.resolved("No flag info found for " + mid);
-        }		
-        if(flagInfo.judgments) {        
-			// Delete all of the votes for the flag			
-            for(var i = 0; i < flagInfo.judgments.length; i++) {                
-                promise = deleteEntity(flagInfo.judgments[i].mid);               
-            }                      
+        } 
+ 
+        var promise = null;      
+        if(flagInfo.judgments) {  
+            flagInfo.judgments.forEach(function(judgment){
+                promise = deleteEntity(judgment.mid);
+            });                               
         }
-
         if(!promise) {
             return deferred.resolve("No votes to delete.");
         } else {
-            return promise;		
+            return promise;        
         }
-	}, function(error) {
-		errorMsg = "Error reading flag: " + error;
-		return deferred.resolved(errorMsg);
-	});
+    }, function(error) {       
+        return deferred.rejected("Error reading flag for delete: " + error);
+    });
 
-	return result.then(function(data) {		
-        if(errorMsg != "") {
-            return deferred.resolved(errorMsg);
-        } else {
-            return deleteEntity(mid);
-        }
-	}, function(error) {
-        return deferred.resolved("Error deleting votes: " + error + " : " + errorMsg);
-	});
+    return result.then(function(data) {       
+        return deleteEntity(mid);        
+    });
 
 }
 

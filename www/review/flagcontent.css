@@ -38,10 +38,13 @@
 .discuss-content {
     display:none;
     background-color: #fff;
-    float: left;
-    width: 25%;
+    float: right;
+    width: 0;
     padding-left: 5px;
     border-left: 1px solid gray;
+}
+.topic-frame {
+    overflow:hidden;
 }
 .topic-frame-left {
     float: left;
@@ -64,8 +67,9 @@
     height: 100%;
     background-color: #fcf3db;
     padding: .5em;
-    margin: 0px;
+    margin: 0;
     border-bottom: 1px solid #a4a4a4;
+    min-height: 60px;
 }
 .flagreview-title {
     margin-left: 20px;

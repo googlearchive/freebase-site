@@ -36,17 +36,22 @@ var deferred = apis.deferred;
 var i18n = acre.require("lib/i18n/i18n.sjs");
 var _ = i18n.gettext;
 
+// processVote constants
 var success        = _("Vote recorded.");
 var missingParams  = _("Missing parameters.");
-var invalidUser	   = _("Invalid user parameter.");
+var invalidUser    = _("Invalid user parameter.");
 var invalidVote    = _("Invalid vote.");
 var invalidFlag    = _("MID did not match a flag.");
 var invalidItem    = _("Item supplied is not an option for flag.");
 var malformedFlag  = _("Malformed flag.");
 var lowPermission  = _("User does not have permission.");
 
-var errorDeletingOldVotes = _("Error deleting old votes: ");
-var errorWritingNewVote = _("Error writing new vote: ");
+// processFlag constants
+var insufficientVotes = _("Insufficient votes to process");
+var conflictingVotes  = _("Conflicting votes. Escalated to admin queue.");
+var errorEscalating   = _("Error escalating flag: ");
+var consensusOfVotes  = _("Consensus reached. Action being performed.");
+
 
 function processVote(flag, vote, item, user) {
     
@@ -56,15 +61,14 @@ function processVote(flag, vote, item, user) {
     if(!user || !vote || !flag) {
         return deferred.rejected(missingParams);
     }
-    if(vote !== "AGREE" && vote !== "DISAGREE" && vote !== "SKIP"){
+    if(vote !== "agree" && vote !== "disagree" && vote !== "skip"){
         return deferred.rejected(invalidVote);
     }
 
     var flagPromise = reviewHelpers.flagInfoQuery(flag).then(function(result) {
         flagInfo = result;
-        return deferred.resolved("");		
+        return deferred.resolved("");        
     }); 
-
     var userPromise = reviewHelpers.usergroupQuery(user.id).then(function(result) {              
         userInfo = result;                 
         return deferred.resolved("");
@@ -73,47 +77,47 @@ function processVote(flag, vote, item, user) {
     return deferred.all([flagPromise, userPromise]).then(function(result) {
         
         // Validate the flag
-        if(!flagInfo) {		
+        if(!flagInfo) {        
             return deferred.rejected(invalidFlag);
-        } else if(!reviewHelpers.validFlag(flagInfo)) {			
+        } else if(!reviewHelpers.validFlag(flagInfo)) {            
             reviewHelpers.deleteFlag(flag);
             return deferred.rejected(malformedFlag);
         } 
 
         // Authenitcate user if neccesary
-        if(flagInfo.status) {		
+        if(flagInfo.status) {
+            
             var authenticated = false;
-            for(var i = 0; i < userInfo.usergroup.length; i++) {
-	            var group = userInfo.usergroup[i];
+            for(var i = 0, l = userInfo.usergroup.length; i < l; i++) {
+                var group = userInfo.usergroup[i];
                 if( group === "/pipeline/admin" || group === "/freebase/badges/freebaseexpert") {
                     authenticated = true;
                     break;
-                }			
+                }            
             }
-            if(!authenticated) {				
+            if(!authenticated) {                
                 return deferred.rejected(lowPermission);
             }
         }        
 
         // Authenticate item if neccesary
-        if(flagInfo.kind === "Merge" && vote === "AGREE") {	
-            if(!item) {				
+        if(flagInfo.kind.key.value === "merge" && vote === "agree") {   
+            if(!item) {                
                 return deferred.rejected(missingParams);
-            } else if(flagInfo.item[0].mid !== item && flagInfo.item[1].mid !== item ) {				
+            } else if(flagInfo.item[0].mid !== item && flagInfo.item[1].mid !== item ) {                
                 return deferred.rejected(invalidItem);
-            }				
+            }                
         }
 
         // Remove any previous votes if found
-        var promise = null;	
+        var promise = null;    
         if(flagInfo.judgments) {
-            for(var i = 0; i < flagInfo.judgments.length; i++) {
-                var judgment = flagInfo.judgments[i];		
+            flagInfo.judgments.forEach(function(judgment){
                 if(judgment.creator.id == user.id) {
-                    var judgmentItem = (judgment.item) ? judgment.item.mid : null;	
-                    promise = reviewHelpers.deleteVoteQuery(judgment.mid, flag, judgment.vote.name, judgmentItem);                    				
+                    var judgmentItem = (judgment.item) ? judgment.item.mid : null;    
+                    promise = reviewHelpers.deleteVoteQuery(judgment.mid, flag, judgment.vote.key.value, judgmentItem);                                    
                 }
-            }	    
+            });       
         }
         if(!promise) {
             return deferred.resolved("empty promise to contine");
@@ -121,28 +125,32 @@ function processVote(flag, vote, item, user) {
             return promise;
         }
 
-        }).then(function(result) {
-            // Write our new vote
-            if(vote !== "AGREE" || flagInfo.kind !== "Merge") {
+    }).then(function(result) {
+        
+        // Write our new vote
+        if(flagInfo.status) {
+
+            // ADMIN VOTING, DO FREEQ STUFF HERE
+            return deferred.resolved(success);            
+
+        } else {            
+            if(vote !== "agree" || flagInfo.kind.key.value !== "merge") {
                 item = null;
             }
             return reviewHelpers.createVoteQuery(flag, vote, item);
-        }).then(function(result){
-            return deferred.resolved(success);	
-        });
-}
+        }
 
-var insufficientVotes = _("Insufficient votes to process");
-var conflictingVotes  = _("Conflicting votes. Escalated to admin queue.");
-var errorEscalating   = _("Error escalating flag: ");
-var consensusOfVotes  = _("Consensus reached. Action being performed.");
+
+    }).then(function(result){
+        return deferred.resolved(success);    
+    });
+}
 
 function processFlag(flag) {
 
     return result = reviewHelpers.flagInfoQuery(flag).then(function(result) {
         
         var flagInfo = result; 
-
         if(!flagInfo) {            
             errorMsg = invalidFlag;
             return deferred.resolved(errorMsg);
@@ -151,8 +159,12 @@ function processFlag(flag) {
             return reviewHelpers.deleteFlag(flag);
         }
 
-        // Sort judgments by creator and then by timestamp
         var judgments = flagInfo.judgments;
+        if(judgments.length < 3) {
+            return deferred.resolved(insufficientVotes);
+        }
+
+        // Sort judgments by creator and then by timestamp
         judgments.sort(function(vote1, vote2) {  
             if(vote1.creator.id === vote2.creator.id) {                     
                 return (vote1.timestamp > vote2.timestamp) ? 1 : -1;
@@ -162,60 +174,57 @@ function processFlag(flag) {
         });
 
         // Get a copy of only the most recent valid vote from each user
-        var verifiedJudgments = [];
-        for(var i = 0; i < judgments.length - 1; i++) {
-            if(judgments[i].creator.id === flagInfo.creator.id) {
-                reviewHelpers.deleteEntity(judgments[i].mid); 
+        var verifiedJudgments = [];        
+        for(var i = 0, l = judgments.length - 1; i < l; i++) {
+            if(judgments[i].creator.id === flagInfo.creator) {                
+                reviewHelpers.deleteEntity(judgments[i].mid);               
             } else {
-                if(judgments[i].creator.id == judgments[i+1].creator.id) {
-                    reviewHelpers.deleteEntity(judgments[i].mid);                
+                if(judgments[i].creator.id === judgments[i+1].creator.id) {                    
+                    reviewHelpers.deleteEntity(judgments[i].mid);                                
                 } else {
-                    if(judgments[i].vote.name != "Skip") {
-                        verifiedJudgments.push(judgments[i]);
+                    if(judgments[i].vote.key.value != "skip") {                        
+                        verifiedJudgments.push(judgments[i]);                        
                     }
                 }
-            }
-        }
+            }            
+        }       
+
         if(judgments[judgments.length-1].creator.id === flagInfo.creator.id) {
             reviewHelpers.deleteEntity(judgments[judgments.length-1].mid);
         } else {
-            if(judgments[judgments.length-1].vote.name!= "Skip") {
+            if(judgments[judgments.length-1].vote.key.value !== "skip") {
                 verifiedJudgments.push(judgments[judgments.length-1]);  
             } 
-        }        
+        } 
 
         // Check and tally the votes
         if(verifiedJudgments.length < 3) {
             return deferred.resolved(insufficientVotes);
-        }
+        }       
         
-        var votesFor1 = 0;
-        var votesFor2 = 0;
-        var votesFor = 0;
-        var votesAgainst = 0; 
-        for(var i = 0; i < verifiedJudgments.length; i++) {
-            judgment = verifiedJudgments[i];
-            if(judgment.item && judgment.item.mid === flagInfo.item[0].mid) votesFor1++;
-            else if(judgment.item && judgment.item.mid === flagInfo.item[1].mid) votesFor2++;
-            else if(judgment.vote.name === "Agree") votesFor++;
-            else if(judgment.vote.name === "Disagree") votesAgainst++;
-        }
+        var voteDirections = [0, 0, 0, 0];
+        verifiedJudgments.forEach(function(judgment){
+            if(judgment.item && judgment.item.mid === flagInfo.item[0].mid) {
+                voteDirections[0] = 1;
+            } else if(judgment.item && judgment.item.mid === flagInfo.item[1].mid) {
+                voteDirections[1] = 1;
+            } else if(judgment.vote.key.value === "agree") {
+                voteDirections[2] = 1;
+            } else if(judgment.vote.key.value === "disagree") {
+                voteDirections[3] = 1;
+            }
+        }); 
+        voteDirections = voteDirections[0] + voteDirections[1] + voteDirections[2] + voteDirections[3];    
 
-        var voteDirections = 0;
-        if(votesFor1) voteDirections++;  
-        if(votesFor2) voteDirections++;
-        if(votesFor) voteDirections++;
-        if(votesAgainst) voteDirections++;
-       
         if(voteDirections > 1) {
             // Conflicting votes, update flag with admin status
             return reviewHelpers.escalateFlagToConflicting(flag).then(function(env) {
                 return deferred.resolved(conflictingVotes);
             }, function(env) {
-                return deferred.resolved(errorEscalating + env.result);
+                return deferred.resolved(errorEscalating + env.message);
             });
         } else {
-    
+
             // DO FREEQ STUFF HERE
             return deferred.resolved(consensusOfVotes); 
           

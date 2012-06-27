@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-(function($, fb) {
+(function($, fb, formlib) {
 
     var incomingContentHash = {};
     var loadedContentHash = {};
@@ -62,7 +62,7 @@
         
         // Shouldn't need, but just in case
         var duplicateCheck = loadedFlagsArray.sort();
-        for(var i = 0; i < duplicateCheck.length - 1; i++) {
+        for(var i = 0, l = duplicateCheck.length - 1; i < l; i++) {
             if(duplicateCheck[i] === duplicateCheck[i+1]) {
                 loadedFlagsArray.splice(loadedFlagsArray.indexOf(duplicateCheck[i]), 1);
             }
@@ -104,14 +104,13 @@
         }
     }
     
-    function loadNextAvailable() {        
+    function loadNextAvailable() { 
 
         var flagOfInterest = waitingOnContent ? currentFlag : currentFlag + preloadDirection;
         if(flagOfInterest < 0) {
             return;        
         }
-
-        if(flagOfInterest >= loadedFlagsArray.length) {            
+        if(flagOfInterest >= loadedFlagsArray.length) {
             if(!waitingOnFlags) {
                 waitingOnFlags = true;
                 loadFlags();
@@ -199,8 +198,8 @@
     function transitionToDiv(div) {
 
         var inDiv  = $("#" + div);
-	    var outDiv = (currentDiv) ? $(currentDiv) : null;
-	    	
+        var outDiv = (currentDiv) ? $(currentDiv) : null;
+            
         var width = $(window).width();
         var finalPosition = (preloadDirection === 1) ? width : -width;
         
@@ -251,28 +250,28 @@
         
         inDiv.animate({left: 0},{
             duration: "normal",
-		    complete: function() {                
-			    animationsCompleted++;                
-			    if(animationsCompleted === 2) {
+            complete: function() {                
+                animationsCompleted++;                
+                if(animationsCompleted === 2) {
                     transitionComplete();
                 }
             }
-	    });
+        });
 
-	    if(outDiv) {
+        if(outDiv) {
             outDiv.css("position", "absolute");
             outDiv.css("left", 0);
             outDiv.css("width", width);
 
             outDiv.animate({left: -finalPosition}, {
                 duration: "normal",
-		        complete: function() {
-			        animationsCompleted++;
-			        if(animationsCompleted === 2) {
+                complete: function() {
+                    animationsCompleted++;
+                    if(animationsCompleted === 2) {
                         transitionComplete();
                     }
-		        }
-	        });
+                }
+            });
         } else {
             animationsCompleted++;
         }        
@@ -296,30 +295,30 @@
         }
         
         // Sneak it down a little bit so transition goes smoothly
-        contentDiv.css("width", "98%");
+        
         contentDiv.animate({"width": "74%"},{
             duration: "normal",
-		    complete: function() {
+            complete: function() {
                 animationsCompleted++;
-		        if(animationsCompleted === 2) {
+                if(animationsCompleted === 2) {
                     transitionComplete();
                 }
             }
-	    });
+        });
 
         discussDiv.css("width", 0);
         discussDiv.toggle();
         discussDiv.animate({            
-            "width": "25%",        
+            "width": "25%"        
         },{
             duration: "normal",
-		    complete: function() {
+            complete: function() {
                 animationsCompleted++;
-		        if(animationsCompleted === 2) {
+                if(animationsCompleted === 2) {
                     transitionComplete();
                 }
             }
-	    });
+        });
     }   
     function closeDiscuss() {
         var contentDiv = currentDiv.find("#flag-content");
@@ -330,7 +329,7 @@
 
         var animationsCompleted = 0;
         function transitionComplete() {          
-            discussDiv.toggle();
+            
             currentDiv.find(".toggle-discuss").find("button").removeAttr("disabled");     
             currentDiv.find(".toggle-discuss").find("button").click(function(){
                 openDiscuss();
@@ -340,26 +339,28 @@
 
         discussDiv.css("width", "24%");
         discussDiv.animate({            
-            "width": 0,
+            "width": 0
         },{
             duration: "normal",
-		    complete: function() {
+            complete: function() {
+                discussDiv.css("display", "none");
                 animationsCompleted++;
-		        if(animationsCompleted === 2) {
+                if(animationsCompleted === 2) {
                     transitionComplete();
                 }
             }
-	    });
+        });
 
         contentDiv.animate({"width": "100%"},{
             duration: "normal",
-		    complete: function() {
+            complete: function() {
+                discussDiv.css("display", "none");
                 animationsCompleted++;
-		        if(animationsCompleted === 2) {
+                if(animationsCompleted === 2) {
                     transitionComplete();
                 }
             }
-	    });        
+        });        
     }
   
     
@@ -370,7 +371,7 @@
             "validate": function() {
                 return true;            
             },
-            "submit": $.noop,
+            "submit": $.noop
         };
         formlib.init_modal_form(form_options);
     }
@@ -387,22 +388,28 @@
             return false;
         });
         currentDiv.find("#add-link-to-list").click(function(){
-            $("#queue-link-list").val( $("#queue-link-list").val() + $(this).attr("href") + ",");
+            if($("#queue-link-list").val().indexOf($(this).attr("href")) === -1) {
+                $("#queue-link-list").val( $("#queue-link-list").val() + $(this).attr("href") + ",");
+            }            
             $(this).text("Added");
             $(this).off("click"); 
             return false;
         });
         currentDiv.find("#get-link-list").click(function(){
-            $("#queue-link-to-flag").find("#link-text").val($("#queue-link-list").val());            
-            modalForm($("#queue-link-to-flag"));
+            if($("#queue-link-list").val().length > 1) {
+                $("#queue-link-to-flag").find("#link-text").val($("#queue-link-list").val());            
+                modalForm($("#queue-link-to-flag"));
+            }
+            return false;
+        });                     
+        currentDiv.find(".toggle-discuss").find("button").click(function(){           
+            if(currentDiv.find("#discuss-content").width() > 0) { 
+                closeDiscuss();
+            } else {
+                openDiscuss();
+            }
             return false;
         });
-                
-        currentDiv.find(".toggle-discuss").find("button").click(function(){           
-            openDiscuss();
-            return false;
-        });        
-
         currentDiv.find(".vote-form").find("button").click(function(){            
             voteSubmit($(this).parent(".vote-form"));          
             forwardProgress();
@@ -431,7 +438,7 @@
         } 
     }
     function removeButtonListeners() {        
-	    if(currentDiv) {            
+        if(currentDiv) {            
             currentDiv.find(":submit").attr("disabled", true);  
             currentDiv.find(".vote-form").find("button").off("click");
             
@@ -450,7 +457,7 @@
             $(".queue-forward-button").attr("disabled", true);     
         }
     }    
-    function forwardProgress() {	              
+    function forwardProgress() {                  
         removeButtonListeners();
         preloadDirection = 1;
         currentFlag++;
@@ -490,12 +497,9 @@
         var adminMsg;
 
         if(params.kind) {            
-            if(params.kind === "merge" || params.kind === "split" || params.kind === "delete") {                                        
+            if(params.kind === "merge" || params.kind === "split" || params.kind === "delete" || params.kind === "offensive") {                                        
                 flagSearchParams.kind = params.kind;
                 kindMsg = " " + params.kind + " flags";
-            } else if(params.kind === "offensive") {
-                flagSearchParams.kind = "potentially offensive";
-                kindMsg= " potentially offensive flags";
             }                 
         } else {
             kindMsg = " flags";
@@ -589,11 +593,12 @@
     // On document.ready, show home or build our flag search and start our initial load
     $(function() {    
  
-        var params = $.parseJSON($("#parameters").html());
+        var params = fb.c.params;
+
         if(!$.isEmptyObject(params)) {
-            if(params.flags) {
+            if(params.flags.length > 0) {
                 setBrowsingMessage("You are viewing a custom list of flags.");
-                loadedFlagsArray = params.flags;                
+                loadedFlagsArray = params.flags.slice(0);                
             } else {
                 rebuildSearchParameters(params); 
             }
@@ -605,4 +610,4 @@
     });
 
 
-})(jQuery, window.freebase, window.formlib, window.fb.h);
+})(jQuery, window.freebase, window.formlib);

@@ -32,7 +32,7 @@
 /* Review Queue Header */
 .queue-header {    
     margin: 0px;
-    padding: .75em;
+    padding: .5em;
     border-top: 1px solid #a4a4a4;
     border-bottom: 1px solid #a4a4a4;
     background: #64768F;
@@ -43,25 +43,31 @@
     font-size: 1.5em;
     text-align:center;    
     clear: both;
-    overflow: hidden;    
+    overflow: hidden;
+    min-width: 1200px;  
+    position: relative;  
 }
-.queue-header-center {
-    margin: 0px auto;
-}
-.queue-header-right {
-    float:right;
-}
+
 .queue-back-button {
-    display: none; 
-    float: left;
+    display: none;
+    position: absolute;
+    left: 10px;
+    top: 22%;
 }
 .queue-forward-button {
     display: none; 
-    float: right;
+    position: absolute;
+    right: 10px;
+    top: 22%;
 }
-
-.queue-header-message {     
+.queue-header-message { 
+    width: 50%;    
     font-size: 1.5em;
+    margin: 0px auto;
+}
+.queue-header-status {
+    position:absolute;    
+    left: 100px;
 }
 .queue-message {
     width:50%;    
@@ -76,6 +82,10 @@
     background-color: #E5F2FB;
     background-position: -1220px 15px; 
     padding: 1.5em 1.5em 1.5em 40px;   
+}
+
+#storage {
+    min-width: 1200px;
 }
 
 #debugDiv {

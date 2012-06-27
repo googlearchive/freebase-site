@@ -29,31 +29,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var processVote = acre.require("vote.sjs").processVote;
-var validators = acre.require("lib/validator/validators.sjs");
-var deferred = acre.require("lib/promise/apis.sjs").deferred;
+acre.require('/test/lib').enable(this);
 
-var SPEC = {
-    auth:true, 
-    method:"POST",
-    validate: function(params) {
-        return [
-            validators.MqlId(params, "flag", {required:true}),
-            validators.OneOf(params, "vote", {required:true, oneof:["agree", "disagree", "skip"] }),
-            (params.item) ? validators.MqlId(params, "item", {required:true}) : null,
-            params.auth_user 
-        ];
-    },
-    run: function(flag, vote, item, user) {    
-        return processVote(flag, vote, item, user).then(function(result){
-            return {
-                "result": result
-            }
-        }, function(error) {
-            return {
-                "result": error.message
-            }
-        }) 
-    }
-};
+acre.require("lib/test/mock").playback(this, "test/playback_test_processFlag.json");
+//acre.require("lib/test/mock").record(this, "test/playback_test_processFlag.json");
 
+var freebase = acre.require("lib/promise/apis.sjs").freebase;
+var voteSJS = acre.require("vote.sjs");
+var processFlag = acre.require("vote.sjs").processFlag;
+var deleteEntity = acre.require("reviewhelpers.sjs").deleteEntity;
+
+
+// this test requires user to be logged in
+var user;
+test("login required", function() {
+    freebase.get_user_info().then(function(user_info) {user = user_info;});
+    acre.async.wait_on_results();
+    ok(user, "login required");
+});
+if (!user) {
+    acre.test.report();
+    acre.exit();
+}
+
+test("processVote - Invalid Params", function() {
+    var result = null;
+
+    processFlag("/m/09jk22c").then(function(r) {result = r;}); 
+    acre.async.wait_on_results();  
+    ok(result == voteSJS.insufficientVotes, "Detected not enough votes. Check!: " + result);
+
+    var result = null;
+
+    processFlag("/m/0j0yr8_").then(function(r) {result = r;}); 
+    acre.async.wait_on_results();  
+    ok(result == voteSJS.conflictingVotes, "Detected conflicting votes. Check! "  + result);
+
+    processFlag("/m/0f7qglt").then(function(r) {result = r;}, function(r) {result = r;}); 
+    acre.async.wait_on_results();  
+    ok(result == voteSJS.consensusOfVotes, "Detected consensus. Check! "  + result);
+});
+
+
+acre.test.report();

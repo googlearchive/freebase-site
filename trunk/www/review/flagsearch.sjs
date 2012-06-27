@@ -35,7 +35,7 @@ var freebase = apis.freebase;
 var deferred = apis.deferred;
 
 function findFlags(user, limit, voted, created, order, kind, domain, admin, cursor) {
-    	
+        
     var baseQuery = [{ 
         "mid":null,  
         "type":"/freebase/review_flag", 
@@ -58,16 +58,20 @@ function findFlags(user, limit, voted, created, order, kind, domain, admin, curs
         }               
     } 
     if(showAdmin) {
-        var adminPatch = { "status": { "mid":null, "optional": showAdmin } };
+        var adminPatch = { "status": { "mid": null, "optional": showAdmin } };
         baseQuery = acre.freebase.extend_query(baseQuery, adminPatch);
     }
            
     if(kind) {        
         if(kind === "merge" || kind === "split" || kind === "delete" || kind === "offensive" ) {
-            if(kind === "offensive") {
-                kind = "Potentially Offensive";
-            }               
-            var kindPatch = { "kind": kind };
+            var kindPatch = { 
+                "kind": {
+                    "key": {
+                        "value": kind,
+                        "namespace":"/freebase/flag_kind"
+                     },
+                }
+            };
             baseQuery = acre.freebase.extend_query(baseQuery, kindPatch);
         }
     }
@@ -83,13 +87,13 @@ function findFlags(user, limit, voted, created, order, kind, domain, admin, curs
             showVotedOn = null;
         }
     }
-    if(showVotedOn) {		
+    if(showVotedOn) {        
         var votedPatch = {
             "legacy:judgments": [{
-	            "creator": {"id": user.id},
-	            "optional": showVotedOn
-            }]		        
-        }    	        
+                "creator": {"id": user.id},
+                "optional": showVotedOn
+            }]                
+        }                
         baseQuery = acre.freebase.extend_query(baseQuery, votedPatch);
     } 
 
@@ -105,22 +109,28 @@ function findFlags(user, limit, voted, created, order, kind, domain, admin, curs
         }
     }
     if(showCreated) {
-        var createdPatch = {		        
+        var createdPatch = {                
             "legacy:creator": {
-	            "id": user.id,
-	            "optional": showCreated
+                "id": user.id,
+                "optional": showCreated
             }
-        }	        
+        }            
         baseQuery = acre.freebase.extend_query(baseQuery, createdPatch);
     }
 
-    if(limit && !isNaN(limit)) {
-        var limitPatch = {"limit": parseInt(limit)};
+    if(limit && limit > 0) {
+        var limitPatch = {"limit": limit};
         baseQuery = acre.freebase.extend_query(baseQuery, limitPatch);
     } 
 
     if(domain) {
-        var domainPatch = { "item": [{ "type": [{ "domain": domain  }]  }]  };
+        var domainPatch = { 
+            "item": [{ 
+                "type": [{ 
+                    "domain": domain
+                }]
+            }]
+        };
         baseQuery = acre.freebase.extend_query(baseQuery, domainPatch);
     } 
     

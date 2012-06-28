@@ -30,26 +30,30 @@
  !!-->
 
 <acre:script>
-  var c = this.exports.c = {};
   var h = acre.require("helper/helpers.sjs");
-  var i18n = acre.require("i18n/i18n.sjs");
-  var _ = i18n.gettext;
+  var validators = acre.require("validator/validators.sjs");
 </acre:script>
 
-<acre:block def="head()">
-  <link rel="stylesheet" type="text/css" href="scripts/warmer.css" />
-</acre:block>
-
-<acre:block def="content_body()">
-  <ul>
-    <acre:block for="label, path in c.apps">
-      <li class="warmer" data-id="${label}">
-        <span>${path}</span>
-      </li>
-    </acre:block>
-  </ul>
-</acre:block>
-
-<acre:block def="footer_script()">
-  <script src="scripts/warmer.js"></script>
+<!!-- output jsonp if acre.request.params['callback'|'jsonp'], otherwise json -->
+<acre:block def="json_p(json)">
+  <acre:script>
+    var callback;
+    if (acre.request.params.callback) {
+      callback = validators.Jsonp(acre.request.params.callback, {if_empty:null});
+    }
+    else if (acre.request.params.jsonp) {
+      callback = validators.Jsonp(acre.request.params.jsonp, {if_empty:null});
+    }
+    acre.response.status = 200;
+    if (callback) {
+      acre.response.set_header('content-type', 'text/javascript; charset=utf-8');
+      acre.write(h.sprintf("/** this is jsonp **/ %s(", callback));
+      acre.write(JSON.stringify(json));
+      acre.write(");");
+    }
+    else {
+      acre.response.set_header('content-type', 'application/json; charset=utf-8');
+      acre.write(JSON.stringify(json));
+    }
+  </acre:script>
 </acre:block>

@@ -49,7 +49,7 @@ var SPEC = {
         return [
             validators.MqlId(params, "id", {required:true}),
             validators.MultiValue(params, "lang", {validator:validators.LangId, if_empty:["/lang/en"]}),
-            validators.Jsonp(params, "callback", {if_empty:null})            
+            params.callback || params.jsonp // callback validation will done by lib/template/json_p.mjt
         ];
     },
 
@@ -131,20 +131,14 @@ var SPEC = {
         })
         .then(function(summary) {
             if (callback) {
-                acre.response.set_header('content-type', 'text/javascript; charset=utf-8');
-                var json = {
-                    id: id,
-                    html: acre.markup.stringify(t.render_flyout(id, langs[0], summary))
+                return {
+                    template: "template/json_p.mjt",
+                    def: "json_p",
+                    def_args: [{
+                        id: id, 
+                        html: acre.markup.stringify(t.render_flyout(id, langs[0], summary))
+                    }]
                 };
-                var str = [
-                    "/** this is jsonp **/ ",
-                    callback,
-                    "(",
-                    JSON.stringify(json),
-                    ");"
-                ];
-                acre.write(str.join(""));
-                return acre.exit();
             }
             else {
                 acre.response.set_header('content-type', 'text/html');

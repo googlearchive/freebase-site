@@ -1,0 +1,100 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var h = acre.require("lib/helper/helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");  
+  var _ = i18n.gettext;
+  var image = acre.require("lib/template/imagecomponents.mjt");
+  var form = acre.require("lib/propbox/form.mjt");
+  var pb = acre.require("lib/propbox/propbox.mjt");
+</acre:script>
+
+<acre:block def="create_form(user_id, domains, q)">
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title"><span>${_('Save Query')}</span></h1>
+      <div class="modal-content">
+        <div class="form-field">
+          <!--<p><strong>${_('Name')}</strong></p>-->
+          <label>
+            <span class="form-label">${_('Name')}</span>
+          </label>
+          <input class="text-input" type="text" name="name">
+        </div>
+        <div class="form-field">
+          <label>
+            <span class="form-label">${_('Save Query to')}</span>
+            <select name="domain" data-placeholder="${_('Choose')}&hellip;">
+              <option value="${user_id}" selected="selected">${_('My user profile')}</option>
+              <acre:block for="domain in domains" if="domain.id !== user_id">
+                <option value="${domain.id}">${i18n.display_name(domain)}</option>
+              </acre:block>
+            </select>
+          </label>
+        </div>
+        <div class="form-field">
+          <label>
+            <span class="form-label">${_('Key')}</span>
+            <input name="key" type="text" class="text-input"/>
+            <span class="key-status"></span>
+          </label>
+        </div>
+        <div class="form-field">
+          <label>
+            <span class="form-label">${_('Description')}</span>
+          </label>
+          <textarea class="textarea" name="description" placeholder="optional..." rows="3"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <input type="hidden" name="lang" value="${h.lang_code(i18n.lang)}"/>
+      <input type="hidden" name="query" value="${q}"/>
+      ${form.submit_buttons()}
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="settings_form(query)">
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title"><span>${_('Query Settings')}</span></h1>
+      <div class="modal-content">
+        <p>You will be able to change settings for ${query}</p>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <a href="javascript:void(0);" class="button button-delete">${_("Delete this query")}&hellip;</a>
+      ${form.submit_buttons()}
+    </div>
+  </div>
+</acre:block>

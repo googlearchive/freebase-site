@@ -39,10 +39,10 @@ var SPEC = {
   validate: function(params) {
     if (params.app) {
       // jsonp
+      var app = rules.labels[params.app];
       return [
         rules,
-        validators.String(params, "app", {required:true}),
-        validators.Jsonp(params, "callback", {required:true})             
+        validators.String(app, {required:true})
       ];
     }
     else {
@@ -55,7 +55,7 @@ var SPEC = {
     }
   },
 
-  run: function(rules, app, callback) {
+  run: function(rules, app) {
     if (app) {
       // require all files
       var md = acre.get_metadata(app);
@@ -76,26 +76,19 @@ var SPEC = {
           result: result
         });
       }
-      acre.response.status = 200;
-      acre.response.set_header('content-type', 'text/javascript; charset=utf-8');
-      var json = {
-        app: app,
-        files: filenames
+      return {
+        template: "template/json_p.mjt",
+        def: "json_p",
+        def_args: [{
+            app: app,
+            files: filenames
+        }]
       };
-      var str = [
-        "/** this is jsonp **/ ",
-        callback,
-        "(",
-        JSON.stringify(json),
-        ");"
-      ];
-      acre.write(str.join(""));
-      return acre.exit();  
     }
     else {
       return {
         apps: rules.labels
-      }
+      };
     }
   }
 };

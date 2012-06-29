@@ -58,7 +58,7 @@ var PARAMS = {
   },
   "embed": {
     validator: validators.StringBool,
-    options: {if_invalid:null}
+    options: {if_invalid:null, if_empty:null}
   }
 };
 

@@ -1,0 +1,3 @@
+<acre:block def="content_body()">
+  Hello World!
+</acre:block>

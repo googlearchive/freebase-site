@@ -1,0 +1,23 @@
+.icon-link span {
+    opacity: 0.8;
+    display: inline-block;
+    padding: 3px 0 2px 22px;
+    background: url(template/ui-icons.png) no-repeat;
+    line-height: 1;
+    font-weight: bold;
+}
+
+#global-search-input {
+    border: 1px solid #c1c1c1;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    font-style: italic;
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; 
+    padding: 0.3em;
+    font-size: 1.3em;
+    width: 271px;
+    font-size: 1.1em;
+    background: #fff url(http://www.freebase.com/resources/images/ui/loader-sm-snake-orange.gif) 0 -100px;
+}
+
+@visited-blue: #1170a3;

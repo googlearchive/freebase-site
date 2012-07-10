@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cronentries>
   <cron>
+    <url>/_schema_warmer?id=/common</url>
+    <description>Schema cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
     <url>/_schema_warmer?id=/film</url>
     <description>Schema cache warmup.</description>
     <schedule>every 10 minutes</schedule>

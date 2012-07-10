@@ -21,22 +21,11 @@
           "location": "//environments.svn.freebase-site.googlecode.dev/@ACRE_SITE_HOST@/robots.txt"
         } 
      
-     },
-     {
-        "from": {
-          "path": "/flyout2" 
-        },
-        "to": {
-          "route_as": "script",
-          "location": "//environments.svn.freebase-site.googlecode.dev/flyout2"
-        } 
-     
      }
-
    ]
   },
   {
-    "host": [".@ACRE_SITE_HOST@", "@ACRE_SITE_HOST@"],
+    "host": [".@ACRE_SITE_HOST@", "@ACRE_SITE_HOST@", "@APPENGINE_APP_ID@.appspot.com"],
     "rules": [
       {
         "from": {

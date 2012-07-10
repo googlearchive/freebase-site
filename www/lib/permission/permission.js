@@ -50,7 +50,7 @@
            dataType: "json",
            success: function(data) {
              p.has_permission = ( data.result && data.result[c.id] === true );
-             console.log("has_permission", p.has_permission);
+             //console.log("has_permission", p.has_permission);
              $(window).trigger("fb.permission.has_permission", p.has_permission);
            }
          });

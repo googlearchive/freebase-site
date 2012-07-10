@@ -132,12 +132,12 @@
    */
    $(window)
      .bind("fb.user.signedin", function(e, user) {
-       console.log("fb.user.signedin", user.id);
+       //console.log("fb.user.signedin", user.id);
        fb.user = user;
        // signed in
        var u = $("#nav-username");
        if (u.length) {
-         console.log(fb.user, fb.user.id, fb.user.name);
+         //console.log(fb.user, fb.user.id, fb.user.name);
          u[0].href += fb.user.id.substring(1);
          var MAX_SIZE = 25;
          var MODE = "fillcropmid";
@@ -154,7 +154,7 @@
        $(".signedin").show();
      })
      .bind("fb.user.signedout", function(e) {
-       console.log("fb.user.signedout");
+       //console.log("fb.user.signedout");
        // signed out
        $("#signedout").show();
        $(".signedout").show();
@@ -811,9 +811,15 @@
        data: data,
        dataType: "jsonp",
        success: function(data) {
-         return success(data.result);
+         if (success) {
+           success.apply(this, [data.result]);
+         }
        },
-       error: error
+       error: function() {
+         if (error) {
+           error.apply(this, arguments);
+         }
+       }
      };
      return $.ajax(mqlread_options);
    };

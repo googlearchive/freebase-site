@@ -32,7 +32,6 @@
 <acre:script>
   var c = this.exports.c = {};
   var h = acre.require("lib/helper/helpers.sjs");
-  var components = acre.require("components");
   var image = acre.require("lib/template/imagecomponents");
   var filter_components = acre.require("lib/filter/components.mjt");
   var freebase_components = acre.require("lib/template/components.mjt");
@@ -65,7 +64,7 @@
         ${filter_components.creator_filter(c.id, c.filters)}
       </div>
       <div class="module-section alt">
-        ${components.historical_filter(c.id, c.filters)}
+        ${filter_components.historical_filter(c.id, c.filters)}
       </div>
     </div>
   </div>

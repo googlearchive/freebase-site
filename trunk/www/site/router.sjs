@@ -766,7 +766,7 @@ function init_site_rules(lib) {
     //
 
     // Review queue
-    {prefix:"/review/queue",       app:"review", script:"queue.controller"},    
+    {prefix:"/review",       app:"review", script:"queue.controller"},    
 
     // Homepage
     {prefix:"/index",                   url:"/", redirect: 301},

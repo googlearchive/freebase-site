@@ -207,7 +207,10 @@
 </acre:block>
 
 <acre:block def="property(id, o)">
-  <a href="${h.fb_url(id, [['links'],['property',o.master_property.id]])}">${o.master_property.id}</a>
+  <a class="property property-value" data-id="${o.master_property.id}" 
+    href="${h.fb_url(id, [['links'],['property',o.master_property.id]])}">
+    ${o.master_property.id}
+  </a>
 </acre:block>
 
 <acre:block def="target(o)">
@@ -229,8 +232,11 @@
     if (typeof attrs === "string") {
       attrs = {"class":attrs};
     }
+    attrs = attrs || {};
+    attrs["class"] = attrs["class"] ? attrs["class"] + " property-value" : "property-value";
     attrs = h.extend({
-      title: id
+      "title": id,
+      "data-id": id
     }, attrs);
   </acre:script>
   <a href="${h.fb_url(id, [['links']])}" acre:attrs="attrs">${name || id}</a>

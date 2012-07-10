@@ -132,24 +132,28 @@ function by(ids, type) {
 
   var creators = [];
   var promises = [];
+
+  if (!type || type === "/type/attribution") {
+    creators = creators.concat(ids);
+  }
   
-  if (!type || type == "/type/user") {
+  if (!type || type === "/type/user") {
     promises.push(creators_by_user(ids));
   }
 
-  if (!type || type == "/dataworld/information_source") {
+  if (!type || type === "/dataworld/information_source") {
     promises.push(creators_by_dataset(ids));
   }
 
-  if (!type || type == "/dataworld/software_tool") {
+  if (!type || type === "/dataworld/software_tool") {
     promises.push(creators_by_tool(ids));
   }
   
-  if (!type || type == "/dataworld/mass_data_operation") {
+  if (!type || type === "/dataworld/mass_data_operation") {
     promises.push(creators_by_mdo(ids));
   }
   
-  if (!type || type == "/freebase/apps/acre_app") {
+  if (!type || type === "/freebase/apps/acre_app") {
     promises.push(creators_by_acre_app(ids));
   }
 

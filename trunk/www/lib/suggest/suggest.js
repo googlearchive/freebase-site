@@ -1147,7 +1147,13 @@
           o = this.options;
 
       if (this.ac_xhr) {
-        this.ac_xhr.abort();
+        // Aborting jsonp (jquery's XHR: jqXHR) results in:
+        // Uncaught TypeError: 
+        //     Property 'jQuery....' of object [object Window] is not a function
+        // Can't abort jsonp anyway.
+        if (!this.jsonp && this.ac_xhr.abort) {
+          this.ac_xhr.abort();
+        }
         this.ac_xhr = null;
       }
 
@@ -1400,7 +1406,9 @@
     flyout_request: function(data) {
       var self = this;
       if (this.flyout_xhr) {
-        this.flyout_xhr.abort();
+        if (!this.jsonp_flyout && this.flyout_xhr.abort) {
+          this.flyout_xhr.abort();
+        }
         this.flyout_xhr = null;
       }
 

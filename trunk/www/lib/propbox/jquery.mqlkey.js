@@ -130,7 +130,6 @@
     check_key: function(val) {
       var self = this;
       if (this.xhr) {
-        this.xhr.abort();
         this.xhr = null;
       }
       var q = {

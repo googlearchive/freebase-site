@@ -322,6 +322,7 @@
     <acre:script>
       var attrs = h.extend({}, microdata.value(prop_structure, prop_value));
       attrs["class"] = "property-value";
+      attrs["data-value"] = prop_value.value;
     </acre:script>
     <acre:block if="ect === '/type/datetime'">
       ${i18n_c.datetime(prop_value.value, attrs)}
@@ -331,6 +332,15 @@
       <acre:block if="prop_structure.unit">
         ${prop_structure.unit.abbreviation || ""}
       </acre:block>
+    </acre:block>
+    <acre:block elif="ect === '/type/uri'">
+      <acre:script>
+        h.extend(attrs, {
+          "href": prop_value.value,
+          "target": "_blank"
+        });
+      </acre:script>
+      <a acre:attrs="attrs">${prop_value.text}</a>
     </acre:block>
     <acre:block elif="ect === '/type/key'">
       <acre:script>
@@ -349,7 +359,6 @@
         h.extend(attrs, {
           "data-namespace": ns,
           "data-id": object_id,
-          "data-value": prop_value.value,
           "title": object_id,
           "href": h.fb_url(true, object_id)
         });
@@ -357,7 +366,7 @@
       <a acre:attrs="attrs">${prop_value.text}</a>
     </acre:block>
     <acre:block else="">
-      <span acre:attrs="attrs" data-value="${prop_value.value}">${prop_value.text}</span>
+      <span acre:attrs="attrs">${prop_value.text}</span>
       <acre:block if="ect === '/type/text' && prop_value.lang">
         ${i18n_c.lang_code(prop_value.lang, lang)}
       </acre:block>

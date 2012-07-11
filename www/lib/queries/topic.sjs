@@ -297,21 +297,20 @@ function to_structure(domains_list, lang) {
     structure.order.push(domain.id);
     var domain_name = i18n.mql.get_text(lang, domain.name);
     var domain_structure = structure.domains[domain.id] = {
-      text: domain_name.value,
-      lang: domain_name.lang,
+      text: domain_name ? domain_name.value : domain.id,
+      lang: domain_name ? domain_name.lang : null,
       types: []
     };
     domain.types.forEach(function(type) {
       domain_structure.types.push(type.id);
       var type_name = i18n.mql.get_text(lang, type.name);
       var type_structure = structure.types[type.id] = {
-        text: type_name.value,
-        lang: type_name.lang,
+        text: type_name ? type_name.value : type.id,
+        lang: type_name ? type_name.lang : null,
         properties: []
       };
       type.properties.forEach(function(prop) {
         type_structure.properties.push(prop.id);
-        var prop_name = i18n.mql.get_text(lang, prop.name);
         var prop_structure = structure.properties[prop.id] = ph.to_prop_structure(prop, lang);
       });
     });

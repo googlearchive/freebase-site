@@ -164,7 +164,8 @@ function get_enumerated_types(prop, lang) {
         .then(function(env) {
           var topics = env.result;
           topics.forEach(function(t) {
-            t.text = i18n.mql.get_text(lang, t.name).value;
+            var t_name = i18n.mql.get_text(lang, t.name);
+            t.text = t_name ? t_name.value : t.id;
           });
           topics.sort(function(a, b) {
             return b.text < a.text;

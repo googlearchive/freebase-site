@@ -49,7 +49,10 @@
       <acre:block for="inst in instances">
        <option value="${inst.id}"
                acre:attrs="value === inst.id ? {selected:'selected'} : {}">
-         ${i18n.mql.get_text(lang, inst.name).value}
+         <acre:script>
+           var inst_name = i18n.mql.get_text(lang, inst.name);
+         </acre:script>
+         ${inst_name ? inst_name.value : inst.id}
        </option>
       </acre:block>
     </select>

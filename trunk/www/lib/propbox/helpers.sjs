@@ -123,8 +123,8 @@ function minimal_prop_value(prop_structure, prop_data, lang) {
     value.id = prop_data.id;
     if (name && name.length) {
       name = i18n.mql.get_text(lang, prop_data.name);
-      value.text = name.value;
-      value.lang = name.lang;
+      value.text = name ? name.value : value.id;
+      value.lang = name ? name.lang : null;
     }
     else {
       value.text = prop_data.id;
@@ -168,8 +168,8 @@ function minimal_prop_structure(prop_schema, lang) {
   var ect_name = i18n.mql.get_text(lang, ect.name);
   var structure = {
     id: prop_schema.id,
-    text: name.value,
-    lang: name.lang,
+    text: name ? name.value : prop_schema.id,
+    lang: name ? name.lang : null,
     unique: prop_schema.unique === true,
     disambiguator: 
       prop_schema["/freebase/property_hints/disambiguator"] === true,
@@ -179,8 +179,8 @@ function minimal_prop_structure(prop_schema, lang) {
       prop_schema["/freebase/property_hints/deprecated"] === true,
     expected_type: {
       id: ect.id,
-      text: ect_name.value,
-      lang: ect_name.lang,
+      text: ect_name ? ect_name.value : ect.id,
+      lang: ect_name ? ect_name.lang : null,
       mediator: ect["/freebase/type_hints/mediator"] === true,
       enumeration: ect["/freebase/type_hints/enumeration"] === true,
       never_assert: ect["/freebase/type_hints/never_assert"] === true,
@@ -190,7 +190,6 @@ function minimal_prop_structure(prop_schema, lang) {
   };
   var unit = prop_schema.unit;
   if (unit) {
-    var unit_name = i18n.mql.get_text(lang, unit.name);
     structure.unit = {
       id: unit.id,
       abbreviation: unit["/freebase/unit_profile/abbreviation"]

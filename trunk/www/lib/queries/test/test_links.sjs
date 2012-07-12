@@ -182,7 +182,10 @@ test("mqlread_options", function() {
 });
 
 test("apply null filters", function() {
-  ["limit", "timestamp", "historical", "domain_type_property"].forEach(function(k) {
+    deepEqual(q.apply_limit({}), {limit: 100});
+    deepEqual(q.apply_limit({}, null), {limit: 100});
+
+  ["timestamp", "historical", "domain_type_property"].forEach(function(k) {
     deepEqual(q["apply_" + k]({}), {});
     deepEqual(q["apply_" + k]({}, null), {});
   });

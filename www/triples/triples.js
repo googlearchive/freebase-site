@@ -52,10 +52,19 @@
       $(">tr", context).hover(triples.row_hoverover, triples.row_hoverout);
     },
 
+    init_linkcount: function(tbody, next) {
+      var len = $(">tr", tbody).length;
+      var context = $("[name=infinitescroll-count]");
+      $(".number", context).attr("data-value", len);
+      i18n.ize_number(context);
+      $(".more", context).toggle(!!next);
+    },
+
     init_infinitescroll: function() {
       var tbody = $("#infinitescroll > tbody");
-      triples.init_menus(tbody);
       var next = tbody.attr("data-next");
+      triples.init_menus(tbody);
+      triples.init_linkcount(tbody, next);
       if (!next) {
         // nothing to scroll
         return;
@@ -82,19 +91,12 @@
         var html = $(data.result.html);
         triples.init_menus(html, true);
         var next = html.attr("data-next");
-        if (next) {
-          tbody.append($(">tr", html));
-          tbody.attr("data-next", next);
-          // update links count
-          var len = $(">tr", tbody).length;
-          var context = $("[name=infinitescroll-count]");
-          $(".number", context).attr("data-value", len);
-          i18n.ize_number(context);
-          // re-init tablesorter
-          tbody.parent("table").trigger("update");
-        }
-        else {
-          //console.log("STOP INFINITE SCROLL!!!");
+        tbody.append($(">tr", html));
+        tbody.attr("data-next", next);
+        triples.init_linkcount(tbody, next);
+        // re-init tablesorter
+        tbody.parent("table").trigger("update");
+        if (!next) {
           $(window).unbind('.infscr');
         }
       });

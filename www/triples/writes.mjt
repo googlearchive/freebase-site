@@ -40,6 +40,7 @@
   var _ = i18n.gettext;
   var th = acre.require("helpers.sjs");
   var triples = acre.require("triples.mjt");
+  var MORE = _("+");
 </acre:script>
 
 <acre:block def="head()">
@@ -83,11 +84,11 @@
 <acre:block def="writes(id, data, filters, object_type)">
 
   <div class="section">
-    <h2  class="table-title">
-      <a acre:if="data && data.length"name="infinitescroll-count">
-        ${_("Links created by or via this object")} (${i18n_c.number(data.length)})
+    <h2 class="table-title">
+      <a name="infinitescroll-count">
+        ${_("Links created by or via this object")} 
+        (${i18n_c.number(data.length)}<span class="more">${MORE}</span>)
       </a>
-      <acre:block else="">${_("No links created by or via this object")}</acre:block>
     </h2>
     <table acre:if="data && data.length" class="table table-sortable" id="infinitescroll">
       <thead>
@@ -159,7 +160,7 @@
 </acre:block>
 
 <acre:block def="writes_body(id, data, filters, object_type)">
-  <tbody acre:attrs="data.length ? {'data-next':data[data.length-1].timestamp} : {}">
+  <tbody acre:attrs="data.length >= 100 ? {'data-next':data[data.length-1].timestamp} : {}">
     <acre:block for="o in data">
       ${writes_row(id, o, filters, object_type)}
     </acre:block>

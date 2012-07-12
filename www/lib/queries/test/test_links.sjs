@@ -37,26 +37,25 @@ var h = acre.require("helper/helpers.sjs");
 var validators = acre.require("validator/validators.sjs");
 var q = acre.require("queries/links.sjs");
 
-
 test("links_sort", function() {
   var a = [{timestamp:2},{timestamp:0}];
   var b = [{timestamp:3},{timestamp:1}];
-  same(q.links_sort(a, b),
-       [{timestamp:3},{timestamp:2},{timestamp:1}]);
+  same(q.links_sort(a, b, {limit:2}),
+       [{timestamp:3},{timestamp:2}]);
 
   a = [{timestamp:1},{timestamp:0}];
   b = [{timestamp:3},{timestamp:2}];
-  same(q.links_sort(a, b),
+  same(q.links_sort(a, b, {limit:2}),
        [{timestamp:3},{timestamp:2}]);
 
   a = [{timestamp:6},{timestamp:4}];
   b = [{timestamp:5},{timestamp:2}];
-  same(q.links_sort(a, b),
-       [{timestamp:6},{timestamp:5},{timestamp:4}]);
+  same(q.links_sort(a, b, {limit:2}),
+       [{timestamp:6},{timestamp:5}]);
 
   a = [{timestamp:7},{timestamp:6}];
   b = [{timestamp:5},{timestamp:4}];
-  same(q.links_sort(a, b),
+  same(q.links_sort(a, b, {limit:2}),
        [{timestamp:7},{timestamp:6}]);
 });
 
@@ -102,6 +101,78 @@ test("links_incoming with filter", function() {
   equal(result[0].master_property.id, "/people/person/nationality");
 });
 
+test("links_objects", function() {
+  var result;
+  q.links_objects("/en/united_states", {limit:1})
+    .then(function(objects) {
+      result = objects;
+    });
+  acre.async.wait_on_results();
+  equal(result.length, 1);
+});
+
+test("links_objects with filter", function() {
+  var result;
+  q.links_objects("/en/united_states", {domain:"/people"})
+    .then(function(incoming) {
+      result = incoming;
+    });
+  acre.async.wait_on_results();
+  equal(result.length, 0);
+});
+
+/* Uncomment once http://codereview.appspot.com/6352074/ is checked in
+test("writes attribution", function() {
+  var result;
+  q.writes("/user/netflixbot/attr/104", "/type/attribution")
+    .then(function(incoming) {
+      result = incoming;
+    });
+  acre.async.wait_on_results();
+  ok(result && result.length);
+});
+*/
+
+test("writes user", function() {
+  var result;
+  q.writes("/user/netflixbot", "/type/user")
+    .then(function(writes) {
+      result = writes;
+    });
+  acre.async.wait_on_results();
+  ok(result && result.length);
+});
+
+
+test("writes app", function() {
+  var result;
+  q.writes("/user/jdouglas/catmap", "/freebase/apps/acre_app")
+    .then(function(writes) {
+      result = writes;
+    });
+  acre.async.wait_on_results();
+  ok(result && result.length);
+});
+
+test("writes dataset", function() {
+  var result;
+  q.writes("/en/wikipedia", "/dataworld/information_source")
+    .then(function(writes) {
+      result = writes;
+    });
+  acre.async.wait_on_results();
+  ok(result && result.length);
+});
+
+test("links_property", function() {
+  var result;
+  q.links_property("/film/film/starring")
+    .then(function(instances) {
+      result = instances;
+    });
+  acre.async.wait_on_results();
+  ok(result && result.length);
+});
 
 test("mqlread_options", function() {
   deepEqual(q.mqlread_options(), {});

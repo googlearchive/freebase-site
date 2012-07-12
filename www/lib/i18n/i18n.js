@@ -165,7 +165,7 @@
     },
 
     number: function(n) {
-      return dojo.number.format(n);
+      return (dojo && dojo.number) ? dojo.number.format(n) : n;
     },
 
 

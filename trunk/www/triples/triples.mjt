@@ -42,6 +42,7 @@
   var th = acre.require("helpers.sjs");
   var QUERY = _("query");
   var LINKS = _("links");
+  var MORE = _("+");
 </acre:script>
 
 <acre:block def="head()">
@@ -90,9 +91,13 @@
 </acre:block>
 
 <acre:block def="links(id, data, filters)">
-
   <div class="section">
-    <h2 class="table-title"><a name="infinitescroll-count">${_("Links")} (${i18n_c.number(data.length)})</a></h2>
+    <h2 class="table-title">
+      <a name="infinitescroll-count">
+      ${_("Links")}
+      (${i18n_c.number(data.length)}<span class="more">${MORE}</span>)
+      </a>
+    </h2>
     <table class="table table-sortable" id="infinitescroll">
       <thead>
         <tr>
@@ -145,7 +150,7 @@
 </acre:block>
 
 <acre:block def="links_body(id, data, filters)">
-  <tbody acre:attrs="data.length ? {'data-next':data[data.length-1].timestamp} : {}">
+  <tbody acre:attrs="data.length >= 100 ? {'data-next':data[data.length-1].timestamp} : {}">
     <acre:block for="link in data">
       ${link_row(id, link, filters)}
     </acre:block>

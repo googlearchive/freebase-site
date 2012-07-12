@@ -79,7 +79,12 @@
      </li>
      <acre:block for="prop in c.prop_structure.properties">
        <li class="edit-row">
-         <label>${prop.text}</label>
+         <label>
+           ${prop.text}
+           <acre:block if="prop.expected_type.id === '/type/text' && i18n.LANGS_BY_ID[i18n.lang]">
+             <span class="lang-text">(${i18n.LANGS_BY_ID[i18n.lang].name})</span>
+           </acre:block>
+         </label>
          ${propbox.form_field(prop, null, i18n.lang)}
          <acre:block if="!prop.unique">
            <div class="magicbox-template">
@@ -91,7 +96,7 @@
      <li class="edit-row-submit">
        <input type="hidden" name="s" value="${c.object.id}"/>
        <input type="hidden" name="p" value="${c.prop_structure.id}"/>
-       <input type="hidden" name="lang" value="${h.lang_code(i18n.lang)}"/>
+       <input type="hidden" name="lang" value="${i18n.lang}"/>
        ${form.submit_buttons(_('Create'))}
      </li>
     </ul>

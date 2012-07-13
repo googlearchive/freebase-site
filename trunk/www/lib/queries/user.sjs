@@ -145,3 +145,46 @@ function authority_namespaces(user_id, lang, limit) {
       });
     });
 };
+
+/**
+ * User badge query
+ * 
+ * @param o:Object - The site/query/object.sjs query result
+ */
+function user_badge(o) {
+    return freebase.mqlread({
+        id: o.id,
+        type: "/type/user",
+        "staff:usergroup": {
+            id: "/en/current_metaweb_staff",
+            optional: true
+        },
+        "expert:usergroup": {
+            id: "/freebase/badges/freebaseexpert",
+            optional: true
+        },
+        "topcontributor:usergroup": {
+            id: "/freebase/badges/topcontributor",
+            optional: true
+        },
+        "bot:usergroup": {
+            id: "/freebase/bots",
+            optional: true
+        }
+    })
+    .then(function(env) {
+        var r = env.result;
+        if (r) {
+            if (r["bot:usergroup"]) {
+                return "Bot";
+            }
+            else if (r["staff:usergroup"]) {
+                return "Staff";
+            }
+            else if (r["expert:usergroup"]) {
+                return "Expert";
+            }
+        }
+        return null;
+    });
+};

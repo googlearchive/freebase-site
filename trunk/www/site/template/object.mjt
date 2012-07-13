@@ -201,7 +201,7 @@
             ${image.image_thumb(c.object.id, 50, options)}
           </acre:block>
         </div>
-        ${object_label(label)}
+        ${object_label()}
       </div>
 
       <!!--
@@ -475,9 +475,15 @@
 </acre:block>
 
 
-<acre:block def="object_label(label)">
+<acre:block def="object_label()">
+  <acre:script>
+    var label = c.object_type.name;
+    if (c.object_type.id === '/type/user' && c.user_badge) {
+      label = c.user_badge;
+    }
+  </acre:script>
   <div class="label">
-    <a class="label-trigger ${label.toLowerCase()}" href="javascript:void(0)">$label</a>
+    <a class="label-trigger ${c.object_type.name.toLowerCase()}" href="javascript:void(0)">${label}</a>
   </div>
 </acre:block>
 

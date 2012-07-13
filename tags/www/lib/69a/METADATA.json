@@ -1,98 +1,98 @@
 {
-  "error_page" : "error/error.mjt",
-  "not_found_page" : "error/not_found.template",
-  "ttl": 0,
   "handlers": {
-    "mjt": "handlers/mjt_handler.sjs",
-    "css": "handlers/css_handler.sjs",
-    "css_manifest": "handlers/css_manifest_handler.sjs",
-    "js_manifest": "handlers/js_manifest_handler.sjs",
-    "tagged_static": "handlers/tagged_static_handler.sjs",
+    "js_manifest": "handlers/js_manifest_handler.sjs", 
+    "freebase_template": "handlers/template_handler.sjs", 
+    "controller": "handlers/controller_handler.sjs", 
+    "mjt": "handlers/mjt_handler.sjs", 
+    "ajax": "handlers/ajax_handler.sjs", 
+    "css_manifest": "handlers/css_manifest_handler.sjs", 
     "tagged_binary": "handlers/tagged_binary_handler.sjs", 
-    "freebase_template": "handlers/template_handler.sjs",
-    "controller": "handlers/controller_handler.sjs",
-    "ajax": "handlers/ajax_handler.sjs",
+    "tagged_static": "handlers/tagged_static_handler.sjs", 
+    "css": "handlers/css_handler.sjs", 
     "coffee_script": "handlers/coffee_script_handler.sjs"
-  },
+  }, 
   "extensions": {
-    "ico" : { 
-      "handler": "tagged_binary",
-      "media_type" : "image/x-icon"
-    },
-    "css": {
-      "handler": "css",
-      "media_type": "text/css"
-    },
-    "less": {
-      "handler": "css",
-      "media_type": "text/css"
-    },
-    "js": {
-      "handler": "tagged_static"
-    },
-    "json": {
-      "handler": "binary",
-      "media_type": "text/plain"
-    },
-    "mf.css": {
-      "handler": "css_manifest",
-      "media_type": "text/css"
-    },
-    "mf.js": {
-      "handler": "js_manifest",
-      "media_type": "text/javascript"
-    },
-    "template": {
-      "handler": "freebase_template"
-    },
-    "controller": {
-      "handler": "controller"
-    },
-    "ajax": {
-      "handler": "ajax"
-    },
-    "omf.js": {
-      "handler": "js_manifest",
-      "media_type": "text/javascript"
-    }, 
-    "omf.css": {
-      "handler": "css_manifest",
-      "media_type": "text/css"
-    },
-    "properties": {
-      "handler": "acre_script"
-    },
-    "cs": {
-      "handler": "coffee_script"
-    },
     "tab": {
       "handler": "acre_script"
-    },
-    "gif": {
-      "media_type": "image/gif", 
-      "handler": "tagged_binary"
+    }, 
+    "less": {
+      "media_type": "text/css", 
+      "handler": "css"
+    }, 
+    "mf.css": {
+      "media_type": "text/css", 
+      "handler": "tagged_static"
     }, 
     "jpg": {
       "media_type": "image/jpg", 
       "handler": "tagged_binary"
     }, 
+    "js": {
+      "handler": "tagged_static"
+    }, 
+    "mf.js": {
+      "media_type": "text/javascript", 
+      "handler": "tagged_static"
+    }, 
+    "ajax": {
+      "handler": "ajax"
+    }, 
+    "omf.css": {
+      "media_type": "text/css", 
+      "handler": "css_manifest"
+    }, 
+    "cs": {
+      "handler": "coffee_script"
+    }, 
+    "properties": {
+      "handler": "acre_script"
+    }, 
     "png": {
       "media_type": "image/png", 
       "handler": "tagged_binary"
+    }, 
+    "ico": {
+      "media_type": "image/x-icon", 
+      "handler": "tagged_binary"
+    }, 
+    "controller": {
+      "handler": "controller"
+    }, 
+    "omf.js": {
+      "media_type": "text/javascript", 
+      "handler": "js_manifest"
+    }, 
+    "gif": {
+      "media_type": "image/gif", 
+      "handler": "tagged_binary"
+    }, 
+    "json": {
+      "media_type": "text/plain", 
+      "handler": "binary"
+    }, 
+    "template": {
+      "handler": "freebase_template"
+    }, 
+    "css": {
+      "media_type": "text/css", 
+      "handler": "css"
     }
-  },
-  "libs" : {
-    "jquery" : {
-      "base_url": "//ajax.googleapis.com/ajax/libs/jquery/",
-      "version": "1.7.1"
-    },
-    "dojo" : {
-      "base_url": "//ajax.googleapis.com/ajax/libs/dojo/",
-      "version": "1.7.2"
-    },
-    "googlefonts" : {
-      "base_url": "//fonts.googleapis.com/css",
-      "version": ""
+  }, 
+  "ttl": -1, 
+  "libs": {
+    "jquery": {
+      "version": "1.7.1", 
+      "base_url": "//ajax.googleapis.com/ajax/libs/jquery/"
+    }, 
+    "dojo": {
+      "version": "1.7.2", 
+      "base_url": "//ajax.googleapis.com/ajax/libs/dojo/"
+    }, 
+    "googlefonts": {
+      "version": "", 
+      "base_url": "//fonts.googleapis.com/css"
     }
-  }
+  }, 
+  "error_page": "error/error.mjt", 
+  "not_found_page": "error/not_found.template"
 }

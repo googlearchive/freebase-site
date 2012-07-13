@@ -208,8 +208,8 @@
       <a href="http://wiki.freebase.com/wiki/Mql" rel="external help">MQL</a> queries in the browser and retrieve Freebase data</h1>
     <h2>Enter your query and hit "Run" to get started.</h2>
     <ul id="help-links" class="clear">
-      <li><a href="http://www.freebase.com/docs/data" target="_blank">MQL Tutorial</a></li>
-      <li><a href="http://www.freebase.com/docs/mql" target="_blank">MQL&nbsp;Reference</a></li>
+      <li><a href="http://wiki.freebase.com/wiki/MQL" target="_blank">MQL API Guide</a></li>
+      <li><a href="http://wiki.freebase.com/wiki/MQL_Manual" target="_blank">MQL Reference</a></li>
     </ul>
 
     <div class="modal-inner" id="examples">

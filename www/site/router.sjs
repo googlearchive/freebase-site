@@ -402,7 +402,12 @@ function init_site_rules(lib) {
       "name": _("User"),
       "type": "/type/user",
       "show_image": true,
-      "promises":  h.extend(true, [], DEFAULT_PROMISES),
+      "promises":  h.extend(true, [], DEFAULT_PROMISES).concat([{
+        "key": "user_badge",
+        "app": "lib",
+        "script": "queries/user.sjs",
+        "promise": "user_badge"
+      }]),
       "tabs": [
         {
           "name": _("Schema"),

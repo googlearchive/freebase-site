@@ -1,5 +1,5 @@
 var METADATA = {
-  "app_version": 39, 
+  "app_version": 40, 
   "csrf_protection": "strong", 
   "app_key": "site", 
   "project": "freebase-site.googlecode.dev", 

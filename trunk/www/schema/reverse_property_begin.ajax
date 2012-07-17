@@ -31,6 +31,7 @@
 var validators = acre.require("lib/validator/validators.sjs");
 var queries = acre.require("queries.sjs");
 var editcomponents = acre.require("type_editcomponents");
+var proploader = acre.require("lib/schema/proploader.sjs");
 
 /**
  * reverse property form (aka, create a return link)
@@ -44,12 +45,13 @@ var SPEC = {
   validate: function(params) {
     return [
       validators.MqlId(params, "id", {required:true}),           // property id
-      validators.MqlId(params, "master", {required:true})        // the master property id
+      validators.MqlId(params, "master", {required:true}),       // the master property id
+      validators.LangId(params, "lang", {if_empty:"/lang/en"})
     ];
   },
 
-  run: function(id, master) {
-    return queries.property(master)
+  run: function(id, master, lang) {
+    return proploader.load(master, lang)
       .then(function(master_prop) {
         return {
           html: acre.markup.stringify(editcomponents.reverse_property_form(id, master_prop))

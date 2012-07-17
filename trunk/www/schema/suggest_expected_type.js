@@ -146,8 +146,6 @@
         this.ect_dimension = $('select:first', this.ect_unit);
         this.ect_dimension_units = $('select:eq(1)', this.ect_unit);
 
-console.log("this.ect_dimension", this.ect_dimension, "this.ect_dimension_units", this.ect_dimension_units);
-
         this.ect_dimension
           .change(function(e) {
             var option = $(":selected", this);
@@ -295,7 +293,6 @@ console.log("this.ect_dimension", this.ect_dimension, "this.ect_dimension_units"
             namespace = input.val();
           }
           if (namespace) {
-            console.log(namespace);
             data.enumeration = namespace;
           }
           else {

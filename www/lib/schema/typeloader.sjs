@@ -251,6 +251,9 @@ function do_mql(type_ids, lang) {
             id: null,
             name: i18n.mql.text_clause(lang),
             type: "/type/property",
+            schema: {
+                id: null
+            },
             unique: null,
             unit: {
                 optional: true,

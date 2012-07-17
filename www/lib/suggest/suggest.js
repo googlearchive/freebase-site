@@ -80,6 +80,15 @@
     div.remove();
   });
 
+  /**
+   * These are the search parameters that are transparently passed
+   * to the search service as specified by service_url + service_path
+   */
+  var SEARCH_PARAMS = {
+      key:1, filter:1, spell:1, exact:1,
+      lang:1, scoring:1, prefixed:1, stemmed:1, format:1, mql_output:1
+  };
+
   $.suggest = function(name, prototype) {
 
     $.fn[name] = function(options) {
@@ -121,13 +130,12 @@
 
       // suggest parameters
       o.ac_param = {};
-      $.each(["key", "filter", "spell", "exact", 
-              "lang", "scoring", "prefixed", "stemmed", "format", "mql_output"], function(i,n) {
-        var v = o[n];
+      $.each(SEARCH_PARAMS, function(k) {
+        var v = o[k];
         if (v === null || v === "") {
           return;
         }
-        o.ac_param[n] = v;
+        o.ac_param[k] = v;
       });
 
       // status texts
@@ -985,38 +993,35 @@
 
     /**
      * Parse input string into actual query string and structured name:value list
-     * 
+     *
      * "bob dylan type:artist" -> ["bob dylan", ["type:artist"]]
      * "Dear... type:film name{full}:Dear..." -> ["Dear...", ["type:film", "name{full}:Dear..."]]
      */
     parse_input: function(str) {
-        var filters = [];
-        str = $.trim(str);
-        if (str === "") {
-            return ["", filters];
-        }        
-        // only name:value without any spaces before/after ':' are considered
-        var i = str.search(/[\S]+\:[\S]/);
-        if (i === -1) {
-            return [str, filters];
-        }
-        var qstr = $.trim(str.substring(0, i));
-        var fstr = str.substring(i);
         // only pick out valid name:value pairs
-        // a name:value is valid 
+        // a name:value is valid
         // 1. if there are no spaces before/after ":"
         // 2. name does not have any spaces
         // 3. value does not have any spaces OR value is double quoted
-        var regex = /(\S+\:"[^\"]+\"|\S+\:\S+)/g;
-        var m = regex.exec(fstr);
+        var regex = /(\S+)\:(?:\"([^\"]+)\"|(\S+))/g;
+        var qstr = str;
+        var filters = [];
+        var overrides = {};
+        var m = regex.exec(str);
         while (m) {
-            filters.push(m[0]);
-            // continue with match from the last match index
-            m = regex.exec(fstr);
+            if (m[1] in SEARCH_PARAMS) {
+                overrides[m[1]] = $.isEmptyObject(m[2]) ? m[3] : m[2];
+            }
+            else {
+                filters.push(m[0]);
+            }
+            qstr = qstr.replace(m[0], "");
+            m = regex.exec(str);
         }
-        return [qstr, filters];
+        qstr = $.trim(qstr.replace(/\s+/g, " "));
+        return [qstr, filters, overrides];
     },
-    
+
     /**
      * Convenient methods and regexs to determine valid mql ids.
      */
@@ -1148,7 +1153,7 @@
 
       if (this.ac_xhr) {
         // Aborting jsonp (jquery's XHR: jqXHR) results in:
-        // Uncaught TypeError: 
+        // Uncaught TypeError:
         //     Property 'jQuery....' of object [object Window] is not a function
         // Can't abort jsonp anyway.
         if (!this.jsonp && this.ac_xhr.abort) {
@@ -1160,6 +1165,10 @@
       var query = val;
 
       var filter = o.ac_param.filter || [];
+
+      // SEARCH_PARAMS can be overridden inline
+      var extend_ac_param = null;
+
       if ($.type(filter) === "string") {
           // the original filter may be a single filter param (string)
           filter = [filter];
@@ -1174,6 +1183,7 @@
               // all advance filters are ANDs
               filter.push("(all " + structured[1].join(" ") + ")");
           }
+          extend_ac_param = structured[2];
           if ($.suggest.check_mql_id(query)) {
               // handle anything that looks like a valid mql id
               filter.push("(all mid:\"" + query + "\")");
@@ -1187,10 +1197,10 @@
       if (cursor) {
         data.cursor = cursor;
       }
-      $.extend(data, o.ac_param);
+      $.extend(data, o.ac_param, extend_ac_param);
       if (filter.length) {
           data.filter = filter;
-      }      
+      }
 
       var url = o.service_url + o.service_path + "?" + $.param(data, true);
       var cached = $.suggest.cache[url];
@@ -1244,15 +1254,16 @@
 
     create_item: function(data, response_data) {
       var css = this.options.css;
-
       var li =  $("<li>").addClass(css.item);
-
+      var label = $("<label>")
+        .append($.suggest.strongify(data.name || data.id, response_data.prefix));
       var name = $("<div>").addClass(css.item_name)
-        .append($("<label>")
-        .append($.suggest.strongify(data.name || data.id, response_data.prefix)));
+        .append(label);
+      if (data.under) {
+        $(":first", label).append($("<small>").text(" ("+data.under+")"));
+      }
       var types = data.type;
       li.append(name);
-
       var nt = data.notable;
       var type = $("<div>").addClass(css.item_type);
       if (nt && nt.name) {
@@ -1609,16 +1620,16 @@
 
       // Enable structured input name:value pairs that get appended to the search filters
       // For example:
-      // 
+      //
       //   "bob dylan type:artist"
-      // 
+      //
       // Would get translated to the following request:
-      // 
+      //
       //    /freebase/v1/search?query=bob+dylan&filter=<original filter>&filter=(all type:artist)
       //
       advanced: true,
 
-      // query param name for the search service. 
+      // query param name for the search service.
       // If query name was "foo": search?foo=...
       query_param_name: "query",
 

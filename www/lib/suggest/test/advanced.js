@@ -6,39 +6,57 @@ $(function() {
 
       var tests = [
         "bob dylan", 
-        ["bob dylan", []],
+        ["bob dylan", [], {}],
 
         "bob dylan type", 
-        ["bob dylan type", []],
+        ["bob dylan type", [], {}],
 
         "bob dylan type:", 
-        ["bob dylan type:", []],          
+        ["bob dylan type:", [], {}],          
 
         "type:",
-        ["type:", []],
+        ["type:", [], {}],
 
         " type:album",
-        ["", ["type:album"]],
+        ["", ["type:album"], {}],
 
         "bob dylan type:\"music artist\"", 
-        ["bob dylan", ["type:\"music artist\""]],
+        ["bob dylan", ["type:\"music artist\""], {}],
 
         "Dear... name{full}:Dear... type:/film/film",
-        ["Dear...", ["name{full}:Dear...", "type:/film/film"]],
+        ["Dear...", ["name{full}:Dear...", "type:/film/film"], {}],
 
         // spaces before/after ':' are ignored as filters
         "Monty Python: Life of Brian",
-        ["Monty Python: Life of Brian", []],
+        ["Monty Python: Life of Brian", [], {}],
 
         "bob dylan a: b  c: d e",
-        ["bob dylan a: b  c: d e", []],
+        ["bob dylan a: b c: d e", [], {}],
 
-        // invalid filters after the first valid filter are ignored
+        // only pick out valid filters
         "bob a:b c   d e: f g h:", 
-        ["bob", ["a:b"]],
+        ["bob c d e: f g h:", ["a:b"], {}],
 
-        "bob a:b c : d:e",
-        ["bob", ["a:b", "d:e"]]
+        "bob a:b c : d:e {foo}:\"hello world\" dylan",
+        ["bob c : dylan", ["a:b", "d:e", "{foo}:\"hello world\""], {}]
+      ];
+
+      for (var i=0,l=tests.length; i<l; i+=2) {
+          var v = tests[i];
+          var expected = tests[i+1];
+          same($.suggest.parse_input(v), expected);
+      }
+
+      // SEARCH_PARAM overrides
+      tests = [
+        'bob dylan lang:de',
+        ['bob dylan', [], {lang:'de'}],
+
+        'lang:ko dae han min guk format:"ENTITY"',
+         ['dae han min guk', [], {lang:'ko', format:'ENTITY'}],
+
+        'lang:ru Some Russian Name type:"/film/film" Another Name',
+        ['Some Russian Name Another Name', ['type:"/film/film"'], {lang:'ru'}]
       ];
 
       for (var i=0,l=tests.length; i<l; i+=2) {

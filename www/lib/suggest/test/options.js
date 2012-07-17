@@ -268,7 +268,7 @@ $(function() {
                 }
                 else {
                   compare_expected = function(data) {
-                    return data.id === expected;
+                    return data.mid === expected;
                   };
                 }
                 var list = $(">li", inst.list);
@@ -305,7 +305,7 @@ $(function() {
       test("filter=" + filter, 1, function() {
         test_suggest_result({
             filter: filter
-        }, bob_dylan_id, bob_dylan_id);
+        }, bob_dylan_mid, bob_dylan_mid);
       });
     });
 
@@ -360,11 +360,11 @@ $(function() {
 
     // exact
     test("exact [default]", function() {
-      test_suggest_result(null, "Bob Dylon", bob_dylan_id);
+      test_suggest_result(null, "Bob Dylon", bob_dylan_mid);
     });
 
     test("exact=false", function() {
-      test_suggest_result(null, "Bob Dylon", bob_dylan_id);
+      test_suggest_result(null, "Bob Dylon", bob_dylan_mid);
     });
 
     test("exact=true", function() {

@@ -40,7 +40,7 @@ var default_options = {
   advanced: true
 };
 var test_value = "bob dyla";
-var bob_dylan_id = "/m/01vrncs";
+var bob_dylan_mid = "/m/01vrncs";
 
 var position_threshold = 10;
 

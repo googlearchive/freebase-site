@@ -6,7 +6,7 @@ var METADATA = {
     "write_user": "appeditoruser"
   }, 
   "app_tag": null, 
-  "app_version": 46, 
+  "app_version": 47, 
   "app_key": "schema"
 };
 

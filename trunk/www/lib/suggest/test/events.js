@@ -46,7 +46,7 @@ $(function() {
            test_input1
              .bind("fb-select", function(e, data) {
                      ok(data);
-                     equals(data.id, bob_dylan_id);
+                     equals(data.mid, bob_dylan_mid);
                      start();
                    })
              .bind("fb-pane-show", function() {
@@ -56,7 +56,7 @@ $(function() {
                      }
                    })
              .focus()
-             .val(bob_dylan_id)
+             .val(bob_dylan_mid)
              .trigger("textchange");
          });
 

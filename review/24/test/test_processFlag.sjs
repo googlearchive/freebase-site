@@ -1,0 +1,74 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+acre.require('/test/lib').enable(this);
+
+acre.require("lib/test/mock").playback(this, "test/playback_test_processFlag.json");
+//acre.require("lib/test/mock").record(this, "test/playback_test_processFlag.json");
+
+var freebase = acre.require("lib/promise/apis.sjs").freebase;
+var voteSJS = acre.require("vote.sjs");
+var processFlag = acre.require("vote.sjs").processFlag;
+var deleteEntity = acre.require("reviewhelpers.sjs").deleteEntity;
+
+
+// this test requires user to be logged in
+var user;
+test("login required", function() {
+    freebase.get_user_info().then(function(user_info) {user = user_info;});
+    acre.async.wait_on_results();
+    ok(user, "login required");
+});
+if (!user) {
+    acre.test.report();
+    acre.exit();
+}
+
+test("processVote - Invalid Params", function() {
+    var result = null;
+
+    processFlag("/m/09jk22c").then(function(r) {result = r;}); 
+    acre.async.wait_on_results();  
+    ok(result == voteSJS.insufficientVotes, "Detected not enough votes. Check!: " + result);
+
+    var result = null;
+
+    processFlag("/m/0j0yr8_").then(function(r) {result = r;}); 
+    acre.async.wait_on_results();  
+    ok(result == voteSJS.conflictingVotes, "Detected conflicting votes. Check! "  + result);
+
+    processFlag("/m/0f7qglt").then(function(r) {result = r;}, function(r) {result = r;}); 
+    acre.async.wait_on_results();  
+    ok(result == voteSJS.consensusOfVotes, "Detected consensus. Check! "  + result);
+});
+
+
+acre.test.report();

@@ -47,7 +47,6 @@
     min-width: 1200px;  
     position: relative;  
 }
-
 .queue-back-button {
     display: none;
     position: absolute;
@@ -65,10 +64,6 @@
     font-size: 1.5em;
     margin: 0px auto;
 }
-.queue-header-status {
-    position:absolute;    
-    left: 100px;
-}
 .queue-message {
     width:50%;    
     position: relative;
@@ -83,7 +78,6 @@
     background-position: -1220px 15px; 
     padding: 1.5em 1.5em 1.5em 40px;   
 }
-
 #storage {
     min-width: 1200px;
 }
@@ -94,8 +88,8 @@
     bottom:50px; 
     right:10px; 
     padding:10px; 
-    width:500px; 
-    height:200px; 
+    width:800px; 
+    height:800px; 
     overflow-x: hidden; 
     overflow-y:scroll; 
     background:#ccc; 

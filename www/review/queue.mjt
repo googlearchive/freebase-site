@@ -38,9 +38,9 @@
     var propboxForm = acre.require("lib/propbox/form.mjt");
 
     var BACK = _("Back");
-    var FORWARD = _("Forward");
-    var LOADING = _("Loading...");
     var CLOSE = _("Close");
+    var FORWARD = _("Forward");
+    var LOADING = _("Loading...");    
     var PROBLEMS = _("Well, this is embarrassing! We're having some problems and working to resolve them.");
     var COMPLETE = _("You have completed voting on all flags in this category!");
     var LINK_TO = _("Link to this flag in review.");
@@ -55,12 +55,10 @@
 <acre:block def="content()">
 
   <div class="queue-header">
-    <div class="queue-back-button">${propboxForm.cancel_button(BACK)}</div>
-    <span class="queue-header-status vote-status"></span>         
-    <span class="queue-header-message" id="queue-header-message">${LOADING}</span>        
+    <div class="queue-back-button">${propboxForm.cancel_button(BACK)}</div>          
+    <span class="queue-header-message" id="queue-header-message">${_("Review Queue")}</span>        
     <div class="queue-forward-button">${propboxForm.cancel_button(FORWARD)}</div>                   
   </div>
-
   <div id="storage">
   </div>
   <div id="complete" class="queue-message" style="visibility: hidden;">
@@ -73,8 +71,7 @@
     ${JSON.stringify(c.params)}
   </div>
 
-  <div id="linking" style="visibility: hidden;">
-    <input class="text-input" type="hidden" id="queue-link-list" value="${helper.legacy_fb_url('/review/queue', '?flags=')}"/>
+  <div id="linking" style="visibility: hidden;">    
     <div id="queue-link-to-flag" class="modal">
       <div class="modal-inner">
         <h1 class="modal-title">

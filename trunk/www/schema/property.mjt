@@ -106,7 +106,7 @@
         <a href="${h.fb_url(c.property.expected_type.id, [['schema']])}">$c.property.expected_type.id</a>
       </td>
       <td class="numeric even">
-        <span acre:if="c.property['/freebase/type_hints/disambiguator'] === true">${_("True")}</span>
+        <span acre:if="c.property['/freebase/property_hints/disambiguator'] === true">${_("True")}</span>
         <span acre:else="">${_("False")}</span>
       </td>
       <td class="numeric odd">
@@ -114,7 +114,7 @@
         <span acre:else="">${_("False")}</span>
       </td>
       <td class="numeric even">
-        <span acre:if="c.property['/freebase/type_hints/display_none'] === true">${_("True")}</span>
+        <span acre:if="c.property['/freebase/property_hints/display_none'] === true">${_("True")}</span>
         <span acre:else="">${_("False")}</span>
       </td>
       <td class="numeric odd" acre:if="c.property_reverse">

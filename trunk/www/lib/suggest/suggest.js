@@ -1616,7 +1616,7 @@
 
       stemmed: null,
 
-      format: "ac",
+      format: null,
 
       // Enable structured input name:value pairs that get appended to the search filters
       // For example:

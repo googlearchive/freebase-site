@@ -62,7 +62,7 @@
       input
         .data_input({
           lang: fb.lang,
-          suggest: fb.suggest_options.instance("/common/topic")
+          suggest_impl: fb.suggest_options
         })
         .bind("valid", function() {
           formlib.enable_submit(options);

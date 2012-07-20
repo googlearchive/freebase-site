@@ -119,6 +119,15 @@
     "apitextsandbox" : { 
       "url" : "/freebase/v1-sandbox/text{topic_slow_2}?key=AIzaSyB9YS2QquH0IU5MvgiVvjkS5uW7DM84bz4"
       },
+    "apitopicdev" : { 
+      "url" : "/freebase/v1dev/topic{topic}?key=AIzaSyB9YS2QquH0IU5MvgiVvjkS5uW7DM84bz4"
+      },
+    "apitopicsandbox" : { 
+      "url" : "/freebase/v1sandbox/topic{topic}?key=AIzaSyB9YS2QquH0IU5MvgiVvjkS5uW7DM84bz4"
+      },
+    "apitopicotg" : { 
+      "url" : "/freebase/v1/topic{topic}?key=AIzaSyB9YS2QquH0IU5MvgiVvjkS5uW7DM84bz4"
+      },
     "apimqlreadsandbox" : { 
       "url" : "/freebase/v1-sandbox/mqlread?query=[{\"name\":null,\"id\": \"{topic_slow_2}\"}]&key=AIzaSyB9YS2QquH0IU5MvgiVvjkS5uW7DM84bz4"
       }
@@ -159,6 +168,26 @@
         "random" : true
     },
 
+    "topicapidev" : {
+        "pages" :[{
+          "page" : "apitopicdev",
+          "repeat" : 500
+        }]
+    },
+
+    "topicapisandbox" : {
+        "pages" :[{
+          "page" : "apitopicsandbox",
+          "repeat" : 500
+        }]
+    },
+
+    "topicapiotg" : {
+        "pages" :[{
+          "page" : "apitopicsandbox",
+          "repeat" : 500
+        }]
+    },
     "schema" : {
       "pages" : [
         {

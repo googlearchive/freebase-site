@@ -33,4 +33,4 @@
 // This issues a 302 redirect to the homepage.
 
 acre.response.status = 302;
-acre.response.set_header("Location", "http://www.google.com");
+acre.response.set_header("Location", "http://www.wikipedia.org");

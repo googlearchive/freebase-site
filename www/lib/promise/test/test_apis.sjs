@@ -37,7 +37,7 @@ var urlfetch = acre.require("promise/apis").urlfetch;
 
 test("urlfetch_success", function() {
   // Basic url fetch should call the callback
-  urlfetch("http://www.google.com")
+  urlfetch("http://www.wikipedia.org")
     .then(function(result) {
       ok(result.body, "Make sure that we returned a result");
     }, function(failure) {
@@ -47,7 +47,7 @@ test("urlfetch_success", function() {
   acre.async.wait_on_results();
 
   // Multiple urlfetches should also work
-  urlfetch("http://www.google.com")
+  urlfetch("http://www.wikipedia.org")
     .then(function(result) {
       ok(result.body, "Make sure that we returned a result");
     }, function(error) {

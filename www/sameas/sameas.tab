@@ -80,11 +80,11 @@ var SPEC = {
   },
 
   run: function(object, f, lang) {
-      return {
-          id: object.id,
-          object: object,
-          filters: f,
-          keys: queries.keys(object.id, f, null, lang)
-      };
+    return {
+      id: object.id,
+      object: object,
+      filters: f,
+      keys: queries.keys(object.id, f, null, lang)
+    };
   }
 };

@@ -34,6 +34,7 @@
   var h = acre.require("lib/helper/helpers.sjs");
   var image = acre.require("lib/template/imagecomponents");  
   var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
   var filter_components = acre.require("lib/filter/components.mjt");
   var fh = acre.require("lib/filter/helpers.sjs");
@@ -90,7 +91,7 @@
       <span>Filter this data</span>
     </h2>
     <div class="module-section">
-      ${filter_components.linkcount_filter(c.id, c.filters, c.linkcount)}
+      ${filter_components.linkcount_filter(c.id, c.filters, c.object.linkcount)}
     </div>
   </div>
 </acre:block>
@@ -112,7 +113,7 @@
         <ul>
           <acre:script>
           var types = c.object.type.slice().sort(function(a,b) {
-            return i18n.display_name(b).toLowerCase() < i18n.display_name(a).toLowerCase();
+            return b.text.toLowerCase() < a.text.toLowerCase();
           });
           var filters = c.filters;
           ["domain", "type", "property"].forEach(function(k) {
@@ -121,6 +122,9 @@
           </acre:script>
           <acre:block for="type in types">
             ${mt.type_li(type)}
+            <acre:block if="i18n.lang !== type.lang">
+              ${i18n_c.lang_code(type.lang, i18n.lang)}
+            </acre:block>
           </acre:block>
         </ul>
       </div>

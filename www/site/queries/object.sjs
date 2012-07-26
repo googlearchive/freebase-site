@@ -32,136 +32,172 @@ var h = acre.require("lib/helper/helpers.sjs");
 var deferred = acre.require("lib/promise/deferred");
 var freebase = acre.require("lib/promise/apis").freebase;
 var i18n = acre.require("lib/i18n/i18n.sjs");
-var creator = acre.require("lib/queries/creator.sjs");
-var article = acre.require("lib/queries/article.sjs");
+
+/* default filters we need for any object */
+var OBJECT_FILTERS = [ 
+    "/type/object", 
+    "/dataworld/gardening_hint/replaced_by",
+    "/freebase/object_profile/linkcount",
+    "!/freebase/review_flag/item",
+    "/common/topic/notable_types", 
+    "/common/topic/notable_for", 
+    "/common/topic/image",
+    "/common/topic/description",
+
+    /* TODO: remove these once transition to /common/topic/description is complete */
+    "/common/topic/article",
+    "/freebase/documented_object/documented_object_tip"
+];
 
 /**
- * Basic freebase object information (in english):
- * This query is used in template/object.mjt to display the freebase object mast-head.
+ * Basic freebase object information
+ *
+ * The returned object is used to drive object routing 
+ * and the display of the object masthead.
+ *
+ * @param id:String
+ * @param props:Array - additional properties needed by routing rules
  */
-function object(id, options) {
-    var q = mql(id);
-    q = h.extend(q, options);
-    var promises = {
-        object: freebase.mqlread(q)
-            .then(function(env) {
-                return env.result;
-            }),
-        article: article.get_article(id, null, null, i18n.lang)
-            .then(function(r) {
-                return r[id];
-            })
+function object(id, props) {
+    var api_options = {
+        lang: h.lang_code(i18n.lang),
+        filter: OBJECT_FILTERS.concat(props || [])
     };
-    return deferred.all(promises)
-        .then(function(r) {
-          if (!r.object) {
-            return new Error(h.sprintf("%s not found", id));
-          }
-          return r;
-        })
-        .then(function(r) {
-          r.object["/common/topic/article"] = r.article;
-          return callback(r.object);
-        });
+    return freebase.get_topic(id, api_options)
+      .then(function(topic) {
+        var types = get_values(topic, "/type/object/type");
+        var type_map = (types && types.length) ? h.map_array([].concat(types), "id") : {};
+        type_map["/type/object"] = true; // all objects are implicitly /type/object
+
+        return {
+          id: id, /* TODO - use_mid in routing rules trumps TT id canonicalization for now */
+          type: types,
+          type_map: type_map,
+          property: topic.property,
+
+          mid: get_first_value(topic, "/type/object/mid").value,
+          name: get_first_value(topic, "/type/object/name"),
+          replaced_by: get_first_value(topic, "/dataworld/gardening_hint/replaced_by"),
+          attribution: get_first_value(topic, "/type/object/attribution"),
+          image: get_first_value(topic, "/common/topic/image"),
+
+          description: get_description(topic),
+          notability: get_notability(topic),
+          linkcount: get_linkcount(topic),
+          flag: get_first_value(topic, "!/freebase/review_flag/item")
+        };
+      });
 };
 
-function callback(result) {
-    var topic = result;
-    if (!topic) return null;
-    topic.attribution = h.get_attribution(topic);
-    topic.name = topic.name.sort(h.text_lang_sort);
-    topic.image = topic["/common/topic/image"];
-    topic.replaced_by = topic["/dataworld/gardening_hint/replaced_by"];
-    topic.flag = topic["!/freebase/review_flag/item"];
-    //h.resolve_article_uri(topic.article);    // resolve wikipedia links
-    return topic;
+function get_values(topic_result, prop) {
+  var props = topic_result.property;
+  return (props && props[prop] && props[prop].values) ? props[prop].values : null;
 };
 
+function get_first_value(topic_result, prop) {
+  var values = get_values(topic_result, prop);
+  return values ? h.first_element(values) : null;
+}
+
+function get_description(topic) {
+  var description = null;
+  ["/common/topic/description", 
+   "/freebase/documented_object/documented_object_tip"].every(function(prop) {
+    description = get_first_value(topic, prop);
+    return description === null;
+  });
+  if (!description) {
+    var doc = get_first_value(topic, "/common/topic/article");
+    if (doc) {
+      description = get_first_value(doc, "/common/document/text");
+    }
+  }
+  return description;
+};
 
 /**
- * promise to get the blurb of an object
+ * Given topic result with notable_types and notable_for,
+ * return the first notable_types and first notable_for values.
+ * If object result does not have notable_types
+ * nor notable_for, return null.
  */
-function blurb(o) {
-    return article.get_text(o);
+function get_notability(topic) {
+  var notable_type = get_first_value(topic, "/common/topic/notable_types");
+  var notable_for = get_first_value(topic, "/common/topic/notable_for");
+  if (notable_type || notable_for) {
+    return {
+      notable_type: notable_type,
+      notable_for: notable_for
+    };
+  }
+  return null;
 };
+
+/**
+ * Given topic result (with /freebase/object_profile/linkcount),
+ * return the linkcount structure. If /freebase/object_profile/linkcount does
+ * not exist, return null.
+ */
+function get_linkcount(topic) {
+    return get_values(topic, "/freebase/object_profile/linkcount");
+}
 
 /**
  * promise to get saved queries
  */
-function query(o) {
-  return freebase.get_blob(o["/common/document/content"].id)
-    .then(function(ret){
-      return JSON.parse(ret.body);
-    });
+function get_query(topic) {
+  var value = get_first_value(topic, "/common/document/text");
+  var query = (value && value.value) ? JSON.parse(value.value) : null;
+  return deferred.resolved(query);
 };
 
 /**
- * promise to get the /freebase/documented_object/tip (of a property).
+ * User badge selection
+ * 
+ * @param o:Object - The object query result
  */
-function documented_object_tip(o) {
+function get_user_badge(topic) {
+  var usergroups = get_values(topic, "/type/user/usergroup");
+  var label = null;
+
+  if (usergroups) {
+    var group_ids = h.map_array(usergroups, "id");
+
+    /* TODO: Topic Tables should retain IDs for /type/usergroups */
+    /* /en/current_metaweb_staff */
+    if (group_ids["/m/02h53fj"]) {
+      label = "Staff";
+    }
+    /* /freebase/badges/freebaseexpert */
+    else if (group_ids["/m/0432s8d"]) {
+      label = "Expert";
+    }
+    /* /freebase/badges/topcontributor */
+    else if (group_ids["/m/02h53fx"]) {
+      label = "Top User"
+    }
+    /* /freebase/bots */
+    else if (group_ids["/m/02h53f9"]) {
+      label = "Bot"
+    }
+  }
+
+  return deferred.resolved(label);
+};
+
+/* Total topic count for the homepage */
+function topic_count() {
   var q = {
-    id: o.id,
-    "/freebase/documented_object/tip": i18n.mql.query.text()
+    "id": "/common/topic",
+    "/freebase/type_profile/instance_count": null
   };
   return freebase.mqlread(q)
     .then(function(env) {
-      var tip = i18n.mql.result.text(env.result["/freebase/documented_object/tip"]);
-      if (tip) {
-        return tip.value;
-      }
-      else {
-        return null;
-      }
+      return env.result;
+    })
+    .then(function(r) {
+      return r["/freebase/type_profile/instance_count"];
     });
-};
-
-function mql(id) {
-  return creator.extend({
-    id: null,
-    "q:id": id,
-    guid: null,
-    mid: null,
-    type: [{
-      optional: true,
-      id: null,
-      name: i18n.mql.query.name(),
-      type: "/type/type",
-      "!/freebase/domain_profile/base_type": {
-        id: null,
-        optional: "forbidden"
-      },
-      index: null,
-      link: {timestamp: null},
-      sort: ["index", "link.timestamp"]
-    }],
-    name: [{
-      optional: true,
-      value: null,
-      lang: null
-    }],
-    "/common/topic/image": [{
-      optional: true,
-      id: null,
-      limit: 1
-    }],
-    "/common/document/content": {
-      optional: true,
-      id: null
-    },
-    permission: null,
-    timestamp: null,
-    "/dataworld/gardening_hint/replaced_by": {
-      id: null,
-      mid: null,
-      optional: true
-    },
-    "!/freebase/review_flag/item": creator.extend([{
-      id: null,
-      kind: {id: null},
-      type: "/freebase/review_flag",
-      optional: true
-    }])
-  });
 };
 
 

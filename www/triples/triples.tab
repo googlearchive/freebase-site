@@ -77,34 +77,16 @@ var SPEC = {
   run: function(object, f) {
     var id = object.id;
 
-    var promises = {
-        topic: freebase.get_topic(id, {
-            filter: [
-                "/common/topic/notable_types",
-                "/common/topic/notable_for",
-                "/freebase/object_profile/linkcount"
-            ]
-        })
-        .then(function(topic) {
-            return {
-                notability: topic_api.get_notability(topic),
-                linkcount: topic_api.get_linkcount(topic)
-            };
-        }),
-        
-        links: queries.links(id, f)
-    };
-
-    return deferred.all(promises)
-        .then(function(result) {
+    return queries.links(id, f)
+        .then(function(links) {
 
             return {
                 id: id,
                 object: object,
                 filters: f,
-                links: result.links,
-                notability: result.topic.notability,
-                linkcount: result.topic.linkcount
+                links: links,
+                notability: object.notability,
+                linkcount: object.linkcount
             };
 
         });

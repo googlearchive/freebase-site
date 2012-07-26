@@ -34,6 +34,9 @@ var i18n = acre.require("lib/i18n/i18n.sjs");
 var _ = i18n.gettext;
 var validators = acre.require("lib/validator/validators.sjs");
 var router_lib =   acre.require("lib/routing/router.sjs");
+var object_query = acre.require("queries/object.sjs");
+var freebase_object = acre.require("template/object.sjs");
+
 
 // Default codebase for this site - should map to trunk of SVN repository.
 var site_codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
@@ -118,7 +121,7 @@ function init_site_rules(lib) {
     promises: [{
       "key": "total_topics",
       "app": "site",
-      "script": "queries/nav_keys.sjs",
+      "script": "queries/object.sjs",
       "promise": "topic_count"
     }],
     tabs: [
@@ -169,16 +172,6 @@ function init_site_rules(lib) {
 
 
   // *********** OBJECT *************
-  var DEFAULT_BLURB_PROMISE = {
-    "key": "blurb",                 // the promise result will be stored in the object with this key
-    "app": "site",                   // app containing the promise method
-    "script": "queries/object.sjs", // script containing the promise method
-    "promise": "blurb"              // promise method (passed object query result as arugment)
-  };
-
-  var DEFAULT_PROMISES = [
-    DEFAULT_BLURB_PROMISE
-  ];
 
   var DEFAULT_MORE_TABS = [
     {
@@ -208,7 +201,6 @@ function init_site_rules(lib) {
     {
       "name": _("App"),
       "type": "/freebase/apps/acre_app",
-      "promises": h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Versions"),
@@ -233,7 +225,6 @@ function init_site_rules(lib) {
     {
       "name": _("App"),
       "type": "/dataworld/software_tool",
-      "promises":  h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Writes"),
@@ -246,7 +237,6 @@ function init_site_rules(lib) {
     {
       "name": _("Domain"),
       "type": "/type/domain",
-      "promises":  h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Data"),
@@ -291,12 +281,9 @@ function init_site_rules(lib) {
     {
       "name": _("Type"),
       "type": "/type/type",
-      "promises":  h.extend(true, [], DEFAULT_PROMISES).concat([{
-        "key": "domain",
-        "app": "site",
-        "script": "queries/nav_keys.sjs",
-        "promise": "type"
-      }]),
+      "properties": [
+        "/type/type/domain"
+      ],
       "tabs": [
         {
           "name": _("Schema"),
@@ -321,8 +308,13 @@ function init_site_rules(lib) {
       "nav_keys": [
         {
           "label": _("domain"),
-          "key": (function() { return this.domain.id; }),
-          "url": (function() { return h.fb_url(this.domain.id, [['schema']]); })
+          "key": (function() { 
+            return object_query.get_first_value(this.object.props["/type/type/domain"]).id;
+          }),
+          "url": (function() { 
+            var id = object_query.get_first_value(this.object.props["/type/type/domain"]).id;
+            return h.fb_url(id, [['schema']]); 
+          })
         }
       ],
       "gear": [
@@ -350,17 +342,9 @@ function init_site_rules(lib) {
     {
       "name": _("Property"),
       "type": "/type/property",
-      "promises":  [{
-        "key": "blurb",
-        "app": "site",
-        "script": "queries/object.sjs",
-        "promise": "documented_object_tip"
-      },{
-        "key": "schema",
-        "app": "site",
-        "script": "queries/nav_keys.sjs",
-        "promise": "property"
-      }],
+      "properties": [
+        "/type/property/schema"
+      ],
       "tabs": [
         {
           "name": _("Schema"),
@@ -378,13 +362,13 @@ function init_site_rules(lib) {
       "nav_keys": [
         {
           "label": _("type"),
-          "key": (function() { return this.schema.type.id; }),
-          "url": (function() { return h.fb_url(this.schema.type.id, [['schema']]); })
-        },
-        {
-          "label": _("domain"),
-          "key": (function() { return this.schema.domain.id; }),
-          "url": (function() { return h.fb_url(this.schema.domain.id, [['schema']]); })
+          "key": (function() { 
+            return object_query.get_first_value(this.object.props["/type/property/schema"]).id;
+          }),
+          "url": (function() { 
+            var id = object_query.get_first_value(this.object.props["/type/property/schema"]).id;
+            return h.fb_url(id, [['schema']]); 
+          })
         }
       ],
       "gear": [
@@ -401,13 +385,16 @@ function init_site_rules(lib) {
     {
       "name": _("User"),
       "type": "/type/user",
+      "properties": [
+        "/type/user/usergroup"
+      ],
       "show_image": true,
-      "promises":  h.extend(true, [], DEFAULT_PROMISES).concat([{
+      "promises":  [{
         "key": "user_badge",
-        "app": "lib",
-        "script": "queries/user.sjs",
-        "promise": "user_badge"
-      }]),
+        "app": "site",
+        "script": "queries/object.sjs",
+        "promise": "get_user_badge"
+      }],
       "tabs": [
         {
           "name": _("Schema"),
@@ -444,7 +431,6 @@ function init_site_rules(lib) {
     {
       "name": _("Usergroup"),
       "type": "/type/usergroup",
-      "promises":  h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Editors"),
@@ -457,12 +443,15 @@ function init_site_rules(lib) {
     {
       "name": _("Query"),
       "type": "/freebase/query",
-      "promises": h.extend(true, [], DEFAULT_PROMISES).concat([{
+      "properties": [
+        "/common/document/text"
+      ],
+      "promises": [{
         "key": "query",
         "app": "site",
         "script": "queries/object.sjs",
-        "promise": "query"
-      }]),
+        "promise": "get_query"
+      }],
       "tabs": [
         {
           "name": _("Data"),
@@ -481,7 +470,6 @@ function init_site_rules(lib) {
     {
       "name": _("Dataset"),
       "type": "/dataworld/information_source",
-      "promises":  h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Writes"),
@@ -494,7 +482,6 @@ function init_site_rules(lib) {
     {
       "name": _("Load"),
       "type": "/dataworld/mass_data_operation",
-      "promises":  h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Writes"),
@@ -507,7 +494,6 @@ function init_site_rules(lib) {
     {
       "name": _("Attribution"),
       "type": "/type/attribution",
-      "promises":  h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Writes"),
@@ -520,7 +506,6 @@ function init_site_rules(lib) {
     {
       "name": _("Namespace"),
       "type": "/type/namespace",
-      "promises":  h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Keys"),
@@ -547,7 +532,6 @@ function init_site_rules(lib) {
       "type": "/common/topic",
       "use_mid": true,
       "show_image": true,
-      "promises": h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Properties"),
@@ -566,37 +550,31 @@ function init_site_rules(lib) {
           "key": "keys",
           "app": "sameas",
           "script": "sameas.tab",
-          "promises": [{
-              "key": "notability",
-              "app": "lib",
-              "script": "queries/topic.sjs",
-              "promise": "notability"
-          }]
         }        
       ],
       "nav_keys": [
         {
           "if": function() { 
-              return this.notability && this.notability.notable_type;
+              return this.object.notability && this.object.notability.notable_type;
           },
           "label": _("notable type"),
           "key": function() { 
-              return this.notability.notable_type.id; 
+              return this.object.notability.notable_type.id; 
           },
           "url": function() {
-              return h.fb_url(this.notability.notable_type.id, [['schema']]); 
+              return h.fb_url(this.object.notability.notable_type.id, [['schema']]); 
           }
         },
         {
           "if": function() { 
-              return this.notability && this.notability.notable_for; 
+              return this.object.notability && this.object.notability.notable_for; 
           },
           "label": _("notable for"),
           "key": function() { 
-              return this.notability.notable_for.id;
+              return this.object.notability.notable_for.id;
           },
           "url": function() { 
-              return h.fb_url(this.notability.notable_for.id, [['schema']]); 
+              return h.fb_url(this.object.notability.notable_for.id, [['schema']]); 
           }
         }
       ],
@@ -630,7 +608,6 @@ function init_site_rules(lib) {
     {
       "name": _("Image"),
       "type": "/common/image",
-      "promises":  h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Content"),
@@ -661,7 +638,6 @@ function init_site_rules(lib) {
     {
       "name": _("Article"),
       "type": "/common/document",
-      "promises": h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Content"),
@@ -692,7 +668,6 @@ function init_site_rules(lib) {
     {
       "name": _("Content"),
       "type": "/type/content",
-      "promises": h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Content"),
@@ -723,7 +698,6 @@ function init_site_rules(lib) {
     {
       "name": _("Object"),
       "type": "/type/object",
-      "promises":  h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Properties"),
@@ -960,11 +934,10 @@ function CustomRouter(rules) {
 
 function ObjectRouter(rules) {
   var app_labels = rules.labels;
-  var object_query = acre.require("queries/object.sjs");
-  var freebase_object = acre.require("template/object.sjs");
 
   var route_list = [];
   var types = {};
+  var properties = [];
 
   this.add = function(routes) {
     if (!(routes instanceof Array)) {
@@ -973,6 +946,9 @@ function ObjectRouter(rules) {
     routes.forEach(function(route) {
       if (!route || typeof route !== 'object') {
         throw 'A routing rule must be a dict: '+JSON.stringify(route);
+      }
+      if (route.properties) {
+        properties = properties.concat(route.properties);
       }
       [route.tabs, route.gear, route.promises].forEach(function(list) {
         list && list.forEach(function(item) {
@@ -999,7 +975,7 @@ function ObjectRouter(rules) {
     if (req_id) {
 
       var o;
-      var d = object_query.object(req_id)
+      var d = object_query.object(req_id, properties)
         .then(function(obj) {
           o = obj;
         });
@@ -1008,16 +984,12 @@ function ObjectRouter(rules) {
       // No object found
       if (!o) return false;
 
-      // Build type map for object
-      var obj_types = h.map_array(o.type, "id");
-      obj_types["/type/object"] = true; // all valid IDs are /type/object
-
       // Find correct rule for this object
       var rule, i, l;
       for (i=0,l=route_list.length; i<l; i++) {
         var route = route_list[i];
         var type = route.type;
-        if (obj_types[type]) {
+        if (o.type_map[type]) {
           // clone tabs spec so we don't overwrite it
           rule = h.extend(true, {}, route);
           break;
@@ -1033,7 +1005,7 @@ function ObjectRouter(rules) {
       }
       // Redirect topics that have been merged
       else if (o.replaced_by) {
-        return h.redirect(self, o.replaced_by.mid);
+        return h.redirect(self, o.replaced_by.id);
       }
       // For topics and some other types, we always to force mids
       else if (rule.use_mid) {

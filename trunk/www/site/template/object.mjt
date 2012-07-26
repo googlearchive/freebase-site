@@ -136,52 +136,36 @@
 </acre:block>
 
 <acre:block def="content_body()">
-  <!!--
-    Flags (merge, delete, split, objectionable)
-  !!-->
-  <!!--
-     object meta information @see queries/topic
-  !!-->
   <div id="page-header">
+
+    <!!-- Flags (merge, delete, split, objectionable) !!-->
     <acre:block if="that_exports.page_flag">
       ${that_exports.page_flag()}
     </acre:block>
-    <acre:block elif="c.object.flag && c.object.flag.length">
-      <acre:script>
-        var msgs = {
-          "/freebase/flag_kind/merge": _("This topic has been flagged to be merged with another topic."),
-          "/freebase/flag_kind/split": _("This topic has been flagged to be split into multiple topics."),
-          "/freebase/flag_kind/delete": _("This topic has been flagged to be deleted from Freebase."),
-          "/freebase/flag_kind/offensive": _("This topic has been flagged as objectionable.")
-        };
-      </acre:script>
+    <acre:block elif="c.object.flag">
       <div class="page-flag">
         <acre:block if="c.object.flag">
-          <acre:block for="flag in c.object.flag">
-            <acre:script>
-              var msg = msgs[flag.kind.id];
-            </acre:script>
-            <acre:block if="msg">
-              <acre:script>
-                var perm_obj = {id:h.get_attribution(flag).creator};
-              </acre:script>
-              <div class="page-flag-kind">
-                <span class="page-flag-msg">${msg}</span>
-                <a href="${h.legacy_fb_url('/discuss/threads' + flag.id)}">${_("Vote on this issue here")}</a>.
-                <span class="edit-perm ${JSON.stringify(perm_obj)}">
-                  <a href="#" onclick="return window.freebase.flag.undo(this, '${flag.id}');">Undo</a>.
-                </span>
-              </div>
-            </acre:block>
-          </acre:block>
+          <acre:script>
+            var flag = c.object.flag;
+            var msg = _("This topic has been flagged.");
+          </acre:script>
+          <acre:script>
+            var perm_obj = {id: flag.creator};
+          </acre:script>
+          <div class="page-flag-kind">
+            <span class="page-flag-msg">${msg}</span>
+            <a href="${h.legacy_fb_url('/discuss/threads' + flag.id)}">${_("Vote on this issue here")}</a>.
+            <span class="edit-perm ${JSON.stringify(perm_obj)}">
+              <a href="#" onclick="return window.freebase.flag.undo(this, '${flag.id}');">Undo</a>.
+            </span>
+          </div>
         </acre:block>
       </div>
     </acre:block>
 
     <acre:block if="c.object">
-      <!!--
-        Object label + thumbnail
-      !!-->
+
+      <!!-- Object label + thumbnail !!-->
       <acre:script>
         var label = c.object_type.name;
         var classname = 'object-label ';
@@ -189,7 +173,7 @@
       </acre:script>
       <div class="$classname">
         <div id="image" acre:if="c.show_image">
-          <acre:block if="c.object.image && c.object.image.length">
+          <acre:block if="c.object.image">
           <acre:script>
             var options = {
               maxheight: 53,
@@ -204,77 +188,79 @@
         ${object_label()}
       </div>
 
-      <!!--
-        Object Name + Creator + Timestamp
-      !!-->
       <div class="page-title">
+
+        <!!-- Object Attribution !!-->
         <span class="creation-timestamp">
-          <span acre:if="c.object.attribution">
+          <acre:block def="attribution()">
             ${image.user_image_tiny(c.object.attribution.creator)}
             ${_("Created by")}
-
             ${components.attribution(c.object.attribution)}
-
-
-            ${_("on")}
-          </span>
-          <span acre:else="">
-            ${_("Created on")}
-          </span>
-          <acre:script>
-            var attrs = {
-              "class": "published",
-              "data-format": "long"
-            };
-          </acre:script>
-          ${i18n_c.datetime(c.object.timestamp, attrs)}
+          </acre:block>
+          <acre:block if="c.object.timestamp">
+            <span acre:if="c.object.attribution">
+              ${attribution()}
+              ${_("on")}
+            </span>
+            <span acre:else="">
+              ${_("Created on")}
+            </span>
+            <acre:script>
+              var attrs = {
+                "class": "published",
+                "data-format": "long"
+              };
+            </acre:script>
+            <acre:block if="c.object.timestamp">
+              ${i18n_c.datetime(c.object.timestamp, attrs)}
+            </acre:block>
+          </acre:block>
+          <acre:block else="">
+            ${attribution()}
+          </acre:block>
         </span>
 
-        <acre:block if="c.object.name.length">
+        <!!-- Object Name !!-->
           <h1>
-            <span>
-              ${c.object.name[0].value}
-            </span>
-            <ul class="inline-menu nicemenu">
-              <li class="inline-menu-item nicemenu-item">
-                <span class="headmenu">
-                  <a href="#" class="menu-trigger" onclick="return false;">
-                    ${i18n_c.lang_code(c.object.name[0].lang, null, true)}
-                  </a>
-                </span>
-                <ul class="submenu localization">
-                  <acre:script>
-                    var ajax_prefix = h.ajax_url('lib/i18n');
-                  </acre:script>
-                  <li class="edit">                    
-                    <a href="#" onclick="return i18n.text_edit(this, '${ajax_prefix}', '${c.object.id}', '/type/object/name', '${i18n.lang}', true);" class="icon-link">
-                     <span class="edit-icon">${_("Edit localized names")} &hellip;</span>
+            <span acre:if="c.object.name">
+              ${c.object.name.value}
+              <ul class="inline-menu nicemenu">
+                <li class="inline-menu-item nicemenu-item">
+                  <span class="headmenu">
+                    <a href="#" class="menu-trigger" onclick="return false;">
+                      ${c.object.name ? i18n_c.lang_code(c.object.name.lang, null, true) : "edit"}
                     </a>
-                  </li>
-                 <acre:block for="(var i=1,l=c.object.name.length; i<l; i++)">
+                  </span>
+                  <ul class="submenu localization">
                     <acre:script>
-                      var n = c.object.name[i];
+                      var ajax_prefix = h.ajax_url('lib/i18n');
                     </acre:script>
-                    <li class="">
-                      <a href="${h.build_url(null, c.object.id, [['lang', h.lang_code(n.lang)]])}">
-                        ${n.value}
-                        ${i18n_c.lang_code(n.lang, null, true)}
+                    <li class="edit">                    
+                      <a href="#" onclick="return i18n.text_edit(this, '${ajax_prefix}', '${c.object.id}', '/type/object/name', '${i18n.lang}', true);" class="icon-link">
+                       <span class="edit-icon">${_("View/edit localized names")} &hellip;</span>
                       </a>
                     </li>
-                  </acre:block>
-                </ul>
-              </li>
-            </ul> 
+                    <!--
+                    <acre:block for="(var i=1,l=c.object.name.length; i<l; i++)">
+                      <acre:script>
+                        var n = c.object.name[i];
+                      </acre:script>
+                      <li class="">
+                        <a href="${h.build_url(null, c.object.id, [['lang', h.lang_code(n.lang)]])}">
+                          ${n.value}
+                          ${i18n_c.lang_code(n.lang, null, true)}
+                        </a>
+                      </li>
+                    </acre:block>
+                    -->
+                  </ul>
+                </li>
+              </ul> 
+            </span>
+            <span acre:else="">
+              ${c.object.id}
+            </span>
           </h1>
-          </acre:block>
-          <!!--
-            Show object ID if no name exists
-          -->
-          <acre:block else="">
-            <h1>
-              <span>${c.object.id}</span>
-            </h1>
-          </acre:block>
 
           <acre:block if="that_exports.nav_flags">
             <span class="flags">
@@ -294,7 +280,7 @@
             </span>
             <span acre:for="nk in c.nav_keys" 
                   acre:if="(exec(nk, c) && nk.key)" class="key">
-              <strong>${nk.label}:</strong> 
+              <strong>${nk.label}:</strong>
               <span acre:if="nk.url" >
                 <a href="$nk.url">${nk.key}</a>
               </span>
@@ -302,24 +288,24 @@
             </span>
           </div>
 
-          <!!-- blurb should be sentence-level truncation at ~30 words -->
+          <!!-- Show object description -->
           <div id="description" class="clear">
-            <acre:block if="c.blurb">
+            <acre:block if="c.object.description">
               <acre:script>
-                var article = c.object.article;
-                var words = c.blurb.split(/\s+/);
-                var word_length = 30;
+                var d = c.object.description;
+                var more = d.text !== d.value;
               </acre:script>
-              <acre:block if="words.length < word_length">
-                <p class="blurb">${c.blurb}</p>
-              </acre:block>
-              <acre:block else="">
-                <p class="blurb">${words.slice(0, word_length).join(" ")}&hellip;<a href="#" title="${_('Show more')}" onclick="$$(this).parent('p').hide().next('p').show();return false;">[ + ]</a></p>
-                <p style="display:none;">${c.blurb}
-                  <a acre:if="article && article.source == 'wikipedia'" href="$article.source_uri">${_('Read entire article on Wikipedia')}</a>
-                  <a href="#" title="${_('Show less')}" onclick="$$(this).parent('p').hide().prev('p').show();return false;">[ - ]</a>
-                </p>
-              </acre:block>
+              <p class="blurb">
+                ${d.text}
+                <a acre:if="more" href="#" title="${_('Show more')}" 
+                    onclick="$$(this).parent('p').hide().next('p').show();return false;">[ + ]</a>
+              </p>
+              <p acre:if="more" style="display:none;">
+                ${d.value}
+                <a href="#" title="${_('Show less')}" 
+                    onclick="$$(this).parent('p').hide().prev('p').show();return false;">[ - ]</a>
+              </p>
+              <!-- TODO: show citation text -->
             </acre:block>
           </div>
         </div>

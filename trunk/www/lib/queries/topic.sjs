@@ -44,7 +44,8 @@ var validators = acre.require("validator/validators.sjs");
  * Use the new topic api (googleapis) and lib/typeloader.sjs to retrieve
  * topic and schema information that can be used to display a topic page.
  *
- * @param id:String (required) - The topic id
+ * @param object:Object (required) - The object returned by the object 
+         router (becomes c.object)
  * @param options:Object (optional) - Api/filter options for topic api.
  *     - lang:String (optional) - The primary language to topic data. 
  *           Default is "en".
@@ -64,17 +65,6 @@ var validators = acre.require("validator/validators.sjs");
  * that meet the constraint of the options parameter filters.
  */
 
-/**
- * We always want to get these properties
- */
-var REQUIRED_FILTERS = [
-    "/type/object/type",
-    "/common/topic/article", 
-    "/common/topic/notable_for", 
-    "/common/topic/notable_types", 
-    "/freebase/object_profile/linkcount"
-];
-
 function topic_structure(id, options) {
     options = options || {};
     var lang = options.lang || "/lang/en";
@@ -83,38 +73,36 @@ function topic_structure(id, options) {
         lang: h.lang_code(lang)
     };
     if (options.domain === "all") {
-        api_options.filter = ["all"].concat(REQUIRED_FILTERS);
+        api_options.filter = ["all"];
     }
     else if (is_mql_id(options.domain)) {
         domain_filter = options.domain;
-        api_options.filter = [options.domain].concat(REQUIRED_FILTERS);
+        api_options.filter = [options.domain];
         api_options.limit = 20;
     }
     else if (is_mql_id(options.type)) {
         type_filter = options.type;
-        api_options.filter = [options.type].concat(REQUIRED_FILTERS);
+        api_options.filter = [options.type];
         api_options.limit = 100;
     }
     else if (is_mql_id(options.property)) {
         prop_filter = options.property;
-        api_options.filter = [options.property].concat(REQUIRED_FILTERS);
+        api_options.filter = [options.property];
         api_options.limit = 200;
     }
     else {
-        api_options.filter = ["commons"].concat(REQUIRED_FILTERS);
+        api_options.filter = ["commons"];
     }
     return freebase.get_topic(id, api_options)
         .then(function(topic_result) {
-            var notability = get_notability(topic_result);
-            var domain_count = get_linkcount(topic_result);
+            var domain_count = options.linkcount;
             var topic_props = topic_result && topic_result.property;
             if (topic_props) {
                 // Get all instanceof types and asserted props (bareprops)
                 // to determine what types to display
 
                 // These are actual instanceof types
-                var instanceof_types = topic_props && topic_props["/type/object/type"];
-                instanceof_types = instanceof_types && instanceof_types.values;
+                var instanceof_types = object.type;
 
                 // Gather up all asserted properties' types
                 var types = [];
@@ -318,76 +306,5 @@ function to_structure(domains_list, lang) {
   return structure;
 };
 
-
-/**
- * Use freebase.get_topic to get 
- * /common/topic/notable_types and /common/topic/notable_for
- */
-function notability(o) {
-    var options = {
-        filter: [
-            "/common/topic/notable_types", 
-            "/common/topic/notable_for"
-        ]
-    };
-    return freebase.get_topic(o.id, options)
-        .then(function(topic) {
-            return get_notability(topic);
-        });
-};
-
-/**
- * Given freebase.get_topic result with notable_types and notable_for,
- * return the first notable_types and first notable_for values.
- * If freebase.get_topic result does not have notable_types
- * nor notable_for, return null.
- */
-function get_notability(topic) {
-    var p = topic && topic.property;
-    var notable_type = null;
-    var notable_for = null;
-    if (p) {
-        if (p["/common/topic/notable_types"]) {
-            notable_type = h.first_element(p["/common/topic/notable_types"].values);
-        }
-        if (p["/common/topic/notable_for"]) {
-            notable_for = h.first_element(p["/common/topic/notable_for"].values);
-        }
-    }
-    if (notable_type || notable_for) {
-        return {
-            notable_type: notable_type,
-            notable_for: notable_for
-        };
-    }
-    return null;
-};
-
-/**
- * Use freebase.get_topic to get /freebase/object_profile/linkcount
- */
-function linkcount(o) {
-    var options = {
-        filter: ["/freebase/object_profile/linkcount"]
-    };
-    return freebase.get_topic(o.id, options)
-        .then(function(topic) {
-            return get_linkcount(topic);
-        });
-};
-
-/**
- * Given freebase.get_topic result (with /freebase/object_profile/linkcount),
- * return the linkcount structure. If /freebase/object_profile/linkcount does
- * not exist, return null.
- */
-function get_linkcount(topic) {
-    var p = topic && topic.property;
-    p = p && p["/freebase/object_profile/linkcount"];
-    if (p) {
-        return p.values || null;
-    }
-    return null;
-}
 
 

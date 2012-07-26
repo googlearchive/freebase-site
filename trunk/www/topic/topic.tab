@@ -62,6 +62,7 @@ var SPEC = {
     var id = object.id;
 
     var topic_options = {
+        linkcount: object.linkcount,
         lang: i18n.lang,
         domain: f.domain,
         type: f.type,
@@ -72,25 +73,14 @@ var SPEC = {
         topic_options.domain = "all";
     }
 
-    var promises = {
-      id: id,
-      filters: f,
-      object: object,
-      topic: topic_api.topic_structure(id, topic_options)
-    };
-
-    return deferred.all(promises)
+    return topic_api.topic_structure(object.id, topic_options)
       .then(function(result) {
-          var topic = result.topic;
-          // temporary until topic api returns canoncial ids
-          result.id = id;
-          if (topic) {
-              result.notability = topic_api.get_notability(topic);
-              result.linkcount = topic_api.get_linkcount(topic);
-              // temporary until topic api returns canoncial ids
-              topic.id = id;
-          }
-          return result;
+          return {
+            id: object.id,
+            filters: f,
+            object: object,
+            topic: result
+          };
       });
   }
 };

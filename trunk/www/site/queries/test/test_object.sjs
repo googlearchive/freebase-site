@@ -28,71 +28,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+acre.require('/test/lib').enable(this);
+
+acre.require("lib/test/mock").playback(this, "queries/test/playback_test_object.json");
+
 var h = acre.require("lib/helper/helpers.sjs");
-var i18n = acre.require("lib/i18n/i18n.sjs");
-var _ = i18n.gettext;
-var freebase = acre.require("lib/promise/apis.sjs").freebase;
+var queries = acre.require("queries/object.sjs");
 
-/**
- * Extra promises for different types
- */
 
-function type(o) {
-  var q = {
-    id: o.id,
-    type: "/type/type",
-    domain: {
-      id: null
-    }
-  };
-  return freebase.mqlread(q)
-    .then(function(env) {
-      return env.result;
-    })
-    .then(function(r) {
-      if (!r) {
-        return {};
-      }
-      return r.domain;
+test("object", function() {
+  var result;
+  queries.object("/en/kaede_rukawa")
+  .then(function(object) {
+      result = object;
+  });
+  acre.async.wait_on_results();
+  ok(result, "Got object result");
+  ok(result.mid, "Got object mid");
+
+  ok(result.type_map, "Got type map");
+  ok(result.type_map["/base/slamdunk/player"], "Expected /base/slamdunk_player in type map.");
+
+  ok(result.attribution.creator, "Got an attribution with a creator.");
+});
+
+test("not found", function() {
+  var result, error;
+  queries.object("/fu/bar")
+    .then(function(object) {
+      result = object;
+    }, function(e) {
+      console.log("e", e);
+      error = e;
     });
-};
+  acre.async.wait_on_results();
+  ok(error, "Error expected for bad topic id");
+});
 
-function property(o) {
-  var q = {
-    id: o.id,
-    type: "/type/property",
-    schema: {
-      id: null,
-      domain: {
-        id: null
-      }
-    }
-  };
-  return freebase.mqlread(q)
-    .then(function(env) {
-      return env.result;
-    })
-    .then(function(r) {
-      if (!r) {
-        return {};
-      }
-      return {
-        type: r.schema,
-        domain: r.schema.domain
-      };
-    });
-};
-
-function topic_count() {
-  var q = {
-    "id": "/common/topic",
-    "/freebase/type_profile/instance_count": null
-  };
-  return freebase.mqlread(q)
-    .then(function(env) {
-      return env.result;
-    })
-    .then(function(r) {
-      return r["/freebase/type_profile/instance_count"];
-    });
-};
+acre.test.report();

@@ -44,7 +44,7 @@
 <acre:block def="app_link(app, params)">
   <a acre:if="app" class="app property-value" data-id="${app.id}" 
     href="${h.fb_url(app.id, params)}">
-    ${i18n.display_name(app)}
+    ${app.id}
   </a>
   <span acre:else="">-</span>
 </acre:block>
@@ -61,21 +61,23 @@
   <acre:block if="use_hover">
     <acre:script>
       var hover_text = attr.user;
-      if (attr.dataset && attr.app) {
-        hover_text = h.template_sprintf(_("from %s via %s"), i18n.display_name(attr.dataset), i18n.display_name(attr.app));
+      if (attr.dataset && attr.process) {
+        hover_text = h.template_sprintf(_("from %s via %s"), attr.dataset, attr.process);
       } else if (attr.dataset) {
-        hover_text = h.template_sprintf(_("from %s"), i18n.display_name(attr.dataset));
-      } else if (attr.app) {
-        hover_text = h.template_sprintf(_("via %s"), i18n.display_name(attr.app));
+        hover_text = h.template_sprintf(_("from %s"), attr.dataset);
+      } else if (attr.process) {
+        hover_text = h.template_sprintf(_("via %s"), attr.process);
       }
     </acre:script>
-    <a class="creator" href="${h.fb_url(attr.creator, params)}"
-     title="${hover_text ? hover_text : attr.creator}">${h.id_key(attr.creator)}</a>
-    <span acre:if="hover_text">*</span>
+    <acre:block if="attr.creator">
+      <a class="creator" href="${h.fb_url(attr.creator, params)}"
+        title="${hover_text ? hover_text : attr.creator}">${h.id_key(attr.creator)}</a>
+      <span acre:if="hover_text">*</span>
+    </acre:block>
   </acre:block>
   <acre:block else="">
     <span class="attribution" acre:trim="1">
-      ${creator_link(attr.creator, null, params)}
+      ${creator_link(attr.creator || attr.id, null, params)}
       <span acre:if="attr.project" acre:trim="1">
         ${_("from")}
         ${dataset_link(attr.dataset, params)}

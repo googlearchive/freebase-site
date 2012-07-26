@@ -63,7 +63,7 @@
             (c.filters.timestamp && c.filters.timestamp.length) ||
             (c.filters.creator && c.filters.creator.length);
         </acre:script>
-        ${filter_components.linkcount_filter(c.id, c.filters, c.linkcount, hide_counts)}
+        ${filter_components.linkcount_filter(c.id, c.filters, c.object.linkcount, hide_counts)}
       </div>
     </div>
     <div class="module">

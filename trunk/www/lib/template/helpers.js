@@ -192,24 +192,6 @@
     },
 
     /**
-     * suggest url is used by the suggest widget
-     * returns a googleapis API url or a metaweb legacy URL depending
-     * on acre configuration.
-     * TODO: change this once googleapis_url and service_url have been
-     * figured out
-     * tests will be added once everyone is running on googleapis by default
-     */
-
-    suggest_url: function() {
-      if (fb.acre.freebase.googleapis_url) {
-        return h.build_url(fb.acre.freebase.googleapis_url, "/search");
-      }
-      else {
-        return h.legacy_fb_url("/private/suggest");
-      }
-    },
-
-    /**
      * legacy freebase url
      * Use for pages that haven't been ported to acre yet
      * (i.e, http://www.freebase.com/path?params)

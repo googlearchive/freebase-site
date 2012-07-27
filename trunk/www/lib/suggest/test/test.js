@@ -34,9 +34,7 @@ var module_options = {
 };
 
 var default_options = {
-  service_path: "/freebase/v1/search",
   key: "AIzaSyBij3tRJN2VdWiLQN48-BmPFjNWpHe7MQE",
-  flyout_service_url: "",
   advanced: true
 };
 var test_value = "bob dyla";

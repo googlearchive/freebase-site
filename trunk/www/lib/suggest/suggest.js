@@ -138,6 +138,21 @@
         o.ac_param[k] = v;
       });
 
+      // flyout service lang is the first specified lang
+      o.flyout_lang = null;
+      if (o.ac_param.lang) {
+        var lang = o.ac_param.lang;
+        if ($.type(lang) === "string") {
+            lang = lang.split(",");
+        }
+        if ($.isArray(lang) && lang.length) {
+            lang = $.trim(lang[0]);
+            if (lang) {
+                o.flyout_lang = lang;
+            }
+        }
+      }
+
       // status texts
       this._status = {
         START: "",
@@ -899,26 +914,6 @@
       zIndex: null
     },
 
-    use_jsonp: function(service_url) {
-      /*
-       * if we're on the same host,
-       * then we don't need to use jsonp.
-       * This greatly increases our cachability
-       */
-      if (!service_url) {
-        return false; // no host == same host == no jsonp
-      }
-
-      var pathname_len = window.location.pathname.length;
-      var hostname = window.location.href;
-      hostname = hostname.substr(0, hostname.length - pathname_len);
-      //console.log("Hostname = ", hostname);
-      if (hostname === service_url) {
-        return false;
-      }
-      return true;
-    },
-
     strongify: function(str, substr) {
       // safely markup substr within str with <strong>
       var strong;
@@ -1080,16 +1075,25 @@
       if (o.flyout_service_path) {
           this.flyout_url += o.flyout_service_path;
       }
-
-      this.jsonp = true;
-      this.jsonp_flyout = $.suggest.use_jsonp(o.flyout_service_url);
+      // set api key for flyout/topic api
+      this.flyout_url = this.flyout_url.replace(/\$\{key\}/g, o.key);
+      if (o.flyout_image_service_url == null) {
+        o.flyout_image_service_url = o.service_url;
+      }
+      this.flyout_image_url = o.flyout_image_service_url;
+      if (o.flyout_image_service_path) {
+          this.flyout_image_url += o.flyout_image_service_path;
+      }
+      // set api key for image api
+      this.flyout_image_url = this.flyout_image_url.replace(/\$\{key\}/g, o.key);
 
       if (!$.suggest.cache) {
         $.suggest.cache = {};
       }
 
       if (o.flyout) {
-        this.flyoutpane = $('<div style="display:none;" class="fbs-reset">').addClass(o.css.flyoutpane);
+        this.flyoutpane = $('<div style="display:none;" class="fbs-reset">')
+            .addClass(o.css.flyoutpane);
 
         if (o.flyout_parent) {
           $(o.flyout_parent).append(this.flyoutpane);
@@ -1150,17 +1154,6 @@
     request: function(val, cursor) {
       var self = this,
           o = this.options;
-
-      if (this.ac_xhr) {
-        // Aborting jsonp (jquery's XHR: jqXHR) results in:
-        // Uncaught TypeError:
-        //     Property 'jQuery....' of object [object Window] is not a function
-        // Can't abort jsonp anyway.
-        if (!this.jsonp && this.ac_xhr.abort) {
-          this.ac_xhr.abort();
-        }
-        this.ac_xhr = null;
-      }
 
       var query = val;
 
@@ -1243,12 +1236,12 @@
             xhr.getResponseHeader("X-Metaweb-TID"));
           }
         },
-        dataType: self.jsonp ? "jsonp" : "json",
+        dataType: "jsonp",
         cache: true
       };
 
       this.request.timeout = setTimeout(function() {
-        self.ac_xhr = $.ajax(ajax_options);
+        $.ajax(ajax_options);
       }, o.xhr_delay);
     },
 
@@ -1269,7 +1262,7 @@
       if (nt && nt.name) {
         type.text(nt.name);
       }
-      else if (data.id) {
+      else if (this.options.show_id && data.id) {
           // display human readable id if no notable type
           type.text(data.id);
       }
@@ -1416,15 +1409,8 @@
 
     flyout_request: function(data) {
       var self = this;
-      if (this.flyout_xhr) {
-        if (!this.jsonp_flyout && this.flyout_xhr.abort) {
-          this.flyout_xhr.abort();
-        }
-        this.flyout_xhr = null;
-      }
-
-      var o = this.options,
-          sug_data = this.flyoutpane.data("data.suggest");
+      var o = this.options;
+      var sug_data = this.flyoutpane.data("data.suggest");
       if (sug_data && data.id === sug_data.id) {
         if (!this.flyoutpane.is(":visible")) {
           var s = this.get_selected();
@@ -1450,7 +1436,6 @@
       var ajax_options = {
         url: url,
         traditional: true,
-        data: {},
         beforeSend: function(xhr) {
           var calls = self.input.data("flyout.request.count.suggest") || 0;
           calls += 1;
@@ -1458,11 +1443,9 @@
           self.input.data("flyout.request.count.suggest", calls);
         },
         success: function(data) {
-          data = self.jsonp_flyout ? data : {
-            id: flyout_id,
-            html: data
-          };
-          $.suggest.flyout.cache[data.id] = data;
+          data["req:id"] = flyout_id;
+          data.html = $.suggest.suggest.create_flyout(data, self.flyout_image_url);
+          $.suggest.flyout.cache[flyout_id] = data;
           self.flyout_response(data);
         },
         error: function(xhr) {
@@ -1477,18 +1460,17 @@
             xhr.getResponseHeader("X-Metaweb-TID"));
           }
         },
-        dataType: self.jsonp_flyout ? "jsonp" : "html",
+        dataType: "jsonp",
         cache: true
       };
-      if (o.ac_param.lang) {
-          ajax_options.data.lang = o.ac_param.lang;
+      if (o.flyout_lang) {
+          ajax_options.data = {lang:o.flyout_lang};
       }
 
-      //var self = this;
       clearTimeout(this.flyout_request.timeout);
       this.flyout_request.timeout =
         setTimeout(function() {
-          self.flyout_xhr = $.ajax(ajax_options);
+          $.ajax(ajax_options);
         }, o.xhr_delay);
 
       this.input.trigger("fb-request-flyout", ajax_options);
@@ -1500,13 +1482,7 @@
           s = this.get_selected() || [];
       if (p.is(":visible") && s.length) {
         var sug_data = s.data("data.suggest");
-
-        /**
-         * FIX: don't inject html directly into DOM. Huge security hole.
-         * This would be okay if flyout content is coming from a known source (in which most cases it is).
-         * However, flyout_service_url/flyout_service_path are configurable and can point to anything.
-         */
-        if (sug_data && data.id === sug_data.id && data.html) {
+        if (sug_data && data["req:id"] === sug_data.id && data.html) {
           this.flyoutpane.html(data.html);
           this.flyout_position(s);
           this.flyoutpane.show()
@@ -1629,15 +1605,18 @@
       //
       advanced: true,
 
+      // If an item does not have a "notable" field, display the id or mid of the item
+      show_id: true,
+
       // query param name for the search service.
       // If query name was "foo": search?foo=...
       query_param_name: "query",
 
       // base url for autocomplete service
-      service_url: "https://www.googleapis.com",
+      service_url: "https://www.googleapis.com/freebase/v1",
 
       // service_url + service_path = url to autocomplete service
-      service_path: "/freebase/v1/search",
+      service_path: "/search",
 
       // 'left', 'right' or null
       // where list will be aligned left or right with the input
@@ -1647,11 +1626,16 @@
       flyout: true,
 
       // default is service_url if NULL
-      flyout_service_url: "http://dev.freebase.com",
+      flyout_service_url: null,
 
       // flyout_service_url + flyout_service_path =
-      // url to flyout service
-      flyout_service_path: "/flyout?id=${id}",
+      // url to topic api with filter=suggest
+      flyout_service_path: "/topic${id}?filter=suggest&key=${key}",
+
+      // default is service_url if NULL
+      flyout_image_service_url: null,
+
+      flyout_image_service_path: "/image${id}?maxwidth=75&key=${key}",
 
       // jQuery selector to specify where the flyout
       // will be appended to (defaults to document.body).
@@ -1683,7 +1667,121 @@
       // the delay before sending off the ajax request to the
       // suggest and flyout service
       xhr_delay: 200
-    }
+    },
+
+
+    // utility methods to get property values from the topic api result
+
+    get_values: function(topic_result, prop_id) {
+      var props = topic_result.property;
+      if (props && props[prop_id] && props[prop_id].values) {
+          return props[prop_id].values;
+      }
+      else {
+          return null;
+      }
+    },
+
+    get_first_value: function(topic_result, prop_id) {
+      var values = $.suggest.suggest.get_values(topic_result, prop_id);
+      if (values && values.length > 0) {
+        return values[0];
+      }
+      return null;
+    },
+
+    /**
+     * Create the flyout html content given the topic api result
+     * (i.e., .../topic/some/id?filter=suggest). The resulting html
+     * will be cached for optimization.
+     *
+     * @param data:Object - The topic api result with ?filter=suggest
+     * @param flyout_image_url:Object - The url template for the image url.
+     *   The substring, "${id}", will be replaced by data.id. It is assumed all
+     *   parameters to the flyout image service (api key, dimensions, etc.) is
+     *   already encoded into the url template.
+     */
+    create_flyout: function(data, flyout_image_url) {
+        var get_values =  $.suggest.suggest.get_values;
+        var get_first_value = $.suggest.suggest.get_first_value;
+        var name = get_first_value(data, "/type/object/name");
+        if (name) {
+            name = name.text;
+        }
+        else {
+            name = data.id;
+        }
+        // prefer /common/topic/description over /common/topic/article
+        var article =
+            get_first_value(data, "/common/topic/description") ||
+            get_first_value(data, "/common/topic/article") || false;
+        if (article) {
+            article = article.text;
+        }
+        var image = get_first_value(data, "/common/topic/image") || false;
+        if (image) {
+            image = flyout_image_url.replace(/\$\{id\}/g, data.id);
+        }
+        var notable_props = [];
+        var notability = [data.id];
+
+        // notable (disambiguating) properties
+        var values = get_values(data, "/common/topic/notable_properties");
+        if (values) {
+            $.each(values, function(i, prop) {
+                var prop_values = get_values(data, prop.id);
+                if (prop_values && prop_values.length) {
+                    prop_values = $.map(prop_values, function(v) {
+                        return v.text;
+                    }).join(", ");
+                    notable_props.push([prop.text || prop.id, prop_values]);
+                }
+            });
+        }
+
+        // notability (notable_for and notable_types)
+        var notable_for = get_values(data, "/common/topic/notable_for");
+        var notable_types = get_values(data, "/common/topic/notable_types");
+        if (notable_for || notable_types) {
+            var seen = {};
+            notability = [];
+            $.each([notable_for, notable_types], function(i, notable) {
+                if (notable) {
+                    notable.forEach(function(n) {
+                        if (n.id && !seen[n.id]) {
+                            notability.push(n.text);
+                            seen[n.id] = true;
+                        }
+                    });
+                }
+            });
+        }
+
+        notability = notability.slice(0, 3).join(", ");
+
+        var content = $('<div class="fbs-flyout-content">');
+        content.append($('<h1 id="fbs-flyout-title">').text(name));
+        $.each(notable_props, function(i, prop) {
+            content.append($('<h3 class="fbs-topic-properties">')
+                .append($('<strong>').text(prop[0] + ': '))
+                .append(document.createTextNode(prop[1])));
+        });
+        if (article) {
+            content.append($('<p class="fbs-topic-article">').text(article));
+        }
+        if (image) {
+            content.children().addClass('fbs-flyout-image-true');
+            content.prepend($('<img id="fbs-topic-image" class="fbs-flyout-image-true" src="' + image + '">'));
+        }
+
+        var types = $('<span class="fbs-flyout-types">').append(notability);
+        var footer = $('<div class="fbs-attribution">').append(types);
+
+        return $('<div>')
+            .append(content)
+            .append(footer)
+            .html();
+    },
   });
 
 

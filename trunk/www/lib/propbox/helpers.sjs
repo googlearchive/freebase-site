@@ -171,6 +171,17 @@ function minimal_prop_structure(prop_schema, lang) {
     text: name ? name.value : prop_schema.id,
     lang: name ? name.lang : null,
     unique: prop_schema.unique === true,
+    requires_permission: prop_schema.requires_permission === true,
+    authorities: prop_schema.authorities || [],
+    master_property: prop_schema.master_property,
+    reverse_property: prop_schema.reverse_property,
+    delegated: prop_schema.delegated,
+    enumeration: prop_schema.enumeration,
+    unit:
+      prop_schema.unit ? {
+          id: prop_schema.unit.id, 
+          abbreviation:prop_schema.unit["/freebase/unit_profile/abbreviation"]
+      } : null,
     disambiguator: 
       prop_schema["/freebase/property_hints/disambiguator"] === true,
     display_none: 
@@ -195,17 +206,10 @@ function minimal_prop_structure(prop_schema, lang) {
       abbreviation: unit["/freebase/unit_profile/abbreviation"]
     };
   }
-  var master_property = prop_schema.master_property;
-  if (master_property) {
-    structure.master_property = master_property;
-  }
-  var reverse_property = prop_schema.reverse_property;
-  if (reverse_property) {
-    structure.reverse_property = reverse_property;
-  }
-  var delegated = prop_schema.delegated_property;
-  if (delegated) {
-    structure.delegated = delegated;
+  if (prop_schema['emql:type']) {
+      // emql properties are NOT edititable.
+      structure.requires_permission = true;
+      structure.authorities = [];
   }
   return structure;
 };
@@ -324,4 +328,23 @@ function mqlread_clause(prop_structure, prop_value, lang, namespace, options) {
     }
   }
   return [h.extend(clause, options)];
+};
+
+
+/**
+ * Currently, properties with
+ * 
+ * 1. requires_permission == TRUE and 
+ * 2. authorities == EMPTY
+ * 
+ * are NOT editable.
+ */
+function is_property_editable(prop_structure) {
+    if (prop_structure.requires_permission === true) {
+        if (prop_structure.authorities === null ||
+            prop_structure.authorities.length === 0) {
+            return false;
+        }
+    }
+    return true;
 };

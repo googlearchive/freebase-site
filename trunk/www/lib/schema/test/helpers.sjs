@@ -36,11 +36,13 @@ function assert_prop_path_schema(test, result, prop, subprops) {
   if (!h.isArray(subprops)) {
     subprops = [subprops];
   }
-  test.same(schema.id, prop);
-  test.same(schema.expected_type.properties.length, subprops.length);
-  schema.expected_type.properties.forEach(function(subprop, i) {
-    test.same(subprops.indexOf(subprop.id), i, "Found subproperty: " + subprop.id);
-    test.ok(!subprop.expected_type.properties ||
-       subprop.expected_type.properties.length === 0, "Arbitrary depth not yet supported");
-  });
+  test.same(schema.id, prop, schema.id);
+  if (schema.expected_type.properties && subprops) {
+      test.same(schema.expected_type.properties.length, subprops.length);
+      schema.expected_type.properties.forEach(function(subprop, i) {
+          test.same(subprops.indexOf(subprop.id), i, "Found subproperty: " + subprop.id);
+          test.ok(!subprop.expected_type.properties ||
+                  subprop.expected_type.properties.length === 0, "Arbitrary depth not yet supported");
+      });
+  }
 };

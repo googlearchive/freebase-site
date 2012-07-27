@@ -106,4 +106,14 @@ test("load SITE-1023: multiple key/id property", function() {
     ok(schema, "Got property schema");
 });
 
+test("load SITE-1063: load emql", function() {
+    var schema;
+    var pid = "/people/person/age"; // an emal extension
+    proploader.loads([pid])
+        .then(function(r) {
+            schema = r[pid];
+        });
+    ok(schema, "Got property schema");
+});
+
 acre.test.report();

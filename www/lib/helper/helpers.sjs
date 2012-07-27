@@ -115,7 +115,11 @@ var exports = {
   "route" : route,
 
   // METADATA
-  "extend_metadata" : extend_metadata
+  "extend_metadata" : extend_metadata,
+
+  // DOCOS
+  "docos_key" : docos_key,
+  "docos_url" : docos_url
 };
 
 var self = this;
@@ -1719,3 +1723,30 @@ function extend_metadata(md, mount) {
 
   return md;
 };
+
+// ------------- DOCOS ---------------
+
+function docos_key(mid) {
+    if (mid.charAt(0) !== '/' || mid.charAt(2) !== '/') {
+        return "";
+    } 
+
+    var docosKey = "FREEBASE-0-" + mid.charAt(1) + "-" + mid.slice(3);
+    if (acre.request.server_name.indexOf("sandbox") != -1) {
+        var lastSunday = new Date();
+        lastSunday.setDate(lastSunday.getDate() - lastSunday.getDay());        
+        lastSunday = lastSunday.toString("yyyyMMdd");
+        docosKey += "-" + lastSunday;
+    }
+    return docosKey;
+}
+
+function docos_url(mid) {
+    var docosKey = docos_key(mid);
+    if (docosKey === "") {
+        return "";
+    }
+    return "https://docs-dev.corp.google.com/comments/d/" + docos_key(mid) + "/embed";
+}
+
+

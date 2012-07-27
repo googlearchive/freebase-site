@@ -319,10 +319,25 @@
   </div><!!-- /page-header-->
 
   <div id="page-content">
-    <acre:block if="that_exports.page_content">
-      ${that_exports.page_content()}
-    </acre:block>
+    <div id="page-content-wrapper">
+        <acre:block if="that_exports.page_content">
+          ${that_exports.page_content()}
+        </acre:block>
+    </div>
+    <div id="page-discuss-wrapper">
+        <acre:block if="that_exports.discuss_content">
+            ${that_exports.discuss_content()}
+        </acre:block>
+        <acre:block else="">
+            <h2>${h.template_sprintf(_("Discussion for %s"), i18n.display_name(c.object))}</h2>
+            <div id="discuss-iframe-wrapper"> 
+                <iframe src="${h.docos_url(c.object.mid)}" id="discuss-frame" width="100%" height="100%">
+                </iframe>
+            </div>
+        </acre:block>
+    </div>
   </div>
+
 </acre:block>
 
 <acre:block def="footer_script()">

@@ -151,6 +151,20 @@ test("load_paths relative multi", function() {
                               "/sports/pro_sports_played/career_start",
                               "/sports/pro_sports_played/career_end"
                           ]);
-  });
+});
 
+
+test("load_paths with emql", function() {
+  var result;
+  var paths = [
+    "/people/person/age"
+  ];
+  proploader.load_paths(paths)
+    .then(function(props) {
+      result = props;
+    });
+  acre.async.wait_on_results();
+  ok(result, "Got load result");
+  assert_prop_path_schema(scope, result, "/people/person/age", []);
+});
 acre.test.report();

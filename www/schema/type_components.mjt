@@ -123,6 +123,9 @@
         if (prop['/freebase/property_hints/display_none']) {
           meta.push(acre.markup.stringify(prop_meta(_('This property is hidden by default'), _('hidden'))));
         }
+        if (prop['emql:type']) {
+          meta.push(acre.markup.stringify(prop_meta(_('This property is a mql extension'), _('emql'))));
+        }
       </acre:script>
       <acre:block if="meta.length">
         ${acre.markup.bless(meta.join(", "))}

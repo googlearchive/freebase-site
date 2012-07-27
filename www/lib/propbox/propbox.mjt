@@ -436,15 +436,17 @@
           <a href="javascript:void(0)" class="more-action">menu</a>
         </span>
         <ul class="row-menu submenu">
-          <li acre:if="prop_structure.unique && prop_values.length" class="row-menu-item">
-            <a href="#" onclick="return propbox.prop_edit(this, ${prop_structure.unique});">${EDIT_VALUE}</a>
-          </li>
-          <li acre:else="" class="row-menu-item">
-            <a href="#" onclick="return propbox.prop_add(this, ${prop_structure.unique});">${ADD_NEW_VALUE}</a>
-          </li>
-          <li acre:if="ect === '/type/text'" class="row-menu-item">
-            <a href="#" onclick="return i18n.text_edit(this, '${h.ajax_url('lib/i18n')}', '${topic.id}', '${prop_structure.id}', '${lang}')">${EDIT_LOCALIZED_TEXT}</a>
-          </li>
+          <acre:block if="ph.is_property_editable(prop_structure)">
+            <li acre:if="prop_structure.unique && prop_values.length" class="row-menu-item">
+              <a href="#" onclick="return propbox.prop_edit(this, ${prop_structure.unique});">${EDIT_VALUE}</a>
+            </li>
+            <li acre:else="" class="row-menu-item">
+              <a href="#" onclick="return propbox.prop_add(this, ${prop_structure.unique});">${ADD_NEW_VALUE}</a>
+            </li>
+            <li acre:if="ect === '/type/text'" class="row-menu-item">
+              <a href="#" onclick="return i18n.text_edit(this, '${h.ajax_url('lib/i18n')}', '${topic.id}', '${prop_structure.id}', '${lang}')">${EDIT_LOCALIZED_TEXT}</a>
+            </li>
+          </acre:block>
           <li class="row-menu-item">
             <a href="${ph.build_query_url(topic.id, prop_structure, prop_structure.expected_type.id === '/type/text' ? null : lang)}">${QUERY_PROPERTY}</a>
           </li>
@@ -471,23 +473,25 @@
       is_blob = true;
     }
   </acre:script>
-  <ul class="combo-menu nicemenu">
-    <li class="nicemenu-item">
-      <span class="headmenu">
-        <a href="#" onclick="return false;" class="default-action edit-action">edit</a>
-        <a href="javascript:void(0)" class="more-action">menu</a>
-      </span>
-      <ul class="submenu row-menu">
-        <li class="row-menu-item"><a href="#" onclick="return propbox.value_edit(this);">${EDIT}</a></li>
-        <li class="row-menu-item"><a href="#" onclick="return propbox.value_delete(this);">${DELETE}</a></li>
-        <acre:block if="!is_blob && topic && prop_structure && prop_value && lang">
-          <li acre:if="!h.is_literal_type(prop_structure.expected_type.id)" class="row-menu-item">
-            <a href="#" onclick="return i18n.text_edit(this, '${h.ajax_url('lib/i18n')}', '${prop_value.id}', '/type/object/name', '${lang}')">${EDIT_LOCALIZED_TEXT}</a>          
-          </li>
-        </acre:block>
-      </ul>
-    </li>
-  </ul>
+  <acre:block if="ph.is_property_editable(prop_structure)">
+    <ul class="combo-menu nicemenu">
+      <li class="nicemenu-item">
+        <span class="headmenu">
+          <a href="#" onclick="return false;" class="default-action edit-action">edit</a>
+          <a href="javascript:void(0)" class="more-action">menu</a>
+        </span>
+        <ul class="submenu row-menu">
+          <li class="row-menu-item"><a href="#" onclick="return propbox.value_edit(this);">${EDIT}</a></li>
+          <li class="row-menu-item"><a href="#" onclick="return propbox.value_delete(this);">${DELETE}</a></li>
+          <acre:block if="!is_blob && topic && prop_structure && prop_value && lang">
+            <li acre:if="!h.is_literal_type(prop_structure.expected_type.id)" class="row-menu-item">
+              <a href="#" onclick="return i18n.text_edit(this, '${h.ajax_url('lib/i18n')}', '${prop_value.id}', '/type/object/name', '${lang}')">${EDIT_LOCALIZED_TEXT}</a>          
+            </li>
+          </acre:block>
+        </ul>
+      </li>
+    </ul>
+  </acre:block>
 </acre:block>
 
 <acre:block def="empty_row_tr(cols)">

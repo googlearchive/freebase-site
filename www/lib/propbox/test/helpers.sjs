@@ -40,6 +40,14 @@ function test_minimal_prop_structure(test, minimal, schema) {
     "id", "string",
     "text", "string",
     "lang", "string",
+    "unique", "boolean",
+    "requires_permission", "boolean",
+    "authorities", "array",
+    "master_property", "object",
+    "reverse_property", "object",
+    "delegated", "object",
+    "enumeration", "object",
+    "unit", "object",
     "disambiguator", "boolean",
     "display_none", "boolean",
     "deprecated", "boolean",
@@ -50,8 +58,14 @@ function test_minimal_prop_structure(test, minimal, schema) {
     var key = keys[i];
     var val = minimal[key];
     test.ok(key in minimal, key);
-    test.ok(val != null, key);
-    test.same(typeof val, keys[i+1], key);
+    var typeof_val = typeof val;
+    if (keys[i+1] === "array") {
+        test.equal(typeof_val, "object");
+        test.ok(val instanceof Array);
+    }
+    else {
+        test.equal(typeof_val, keys[i+1], key);
+    }
   }
   // check expected_type metadata
   var ect = schema.expected_type;
@@ -69,13 +83,4 @@ function test_minimal_prop_structure(test, minimal, schema) {
     }
     test.same(val1, val2, key);
   };
-  // optional keys
-  keys = ["unit", "master_property", "reverse_property"];
-  for (i=0,l=keys.length; i<l; i++) {
-    var key = keys[i];
-    if (key in minimal) {
-      test.ok(minimal[key] && schema[key]);
-      test.equal(minimal[key].id, schema[key].id);
-    }
-  }
 };

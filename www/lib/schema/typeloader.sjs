@@ -99,6 +99,9 @@ function loads(type_ids, lang) {
                 var type = types[type_id];
                 type.properties.forEach(function(prop) {
                     var ect = prop.expected_type;
+                    if (ect == null) {
+                        ect = prop.expected_type = {id:"/type/object"};
+                    }
                     if (!ect_props[ect.id]) {
                         ect_props[ect.id] = [];
                         ect_ids.push(ect.id);
@@ -122,6 +125,9 @@ function loads(type_ids, lang) {
                                 });
                                 ect.properties.forEach(function(prop) {
                                     var deep_ect = prop.expected_type;
+                                    if (deep_ect == null) {
+                                        deep_ect = prop.expected_type = {id:"/type/object"};
+                                    }
                                     var deep_props = deep_ect_props[deep_ect.id];
                                     if (!deep_props) {
                                         deep_props = deep_ect_props[deep_ect.id] = [];
@@ -251,6 +257,10 @@ function do_mql(type_ids, lang) {
             id: null,
             name: i18n.mql.text_clause(lang),
             type: "/type/property",
+            "emql:type": {
+                optional: true,
+                id: "/type/extension"
+            },
             schema: {
                 id: null
             },
@@ -261,6 +271,7 @@ function do_mql(type_ids, lang) {
                 type: "/type/unit",
                 "/freebase/unit_profile/abbreviation": null
             },
+            requires_permission: null,
             "/freebase/property_hints/disambiguator": null,
             "/freebase/property_hints/display_none": null,
             "/freebase/property_hints/deprecated": null,
@@ -285,6 +296,7 @@ function do_mql(type_ids, lang) {
                 type: "/type/property"
             },
             expected_type: {
+                optional: true,
                 id: null,
                 type: "/type/type"
             },

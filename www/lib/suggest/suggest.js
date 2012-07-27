@@ -1630,7 +1630,7 @@
 
       // flyout_service_url + flyout_service_path =
       // url to topic api with filter=suggest
-      flyout_service_path: "/topic${id}?filter=suggest&key=${key}",
+      flyout_service_path: "/topic${id}?filter=suggest&limit=3&key=${key}",
 
       // default is service_url if NULL
       flyout_image_service_url: null,
@@ -1757,7 +1757,7 @@
             });
         }
 
-        notability = notability.slice(0, 3).join(", ");
+        notability = notability.join(", ");
 
         var content = $('<div class="fbs-flyout-content">');
         content.append($('<h1 id="fbs-flyout-title">').text(name));

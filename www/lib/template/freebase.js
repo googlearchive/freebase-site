@@ -436,10 +436,7 @@
 
       service_defaults: {
         status: ["", "Searching...", "Select an item from the list:"],
-        service_url: fb.h.suggest_url(),
-        service_path: "",
-        flyout_service_url: "",
-        flyout_service_path: "/flyout?id=${id}",
+        service_url: fb.h.fb_googleapis_url(),
         key: fb.acre.freebase.api_key,
         lang: fb.suggest_lang.lang()
       },
@@ -838,6 +835,13 @@
 
       cache: {},
 
+      topic_url: fb.h.fb_googleapis_url() + 
+        "/topic${id}?filter=suggest&key=" + fb.acre.freebase.api_key + 
+        "&lang=" + fb.h.lang_code(fb.lang),
+
+      image_url: fb.h.fb_googleapis_url() + 
+        "/image${id}?maxwidth=75&key=" + fb.acre.freebase.api_key,
+
       show: function() {
         var topic_link = this;
         var id = $(topic_link).attr("data-id");
@@ -852,9 +856,15 @@
           _show();
         }
         else {
-          $.get(fb.h.fb_url("/flyout", {id:id, lang:fb.lang}), function(r) {
-            fb.hover.cache[id] = r;
-            _show();
+          $.ajax({
+            url: fb.hover.topic_url.replace(/\$\{id\}/g, id),
+            success: function(data) {
+              var html = $.suggest.suggest.create_flyout(data, fb.hover.image_url);
+              fb.hover.cache[id] = html;
+              _show();
+            },
+            dataType: "jsonp",
+            cache: true
           });
         }
 

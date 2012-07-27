@@ -77,6 +77,7 @@ function init_site_rules(lib) {
     "apps":       "//apps" + site_codebase,
     "create":     "//create" + site_codebase,
     "data":       "//data" + site_codebase,
+    "discuss":    "//discuss" + site_codebase,
     "mdo":        "//mdo" + site_codebase,
     "policies":   "//policies" + site_codebase,
     "query":      "//query" + site_codebase,
@@ -173,6 +174,18 @@ function init_site_rules(lib) {
 
   // *********** OBJECT *************
 
+  var DEFAULT_DISCUSS_GEAR = {
+    "name": _("Discuss"),
+    "app": "lib",
+    "script": "discuss/discuss.mf.js",
+    "method": "discuss.toggle_discuss",
+    "args": (function() { return [this.object.id]; })
+  };
+
+  var DEFAULT_GEAR = [
+    DEFAULT_DISCUSS_GEAR
+  ];
+
   var DEFAULT_MORE_TABS = [
     {
       "name": _("Properties"),
@@ -220,7 +233,8 @@ function init_site_rules(lib) {
           "app": "triples",
           "script": "writes.tab"
         }
-      ].concat(h.extend(true, [], DEFAULT_MORE_TABS))
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
+      "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
     },
     {
       "name": _("App"),
@@ -232,7 +246,8 @@ function init_site_rules(lib) {
           "app": "triples",
           "script": "writes.tab"
         }
-      ].concat(h.extend(true, [], DEFAULT_MORE_TABS))
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
+      "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
     },
     {
       "name": _("Domain"),
@@ -276,7 +291,7 @@ function init_site_rules(lib) {
           "args": (function() { return [this.object.id]; }),
           "auth": true // add "edit" class if authorized to delete the domain
         }
-      ]
+      ].concat(h.extend(true, [], DEFAULT_GEAR))
     },
     {
       "name": _("Type"),
@@ -337,7 +352,7 @@ function init_site_rules(lib) {
           "args": (function() { return [this.object.id]; }),
           "auth": true // add "edit" class if authorized to delete the domain
         }
-      ]
+      ].concat(h.extend(true, [], DEFAULT_GEAR))
     },
     {
       "name": _("Property"),
@@ -380,7 +395,7 @@ function init_site_rules(lib) {
           "args": (function() { return [this.object.id]; }),
           "auth": true // add "edit" class if authorized to delete the domain
         }
-      ]
+      ].concat(h.extend(true, [], DEFAULT_GEAR))
     },
     {
       "name": _("User"),
@@ -426,7 +441,7 @@ function init_site_rules(lib) {
           "name": _("<b>Discuss</b> with this user"),
           "url": (function() { return h.legacy_fb_url("/discuss/threads", this.object.id); })
         }
-      ]
+      ].concat(h.extend(true, [], DEFAULT_GEAR))
     },
     {
       "name": _("Usergroup"),
@@ -438,7 +453,8 @@ function init_site_rules(lib) {
           "app": "users",
           "script": "group.tab"
         }
-      ].concat(h.extend(true, [], DEFAULT_MORE_TABS))
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
+      "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
     },
     {
       "name": _("Query"),
@@ -465,7 +481,8 @@ function init_site_rules(lib) {
           "app": "query",
           "script": "mql.tab"
         }
-      ].concat(h.extend(true, [], DEFAULT_MORE_TABS))
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
+      "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
     },
     {
       "name": _("Dataset"),
@@ -477,7 +494,8 @@ function init_site_rules(lib) {
           "app": "triples",
           "script": "writes.tab"
         }
-      ].concat(h.extend(true, [], DEFAULT_MORE_TABS))
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
+      "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
     },
     {
       "name": _("Load"),
@@ -489,7 +507,8 @@ function init_site_rules(lib) {
           "app": "triples",
           "script": "writes.tab"
         }
-      ].concat(h.extend(true, [], DEFAULT_MORE_TABS))
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
+      "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
     },
     {
       "name": _("Attribution"),
@@ -501,7 +520,8 @@ function init_site_rules(lib) {
           "app": "triples",
           "script": "writes.tab"
         }
-      ].concat(h.extend(true, [], DEFAULT_MORE_TABS))
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
+      "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
     },
     {
       "name": _("Namespace"),
@@ -525,7 +545,8 @@ function init_site_rules(lib) {
           "app": "triples",
           "script": "triples.tab"
         }
-      ]
+      ],
+      "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
     },
     {
       "name": _("Topic"),
@@ -549,8 +570,8 @@ function init_site_rules(lib) {
           "name": _("Keys"),
           "key": "keys",
           "app": "sameas",
-          "script": "sameas.tab",
-        }        
+          "script": "sameas.tab"
+        }
       ],
       "nav_keys": [
         {
@@ -603,7 +624,7 @@ function init_site_rules(lib) {
           "name": _("<b>Edit</b> on old site"),
           "url": (function() { return h.legacy_fb_url("/edit/topic", this.object.id); })
         }
-      ]
+      ].concat(h.extend(true, [], DEFAULT_GEAR))
     },
     {
       "name": _("Image"),
@@ -633,7 +654,8 @@ function init_site_rules(lib) {
           "app": "sameas",
           "script": "sameas.tab"
         }
-      ]
+      ],
+      "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
     },
     {
       "name": _("Article"),
@@ -663,7 +685,8 @@ function init_site_rules(lib) {
           "app": "sameas",
           "script": "sameas.tab"
         }
-      ]
+      ],
+      "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
     },
     {
       "name": _("Content"),
@@ -693,7 +716,8 @@ function init_site_rules(lib) {
           "app": "sameas",
           "script": "sameas.tab"
         }
-      ]
+      ],
+      "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
     },
     {
       "name": _("Object"),
@@ -716,9 +740,9 @@ function init_site_rules(lib) {
           "key": "keys",
           "app": "sameas",
           "script": "sameas.tab"
-        },
-        
-      ]
+        }        
+      ],
+      "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
     }
   ];
 
@@ -745,7 +769,7 @@ function init_site_rules(lib) {
     //
 
     // Review queue
-    {prefix:"/review",       app:"review", script:"queue.controller"},    
+    {prefix:"/review",       app:"review", script:"queue.controller"},   
 
     // Homepage
     {prefix:"/index",                   url:"/", redirect: 301},

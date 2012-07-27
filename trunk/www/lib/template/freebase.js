@@ -836,7 +836,7 @@
       cache: {},
 
       topic_url: fb.h.fb_googleapis_url() + 
-        "/topic${id}?filter=suggest&key=" + fb.acre.freebase.api_key + 
+        "/topic${id}?filter=suggest&limit=3&key=" + fb.acre.freebase.api_key + 
         "&lang=" + fb.h.lang_code(fb.lang),
 
       image_url: fb.h.fb_googleapis_url() + 

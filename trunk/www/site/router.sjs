@@ -175,7 +175,7 @@ function init_site_rules(lib) {
   // *********** OBJECT *************
 
   var DEFAULT_DISCUSS_GEAR = {
-    "name": _("Discuss"),
+    "name": _("<b>Discuss</b>"),
     "app": "lib",
     "script": "discuss/discuss.mf.js",
     "method": "discuss.toggle_discuss",
@@ -280,7 +280,7 @@ function init_site_rules(lib) {
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
       "gear": [
         {
-          "name": _("<b>Discuss</b> Domain"),
+          "name": _("<b>Discuss</b> Domain - Archive"),
           "url": (function() { return h.legacy_fb_url("/discuss/threads", this.object.id); })
         },
         {
@@ -438,7 +438,7 @@ function init_site_rules(lib) {
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
       "gear": [
         {
-          "name": _("<b>Discuss</b> with this user"),
+          "name": _("<b>Discuss</b> with this user - Archive"),
           "url": (function() { return h.legacy_fb_url("/discuss/threads", this.object.id); })
         }
       ].concat(h.extend(true, [], DEFAULT_GEAR))
@@ -617,7 +617,7 @@ function init_site_rules(lib) {
           }]
         },
         {
-          "name": _("<b>Discuss</b> Topic"),
+          "name": _("<b>Discuss</b> Topic - Archive"),
           "url": (function() { return h.legacy_fb_url("/discuss/threads", this.object.id); })
         },
         {

@@ -377,6 +377,10 @@
           // don't want to add new types to expected_types that are enumerations (i.e., /people/gender)
           return clause;
         }
+        else if (expected_type.never_assert) {
+          // don't assert the expected type nor it's included types
+          return clause;
+        }
         if (expected_type.id !== "/type/object") {
           clause.push({id:expected_type.id, connect:"insert"});
         }

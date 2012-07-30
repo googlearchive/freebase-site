@@ -1540,6 +1540,19 @@
         same(ep.parse(structure, context), []);
     });
 
+    test("freebase-type-hints-never-assert", function() {
+        var context = $("#freebase-type-hints-never-assert");
+         $(".data-input", context).data_input({lang:"/lang/en"});
+         var structure = {
+             id: "/dataworld/gardening_hint/replaced_by",
+             expected_type: {id:"/common/topic", never_assert:true, included_types:["/type/inc_type"]},
+             values: []
+         };
+         same(ep.parse(structure, context), []);
+         fb_select($(".fb-input", context), "/m/bar");
+         same(ep.parse(structure, context), [{id:"/m/bar", connect:"insert"}]);
+    });
+
   };
 
   /**

@@ -553,7 +553,7 @@
               } else {
                   // we want the default freebase-site suggest options like 
                   // search service url, api key, current language, etc.
-                  suggest_options = $.extend({}, fb.suggest_options.service_defaults);
+                  suggest_options = $.extend({}, this.options.suggest_impl.service_defaults);
               }
           }
           this.key_namespace_input

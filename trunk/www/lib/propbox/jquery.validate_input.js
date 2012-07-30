@@ -65,7 +65,7 @@
     // convert mql lang ids to locale strings understood by dojo (cldr)
     o.locales = [];
     $.each(o.lang, function(i, lang) {
-      var lang_code = fb.h.lang_code(lang);
+      var lang_code = lang.split("/").pop();
       if (dojo && dojo.i18n && dojo.i18n.normalizeLocale) {
         lang_code = dojo.i18n.normalizeLocale(lang_code);
       }

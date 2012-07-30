@@ -603,4 +603,8 @@
     ${pb.data_input("/type/key", "/type/object/key", prop_value)}
   </div>
 
+  <div id="freebase-type-hints-never-assert">
+    ${pb.data_input("/type/object", "/dataworld/gardening_hint/replaced_by", null)}
+  </div>
+
 </acre:block>

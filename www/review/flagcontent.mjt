@@ -89,7 +89,7 @@
         </iframe>
       </div>
       <div id="discuss-content" class="discuss-content">
-        <iframe src="https://docs-dev.corp.google.com/comments/d/TEST-0-demo2/embed" id="discuss-frame" width="100%" style="height: auto; min-height: 800px;">
+        <iframe src="${helper.docos_url(flagInfo.mid)}" id="discuss-frame" width="100%" style="height: auto; min-height: 800px;">
         </iframe>
       </div>
     </div>
@@ -106,7 +106,7 @@
       </div>
     </div>
     <div id="discuss-content" class="discuss-content">
-      <iframe src="https://docs-dev.corp.google.com/comments/d/TEST-0-demo2/embed" id="discuss-frame" width="100%" style="height: auto; min-height: 800px;">
+      <iframe src="${helper.docos_url(flagInfo.mid)}" id="discuss-frame" width="100%" style="height: auto; min-height: 800px;">
       </iframe>
     </div>
   </div>       

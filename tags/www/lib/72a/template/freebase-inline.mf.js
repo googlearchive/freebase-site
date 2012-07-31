@@ -1,3 +1,0 @@
-[
-  "template/freebase-inline.js"
-]

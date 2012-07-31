@@ -1781,7 +1781,7 @@
             .append(content)
             .append(footer)
             .html();
-    },
+    }
   });
 
 

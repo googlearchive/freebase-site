@@ -102,7 +102,8 @@ function topic_structure(id, options) {
                 // to determine what types to display
 
                 // These are actual instanceof types
-                var instanceof_types = object.type;
+                var instanceof_types = topic_props && topic_props["/type/object/type"];
+                instanceof_types = instanceof_types && instanceof_types.values;
 
                 // Gather up all asserted properties' types
                 var types = [];

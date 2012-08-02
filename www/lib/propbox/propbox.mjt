@@ -335,12 +335,12 @@
     </acre:block>
     <acre:block elif="ect === '/type/uri'">
       <acre:script>
-        h.extend(attrs, {
-          "href": prop_value.value,
-          "target": "_blank"
-        });
+        attrs.target = "_blank";
+        // we want to insert href and data-value directly
+        // so it does not get escaped
+        delete attrs.data-value;
       </acre:script>
-      <a acre:attrs="attrs">${prop_value.text}</a>
+      <a href="${prop_value.value}" acre:attrs="attrs" data-value="${prop_value.value}">${prop_value.text}</a>
     </acre:block>
     <acre:block elif="ect === '/type/key'">
       <acre:script>
@@ -359,11 +359,10 @@
         h.extend(attrs, {
           "data-namespace": ns,
           "data-id": object_id,
-          "title": object_id,
-          "href": h.fb_url(true, object_id)
+          "title": object_id
         });
       </acre:script>
-      <a acre:attrs="attrs">${prop_value.text}</a>
+      <a href="${h.fb_url(true, object_id)}" acre:attrs="attrs">${prop_value.text}</a>
     </acre:block>
     <acre:block else="">
       <span acre:attrs="attrs">${prop_value.text}</span>

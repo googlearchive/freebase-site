@@ -43,6 +43,7 @@ test("docos_key", function() {
   equal(h.docos_key("/z/014j1m").indexOf("FREEBASE-0-z-014j1m"), 0);    
 });
 
+/**
 test("docos_url", function() {
   equal(h.docos_url("giberish"), "");
   equal(h.docos_url("19283798"), "");
@@ -51,6 +52,7 @@ test("docos_url", function() {
   equal(h.docos_url("/g/045c7b").indexOf("https://docs-dev.corp.google.com/comments/d/FREEBASE-0-g-045c7b"), 0);
   equal(h.docos_url("/z/014j1m").indexOf("https://docs-dev.corp.google.com/comments/d/FREEBASE-0-z-014j1m"), 0);
 });
+**/
 
 
 acre.test.report();

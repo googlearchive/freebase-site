@@ -1,0 +1,130 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+var helper = acre.require("lib/helper/helpers.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
+var reviewContent = acre.require("flagcontent.mjt");
+var reviewHelpers = acre.require("reviewhelpers.sjs");
+var freebase = acre.require("lib/promise/apis").freebase;
+var deferred = acre.require("lib/promise/apis.sjs").deferred;
+var i18n = acre.require("lib/i18n/i18n.sjs");
+var i18n_c = acre.require("lib/i18n/components.mjt");
+var _ = i18n.gettext;
+
+var SPEC = {    
+    auth: true, 
+    method: "GET",   
+    validate: function(params) {
+        return [
+            validators.MqlId(params, "flag", {required:true}),
+            params.auth_user 
+        ];
+    },   
+    run: function(flag, user) {    
+        return { 
+            "html": flagContent(flag, user),
+        };
+    }
+};
+
+function flagContent(flagMid, user) {
+
+    var flagPromise = reviewHelpers.flagInfoQuery(flagMid);
+    var userPromise = reviewHelpers.usergroupQuery(user.id);
+    
+    return deferred.all([flagPromise, userPromise]).then(function(result){           
+
+        var flagInfo = result[0];
+        var userInfo = result[1];
+
+        // Validate
+        if(!flagInfo) {
+            return "notaflag";
+        }                
+        if(!reviewHelpers.validFlag(flagInfo)) {
+            reviewHelpers.deleteFlag(flagMid);         
+            return "invalid";        
+        }
+
+        if(flagInfo.status) {
+            var authenticated = false;
+            for(var i = 0, l = userInfo.usergroup.length; i < l; i++) {
+                var group = userInfo.usergroup[i];
+                if( group === "/pipeline/admin" || group === "/freebase/badges/freebaseexpert") {
+                    authenticated = true;
+                    break;
+                }            
+            }
+            if(authenticated) {
+                flagInfo.authToVote = true;
+            } else {
+                flagInfo.authToVote = false;
+            }
+        } else {
+            flagInfo.authToVote = true;
+        }
+
+        // Check if user has voted on this
+        flagInfo.judgments.sort(function(vote1, vote2) {
+            if(vote1.creator.id == vote2.creator.id) {              
+                return (vote1.timestamp > vote2.timestamp) ? 1 : -1;
+            } else {                
+                return (vote1.creator.id > vote2.creator.id) ? 1 : -1;
+            }   
+        });
+        flagInfo.previousVote = null;
+        flagInfo.previousVoteItem = null;        
+        flagInfo.judgments.forEach(function(judgment){
+            if(judgment.creator.id === user.id) {
+                flagInfo.previousVote = judgment.vote.key.value;
+                if(judgment.item) flagInfo.previousVoteItem = judgment.item.mid;
+            }
+        });
+
+        // Check if user created this 
+        flagInfo.isCreator = flagInfo.creator === user.id ? true : false;                 
+
+        // Just some variables to make writing urls easier
+        flagInfo.reviewUrl   = helper.legacy_fb_url("/review/queue", "?flags=", flagMid);
+        flagInfo.flagUrl     = helper.fb_url(flagMid, [['props']]);
+        flagInfo.discUrl     = helper.fb_url("/discuss/threads", flagMid);
+        flagInfo.creatorUrl  = helper.fb_url(flagInfo.creator);    
+        flagInfo.creator     = helper.id_key(flagInfo.creator);            
+
+        for(var i = 0, l = flagInfo.item.length; i < l; i++) {
+            flagInfo.item[i].url     = helper.fb_url(flagInfo.item[i].mid, [['props'], ['embed',1]]);
+            flagInfo.item[i].name    = i18n.display_name(flagInfo.item[i]);
+        }        
+
+        return acre.markup.stringify(reviewContent.content(flagInfo));
+    });
+}
+

@@ -1746,7 +1746,7 @@ function docos_url(mid) {
     if (docosKey === "") {
         return "";
     }
-    return "https://docs-dev.corp.google.com/comments/d/" + docos_key(mid) + "/embed";
+    return "";
 }
 
 

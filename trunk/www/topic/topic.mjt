@@ -58,7 +58,7 @@
       ${manage_types()}  
       ${propbox.topicbox(c.topic, i18n.lang)}
 
-      <acre:block if="c.filters.domains !== 'all'">
+      <acre:block if="! (c.filters.domains === 'all' || c.filters.domain || c.filters.type || c.filters.property)">
         <div class="section domain domain-section">
           <div class="header">
             <span class="status user">${_("User Domain")}</span>

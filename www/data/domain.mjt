@@ -155,6 +155,15 @@
       </tr>
     </tbody>
   </table>
+  <div id="domain-review-box">
+    <h2 class="table-title info-box-title">
+      ${_("Review flags in this domain")}
+    </h2>
+    <div class="info-box">
+      ${_("Help improve Freebase by reviewing topics that have been marked for merge or delete in this domain.")}
+      <a href="${h.fb_url('/review?domain=' + c.id)}">${_("Review flags.")}</a>
+    </div>
+  </div>
 </div>
 </acre:block>
 

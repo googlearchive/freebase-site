@@ -29,59 +29,133 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var h = acre.require("lib/helper/helpers.sjs");
-var i18n = acre.require("lib/i18n/i18n.sjs");
-var fh = acre.require("lib/filter/helpers.sjs");
-var apis = acre.require("lib/promise/apis.sjs"),
-    deferred = apis.deferred,
-    freebase = apis.freebase;
+var freebase = acre.require("lib/promise/apis").freebase;
+var apis = acre.require("lib/promise/apis.sjs");
+var freebase = apis.freebase;
+var deferred = apis.deferred;
 
-var SPEC = {
-
-  template: "browse.mjt",
-  
-  template_base: "site/template/browse.mjt",
-
-  validate: function(params) {
-    return [
-      params.object
-    ];
-  },
-
-  run: function(object) {
-    return {
-      object: object,
-      kinds: review_queue_tasks()
-    };
-  }
-
-};
-
-function review_queue_tasks() {
-  var q = [{
-    "name": i18n.mql.query.name(),
-    "type": "/freebase/flag_kind",
-    "flags": {
-      "type": "/freebase/review_flag",
-      "item": {
-        "mid":   null,
-        "limit": 0
-      },
-      "status": {
-        "id": null,
-        "optional": "forbidden"
-      },
-      "return" : "count"
-    }
-  }];
-  
-  return freebase.mqlread(q)
-    .then(function(env) {
-      return env.result || [];
-    })
-    .then(function(kinds) {
-      return kinds.sort(function(a, b) {
-        return b.flags - a.flags;
-      });
+// Functions to get number of entities with type
+// over last X number of days
+function typeCurrentCount(id) {
+    return [{
+        "type": id,        
+        "return":"count"
+    }]​;
+}
+function typeCreatedAfter(id, date) {
+  return [{
+      "type": id,
+      "timestamp": null,
+      "timestamp>=": date,
+      "sort":"timestamp",
+      "limit":100000
+  }]​;
+}
+function typeDeletedAfter(id, date) {
+    return [{
+      "type": {
+        "id": id,
+        "link": {
+          "operation": "delete",          
+          "timestamp>=": date,
+          "timestamp": null
+        },
+        "sort":  "-link.timestamp",
+        "limit": 1
+      },      
+      "limit":100000,
+      "sort": "-type.link.timestamp"
+    }]​;
+}
+function getActiveTopicsInLastDays(type, days) {
+    var targetDate = new Date();
+    targetDate.setDate(targetDate.getDate() - days);
+    targetDate = acre.freebase.date_to_iso(targetDate);
+    var current = freebase.mqlread(typeCurrentCount(type)).then(function(result){            
+        return {
+            "count": result.result[0]
+        };
     });
+    var created = freebase.mqlread(typeCreatedAfter(type, targetDate)).then(function(result){
+        var today = new Date();
+        var topicsByDate = [];
+        for (var i = 0; i < days; i++) {
+            topicsByDate[i] = 0;
+        }
+        for (var i = 0, l = result.result.length; i < l; i++) {
+            var topic = result.result[i];                
+            var dayDifference = parseInt((today.getTime() - acre.freebase.date_from_iso(topic.timestamp))/(24*3600*1000));                
+            topicsByDate[dayDifference] += 1;
+        }
+        return {
+            "result": topicsByDate
+        };        
+    });
+    var deleted = freebase.mqlread(typeDeletedAfter(type, targetDate)).then(function(result){        
+        var today = new Date();
+        var topicsByDate = [];
+        for (var i = 0; i < days; i++) {
+            topicsByDate[i] = 0;
+        }
+        for (var i = 0, l = result.result.length; i < l; i++) {
+            var topic = result.result[i];                
+            var dayDifference = parseInt((today.getTime() - acre.freebase.date_from_iso(topic.type.link.timestamp))/(24*3600*1000));                
+            topicsByDate[dayDifference] += 1;
+        }
+        return {
+            "result": topicsByDate
+        };
+    });
+    var promises = [current, created, deleted];
+    return deferred.all(promises).then(function(results){
+        var activeTopics = [];
+        var topicsCreated = results[1].result;
+        var topicsDeleted = results[2].result;        
+        activeTopics[0] = results[0].count;
+        for (var i = 1; i < days; i++) {
+            // Active topic i days ago = 
+            //      Active Flags i-1 days ago 
+            //      - Number of Flags created ith day 
+            //      + number flags deleted ith day
+
+            activeTopics[i] = activeTopics[i-1] - topicsCreated[i] + topicsDeleted[i];
+        }
+        return {
+            "activeTopics": activeTopics
+        };
+    });
+}
+
+// Helper to grab end of an array
+function getLastXFromArray(num, array) {
+    if (num > array.length) {
+        return array;
+    }
+    if (num < 1) {
+        return [];
+    }
+    return array.slice(array.length - num - 1, array.length - 1);
+}   
+
+var SPEC = {  
+  
+    template: "browse.mjt",
+    template_base: "site/template/browse.mjt",   
+    run: function() {
+
+        NUM_DAYS = 30;
+
+        var judgmentActivity = freebase.get_static("activity", "/freebase/flag_judgment");
+        var activeReviewFlags = getActiveTopicsInLastDays("/freebase/review_flag", NUM_DAYS);
+        var activeJudgments = getActiveTopicsInLastDays("/freebase/flag_judgment", NUM_DAYS);
+
+        return deferred.all([judgmentActivity, activeReviewFlags, activeJudgments]).then(function(results){
+            return {
+                "judgmentActivity": results[0],                
+                "activeFlags": results[1].activeTopics,
+                "activeJudgments": results[2].activeTopics
+            };
+        });
+    }
 };
+

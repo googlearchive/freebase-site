@@ -45,7 +45,7 @@
     var COMPLETE = _("You have completed voting on all flags in this category!");
     var LINK_TO = _("Link to this flag in review.");
     var COPY_SHARE = _("Copy and share this url");
-
+    var SHORTCUTS = _("Keyboard shortcuts");
 </acre:script>
 
 <acre:block def="head()">
@@ -90,7 +90,59 @@
         ${propboxForm.cancel_button(CLOSE)}
       </div>
     </div>
-  </div>   
+  </div>
+
+  <div id="shortcuts" style="visibility: hidden;">
+    <div id="show-shortcuts" class="modal">
+      <div class="modal-inner">
+        <h1 class="modal-title">
+          <span>${SHORTCUTS}
+        </h1>
+        <div class="modal-content">
+          <div class="form-group clear">
+            <div class="form-row form-row-inline">
+              <dl class="key-map">
+                <dt class="key-symbol">${_("a")}</dt>
+                <dd class="key-desc">${_("First voting option.")}</dd>
+              </dl>
+              <dl class="key-map">
+                <dt class="key-symbol">${_("s")}</dt>
+                <dd class="key-desc">${_("Second voting option.")}</dd>
+              </dl>
+              <dl class="key-map">
+                <dt class="key-symbol">${_("d")}</dt>
+                <dd class="key-desc">${_("Third voting option.")}</dd>
+              </dl>
+              <dl class="key-map">
+                <dt class="key-symbol">${_("f")}</dt>
+                <dd class="key-desc">${_("Fourth voting option.")}</dd>
+              </dl>
+              <dl class="key-map">
+                <dt class="key-symbol">${_("h")}</dt>
+                <dd class="key-desc">${_("Hot list current flag.")}</dd>
+              </dl>
+              <dl class="key-map">
+                <dt class="key-symbol">${_("j")}</dt>
+                <dd class="key-desc">${_("Go to previous flag.")}</dd>
+              </dl>
+              <dl class="key-map">
+                <dt class="key-symbol">${_("k")}</dt>
+                <dd class="key-desc">${_("Go to next flag.")}</dd>
+              </dl>
+              <dl class="key-map">
+                <dt class="key-symbol">${_("l")}</dt>
+                <dd class="key-desc">${_("Get link to hot list.")}</dd>
+              </dl>                        
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-buttons">            
+        ${propboxForm.cancel_button(CLOSE)}
+      </div>
+    </div>
+  </div>
+   
 </acre:block>
 
 <acre:block def="footer_script()">    

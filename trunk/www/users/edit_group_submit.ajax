@@ -73,6 +73,9 @@ var SPEC = {
         var clause = result[p];
         var userid = clause.id;
 
+        // invalidate cache for review
+        acre.cache.remove('review_user_cached_' + s)
+
         // deleted
         if (!CONNECTED[clause.connect]) {
           var undo_data = {

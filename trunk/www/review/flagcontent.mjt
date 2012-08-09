@@ -65,59 +65,52 @@
     var S_VS_S = _("%s vs. %s");
 </acre:script>
 
-<acre:block def="content(flagInfo)">
-  <acre:block if="flagInfo">
-    ${votepanel(flagInfo)}
+<acre:block def="content(displayInfo)">
+  <acre:block if="displayInfo">
+    ${votepanel(displayInfo)}
     <div class="flagreview-separator">
     </div>
-    ${itempanel(flagInfo)}
+    ${itempanel(displayInfo)}
   </acre:block>        
 </acre:block>
 
-<acre:block def="votepanel(flagInfo)">
+<acre:block def="votepanel(displayInfo)">
   <div class="flagreview-header clear">
-    ${flagreview_left(flagInfo)}
-    ${flagreview_right(flagInfo)}
+    ${flagreview_left(displayInfo)}
+    ${flagreview_right(displayInfo)}
   </div>
 </acre:block>
 
-<acre:block def="itempanel(flagInfo)">          
-  <div acre:if="flagInfo.item.length === 1"> 
-    <div class="topic-frame">
-      <div id="flag-content" class="flag-content">
-        <iframe src="${flagInfo.item[0].url}" width="100%" frameborder="0" style="height: auto; min-height: 800px;">
+<acre:block def="itempanel(displayInfo)">  
+  <div class="topic-frame">
+    <div acre:if="displayInfo.items.length === 1" id="flag-content" class="flag-content"> 
+        <iframe src="${displayInfo.items[0].url}" width="100%" frameborder="0" style="height: auto; min-height: 800px;">
         </iframe>
-      </div>
-      <div id="discuss-content" class="discuss-content">
-        <iframe src="${helper.docos_url(flagInfo.mid)}" id="discuss-frame" width="100%" style="height: auto; min-height: 800px;">
-        </iframe>
-      </div>
     </div>
-  </div>
-  <div acre:else="">
-    <div id="flag-content" class="flag-content">
+    <div acre:else="" id="flag-content" class="flag-content">
       <div class="topic-frame topic-frame-left">
-        <iframe src="${flagInfo.item[0].url}" width="100%" frameborder="0" style="height: auto; min-height: 800px;">
+        <iframe src="${displayInfo.items[0].url}" width="100%" frameborder="0" style="height: auto; min-height: 800px;">
         </iframe>
       </div>
       <div class="topic-frame topic-frame-right">
-        <iframe src="${flagInfo.item[1].url}" width="100%" frameborder="0" style="height: auto; min-height: 800px;">
+        <iframe src="${displayInfo.items[1].url}" width="100%" frameborder="0" style="height: auto; min-height: 800px;">
         </iframe>
       </div>
     </div>
     <div id="discuss-content" class="discuss-content">
-      <iframe src="${helper.docos_url(flagInfo.mid)}" id="discuss-frame" width="100%" style="height: auto; min-height: 800px;">
+      <iframe src="${helper.docos_url(displayInfo.id)}" id="discuss-frame" width="100%" style="height: auto; min-height: 800px;">
       </iframe>
     </div>
-  </div>       
+    <div class="clear"></div>
+  </div>      
 </acre:block>
 
-<acre:block def="flagreview_left(flagInfo)">
+<acre:block def="flagreview_left(displayInfo)">
   <div class="flagreview-left">
-      ${flagreview_title(flagInfo)}
-    <acre:block if="flagInfo.authToVote">
-      ${flagreview_buttons(flagInfo)}
-    </acre:block>
+      ${flagreview_title(displayInfo)}
+      <acre:block if="displayInfo.authToVote">
+        ${flagreview_buttons(displayInfo)}
+      </acre:block>
   </div>                
 </acre:block>
 
@@ -125,21 +118,21 @@
   <a href="${href}">${value}</a>
 </acre:block>
 
-<acre:block def="flagreview_right(flagInfo)">
+<acre:block def="flagreview_right(displayInfo)">
   <div class="flagreview-right" >                               
     <div class="flag-creator-info">
-      <acre:block if="flagInfo.isCreator">
+      <acre:block if="displayInfo.isCreator">
         ${REMOVE_OWN_FLAG}
       </acre:block>
       <acre:block else="">
-        ${helper.template_sprintf(S_BY_S, tag_a(FLAGGED, flagInfo.flagUrl), tag_a(flagInfo.creator, flagInfo.creatorUrl))}                
+        ${helper.template_sprintf(S_BY_S, tag_a(FLAGGED, displayInfo.flagUrl), tag_a(displayInfo.creator, displayInfo.creatorUrl))}                
       </acre:block>            
       - <a href="http://wiki.freebase.com/wiki/Review_Queue">${HELP}</a>
     </div> 
     <div class="flagreview-bottomright">
       <div class="sharing-options">          
-        <a href="${flagInfo.reviewUrl}" id="link-to-flag" onclick="return false">${LINK_TO_FLAG}</a> - 
-        <a href="${flagInfo.mid}" id="add-link-to-list" onclick="return false">${ADD_TO_HOTLIST}</a> - 
+        <a href="${displayInfo.reviewUrl}" id="link-to-flag" onclick="return false">${LINK_TO_FLAG}</a> - 
+        <a href="${displayInfo.id}" id="add-link-to-list" onclick="return false">${ADD_TO_HOTLIST}</a> - 
         <a href="" id="get-link-list" onclick="return false">${LINK_TO_HOTLIST}</a>
       </div>
       <div class="flag-options">                
@@ -150,62 +143,62 @@
   </div>
 </acre:block>
 
-<acre:block def="flagreview_title(flagInfo)">
+<acre:block def="flagreview_title(displayInfo)">
   <div class="flagreview-title">                
-    <acre:block if="flagInfo.item.length === 1">
-      ${tag_a(flagInfo.item[0].name, flagInfo.item[0].url)}
+    <acre:block if="displayInfo.items.length === 1">
+      ${tag_a(displayInfo.items[0].name, displayInfo.items[0].url)}
     </acre:block>
-    <acre:block elif="flagInfo.item.length === 2"> 
-      ${helper.template_sprintf(S_VS_S, tag_a(flagInfo.item[0].name, flagInfo.item[0].url), tag_a(flagInfo.item[1].name, flagInfo.item[1].url))}
+    <acre:block elif="displayInfo.items.length === 2"> 
+      ${helper.template_sprintf(S_VS_S, tag_a(displayInfo.items[0].name, displayInfo.items[0].url), tag_a(displayInfo.items[1].name, displayInfo.items[1].url))}
     </acre:block>        
-    <acre:block if="flagInfo.status">
+    <acre:block if="displayInfo.status">
         <span class="flagreview-admin-message">${ADMIN_QUEUE}</span>
     </acre:block>
   </div>
 </acre:block>
 
-<acre:block def="flagreview_buttons(flagInfo)">
+<acre:block def="flagreview_buttons(displayInfo)">
   <div class="vote-choices">            
-    <div acre:if="flagInfo.kind.key.value === 'merge'">
+    <div acre:if="displayInfo.kind === 'merge'">
       <span class="vote-label">${MERGE_THESE_TOPICS}</span> 
-      ${votebutton(LEFT_WINS ,  flagInfo.mid, "agree", flagInfo.item[0].mid, flagInfo)}
-      ${votebutton(RIGHT_WINS,  flagInfo.mid, "agree", flagInfo.item[1].mid, flagInfo)}
-      ${votebutton(DONT_MERGE, flagInfo.mid, "disagree", null, flagInfo)}
+      ${votebutton(LEFT_WINS ,  displayInfo.id, "agree", displayInfo.items[0].id, displayInfo)}
+      ${votebutton(RIGHT_WINS,  displayInfo.id, "agree", displayInfo.items[1].id, displayInfo)}
+      ${votebutton(DONT_MERGE, displayInfo.id, "disagree", null, displayInfo)}
       <span class="vote-label vote-separator">${NOT_SURE}</span>
-      ${votebutton(SKIP, flagInfo.mid, "skip", null, flagInfo)}            
+      ${votebutton(SKIP, displayInfo.id, "skip", null, displayInfo)}            
     </div>
-    <div acre:if="flagInfo.kind.key.value === 'delete'">
+    <div acre:if="displayInfo.kind === 'delete'">
       <span class="vote-label">${DELETE_THIS_TOPIC}</span> 
-      ${votebutton(DELETE, flagInfo.mid, "agree", null, flagInfo)}
-      ${votebutton(DONT_DELETE, flagInfo.mid, "disagree", null, flagInfo)}
+      ${votebutton(DELETE, displayInfo.id, "agree", null, displayInfo)}
+      ${votebutton(DONT_DELETE, displayInfo.id, "disagree", null, displayInfo)}
       <span class="vote-label vote-separator">${NOT_SURE}</span>
-      ${votebutton(SKIP, flagInfo.mid, "skip", null, flagInfo)}            
+      ${votebutton(SKIP, displayInfo.id, "skip", null, displayInfo)}            
     </div>
-    <div acre:if="flagInfo.kind.key.value === 'split'">
+    <div acre:if="displayInfo.kind === 'split'">
       <span class="vote-label">${SPLIT_THIS_TOPIC}</span> 
-      ${votebutton(SPLIT, flagInfo.mid, "agree", null, flagInfo)}
-      ${votebutton(DONT_SPLIT, flagInfo.mid, "disagree", null, flagInfo)}
+      ${votebutton(SPLIT, displayInfo.id, "agree", null, displayInfo)}
+      ${votebutton(DONT_SPLIT, displayInfo.id, "disagree", null, displayInfo)}
       <span class="vote-label vote-separator">${NOT_SURE}</span>
-      ${votebutton(SKIP, flagInfo.mid, "skip", null, flagInfo)}            
+      ${votebutton(SKIP, displayInfo.id, "skip", null, displayInfo)}            
     </div>
-    <div acre:if="flagInfo.kind.key.value === 'offensive'">
+    <div acre:if="displayInfo.kind === 'offensive'">
       <span class="vote-label">${OFFENSIVE_TOPIC}</span> 
-      ${votebutton(OFFENSIVE, flagInfo.mid, "agree", null, flagInfo)}
-      ${votebutton(NOT_OFFENSIVE, flagInfo.mid, "disagree", null, flagInfo)}
+      ${votebutton(OFFENSIVE, displayInfo.id, "agree", null, displayInfo)}
+      ${votebutton(NOT_OFFENSIVE, displayInfo.id, "disagree", null, displayInfo)}
       <span class="vote-label vote-separator">${NOT_SURE}</span>
-      ${votebutton(SKIP, flagInfo.mid, "skip", null, flagInfo)}            
+      ${votebutton(SKIP, displayInfo.id, "skip", null, displayInfo)}            
     </div>              
   </div>
 </acre:block>
 
-<acre:block def="votebutton(name, flag, vote, item, flagInfo)">    
+<acre:block def="votebutton(name, flag, vote, item, displayInfo)">    
   <form class="vote-form" method="GET">
     <input type="hidden" name="flag" value="${flag}">
     <input type="hidden" name="vote" value="${vote}">             
     <acre:block if="item">
       <input type="hidden" name="item" value="${item}">
     </acre:block>        
-    <acre:block if="flagInfo.previousVote === vote && flagInfo.previousVoteItem === item">
+    <acre:block if="displayInfo && displayInfo.previousVote === vote && displayInfo.previousVoteItem === item">
       ${propboxForm.cancel_button(name)}
     </acre:block>
     <acre:block else="">

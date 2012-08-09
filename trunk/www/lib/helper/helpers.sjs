@@ -119,7 +119,12 @@ var exports = {
 
   // DOCOS
   "docos_key" : docos_key,
-  "docos_url" : docos_url
+  "docos_url" : docos_url,
+
+  // TOPIC
+  "get_values" : get_values,
+  "get_first_value" : get_first_value,
+  "has_value" : has_value
 };
 
 var self = this;
@@ -1747,6 +1752,21 @@ function docos_url(mid) {
         return "";
     }
     return "";
+}
+
+// ------------- TOPIC ---------------
+
+function get_values(topic_result, prop) {
+  var props = topic_result.property;
+  return (props && props[prop] && props[prop].values) ? props[prop].values : null;
+}
+function get_first_value(topic_result, prop) {
+    var props = topic_result.property;
+    return (props && props[prop] && props[prop].values) ? props[prop].values[0] : null;
+}
+function has_value(topic_result, prop) {
+    var props = topic_result.property;
+    return (props && props[prop] && props[prop].values) ? true : false;
 }
 
 

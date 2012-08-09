@@ -52,7 +52,7 @@ if (!user) {
     acre.exit();
 }
 
-test("processVote - Invalid Params", function() {
+test("processFlag tests", function() {
     var result = null;
 
     processFlag("/m/09jk22c").then(function(r) {result = r;}); 
@@ -68,7 +68,7 @@ test("processVote - Invalid Params", function() {
     processFlag("/m/0f7qglt").then(function(r) {result = r;}, function(r) {result = r;}); 
     acre.async.wait_on_results();  
     ok(result == voteSJS.consensusOfVotes, "Detected consensus. Check! "  + result);
-});
 
+});
 
 acre.test.report();

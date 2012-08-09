@@ -82,18 +82,39 @@
     min-width: 1200px;
 }
 
-#debugDiv {
-    display:block; 
-    position:absolute; 
-    bottom:50px; 
-    right:10px; 
-    padding:10px; 
-    width:800px; 
-    height:800px; 
-    overflow-x: hidden; 
-    overflow-y:scroll; 
-    background:#ccc; 
-    color:white; 
-    border:solid 1px black;
+.keyboard-shortcuts {
+  text-align: center;
+  font-size: 12px;
+  background: transparent;
+  border: 0;
+  .box_shadow(0,0,0);
+}
+
+.keyboard-shortcuts a {
+  display: inline-block;
+  padding-bottom: 3px;
+  color: #666;
+  padding-left: 40px;
+  background: url(lib/template/keyboard.png) no-repeat left top;
+}
+
+.key-map {
+  font-size: 12px;
+  margin: 10px 0;
+}
+
+.key-symbol {
+  display: inline-block;
+  line-height: 1;
+  text-align: center;
+  width: 14px;
+  padding: 5px;
+  border: 1px solid #d1d2d3;
+  margin-right: 5px;
+  .linear_gradient;
+}
+
+.key-desc {
+  display: inline;
 }
 

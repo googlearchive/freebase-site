@@ -53,8 +53,7 @@ if (!user) {
     acre.exit();
 }
 
-var natsuAsUser  = { id: "/user/natsu",};
-
+var natsuAsUser  = { id: "/user/natsu"};
 test("processVote - Invalid Params", function() {
     var result = null;
 
@@ -79,20 +78,20 @@ test("processVote - Invalid Params", function() {
 test("processVote - Valid Voting", function() {
 
     var result = null;
-
+    
     // Normal voting
-    processVote("/m/09jy7p7", "agree", null, natsuAsUser).then(function(r) {result = r;},  function(r){result = r});
+    processVote("/m/0bdrf1q", "agree", null, natsuAsUser).then(function(r) {result = r;},  function(r){result = r});
     acre.async.wait_on_results();
     ok(result == voteSJS.success, "Sucessful agree vote: " + result.message);
 
-    processVote("/m/09jy7p7", "disagree", null, natsuAsUser).then(function(r) {result = r;},  function(r){result = r}); 
+    processVote("/m/0bdrf1q", "disagree", null, natsuAsUser).then(function(r) {result = r;},  function(r){result = r}); 
     acre.async.wait_on_results();
     ok(result == voteSJS.success, "Sucessful disagree vote: "  + result.message);
 
-    processVote("/m/09jy7p7", "skip", null, natsuAsUser).then(function(r) {result = r;}); 
+    processVote("/m/0bdrf1q", "skip", null, natsuAsUser).then(function(r) {result = r;}); 
     acre.async.wait_on_results();
     ok(result == voteSJS.success, "Sucessful skip vote: "  + result.message);
-
+    
     processVote("/m/0gkhbyy", "agree", "/m/0288nsm", natsuAsUser).then(function(r) {result = r;}); 
     acre.async.wait_on_results();
     ok(result == voteSJS.success, "Successful agree vote, item 1: "  + result);
@@ -123,13 +122,17 @@ test("processVote - Invalid Voting", function() {
     processVote("/user/natsu", "agree", "/en/mark_halperin_and_john_f_harris", natsuAsUser).then(function(r) {result = r;}, function(r){result = r}); 
     acre.async.wait_on_results();  
     ok(result.message == voteSJS.invalidFlag, "Caught invalid flag mid: " + result);
+
+    processVote("aksldjfaljk", "agree", "/en/mark_halperin_and_john_f_harris", natsuAsUser).then(function(r) {result = r;}, function(r){result = r}); 
+    acre.async.wait_on_results();  
+    ok(result.message == voteSJS.invalidFlag, "Caught invalid flag mid: " + result);
 });
 
 test("processVote - Invalid Permission", function() {
     var result = null;
 
     // Not priviledged 
-    processVote("/m/0k0ctyh", "agree", "/en/google", natsuAsUser).then(function(r) {result = r;}, function(r){result = r}); 
+    processVote("/m/0jsq969", "agree", "/m/0dm3dml", natsuAsUser).then(function(r) {result = r;}, function(r){result = r}); 
     acre.async.wait_on_results();
     ok(result.message == voteSJS.lowPermission, "Low permission caught: " + result);
 

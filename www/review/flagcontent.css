@@ -30,18 +30,17 @@
  */
 
 .flag-content {
+    position:relative;
     float: left;
-    display:inline;
     width: 100%;
-    padding-right: 5px;
+    height: 100%;
 }
 .discuss-content {
-    display:none;
     background-color: #fff;
+    display:none;
     float: right;
     width: 0;
-    padding-left: 5px;
-    border-left: 1px solid gray;
+    height: 100%;
 }
 .topic-frame {
     overflow:hidden;
@@ -51,7 +50,6 @@
     width: 49%;
     padding-right: 5px;
 }
-
 .topic-frame-right {
     float: left;
     width: 49%;

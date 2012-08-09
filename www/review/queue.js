@@ -31,9 +31,9 @@
 
 (function($, fb, formlib) {
 
-    var incomingContentHash = {};
-    var loadedContentHash = {};
-    var loadedFlagsArray = [];
+    var incomingContent = {};
+    var loadedContent = {};
+    var loadedFlags = [];
     var flagSearchParams = {};
     var loadedFlagsCursor = null;
     var preloadDirection = 1;
@@ -54,15 +54,15 @@
     }
     function flagsReceived(response) {
         loadedFlagsCursor = response.cursor;
-        loadedFlagsArray = loadedFlagsArray.concat(response.flags);
-        var duplicateCheck = loadedFlagsArray.slice().sort();
+        loadedFlags = loadedFlags.concat(response.flags);
+        var duplicateCheck = loadedFlags.slice().sort();
         for (var i = 0, l = duplicateCheck.length - 1; i < l; i++) {
             if (duplicateCheck[i] === duplicateCheck[i + 1]) {
-                loadedFlagsArray.splice(loadedFlagsArray.indexOf(duplicateCheck[i]), 1);
+                loadedFlags.splice(loadedFlags.indexOf(duplicateCheck[i]), 1);
             }
         }
         if (response.cursor === false) {
-            loadedFlagsArray.push(-1);
+            loadedFlags.push(-1);
         }
         if (waitingOnFlags) {
             removeButtonListeners();
@@ -73,13 +73,13 @@
     }
     function contentReceived(flag, html) {
         if (html === 'invalid' || html === 'notaflag') {
-            incomingContentHash[flag] = null;
-            loadedFlagsArray.splice(loadedFlagsArray.indexOf(flag), 1);
+            incomingContent[flag] = null;
+            loadedFlags.splice(loadedFlags.indexOf(flag), 1);
             return loadNextAvailable();
         }
 
-        var incoming = incomingContentHash[flag];
-        incomingContentHash[flag] = null;
+        var incoming = incomingContent[flag];
+        incomingContent[flag] = null;
 
         var newDiv = $(document.createElement('div'));
         var newId = 'content' + divCounter++;
@@ -89,9 +89,9 @@
         newDiv.html(html);
 
         var loaded = new LoadedContent(flag, html, newId);
-        loadedContentHash[flag] = loaded;
+        loadedContent[flag] = loaded;
 
-        if (waitingOnContent && loadedFlagsArray[currentFlag] === flag) {
+        if (waitingOnContent && loadedFlags[currentFlag] === flag) {
             waitingOnContent = false;
             transitionToFlag(flag);
             loadNextAvailable();
@@ -102,13 +102,13 @@
         if (flagOfInterest < 0) {
             return;
         }
-        if (flagOfInterest >= loadedFlagsArray.length) {
+        if (flagOfInterest >= loadedFlags.length) {
             if (!waitingOnFlags) {
                 waitingOnFlags = true;
                 loadFlags();
             }
         } else {
-            var mid = loadedFlagsArray[flagOfInterest];
+            var mid = loadedFlags[flagOfInterest];
             if (mid === -1) {
                 if (waitingOnContent) {
                     waitingOnContent = false;
@@ -116,22 +116,22 @@
                     transitionToComplete();
                 }
             } else {
-                if (loadedContentHash[mid]) {
-                    if (loadedContentHash[mid].location === null) {
+                if (loadedContent[mid]) {
+                    if (loadedContent[mid].location === null) {
                         var newDiv = $(document.createElement('div'));
                         var newId = 'content' + flagOfInterest;
                         newDiv.hide();
                         newDiv.attr('id', newId);
                         newDiv.appendTo('#storage');
-                        newDiv.html(loadedContentHash[mid].html);
-                        loadedContentHash[mid].location = newId;
+                        newDiv.html(loadedContent[mid].html);
+                        loadedContent[mid].location = newId;
                     }
                     if (waitingOnContent) {
                         waitingOnContent = false;
                         transitionToFlag(mid);
                         loadNextAvailable();
                     }
-                } else if (!incomingContentHash[mid]) {
+                } else if (!incomingContent[mid]) {
                     loadContent(mid);
                 }
             }
@@ -159,7 +159,7 @@
     function loadContent(mid) {
 
         var newIncoming = new IncomingContent(mid);
-        incomingContentHash[mid] = newIncoming;
+        incomingContent[mid] = newIncoming;
 
         $.ajax($.extend(formlib._default_ajax_options('GET'), {
             dataType: 'JSON',
@@ -183,12 +183,16 @@
         transitionToDiv('complete');
     }
     function transitionToFlag(mid) {
-        transitionToDiv(loadedContentHash[mid].location);
+        transitionToDiv(loadedContent[mid].location);
     }
     function transitionToDiv(div) {
 
         var inDiv = $('#' + div);
         var outDiv = (currentDiv) ? $(currentDiv) : null;
+    
+        if (!inDiv) {
+            return;
+        }
 
         var width = $(window).width();
         var finalPosition = (preloadDirection === 1) ? width : -width;
@@ -209,20 +213,20 @@
                 });
             }
 
-            if (currentFlag + 5 < loadedFlagsArray.length) {
-                var highFlag = loadedFlagsArray[currentFlag + 5];
+            if (currentFlag + 5 < loadedFlags.length) {
+                var highFlag = loadedFlags[currentFlag + 5];
                 if (highFlag !== -1) {
-                    if (loadedContentHash[highFlag]) {
-                        $('#' + loadedContentHash[highFlag].location).remove();
-                        loadedContentHash[highFlag].location = null;
+                    if (loadedContent[highFlag]) {
+                        $('#' + loadedContent[highFlag].location).remove();
+                        loadedContent[highFlag].location = null;
                     }
                 }
             }
             if (currentFlag >= 5) {
-                var lowFlag = loadedFlagsArray[currentFlag - 5];
-                if (loadedContentHash[lowFlag]) {
-                    $('#' + loadedContentHash[lowFlag].location).remove();
-                    loadedContentHash[lowFlag].location = null;
+                var lowFlag = loadedFlags[currentFlag - 5];
+                if (loadedContent[lowFlag]) {
+                    $('#' + loadedContent[lowFlag].location).remove();
+                    loadedContent[lowFlag].location = null;
                 }
             }
 
@@ -266,85 +270,47 @@
             animationsCompleted++;
         }
     }
+    function toggleDiscuss() {
 
-    function openDiscuss() {
+        var pageDiv = $('#flag-content');
+        var discDiv = $('#discuss-content');
 
-        var contentDiv = currentDiv.find('#flag-content');
-        var discussDiv = currentDiv.find('#discuss-content');
+        if (!pageDiv || !discDiv) {
+            return;
+        }
 
-        currentDiv.find('.toggle-discuss').find('button').attr('disabled', true);
-        currentDiv.find('.toggle-discuss').find('button').off('click');
+        var toPageWidth;
+        var toDiscWidth;
+        if (discDiv.width() > 0) { // Close discuss
+            toPageWidth = '100%';
+            toDiscWidth = 0;
+        } else {  // Open discuss
+            toPageWidth = '74%';
+            toDiscWidth = '25%';
+            discDiv.show();
+        }
 
         var animationsCompleted = 0;
         function transitionComplete() {
+            if (toDiscWidth === 0) {
+                discDiv.hide();
+            }
             currentDiv.find('.toggle-discuss').find('button').removeAttr('disabled');
-            currentDiv.find('.toggle-discuss').find('button').click(function() {
-                closeDiscuss();
-                return false;
-            });
         }
-
-        // Sneak it down a little bit so transition goes smoothly
-
-        contentDiv.animate({'width': '74%'},{
-            duration: 'normal',
-            complete: function() {
-                animationsCompleted++;
-                if (animationsCompleted === 2) {
-                    transitionComplete();
-                }
-            }
-        });
-
-        discussDiv.css('width', 0);
-        discussDiv.toggle();
-        discussDiv.animate({
-            'width': '25%'
-        },{
-            duration: 'normal',
-            complete: function() {
-                animationsCompleted++;
-                if (animationsCompleted === 2) {
-                    transitionComplete();
-                }
-            }
-        });
-    }
-    function closeDiscuss() {
-        var contentDiv = currentDiv.find('#flag-content');
-        var discussDiv = currentDiv.find('#discuss-content');
 
         currentDiv.find('.toggle-discuss').find('button').attr('disabled', true);
-        currentDiv.find('.toggle-discuss').find('button').off('click');
-
-        var animationsCompleted = 0;
-        function transitionComplete() {
-
-            currentDiv.find('.toggle-discuss').find('button').removeAttr('disabled');
-            currentDiv.find('.toggle-discuss').find('button').click(function() {
-                openDiscuss();
-                return false;
-            });
-        }
-
-        discussDiv.css('width', '24%');
-        discussDiv.animate({
-            'width': 0
-        },{
+        pageDiv.animate({'width': toPageWidth},{
             duration: 'normal',
             complete: function() {
-                discussDiv.css('display', 'none');
                 animationsCompleted++;
                 if (animationsCompleted === 2) {
                     transitionComplete();
                 }
             }
         });
-
-        contentDiv.animate({'width': '100%'},{
+        discDiv.animate({'width': toDiscWidth},{
             duration: 'normal',
             complete: function() {
-                discussDiv.css('display', 'none');
                 animationsCompleted++;
                 if (animationsCompleted === 2) {
                     transitionComplete();
@@ -374,13 +340,13 @@
         });
         currentDiv.find('#link-to-flag').click(function() {
             $('#queue-link-to-flag').find('#link-text')
-                .val(fb.h.legacy_fb_url('/review/queue', '?flags=') + loadedFlagsArray[currentFlag]);
+                .val(fb.h.legacy_fb_url('/review', '?flags=') + loadedFlags[currentFlag]);
             modalForm($('#queue-link-to-flag'));
             return false;
         });
         currentDiv.find('#add-link-to-list').click(function() {
-            if (hotList.indexOf(loadedFlagsArray[currentFlag]) === -1) {
-                hotList.push(loadedFlagsArray[currentFlag]);
+            if (hotList.indexOf(loadedFlags[currentFlag]) === -1) {
+                hotList.push(loadedFlags[currentFlag]);
             }
             $(this).text('Added');
             $(this).off('click');
@@ -388,19 +354,15 @@
         });
         currentDiv.find('#get-link-list').click(function() {
             if (hotList.length === 0) {
-                hotList.push(loadedFlagsArray[currentFlag]);
+                hotList.push(loadedFlags[currentFlag]);
             }
             $('#queue-link-to-flag').find('#link-text')
-                .val(fb.h.legacy_fb_url('/review/queue', '?flags=') + hotList.join(','));
+                .val(fb.h.legacy_fb_url('/review', '?flags=') + hotList.join(','));
             modalForm($('#queue-link-to-flag'));
             return false;
         });
         currentDiv.find('.toggle-discuss').find('button').click(function() {
-            if (currentDiv.find('#discuss-content').width() > 0) {
-                closeDiscuss();
-            } else {
-                openDiscuss();
-            }
+            toggleDiscuss();
             return false;
         });
         currentDiv.find('.vote-form').find('button').click(function() {
@@ -419,8 +381,7 @@
             $('.queue-back-button').attr('disabled', true);
             $('.queue-back-button').hide();
         }
-
-        if (loadedFlagsArray.length - 1 > currentFlag) {
+        if (loadedFlags.length - 1 > currentFlag) {
             $('.queue-forward-button').click(forwardProgress);
             $('.queue-forward-button').removeAttr('disabled');
             $('.queue-forward-button').show();
@@ -429,6 +390,34 @@
             $('.queue-forward-button').attr('disabled', true);
             $('.queue-forward-button').hide();
         }
+
+        $(document).keypress(function(e) {
+            if (e.keyCode === 106) { // j --> back
+                if (currentFlag > 0) {
+                    $('.queue-back-button').click();
+                }
+            } else if (e.keyCode === 107) { // k --> forward
+                if (loadedFlags.length - 1 > currentFlag) {
+                    $('.queue-forward-button').click();
+                }
+            } else if (e.keyCode === 97) { // a --> first voting option
+                currentDiv.find('.vote-form:eq(0)').find('button').click();
+            } else if (e.keyCode === 115) { // s --> second voting option
+                currentDiv.find('.vote-form:eq(1)').find('button').click();
+            } else if (e.keyCode === 100) { // d --> third voting option
+                currentDiv.find('.vote-form:eq(2)').find('button').click();
+            } else if (e.keyCode === 102) { // f --> fourth voting option
+                currentDiv.find('.vote-form:eq(3)').find('button').click();
+            } else if (e.keyCode === 104) { // h --> hot list flag
+                currentDiv.find('#add-link-to-list').click();
+            } else if (e.keyCode === 108) { // l --> link to hot list
+                currentDiv.find('#get-link-list').click();
+            } else if (e.keyCode === 116) { // t --> open discuss
+                currentDiv.find('.toggle-discuss').click();
+            } else if (e.keyCode === 113) { // q --> help panel
+                modalForm($('#show-shortcuts'));
+            }
+        });
     }
     function removeButtonListeners() {
         if (currentDiv == null) {
@@ -450,18 +439,19 @@
         $('.queue-back-button').attr('disabled', true);
         $('.queue-forward-button').off('click');
         $('.queue-forward-button').attr('disabled', true);
+
+        $(document).off('keypress');
     }
     function forwardProgress() {
-        removeButtonListeners();
-        preloadDirection = 1;
-        currentFlag++;
-        waitingOnContent = true;
-        loadNextAvailable();
+        progress(1);
     }
     function backwardProgress() {
+        progress(-1);
+    }
+    function progress(direction) {
         removeButtonListeners();
-        preloadDirection = -1;
-        currentFlag--;
+        preloadDirection = direction;
+        currentFlag += direction;
         waitingOnContent = true;
         loadNextAvailable();
     }
@@ -482,7 +472,8 @@
     }
     function rebuildSearchParameters(params) {
         if (params.kind) {
-            if (params.kind === 'merge' || params.kind === 'split' || params.kind === 'delete' || params.kind === 'offensive') {
+            if (params.kind === 'merge' || params.kind === 'split' || 
+                    params.kind === 'delete' || params.kind === 'offensive') {
                 flagSearchParams.kind = params.kind;
             }
         }
@@ -496,9 +487,7 @@
         }
         if (params.created === 'created') {
             flagSearchParams.created = params.created;
-            params.voted = 'both';
-        }
-        else if (params.created === 'both') {
+        } else if (params.created === 'both') {
             flagSearchParams.created = null;
         }
         else {
@@ -511,8 +500,7 @@
         }
         if (params.voted === 'votedon') {
             flagSearchParams.voted = params.voted;
-        }
-        else if (params.voted === 'both') {
+        } else if (params.voted === 'both') {
             flagSearchParams.voted = null;
         }
         else {
@@ -532,27 +520,14 @@
         }
     }
 
-    // Utility, will be removed later
-    function debug(msg) {
-        // <div id="debugDiv"><div id="debugText"></div></div>
-        $('#debugDiv').css('zIndex', 9999);
-        $('#debugText').append(msg + '</br>');
-    }
-
-    // On document.ready, show home or build our flag search and start our initial load
     $(function() {
         var params = fb.c.params;
-        if (!$.isEmptyObject(params)) {
-            if (params.flags.length > 0) {
-                loadedFlagsArray = params.flags.slice(0);
-            } else {
-                rebuildSearchParameters(params);
-            }
-            loadNextAvailable();
+        if (params.flags.length > 0) {
+            loadedFlags = params.flags.slice(0);
         } else {
-            // Eventually replace this with show homepage/leaderboard/browser here
-            loadNextAvailable();
+            rebuildSearchParameters(params);
         }
+        loadNextAvailable();        
     });
 
 

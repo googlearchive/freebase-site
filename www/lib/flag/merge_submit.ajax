@@ -48,11 +48,12 @@ var SPEC = {
   validate: function(params) {
     return [
       validators.MqlId(params, "merge", {required:true}),
-      validators.MqlId(params, "with", {require:true})
+      validators.MqlId(params, "with", {require:true}),
+      params.auth_user
     ];
   },
 
-  run: function(id1, id2) {
-    return queries.create("merge", id1, id2);
+  run: function(id1, id2, user) {
+    return queries.create(user, "merge", id1, id2);
   }
 };

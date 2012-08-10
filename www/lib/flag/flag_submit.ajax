@@ -49,11 +49,12 @@ var SPEC = {
   validate: function(params) {
     return [
       validators.MqlId(params, "id", {required:true}),
-      validators.OneOf(params, "kind", {require:true, oneof:["split", "delete", "offensive"]})
+      validators.OneOf(params, "kind", {require:true, oneof:["split", "delete", "offensive"]}),
+      params.auth_user    
     ];
   },
 
-  run: function(id, kind) {
-    return queries.create(kind, id);
+  run: function(id, kind, user) {
+    return queries.create(user, kind, id);
   }
 };

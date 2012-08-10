@@ -60,7 +60,7 @@ function create(user, kind, id1/**, id2, ..., id_N **/) {
     if (!kind) {
         throw "Kind must be one of merge|split|delete|offensive";
     }
-    var ids = Array.prototype.slice.call(arguments, 1);
+    var ids = Array.prototype.slice.call(arguments, 2);
     // TODO: assert ids.length > 0
     if (!ids.length) {
         throw "A review flag requires at least one item";
@@ -80,7 +80,7 @@ function create(user, kind, id1/**, id2, ..., id_N **/) {
     ids.forEach(function(id){
         promises.push(freebase.get_topic(id, itemOptions));
     });
-    deferred.all(promises).then(function(results) {
+    return deferred.all(promises).then(function(results) {
         var losingItem;
         var autoMergeDelete = false;
         for(var i = 0, l = results.length; i < l; i++) {

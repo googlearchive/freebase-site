@@ -30,6 +30,7 @@
  */
 acre.require('/test/lib').enable(this);
 
+//acre.require("test/mock").record(this, "flag/test/playback_test_queries.json");
 acre.require("test/mock").playback(this, "flag/test/playback_test_queries.json");
 
 var apis = acre.require("promise/apis");
@@ -44,16 +45,35 @@ var TEST_FLAGS = [
   "offensive", ["/en/sakuragi_hanamichi"]
  ];
 
+var FAKE_USER = {
+    "id": "/user/natsu"
+};
+
+// this test requires user to be logged in
+var user;
+test("login required", function() {
+
+    freebase.get_user_info().then(function(user_info) {
+        user = user_info;
+    });
+    acre.async.wait_on_results();
+    ok(user, "login required");
+});
+if (!user) {
+    acre.test.report();
+    acre.exit();
+}
+
 test("create invalid", function() {
   try {
-    queries.create("foo");
+    queries.create(FAKE_USER, "foo");
     ok(false, "expected exception for bad flag kind");
   }
   catch(ex) {
     ok(true, ex);
   }
   try {
-    queries.create("split");
+    queries.create(FAKE_USER, "split");
     ok(false, "expected exception for not specifying id");
   }
   catch(ex) {
@@ -102,9 +122,10 @@ for (var i=0,l=TEST_FLAGS.length; i<l; i+=2) {
   var kind = TEST_FLAGS[i];
   var ids = TEST_FLAGS[i+1];
   test("create/undo " + kind, function() {
+
     var f;
     try {
-      queries.create.apply(queries, [kind].concat(ids))
+      queries.create.apply(queries, [FAKE_USER, kind].concat(ids))
         .then(function(r) {
           f = r;
         });

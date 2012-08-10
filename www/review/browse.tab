@@ -45,6 +45,7 @@ function typeCurrentCount(id) {
 function typeCreatedAfter(id, date) {
   return [{
       "type": id,
+      "attribution": null,
       "timestamp": null,
       "timestamp>=": date,
       "sort":"timestamp",
@@ -126,6 +127,41 @@ function getActiveTopicsInLastDays(type, days) {
     });
 }
 
+function topCreatorsInLastXDays(type, days) {
+    var targetDate = new Date();
+    targetDate.setDate(targetDate.getDate() - days);
+    targetDate = acre.freebase.date_to_iso(targetDate);
+    return freebase.mqlread(typeCreatedAfter(type, targetDate)).then(function(env){
+        var topusers = [];        
+        var topuserscores = {};
+        var results = env.result;        
+        results.forEach(function(created) {            
+            if (!topuserscores[created.attribution]) {
+                topusers.push(created.attribution);
+                topuserscores[created.attribution] = 1;
+            } else {          
+                topuserscores[created.attribution] += 1;
+            }
+        });
+        topusers.sort(function(a, b) {
+            return topuserscores[a] < topuserscores[b];
+        });
+
+        var leaders = [];
+        topusers.forEach(function(user) {
+            leaders.push({
+                "id": user,
+                "v": topuserscores[user]
+            });
+        });
+        return {
+            "topcreators": leaders
+        };
+
+        
+    });
+}
+
 // Helper to grab end of an array
 function getLastXFromArray(num, array) {
     if (num > array.length) {
@@ -143,17 +179,20 @@ var SPEC = {
     template_base: "site/template/browse.mjt",   
     run: function() {
 
-        NUM_DAYS = 30;
+        NUM_DAYS_CHART = 14;
+        NUM_DAYS_GRAPH = 30;
 
-        var judgmentActivity = freebase.get_static("activity", "/freebase/flag_judgment");
-        var activeReviewFlags = getActiveTopicsInLastDays("/freebase/review_flag", NUM_DAYS);
-        var activeJudgments = getActiveTopicsInLastDays("/freebase/flag_judgment", NUM_DAYS);
+        var topFlagCreators = topCreatorsInLastXDays("/freebase/review_flag", NUM_DAYS_CHART);
+        var topVoteCreators = topCreatorsInLastXDays("/freebase/flag_judgment", NUM_DAYS_CHART);
+        var activeReviewFlags = getActiveTopicsInLastDays("/freebase/review_flag", NUM_DAYS_GRAPH);
+        var activeJudgments = getActiveTopicsInLastDays("/freebase/flag_judgment", NUM_DAYS_GRAPH);
 
-        return deferred.all([judgmentActivity, activeReviewFlags, activeJudgments]).then(function(results){
-            return {
-                "judgmentActivity": results[0],                
-                "activeFlags": results[1].activeTopics,
-                "activeJudgments": results[2].activeTopics
+        return deferred.all([activeReviewFlags, activeJudgments, topFlagCreators, topVoteCreators]).then(function(results){
+            return {                
+                "activeFlags": results[0].activeTopics,
+                "activeJudgments": results[1].activeTopics,
+                "topFlagCreators": results[2].topcreators,
+                "topVoteCreators": results[3].topcreators
             };
         });
     }

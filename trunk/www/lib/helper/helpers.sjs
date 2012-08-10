@@ -124,7 +124,8 @@ var exports = {
   // TOPIC
   "get_values" : get_values,
   "get_first_value" : get_first_value,
-  "has_value" : has_value
+  "has_value" : has_value,
+  "link_count" : link_count
 };
 
 var self = this;
@@ -1767,6 +1768,20 @@ function get_first_value(topic_result, prop) {
 function has_value(topic_result, prop) {
     var props = topic_result.property;
     return (props && props[prop] && props[prop].values) ? true : false;
+}
+function link_count(topic_result) {
+    var linkcount = 0;
+    var links = h.get_values(topic_result, '/freebase/object_profile/linkcount');
+    if (!links) {
+        return -1;
+    }
+    links.forEach(function(link){
+        if (!link.count) {
+            return -1;
+        }
+        linkcount += link.count;
+    });
+    return linkcount;
 }
 
 

@@ -38,12 +38,11 @@
 
     var SHOW_TOP_X_USERS = 10;
     var FIND_FLAGS_BY_DOMAIN = _('Vote on flags by domain:');    
-    var FLAG_CHART_TITLE = _('Recent Flag Activity');
-    var JUDGMENT_CHART_TITLE = _('Recent Judgment Activity');
-    var WEEKLY_CHART_TITLE = _('Top Weekly Contributors');
-    var OVERALL_CHART_TITLE = _('Top Overall Contributors');
+    var WEEKLY_FLAG_CHART_TITLE = _('Top Weekly Flag Contributors');
+    var WEEKLY_VOTE_CHART_TITLE = _('Top Weekly Vote Contributors');
     var USER = _('user');
-    var EDITS = _('edits');
+    var FLAGS = _('flags');
+    var VOTES = _('votes');
     var UNDERSTAND = _("Understand review tasks");    
     var WHAT_ARE_REVIEW_TASKS = _("What are review tasks?");
     var REVIEW_TASKS_ABOUT = _("Whenever a topic is flagged for delete or merge, it is reviewed by other members of the community. This review process helps prevent accidental or malicious deletion of topics, but it relies on members of the community to help out and vote on topics.");    
@@ -70,16 +69,16 @@
             <div style="overflow:hidden;">
                 <div class="left-half">
                     <div class="table-header">
-                        <h1>${WEEKLY_CHART_TITLE}</h1>
+                        <h1>${WEEKLY_FLAG_CHART_TITLE}</h1>
                     </div>
                     <table class="table applist">
                         <thead>                      
                             <tr>
                                 <th class="column-header" colspan="2">${USER}</th>
-                                <th class="column-header">${EDITS}</th>
+                                <th class="column-header">${FLAGS}</th>
                             </tr>
                         </thead>
-                        <acre:block for="user in c.judgmentActivity.week.users.splice(0, SHOW_TOP_X_USERS)">
+                        <acre:block for="user in c.topFlagCreators.splice(0, SHOW_TOP_X_USERS)">
                             <tr>
                                 <td><img src="${acre.freebase.imgurl(user.id, 30, 30, 'fillcrop')}"/></td>
                                 <td><a href="${user.id}">${user.id}</a></td>
@@ -90,16 +89,16 @@
                 </div>
                 <div class="right-half">
                     <div class="table-header">
-                        <h1>${OVERALL_CHART_TITLE}</h1>
+                        <h1>${WEEKLY_VOTE_CHART_TITLE}</h1>
                     </div>
                     <table class="table applist">
                         <thead>                      
                             <tr>
                                 <th class="column-header" colspan="2">${USER}</th>
-                                <th class="column-header">${EDITS}</th>
+                                <th class="column-header">${VOTES}</th>
                             </tr>
                         </thead>                         
-                        <acre:block for="user in c.judgmentActivity.users.splice(0, SHOW_TOP_X_USERS)">
+                        <acre:block for="user in c.topVoteCreators.splice(0, SHOW_TOP_X_USERS)">
                             <tr>
                                 <td><img src="${acre.freebase.imgurl(user.id, 30, 30, 'fillcrop')}"/></td>
                                 <td><a href="${user.id}">${user.id}</a></td>

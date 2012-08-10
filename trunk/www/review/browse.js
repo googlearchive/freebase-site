@@ -81,8 +81,8 @@
         var placeholder = $("#placeholder");
         $.plot(placeholder, 
             [ 
-                {data: activeFlags, label:"Number of flag topics" }, 
-                {data: activeJudgments, label:"Number of judgment topics", yaxis:2}
+                {data: activeFlags, label:"Number of flags" }, 
+                {data: activeJudgments, label:"Number of judgments", yaxis:2}
             ], flot_options
         );
 

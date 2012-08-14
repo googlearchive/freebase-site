@@ -56,7 +56,7 @@
       </acre:block>
       <acre:block if="c.property.delegated">
         <div class="page-flag-kind">
-          <span class="page-flag-msg">${h.template_sprintf(_('This property is delegated to %s.'), tag_a(h.fb_url(c.property.delegated.id, [['schema']])))}</span>
+          <span class="page-flag-msg">${h.template_sprintf(_('This property is delegated to %s.'), tag_a(h.fb_url(c.property.delegated.id)))}</span>
         </div>        
       </acre:block>      
       <acre:block if="c.property['emql:type']">

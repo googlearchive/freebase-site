@@ -90,7 +90,7 @@ test('xss', function() {
         '<IMG SRC=\'vbscript:msgbox("XSS")\'>',
         '<IMG SRC="mocha:[code]">',
         '<IMG SRC="livescript:[code]">',
-        '¼script¾alert(¢XSS¢)¼/script¾',
+        'Â¼scriptÂ¾alert(Â¢XSSÂ¢)Â¼/scriptÂ¾',
         '<META HTTP-EQUIV="refresh" CONTENT="0;url=javascript:alert(\'XSS\');">',
         '<META HTTP-EQUIV="refresh" CONTENT="0;url=data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K">',
         '<META HTTP-EQUIV="refresh" CONTENT="0; URL=http://;URL=javascript:alert(\'XSS\');">',
@@ -127,7 +127,7 @@ test('xss', function() {
             'eval(a+b+c+d);',
 
         '<HTML xmlns:xss>\n' +
-            '<?import namespace="xss" implementation="http://ha.ckers.org/xss.htc">\n' +
+            '<import namespace="xss" implementation="http://ha.ckers.org/xss.htc">\n' +
             '<xss:xss>XSS</xss:xss>\n' +
             '</HTML>',
 

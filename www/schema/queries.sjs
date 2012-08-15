@@ -348,7 +348,7 @@ function minimal_topic(id, lang) {
 function minimal_topic_multi(ids, lang) {
     // TODO: assert ids is an Array.length > 0
     return freebase.get_topic_multi(ids, {
-        lang: h.lang_code(lang || "/lang/en"),
+        lang: h.lang_code(i18n.get_lang(true, lang || "/lang/en")),
         filter: ["/type/object/name", "/common/topic/article"]
     })
     .then(function(r) {

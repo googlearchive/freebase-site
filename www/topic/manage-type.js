@@ -42,7 +42,6 @@
 
           result.fadeIn(function() {
               propbox.init_menus(result, true);
-              i18n.ize(result);
           });
 
           // insert new added type + included types to the manage type list
@@ -88,4 +87,4 @@
     }
   };
 
-})(jQuery, window.freebase, window.formlib, window.propbox, window.i18n);
+})(jQuery, window.freebase, window.formlib, window.propbox);

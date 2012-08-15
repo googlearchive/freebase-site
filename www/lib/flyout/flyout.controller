@@ -56,7 +56,7 @@ var SPEC = {
     run: function(id, langs, callback) {
         return freebase.get_topic(id, {
             lang: langs.map(function(lang) {
-                return h.lang_code(lang);
+                return h.lang_code(i18n.get_lang(lang, true));
             }),
             filter: ["suggest"]
         })

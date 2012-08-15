@@ -33,6 +33,7 @@ var h = acre.require("helper/helpers.sjs");
 var apis = acre.require("promise/apis.sjs");
 var deferred = apis.deferred;
 var freebase = apis.freebase;
+var i18n = acre.require("i18n/i18n.sjs");
 
 /**
  * Use Topic API to get an article (/common/topic/article) of a topic.
@@ -69,7 +70,7 @@ function get_article(topic_id, prop_id, article_id, lang) {
     }
     var options = {
         filter: prop_id,
-        lang: h.lang_code(lang)
+        lang: h.lang_code(i18n.get_lang(true, lang))
     };
 
 

@@ -49,11 +49,6 @@
     var offset = $obj_timestamp.width();
     $("#page-header h1").css("margin-right", offset);
 
-    // Fade in the page contents
-    setTimeout(function() {
-      $("#page-content").css({"opacity": 1});
-    }, 0);
-
     fb.init_search();
   });
 

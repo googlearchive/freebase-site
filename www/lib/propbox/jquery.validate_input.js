@@ -28,11 +28,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-;(function($, dojo) {
-
-  dojo.require("dojo.date.stamp");
-  dojo.require("dojo.date.locale");
-  dojo.require("dojo.number");
+;(function($) {
 
   $.fn.validate_input = function (options) {
     return this.each(function() {
@@ -53,24 +49,6 @@
     if (typeof o.validator !== "function") {
       throw ("A validator is required");
     }
-    if (!o.lang) {
-      o.lang = "/lang/en";
-    }
-    if (o.lang === "/lang/en") {
-      o.lang = ["lang/en"];
-    }
-    else {
-      o.lang = [o.lang, "/lang/en"];
-    }
-    // convert mql lang ids to locale strings understood by dojo (cldr)
-    o.locales = [];
-    $.each(o.lang, function(i, lang) {
-      var lang_code = lang.split("/").pop();
-      if (dojo && dojo.i18n && dojo.i18n.normalizeLocale) {
-        lang_code = dojo.i18n.normalizeLocale(lang_code);
-      }
-      o.locales[i] = lang_code;
-    });
     this.input = $(input);
     this.init();
     var self = this;
@@ -212,81 +190,128 @@
   });
 
   $.extend(vi.number, {
-    parse: function(val, options, decimal) {
-      var locales = options && options.locales || ["en"];
-      var i,l,j,k,n,m;
-      var number;
-      for (i=0,l=locales.length; i<l; i++) {
-        var locale = locales[i];
-        number = dojo.number.parse(val, {locale:locale});
-        if (isNaN(number)) {
-          continue;
-        }
-        var result = {};
-        if (decimal) {
-          result.value = number;
-          result.text = dojo.number.format(number, {locale:locale});
-        }
-        else {
-          result.value = dojo.number.round(number, 0);
-          result.text = dojo.number.format(result.value, {locale:locale});
-        }
-        return result;
+
+    parse: function(val, options, decimal) {      
+      var number = null;
+      if (decimal) {
+        number = Globalize.parseFloat(val);
       }
-      throw vi.invalid("number", val);
+      else {
+        number = Globalize.parseInt(val);
+      }
+      if (isNaN(number)) {
+        throw vi.invalid("number", val);
+      }
+
+      if (decimal) {
+        var format = "n";
+        // we want to echo back the same number of decimal places
+        var str = "" + number;
+        var index = str.indexOf(".");
+        if (index !== -1) {
+          format = "n" + str.substr(index + 1).length;
+        }
+        return {
+          value: number,
+          text: Globalize.format(number, format)
+        };
+      }
+      else {
+        return {
+          value: number,
+          text: Globalize.format(number, "n0")
+        };
+      }
     }
   });
 
   $.extend(vi.datetime, {
 
+    regexp: {
+      iso:  /^(?:(-?\d{4})(?:-(\d{2})(?:-(\d{2}))?)?)?(?:T(\d{2}):(\d{2})(?::(\d{2})(.\d+)?)?((?:[+-](\d{2}):(\d{2}))|Z)?)?$/,
+
+      time:  /^T?([01][0-9]|2[0-3])(:[0-5][0-9]){0,2}$/,
+
+      bce: [
+        /^(\d+)\s*[Bb]\.*[Cc]\.*[Ee]*/,
+        /^[Bb]\.*[Cc]\.*[Ee]*\s*(\d+)/
+      ]
+    },
+    
+    /**
+     * Pre-defined Globalize formats and their equivalent iso8601 formats
+     */
     formats: [
-      "yyyy"  , ["dateFormatItem-y"],
-      "yyyy-MM" , ["dateFormatItem-yM", "dateFormatItem-yMMM"],
-      "yyyy-MM-dd", ["dateFormat-short", "dateFormat-medium", "dateFormat-long"]
-    ],
+      // Short Date
+      "d", "yyyy-MM-dd",
+
+      // Month/Year
+      "Y", "yyyy-MM",
+
+      // Short Time
+      "t", "HH:mm",
+
+      // Long Time
+      "T", "HH:mm:ss"
+    ], 
+
+    padyear: function(y) {
+      if (y < 10) {
+        return "000" + y;
+      }
+      else if (y < 100) {
+        return "00" + y;
+      }
+      else if (y < 1000) {
+        return "0" + y;
+      }
+      return "" + y;
+    },
 
     parse: function(val, options) {
-      if(!dojo.date.stamp._isoRegExp){
-        /**
-         * Fix dojo.date.stamp._isoRegExp to support negative years
-         */
-	dojo.date.stamp._isoRegExp = /^(?:(-?\d{4})(?:-(\d{2})(?:-(\d{2}))?)?)?(?:T(\d{2}):(\d{2})(?::(\d{2})(.\d+)?)?((?:[+-](\d{2}):(\d{2}))|Z)?)?$/;
-      }
-
-      // try iso date first
-      var date = dojo.date.stamp.fromISOString(val);
-      if (date) {
-        return {text:val, value:val, date:date};
-      }
-
-      // try dojo.date.locale.parse
-      var locales = options && options.locales || ["en"];
-      var i,l,j,k,n,m;
-      for (i=0,l=locales.length; i<l; i++) {
-        var locale = locales[i];
-        var bundle = dojo.date.locale._getGregorianBundle(locale);
-        for (j=0,k=vi.datetime.formats.length; j<k; j+=2) {
-          var ymd = vi.datetime.formats[j];
-          var formats = vi.datetime.formats[j+1];
-          for (n=0,m=formats.length; n<m; n++) {
-            var format = formats[n];
-            var datePattern = bundle[format];
-            if (datePattern) {
-              datePattern = i18n.normalize_pattern(datePattern);
-              try {
-                date = dojo.date.locale.parse(val, {datePattern:datePattern, selector:"date", locale:locale});
-                return {text:val, value:dojo.date.locale.format(date, {datePattern:ymd, selector:"date"}), date:date};
-              }
-              catch (ex) {
-                // ignore and continue
-              }
-            }
+      var d, i, l;
+      if (vi.datetime.regexp.iso.test(val) || 
+          vi.datetime.regexp.time.test(val)) {
+          // valid iso8601?
+          // for time, we need to strip out the "T" prefix
+          var t = val;
+          if (t.indexOf("T") === 0) {
+              t = t.substring(1);
           }
-        }
+          return {text:val, value:t};
       }
+       
+      // BCE year?
+      for (i=0,l=vi.datetime.regexp.bce.length; i<l; i++) {
+        var regexp = vi.datetime.regexp.bce[i];
+        var m = regexp.exec(val);
+        if (m) {
+          var y = parseInt(m[1], 10);
+          // year 0000 is 1 BCE
+          y -= 1;
+          // pad year with 0s
+          y = vi.datetime.padyear(y);
+          return {text:val, value: ("-" + y)};
+        }
+      };
+
+      // Try pre-defined Globalize Date formats
+      for (i=0,l=vi.datetime.formats.length; i<l; i+=2) {
+        d = Globalize.parseDate(val, vi.datetime.formats[i]);
+        if (d) {
+          return {text:val, value:Globalize.format(d, vi.datetime.formats[i+1])};
+        }
+      };
+
+      // Try Globalize parseDate
+      d = Globalize.parseDate(val);
+      if (d) {
+        return {text:val, value:Globalize.format(d, "S")};
+      }
+
       throw vi.invalid("datetime", val);
     }
   });
 
 
-})(jQuery, dojo);
+})(jQuery, window.Globalize);

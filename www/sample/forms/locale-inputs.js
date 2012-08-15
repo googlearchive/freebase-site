@@ -1,27 +1,20 @@
-;(function($, dojo) {
+;(function($) {
 
   var i,l,j,k;
 
   function init() {
 
-    var somedate = new Date(2000, 3, 5);
+    var somedate = new Date(2000, 3, 5, 11, 12, 13);
     var formats = $.validate_input.datetime.formats;
-    var bundle = dojo.date.locale._getGregorianBundle(locale);
 
     var example_dates = [];
     for (i=0,l=formats.length; i<l; i+=2) {
-      var dateFormats = formats[i+1];
-      for (k=0,j=dateFormats.length; k<j; k++) {
-        var dateFormat = dateFormats[k];
-        var datePattern = bundle[dateFormat];
-        if (datePattern) {
-          datePattern = i18n.normalize_pattern(datePattern);
-          example_dates.push(dojo.date.locale.format(somedate, {datePattern:datePattern, selector:"date", locale:locale}));
-        }
-      }
+      var format = formats[i];
+      var iso_format = formats[i+1];
+      example_dates.push(Globalize.format(somedate, format));
     }
     $("#datetime .ex").html("ex: \"" + example_dates.join("\", \"") + "\"");
-    $("#datetime .data-input").data_input({lang:lang});
+    $("#datetime .data-input").data_input();
 
     var example_ints = [
       123456789,
@@ -29,10 +22,10 @@
       0
     ];
     for (i=0,l=example_ints.length; i<l; i++) {
-      example_ints[i] = dojo.number.format(example_ints[i], {locale:locale});
+      example_ints[i] = Globalize.format(example_ints[i], "n0");
     }
     $("#int .ex").html("ex: \"" + example_ints.join("\", \"") + "\"");
-    $("#int .data-input").data_input({lang:lang});
+    $("#int .data-input").data_input();
 
     var example_floats = [
       1234.56789,
@@ -40,15 +33,20 @@
       .1234
     ];
     for (i=0,l=example_floats.length; i<l; i++) {
-      example_floats[i] = dojo.number.format(example_floats[i], {locale:locale});
+      var format = "n";
+      var intstr = "" + example_floats[i];
+      var index = intstr.indexOf(".");
+      if (index !== -1) {
+        format = "n" + intstr.substr(index + 1).length;
+      }
+      example_floats[i] = Globalize.format(example_floats[i], format);
     }
     $("#float .ex").html("ex: \"" + example_floats.join("\", \"") + "\"");
-    $("#float .data-input").data_input({lang:lang});
+    $("#float .data-input").data_input();
 
 
     $(".data-input :text")
       .bind("valid", function(e, data) {
-console.log("valid", data);
         $(this).parents(".data-input").next(".v").text(data.value).css("visibility", "visible");
       })
       .bind("invalid", function() {
@@ -56,7 +54,6 @@ console.log("valid", data);
       });
   };
 
+  $(init);
 
-  dojo.ready(init);
-
-})(jQuery, dojo);
+})(jQuery);

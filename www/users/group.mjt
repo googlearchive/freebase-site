@@ -110,7 +110,7 @@
 
 <acre:block def="user_timestamp_row(timestamp)">
   <td class="even">
-    ${i18n_c.datetime(timestamp, [["class","published"],["data-format","medium"]])}
+    ${i18n_c.datetime(timestamp, [["class","published"]], 'd')}
   </td>
 </acre:block>
 

@@ -28,7 +28,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-;(function($, fb, formlib, i18n) {
+;(function($, fb, formlib) {
 
     fb.schema = fb.schema || {};
 
@@ -215,8 +215,6 @@
             if (can_delete.length) {
                 formlib.enable_submit(options);
             }
-            // i18n'ize numbers in the form
-            i18n.ize(options.form);
         },
 
         delete_type_validate: function(options) {
@@ -267,8 +265,6 @@
             if (can_delete.length) {
                 formlib.enable_submit(options);
             }
-            // i18n'ize numbers in the form
-            i18n.ize(options.form);
         },
 
         delete_property_validate: function(options) {
@@ -306,4 +302,4 @@
 
     });
 
-})(jQuery, window.freebase, window.formlib, window.i18n);
+})(jQuery, window.freebase, window.formlib);

@@ -119,8 +119,8 @@ function domain(id) {
 
           //topics
           domain.total_topics = activity.total['new'] || 0;
-          domain.topics_with_images = activity.has_image ? Math.round((activity.has_image / domain.total_topics) * 100) : 0;
-          domain.topics_with_articles = activity.has_image ? Math.round((activity.has_article / domain.total_topics) * 100) : 0;
+          domain.topics_with_images = activity.has_image ? (activity.has_image / domain.total_topics) : 0;
+          domain.topics_with_articles = activity.has_image ? (activity.has_article / domain.total_topics) : 0;
 
           // daily summary for graph output
           // we only want the last 10 or so values
@@ -138,7 +138,7 @@ function domain(id) {
           activity.week.users.forEach(function(user) {
             if (user.id.indexOf("_bot") === -1) {
               user.display_name = user.id.split("/").pop();
-              user.percentage = Math.round(user.v / domain.facts_last_week * 100);
+              user.percentage = (user.v / domain.facts_last_week);
               users.push(user);
             }
           });

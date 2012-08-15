@@ -33,288 +33,235 @@
 var h = acre.require("helper/helpers.sjs");
 var deferred = acre.require("promise/deferred");
 var freebase = acre.require("promise/apis").freebase;
+var topscope = this.__proto__;
 
 /**
+ * acre.require METADATA over-ride to use handlers/js_to_sjs_handler.sjs
+ * for "*.js" files.
+ */
+var JS_TO_SJS = {
+    handlers: {
+        js_to_sjs: acre.current_script.app.path + "/handlers/js_to_sjs_handler.sjs"
+    },
+    extensions: {
+        "js": {
+            handler: "js_to_sjs"
+        }
+    }
+};
+
+/**
+ * Load the Globalize library (js) as
+ * a server-side libarary (sjs).
+ *
+ * This will set Globalize as a "global" variable in the topscope of acre.
+ * This is necessary to use the Globalize library "as-is" including all
+ * of it's culture info that depend on a "global" Globalize variable.
+ *
+ * Globalize cultures and bundles, expect a global "Globalize" variable
+ * where the simple act of acre.require(...) (server-side) or
+ * <script src=...> (client-side) will modify and extend this global
+ * variable.
+ */
+var Globalize = topscope.Globalize;
+if (!Globalize) {
+    Globalize = topscope.Globalize = acre.require("globalize/globalize.js", JS_TO_SJS).Globalize;
+}
+
+/**
+ * Google Language Tiers
+ *
  * @see https://sites.google.com/a/google.com/40-language-initiative/home/language-details
  *
- * These langs have multiple ids (keys)
- * /lang/pt-br   (/lang/pt)
- * /lang/zh      (/lang/zh-cn, /lang/zh-hans)
- * /lang/iw      (/lang/he)
- * /lang/zh-hant (/lang/zh-tw)
+ * Each of these language codes *MUST* must correspond to a freebase lang id:
+ *
+ *  "xx[-YY]*" => "/lang/xx[-YY]*"
  */
-var LANGS = [
-
-  // Tier 0
-  {
-    "id": "/lang/en",
-    "name": "English"
-  },
-
-  // Tier 1
-  {
-    "id": "/lang/en-gb",
-    "name": "British English"
-  },
-  {
-    "id": "/lang/fr",
-    "name": "French"
-  },
-  {
-    "id": "/lang/it",
-    "name": "Italian"
-  },
-  {
-    "id": "/lang/de",
-    "name": "German"
-  },
-  {
-    "id": "/lang/es",
-    "name": "Spanish"
-  },
-  {
-    "id": "/lang/nl",
-    "name": "Dutch"
-  },
-  {
-    "id": "/lang/zh",
-    "o:id": ["/lang/zh-cn", "/lang/zh-hans"],
-    "name": "Chinese"
-  },
-  {
-    "id": "/lang/zh-hant",
-    "o:id": ["/lang/zh-tw"],
-    "name": "Chinese (traditional)"
-  },
-  {
-    "id": "/lang/ja",
-    "name": "Japanese"
-  },
-  {
-    "id": "/lang/ko",
-    "name": "Korean"
-  },
-  {
-    "id": "/lang/pt-br",
-    "o:id": ["/lang/pt"],
-    "name": "Portuguese"
-  },
-  {
-    "id": "/lang/ru",
-    "name": "Russian"
-  },
-  {
-    "id": "/lang/pl",
-    "name": "Polish"
-  },
-  {
-    "id": "/lang/tr",
-    "name": "Turkish"
-  },
-  {
-    "id": "/lang/th",
-    "name": "Thai"
-  },
-  {
-    "id": "/lang/ar",
-    "name": "Arabic"
-  },
-
-  // Tier 2
-  {
-    "id": "/lang/sv",
-    "name": "Swedish"
-  },
-  {
-    "id": "/lang/fi",
-    "name": "Finnish"
-  },
-  {
-    "id": "/lang/da",
-    "name": "Danish"
-  },
-  {
-    "id": "/lang/pt-pt",
-    "name": "Iberian Portuguese"
-  },
-  {
-    "id": "/lang/ro",
-    "name": "Romanian"
-  },
-  {
-    "id": "/lang/hu",
-    "name": "Hungarian"
-  },
-  {
-    "id": "/lang/iw",
-    "o:id": ["/lang/he"],
-    "name": "Hebrew"
-  },
-  {
-    "id": "/lang/id",
-    "name": "Indonesian"
-  },
-  {
-    "id": "/lang/cs",
-    "name": "Czech"
-  },
-  {
-    "id": "/lang/el",
-    "name": "Greek"
-  },
-  {
-    "id": "/lang/no",
-    "name": "Norwegian"
-  },
-  {
-    "id": "/lang/vi",
-    "name": "Vietnamese"
-  },
-  {
-    "id": "/lang/bg",
-    "name": "Bulgarian"
-  },
-  {
-    "id": "/lang/hr",
-    "name": "Croatian"
-  },
-  {
-    "id": "/lang/lt",
-    "name": "Lithuanian"
-  },
-  {
-    "id": "/lang/sk",
-    "name": "Slovak"
-  },
-  {
-    "id": "/lang/fil",
-    "name": "Filipino"
-  },
-  {
-    "id": "/lang/sl",
-    "name": "Slovenian"
-  },
-  {
-    "id": "/lang/sr",
-    "name": "Serbian"
-  },
-  {
-    "id": "/lang/ca",
-    "name": "Catalan"
-  },
-  {
-    "id": "/lang/lv",
-    "name": "Latvian"
-  },
-  {
-    "id": "/lang/uk",
-    "name": "Ukrainian"
-  },
-  {
-    "id": "/lang/hi",
-    "name": "Hindi"
-  },
-  {
-    "id": "/lang/fa",
-    "name": "Persian"
-  },
-  {
-    "id": "/lang/es-419",
-    "name": "Latin American Spanish"
-  },
-  {
-    "id": "/lang/af",
-    "name": "Afrikaans"
-  },
-  {
-    "id": "/lang/am",
-    "name": "Amharic"
-  },
-  {
-    "id": "/lang/bn",
-    "name": "Bengali"
-  },
-  {
-    "id": "/lang/et",
-    "name": "Estonian"
-  },
-  {
-    "id": "/lang/is",
-    "name": "Icelandic"
-  },
-  {
-    "id": "/lang/ms",
-    "name": "Malay"
-  },
-  {
-    "id": "/lang/mr",
-    "name": "Marathi"
-  },
-  {
-    "id": "/lang/sw",
-    "name": "Swahili"
-  },
-  {
-    "id": "/lang/ta",
-    "name": "Tamil"
-  },
-  {
-    "id": "/lang/zu",
-    "name": "Zulu"
-  },
-  {
-    "id": "/lang/eu",
-    "name": "Basque"
-  },
-  {
-    "id": "/lang/zh-hk",
-    "name": "Chinese (Mandarin, Hong Kong)"
-  },
-  {
-    "id": "/lang/fr-ca",
-    "name": "French (Canadian)"
-  },
-  {
-    "id": "/lang/gl",
-    "name": "Galician"
-  },
-  {
-    "id": "/lang/gu",
-    "name": "Gujarati"
-  },
-  {
-    "id": "/lang/kn",
-    "name": "Kannada"
-  },
-  {
-    "id": "/lang/ml",
-    "name": "Malayalam"
-  },
-  {
-    "id": "/lang/te",
-    "name": "Telugu"
-  },
-  {
-    "id": "/lang/ur",
-    "name": "Urdu"
-  }
+var LANG_TIERS = [
+    "en",
+    "ar",
+    "zh-CN",
+    "zh-TW",
+    "nl",
+    "en-GB",
+    "fr",
+    "de",
+    "it",
+    "ja",
+    "ko",
+    "pl",
+    "pt",
+    "ru",
+    "es",
+    "th",
+    "tr",
+    "es-419",
+    "bg",
+    "ca",
+    "hr",
+    "cs",
+    "da",
+    "fil",
+    "fi",
+    "el",
+    "iw",
+    "hi",
+    "hu",
+    "id",
+    "lv",
+    "lt",
+    "no",
+    "pt-PT",
+    "ro",
+    "sr",
+    "sk",
+    "sl",
+    "sv",
+    "uk",
+    "vi",
+    "fa",
+    "af",
+    "am",
+    "bn",
+    "et",
+    "is",
+    "ms",
+    "mr",
+    "sw",
+    "ta",
+    "zu",
+    "eu",
+    "zh-HK",
+    "fr-CA",
+    "gl",
+    "gu",
+    "kn",
+    "ml",
+    "te",
+    "ur"
 ];
+
+/**
+ * Load lang info (from mql) that match each LANG_TIERS code.
+ * Each lang info's id and key will directy correspond to
+ * each LANG_TIERS code. For example for "zh-CN", the lang info will
+ * be {id: "/lang/zh-CN", key: "zh-CN"}. The id and key will be the
+ * canonical lang id and code used by freebase-site.
+ *
+ * LANGS will be cached so that we don't query it every time i18n.sjs
+ * is required.
+ */
+var LANGS = acre.cache.request.get("i18n.LANGS");
+
+/**
+ * A lang may have multiple keys, therefor multiple ids. For example
+ * /lang/zh, /lang/zh-cn, /lang/zh-hans, /lang/zh-CN, /lang/zh-Hans
+ * all point to the same lang. LANGS_BY_ID and LANGS_BY_CODE
+ * are maps of the lang id and code, respectively, to the lang info,
+ * containing the canonical lang id and code used by freebase-site.
+ */
 var LANGS_BY_ID = {};
 var LANGS_BY_CODE = {};
-LANGS.forEach(function(l) {
-  var code = h.lang_code(l.id);
-  LANGS_BY_ID[l.id] = LANGS_BY_CODE[code] = l;
-  if (l["o:id"]) {
-    l["o:id"].forEach(function(id) {
-      code = h.lang_code(id);
-      LANGS_BY_ID[id] = LANGS_BY_CODE[code] = l;
+if (!LANGS) {
+    var ids = [];
+    var codes = {};
+    LANG_TIERS.forEach(function(key) {
+        codes[key] = 1;
+        ids.push("/lang/" + key);
     });
-  }
+    var q = [{
+        id: null,
+        "id|=": LANG_TIERS.map(function(key) {
+            return "/lang/" + key;
+        }),
+        "key": [],
+        "m:id": null,
+        name: null
+    }];
+    LANGS = acre.freebase.mqlread(q).result;
+    acre.cache.request.put("i18n.LANGS", LANGS);
+}
+
+LANGS.forEach(function(l) {
+    if (!l.name) {
+        l.name = l.id;
+    }
+    l.key.forEach(function(key) {
+        LANGS_BY_ID["/lang/" + key] = l;
+        LANGS_BY_CODE[key] = l;
+    });
 });
 
-var lang;
-var bundle;
-var bundle_path;
+/**
+ * This is the current lang id which correspond to a lang code in the LANG_TIERS.
+ * This MAY NOT be the default mql id. Use mql_lang for the dfeault mql id.
+ * For example, "/lang/zh-CN" is specified by the LANG_TIERS
+ * but mql returns "/lang/zh" as the default id.
+ *
+ * This is set in set_lang()
+ */
+var lang = null;
+var lang_code = null;
+var mql_lang = null;
+var mql_lang_code = null;
+
+/**
+ * Get the current canonical lang id.
+ * If get_mql_id is TRUE, get the canonical mql id.
+ * Otherwise, get the the canonical id specified by the LANG_TIERS.
+ * If for_lang is specified, get the canonical lang id for that lang
+ * in LANGS_BY_ID lookup.
+ *
+ * If current lang is "/lang/zh-CN",
+ *
+ * get_lang()                    // returns "/lang/zh-CN"
+ * get_lang(true)                // returns "/lang/zh"
+ * get_lang(false, "/lang/zh")   // returns "/lang/zh-CN"
+ * get_lang(true, "/lang/zh-CN") // returns "/lang/zh"
+ *
+ * @param get_mql_id:Boolean
+ * @param for_lang_or_code:String - Can be a lang id or code
+ */
+function get_lang(get_mql_id, for_lang_or_code) {
+    if (for_lang_or_code) {
+        var id = h.lang_id(for_lang_or_code);
+        var l = LANGS_BY_ID[id];
+        if (l) {
+            return get_mql_id ? l["m:id"] : l.id;
+        }
+        else {
+            return for_lang;
+        }
+    }
+    else {
+        return get_mql_id ? mql_lang : lang;
+    }
+};
+
+/**
+ * Like get_lang() but returns the lang code.
+ * If current lang is "/lang/zh-CN",
+ *
+ * get_lang_code()              // returns "zh-CN"
+ * get_lang_code(true)          // returns "zh"
+ * get_lang_code(false, "zh")   // returns "zh-CN"
+ * get_lang_code(true, "zh-CN") // returns "zh"
+ */
+function get_lang_code(get_mql_code, for_lang_or_code) {
+    if (for_lang_or_code) {
+        var code = h.lang_code(for_lang_or_code);
+        var l = LANGS_BY_CODE[code];
+        if (l) {
+            return get_mql_code ? h.lang_code(l["m:id"]) : h.lang_code(l.id);
+        }
+        else {
+            return for_code;
+        }
+    }
+    else {
+        return get_mql_code ? mql_lang_code : lang_code;
+    }
+};
 
 
 ///////////
@@ -322,19 +269,31 @@ var bundle_path;
 ///////////
 
 /**
- * gettext accepts a msgid (key) in the string bundle.
+ * gettext accepts a msgid in the string bundle.
  * If the string bundle does not exist or the msgid does not exist in the string bundle,
  * just returns msgid.
  */
+var last_bundle_path = acre.request.script.app.path;
 function gettext(msgid) {
-  if (bundle) {
-    if (typeof bundle[msgid] === "string") {
-      return bundle[msgid];
-    }
-    // TODO: disable until we're ready to localize
-    //console.warn("[i18n]", bundle_path, msgid, undefined);
+  var culture = get_globalize_culture_lang_code();
+  if (last_bundle_path != acre.request.script.app.path) {
+      var app =  acre.get_metadata(acre.request.script.app.path);
+      var fname = "bundles/globalize.bundle." + culture + ".js";
+      if (app.files[fname]) {
+        // Requiring a bundle will extend the global "Globalize" variable
+        acre.require(acre.request.script.app.path + "/" + fname, JS_TO_SJS);
+      }
+      last_bundle_path = acre.request.script.app.path;
   }
-  return msgid;
+  var msg = Globalize.localize(msgid, culture);
+  if (msg == null) {
+      msg = Globalize.localize(msgid, "default");
+  }
+  if (msg == null) {
+      // We still didn't find a localized string. Just echo back the msgid
+      msg = msgid;
+  }
+  return msg;
 };
 
 
@@ -510,135 +469,182 @@ var mql = {
 ///////////////////////////////
 
 /**
- * lang is determined by the "?lang=" parameter, where the value must be a valid mql lang id
+ * lang is determined by the "?lang=" parameter,
+ * where the value must be a valid mql lang id or a lang id
+ * (i.e, /lang/en or en).
  *
- * The language bundle used for chrome is determined by the "accept-language' request header..
+ * Also, the language bundles used for UI labels is also determined by
+ * the lang parameter.
  */
-var accept_langs = get_accept_langs();
-set_bundle(accept_langs);
 set_lang(acre.request.params.lang || acre.request.body_params.lang || "/lang/en");
 
-function set_lang(lang_id_or_code) {
-  /**
-   * Allow simple lang code parameters like lang=ko instead of (lang=%2Flang%2Fko).
-   */
-  var lang_id = h.lang_id(lang_id_or_code);
+function set_lang(req_lang) {
+  var lang_id = h.lang_id(req_lang);
   var l = LANGS_BY_ID[lang_id];
   if (!l) {
-    l = LANGS[0]; // lang/en
+    l = LANGS_BY_ID["/lang/en"];
   }
-  // mql lang id
+
+  // canonical lang id from LANG_TIERS
   lang = l.id;
-};
+  lang_code = h.lang_code(lang);
+  // mql lang id
+  mql_lang = l["m:id"];
+  mql_lang_code = h.lang_code(mql_lang);
 
-function set_bundle(lang_codes) {
-  if (!h.isArray(lang_codes)) {
-    lang_codes = [lang_codes];
-  }
+  // add Globalize.cultures and default lang bundle (lib/bundle)
+  // using the canonical lang code specified by LANG_TIERS
   var lib = acre.get_metadata();
-  var app = acre.get_metadata(acre.request.script.app.path);
-  var lib_bundle;
-  var app_bundle;
-  lang_codes.every(function(lang_code) {
-    var lang_by_code = LANGS_BY_CODE[lang_code];
-    if (lang_by_code) {
-      var filename = lang_code + ".properties";
-      if (!lib_bundle && filename in lib.files) {
-        lib_bundle = lib.path + "/" + filename;
-      }
-      if (!app_bundle && filename in app.files) {
-        app_bundle = app.path + "/" + filename;
-      }
-      if (lib_bundle && app_bundle) {
-        return false;
-      }
-    }
-    return true;
-  });
-  if (lib_bundle) {
-    lib_bundle = acre.require(lib_bundle).bundle;
+  var code = get_globalize_culture_lang_code();
+  var fname = "globalize/cultures/globalize.culture." + code + ".js";
+  if (lib.files[fname]) {
+      // Requiring a culture will extend the global "Globalize" variable
+      acre.require(fname, JS_TO_SJS);
   }
-  if (app_bundle) {
-    app_bundle = acre.require(app_bundle).bundle;
+  fname = "bundles/globalize.bundle." + code + ".js";
+  if (lib.files[fname]) {
+      // Requiring a bundle will extend the global "Globalize" variable
+      acre.require(fname, JS_TO_SJS);
   }
-  bundle = h.extend(true, lib_bundle || {}, app_bundle);
 };
 
-function get_accept_langs() {
-  var accept_langs = acre.request.headers['accept-language'];
-  if (accept_langs) {
-    accept_langs = accept_langs.split(",");
-  }
-  else {
-    return ["en-US"];
-  }
-  var qvalues = {};
-  var lang_codes = [];
-  var i,l;
-  accept_langs.forEach(function(accept_lang) {
-    var lang_parts = h.trim(accept_lang).split(";");
-    var lang_code = h.trim(lang_parts[0]);
-    /**
-     * qvalue is a value from 0 to 1. 1 being the most preferred. qvalue defaults to 1 if not present.
-     * so if you have the following:
-     *
-     * accept-language: ko-KR,ko;q=0.8,en-us;q=0.5,en;q=0.3
-     *
-     * ko-KR is the preferred, then ko if ko-KR is not available, then en-us, then en.
-     *
-     * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
-     */
-    var qvalue = 1;
-    if (lang_parts.length > 1) {
-      var qvalue_parts = lang_parts[1].split("=");
-      if (qvalue_parts.length > 1) {
-        qvalue = parseFloat(h.trim(qvalue_parts[1]));
-      }
+/**
+ * Get the corresponding Globalize culture language code
+ * given the lang id or code.
+ */
+function get_globalize_culture_lang_code(for_lang_or_code) {
+    var code = get_lang_code(false, for_lang_or_code);
+    return code;
+};
+
+function format_number(number, is_float, format) {
+    if (!format) {
+        if (is_float) {
+            format = "n";
+            var str = "" + number;
+            var index = str.indexOf(".");
+            if (index !== -1) {
+                format = "n" + str.substr(index + 1).length;
+            }
+        }
+        else {
+            format = "n0";
+        }
     }
-    if (lang_code in qvalues) {
-      // take the larger qvalue
-      if (qvalues[lang_code] < qvalue) {
-        qvalues[lang_code] = qvalue;
-      }
+    return Globalize.format(number, format, get_lang_code());
+};
+
+function format_datetime(datetime, format) {
+    if (iso8601.is_time(datetime)) {
+        return format_time(datetime, format);
     }
     else {
-      qvalues[lang_code] = qvalue;
+        return format_date(datetime, format);
     }
-    lang_codes.push(lang_code);
-  });
-  // /lang/en must be present
-  if (!("en-US" in qvalues)) {
-    qvalues["en-US"] = 0;
-    lang_codes.push("en-US");
-  }
-  lang_codes.sort(function(a,b) {
-    return qvalues[b] - qvalues[a];
-  });
-  return lang_codes;
 };
 
-
-
-
-
-
-var dojo = {
-  locale: function() {
-    var locale = h.lang_code(lang);
-    if (locale === "iw") {
-      locale = "he";
+function format_date(date, format) {
+    var d = acre.freebase.date_from_iso(date);
+    if (!d) {
+        return date;
     }
-    return locale;
-  }
+    if (format) {
+        date = Globalize.format(d, format, get_lang_code());
+    }
+    else {
+        var year = parseInt(d.getFullYear(), 10);
+        if (year < 1) {
+            // All dates with years < 1, will be formatted with the BCE year only
+            date = format_bce_year(year);
+        }
+        else if (iso8601.is_date_yyyy(date)) {
+            date = Globalize.format(d, "yyyy", get_lang_code());
+        }
+        else if (iso8601.is_date_yyyymm(date)) {
+            date = Globalize.format(d, "Y", get_lang_code());
+        }
+        else if (iso8601.is_date_yyyymmdd(date)) {
+            date = Globalize.format(d, "d", get_lang_code());
+        }
+    }
+    return date;
 };
 
-
-function normalize_lang(lang_id) {
-  var l = LANGS_BY_ID[lang_id];
-  if (l) {
-    return l.id;
-  }
-  else {
-    return lang_id;
-  }
+function format_bce_year(year) {
+    // This is English centric as Globalize doesn't
+    // seem to handle negative years.
+    var y = year;
+    if (typeof year !== "number") {
+        y = parseInt(year, 10);
+    }
+    if (y < 1) {
+        return (-1 * y) + 1 + " BCE";
+    }
+    return year;
 };
+
+/**
+ * @param time:String - a valid iso8601 time string that start with 'T'
+ * (i.e., T06:30). If it is a full iso8601 string, it will only format the time
+ * part.
+ */
+function format_time(time, format) {
+    var index = time.indexOf("T");
+    if (index !== -1) {
+      time = time.substring(index + 1);
+    }
+    if (iso8601.is_time_hh(time)) {
+      var d = Globalize.parseDate(time, "HH");
+      time = Globalize.format(d, format || "t", get_lang_code());
+    }
+    else if (iso8601.is_time_hhmm(time)) {
+      var d = Globalize.parseDate(time, "HH:mm");
+      time = Globalize.format(d, format || "t", get_lang_code());
+    }
+    else if (iso8601.is_time_hhmmss(time)) {
+      var d = Globalize.parseDate(time, "HH:mm:ss");
+      time = Globalize.format(d, format || "T", get_lang_code());
+    }
+    return time;
+};
+
+var iso8601 = {};
+
+(function() {
+    var r_time = /^T?([01][0-9]|2[0-3])(:[0-5][0-9]){0,2}$/;
+    var r_time_hh = /^T?([01][0-9]|2[0-3])$/;
+    var r_time_hhmm = /^T?([01][0-9]|2[0-3]):[0-5][0-9]$/;
+    var r_time_hhmmss = /^T?([01][0-9]|2[0-3])(:[0-5][0-9]){2}$/;
+
+    var r_date_yyyy = /^\d{4}$/;
+    var r_date_yyyymm = /^\d{4}-\d{2}$/;
+    var r_date_yyyymmdd = /^\d{4}(-\d{2}){2}$/;
+
+    iso8601.is_time = function(s) {
+        return r_time.test(s);
+    };
+
+    iso8601.is_time_hh = function(s) {
+        return r_time_hh(s);
+    };
+
+    iso8601.is_time_hhmm = function(s) {
+        return r_time_hhmm(s);
+    };
+
+    iso8601.is_time_hhmmss = function(s) {
+        return r_time_hhmmss(s);
+    };
+
+    iso8601.is_date_yyyy = function(s) {
+        return r_date_yyyy(s);
+    };
+
+    iso8601.is_date_yyyymm = function(s) {
+        return r_date_yyyymm(s);
+    };
+
+    iso8601.is_date_yyyymmdd = function(s) {
+        return r_date_yyyymmdd(s);
+    };
+})();

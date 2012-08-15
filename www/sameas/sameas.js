@@ -90,8 +90,7 @@
           // update links count
           var len = $(">tr", tbody).length;
           var context = $("[name=infinitescroll-count]");
-          $(".number", context).attr("data-value", len);
-          i18n.ize_number(context);
+          $(".number", context).attr("data-value", len).text(len);
           // re-init tablesorter
           tbody.parent("table").trigger("update");
         }

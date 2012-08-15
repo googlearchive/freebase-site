@@ -1,4 +1,5 @@
 [
+  "globalize/globalize.js",
   "template/json2.js",
   "template/jquery.factory.js",
   "template/jquery.localstore.js",

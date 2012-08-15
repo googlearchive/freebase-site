@@ -29,7 +29,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-time,
-.number {
-  visibility: hidden;
-}
+/**
+ * Globalize locale ko
+ */
+(function( window, undefined ) {
+
+var Globalize = window.Globalize;
+
+Globalize.addCultureInfo( "ko", {
+    messages: {
+        "Freebase": "프리베이스",
+        "Browse": "검색",
+        "Query": "쿼리",
+        "Help": "도움말"
+    }
+});
+
+}( this ));

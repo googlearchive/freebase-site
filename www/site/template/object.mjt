@@ -212,7 +212,7 @@
               };
             </acre:script>
             <acre:block if="c.object.timestamp">
-              ${i18n_c.datetime(c.object.timestamp, attrs)}
+              ${i18n_c.datetime(c.object.timestamp, attrs, "d")}
             </acre:block>
           </acre:block>
           <acre:block else="">

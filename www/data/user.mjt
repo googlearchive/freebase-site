@@ -63,7 +63,7 @@
             <a href="${h.fb_url(domain.id)}">${i18n.display_name(domain)}</a>
           </th>
           <td>
-            ${i18n_c.datetime(domain['/type/domain/owners']['member']['link']['timestamp'], [["class","published"],["data-format","medium"]])}
+            ${i18n_c.datetime(domain['/type/domain/owners']['member']['link']['timestamp'], [["class","published"]], 'd')}
           </td>
         </tr>
       </tbody>
@@ -86,7 +86,7 @@
             <a href="${h.fb_url(domain.id)}">${i18n.display_name(domain)}</a>
           </th>
           <td>
-            ${i18n_c.datetime(domain['!/freebase/user_profile/favorite_domains']['link']['timestamp'], [["class","published"],["data-format","medium"]])}
+            ${i18n_c.datetime(domain['!/freebase/user_profile/favorite_domains']['link']['timestamp'], [["class","published"]], 'd')}
           </td>
         </tr>
       </tbody>

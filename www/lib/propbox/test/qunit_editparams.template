@@ -35,10 +35,6 @@
   var c = exports.c = {
     template_base: "test/qunit.mjt"
   };
-  var locales = [];
-  i18n.LANGS.forEach(function(l, i) {
-    locales[i] = l.id.split("/").pop().toLowerCase();
-  });
 </acre:script>
 
 <acre:block def="title()">
@@ -46,15 +42,7 @@
 </acre:block>
 
 <acre:block def="head()">
-  <script>
-    var locales = ${JSON.stringify(locales)};
-    var djConfig = {
-      parseOnLoad: true,
-      locale: 'en',
-      extraLocale: locales.slice(1)
-    };
-  </script>
-  <script src="${h.lib_base_url('dojo')}/dojo/dojo.js"></script>
+  <script src="globalize/globalize.js"></script>
   <script src="suggest/suggest.js"></script>
   <script src="template/jquery.metadata.js"></script> 
   <script src="i18n/i18n.js"></script> 

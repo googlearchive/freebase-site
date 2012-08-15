@@ -69,30 +69,46 @@
 </acre:block>
 
 <!!--
-  A number component that can be i18n'ized by i18n.js
-  @param attrs - acre:attrs of <span>. Can be a dictionary, an array of tuples or null.  
+  Format number into current lang's (i18n.lang) locale.
+  @param val - The raw (mql) value
+  @param attrs:Object (optional) - acre:attrs of <span>. Can be a dictionary, an array of tuples or null.  
+  @param format:String (optional) - Use the specified format output instead of the default.
 !!-->
-<acre:block def="number(val, attrs, text)" trim="1"><acre:script>
-    attrs = h.parse_params(attrs) || {};
+<acre:block def="number(val, attrs, is_float, format)" trim="1">
+  <acre:script>
+    attrs = attrs ? h.parse_params(attrs) : {};
     attrs["data-value"] = val;
     attrs["class"] = (attrs["class"] || "") + " number";
-</acre:script><span acre:attrs="attrs" acre:trim="1">${text || val}</span>
+  </acre:script>
+  <span acre:attrs="attrs" acre:trim="1">
+    ${i18n.format_number(val, is_float, format)}
+  </span>
+</acre:block>
+
+<acre:block def="integer(val, attrs, format)" trim="1">
+  ${number(val, attrs, false, format)}
+</acre:block>
+
+<acre:block def="decimal(val, attrs, format)" trim="1">
+  ${number(val, attrs, true, format)}
 </acre:block>
 
 <!!--
-  A datetime component that can be i18n'ized by i18n.js
-  @param attrs - acre:attrs of <time>. Can be a dictionary, an array of tuples or null.
+  Format datetime into current lang's (i18n.lang) locale.
+  @param val - The raw (mql) value
+  @param attrs:Object (optional) - acre:attrs of <span>. Can be a dictionary, an array of tuples or null.  
+  @param format:String (optional) - Use the specified format output instead of the default.
 !!-->
-<acre:block def="datetime(val, attrs, text)" trim="1">
+<acre:block def="datetime(val, attrs, format)" trim="1">
   <acre:script>
-    attrs = h.parse_params(attrs) || {};
-    if (h.type(val) === "date") {
-      val = acre.freebase.date_to_iso(val);
-    }
-    attrs.datetime = val;
+    attrs = attrs ? h.parse_params(attrs) : {};
+    attrs.datetime = val;   
   </acre:script>
-  <time acre:attrs="attrs">${text || val}</time>
+  <span acre:attrs="attrs" acre:trim="1">
+    ${i18n.format_datetime(val, format)}
+  </span>  
 </acre:block>
+
 
 <!!--
 !!-->
@@ -115,8 +131,8 @@
 !!-->
 <acre:block def="lang_code(this_lang, current_lang, force_display)" trim="1" if="this_lang">
   <acre:script>
-    var this_lang_code = h.lang_code(""+ this_lang);
-    var current_lang_code = h.lang_code("" + current_lang || i18n.lang);
+    var this_lang_code = i18n.get_lang_code(false, this_lang);
+    var current_lang_code = i18n.get_lang_code(false, current_lang || i18n.get_lang_code());
   </acre:script>
   <acre:block if="force_display || this_lang_code !== current_lang_code" trim="1">
     <sup class="lang-code ${this_lang_code}">${this_lang_code}</sup>

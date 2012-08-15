@@ -61,11 +61,6 @@
     var offset = $obj_timestamp.width();
     $("#page-header h1").css("margin-right", offset);
 
-    // Fade in the page contents
-    setTimeout(function() {
-      $("#page-content").css({"opacity": 1});
-    }, 0);
-
     if (!$("body").is(".embed")) {
       // Initialize page scroll behavior for fixed positioning on scroll
       fb.init_page_scroll();

@@ -731,9 +731,9 @@ function get_attribution(obj) {
  *
  */
 function text_lang_sort(a, b, lang, by_lang_name) {
-  lang = lang ? i18n.normalize_lang(lang) : i18n.lang;
-  var a_lang = i18n.normalize_lang(a.lang);
-  var b_lang = i18n.normalize_lang(b.lang);
+  lang = i18n.get_lang(null, lang);
+  var a_lang = i18n.get_lang(null, a.lang);
+  var b_lang = i18n.get_lang(null, b.lang);
   if (a_lang === lang) {
     if (a_lang === b_lang) {
       return b.value < a.value;

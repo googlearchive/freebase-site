@@ -55,8 +55,7 @@
     init_linkcount: function(tbody, next) {
       var len = $(">tr", tbody).length;
       var context = $("[name=infinitescroll-count]");
-      $(".number", context).attr("data-value", len);
-      i18n.ize_number(context);
+      $(".number", context).attr("data-value", len).text(len);
       $(".more", context).toggle(!!next);
     },
 

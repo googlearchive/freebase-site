@@ -32,5 +32,16 @@
 var h = acre.require("helper/helpers.sjs");
 
 var handler = function() {
-  return acre.handlers.acre_script;
+  return {
+    'to_js': function(script) {
+        return script.get_content().body;
+    },
+    'to_module': function(compiled_js, script) {
+        return compiled_js;
+    },
+    'to_http_response': function(module, script) {
+        // XXX - should collect acre.write output
+        return {body:"", headers:{}};
+    }
+  };
 };

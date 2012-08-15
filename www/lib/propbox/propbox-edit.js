@@ -28,13 +28,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-;(function($, propbox, formlib, editparams, i18n) {
+;(function($, propbox, formlib, editparams) {
 
   // requires:
   // propbox.js @see lib/propbox/propbox.js
   // form.js @see lib/propbox/form.js
   // editparams.js @see lib/propbox/editparams.js
-  // i18n.js @see lib/i18n/i18n.js
   // jquery.metadata.js
 
 
@@ -409,7 +408,6 @@
                     var body = $("> .data-table > tbody, > .data-list", ls);
                     body.append(new_row);                    
                 }
-                i18n.ize(new_row);
                 propbox.init_menus(new_row, true);
                 $(".nicemenu-item.edit").show();
                 propbox.kbs.set_next(null, new_row, true); 
@@ -553,13 +551,6 @@
         .bind("loading_complete", function() {
           $(this).removeClass("loading");
         });
-
-      if (data_input.is(".datetime")) {
-        i18n.ize_datetime_input($(":text", data_input));
-      }
-      else if (data_input.is(".int") || data_input.is(".float")) {
-        i18n.ize_number_input($(":text", data_input));
-      }
     },
 
     reset_data_inputs: function(form) {
@@ -571,4 +562,4 @@
   };
 
 
-})(jQuery, window.propbox, window.formlib, window.editparams, window.i18n);
+})(jQuery, window.propbox, window.formlib, window.editparams);

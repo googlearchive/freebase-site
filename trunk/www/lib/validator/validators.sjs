@@ -30,6 +30,7 @@
  */
 
 var h = acre.require("helper/helpers.sjs");
+var i18n = acre.require("i18n/i18n.sjs");
 var datejs = acre.require("datejs/date.sjs");
 
 var Class = {
@@ -516,6 +517,33 @@ Validator.factory(scope, "Timestamp", {
       return val;
     }
   }
+});
+
+
+/**
+ * Validate /type/datetime values
+ */
+Validator.factory(scope, "Datetime", {
+    "string": function(val, options) {
+        var date;
+        try {
+            date = acre.freebase.date_from_iso(val);
+            if (date) {
+                return val;
+            }
+        }
+        catch (ex) {
+            // not a valid iso date
+        }
+        if (i18n.iso8601.is_time(val)) {
+            // is it a iso time?
+            if (val.indexOf("T") === 0) {
+                val = val.substring(1);
+            }
+            return val;
+        }
+        return this.invalid(this.key, val, "is not a valid datetime string");
+    }
 });
 
 

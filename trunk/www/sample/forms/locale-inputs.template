@@ -41,10 +41,6 @@
 </acre:block>
 
 <acre:block def="footer_script()">
-  <script>
-    var lang = "${i18n.lang}";
-    var locale = "${i18n.dojo.locale()}";
-  </script>
   <script src="lib/propbox/jquery.validate_input.js"></script>
   <script src="lib/propbox/jquery.data_input.js"></script>
   <script src="forms/locale-inputs.js"></script>

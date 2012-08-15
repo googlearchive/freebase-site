@@ -106,7 +106,7 @@ function prop_data(topic_id, prop /** pid or prop_structure **/, value, lang, na
        var q = ph.mqlread_query(topic_id, prop_structure, value, lang, namespace);
        return freebase.mqlread(q)
          .then(function(env) {
-           return env.result[prop_structure.id];
+           return env.result[prop_structure.id] || [];
          });
     });
 };

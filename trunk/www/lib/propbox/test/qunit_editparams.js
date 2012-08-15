@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-;(function($, dojo, ep) {
+;(function($, ep) {
 
   function expect_exception(exception_type, fn) {
     try {
@@ -1589,10 +1589,8 @@
     }
   };
 
-  stop();
-  dojo.ready(function() {
-    start();
+  $(function() {
     run_tests();
   });
 
-})(jQuery, dojo, window.editparams);
+})(jQuery, window.editparams);

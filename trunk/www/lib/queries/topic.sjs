@@ -70,7 +70,7 @@ function topic_structure(id, options) {
     var lang = options.lang || "/lang/en";
     var domain_filter, type_filter, prop_filter;
     var api_options = {
-        lang: h.lang_code(lang)
+        lang: h.lang_code(i18n.get_lang(true, lang))
     };
     if (options.domain === "all") {
         api_options.filter = ["all"];

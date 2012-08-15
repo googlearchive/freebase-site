@@ -60,7 +60,7 @@ var OBJECT_FILTERS = [
  */
 function object(id, props) {
     var api_options = {
-        lang: h.lang_code(i18n.lang),
+        lang: h.lang_code(i18n.get_lang(true)),
         filter: OBJECT_FILTERS.concat(props || [])
     };
     return freebase.get_topic(id, api_options)
@@ -79,6 +79,7 @@ function object(id, props) {
           name: get_first_value(topic, "/type/object/name"),
           replaced_by: get_first_value(topic, "/dataworld/gardening_hint/replaced_by"),
           attribution: get_first_value(topic, "/type/object/attribution"),
+          timestamp: get_first_value(topic, "/type/object/timestamp").value,
           image: get_first_value(topic, "/common/topic/image"),
 
           description: get_description(topic),

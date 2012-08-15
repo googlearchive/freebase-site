@@ -59,7 +59,7 @@ test("data_input_type", function() {
 
 test("literal_validator", function() {
   var map = {
-    "/type/datetime": validators.Timestamp,
+    "/type/datetime": validators.Datetime,
     "/type/int": validators.Int,
     "/type/float": validators.Float,
     "/type/boolean": validators.StringBool,

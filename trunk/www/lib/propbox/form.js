@@ -29,10 +29,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-(function($, i18n, status) {
+(function($, status) {
 
    // requires:
-   // i18n.js @see lib/i18n/i18n.js
    // status (@see freebase.status)
 
    var formlib = window.formlib = {
@@ -190,8 +189,6 @@
 
      success_inline_add_form: function(options, new_row) {
        options.edit_row.before(new_row);
-       // i18n'ize dates and numbers
-       i18n.ize(new_row);
        options.reset(options);
        options.edit_row.trigger(options.event_prefix + "success");
      },
@@ -287,8 +284,6 @@
      success_inline_edit_form: function(options, new_row) {
        options.row.replaceWith(new_row);
        options.row = new_row;
-       // i18n'ize dates and numbers
-       i18n.ize(new_row);
        options.edit_row.trigger(options.event_prefix + "cancel");
      },
 
@@ -681,4 +676,4 @@
      }
    };
 
-})(jQuery, window.i18n, window.freebase.status);
+})(jQuery, window.freebase.status);

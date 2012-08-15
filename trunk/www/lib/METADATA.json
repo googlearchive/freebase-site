@@ -86,10 +86,6 @@
       "base_url": "//ajax.googleapis.com/ajax/libs/jquery/",
       "version": "1.7.1"
     },
-    "dojo" : {
-      "base_url": "//ajax.googleapis.com/ajax/libs/dojo/",
-      "version": "1.7.2"
-    },
     "googlefonts" : {
       "base_url": "//fonts.googleapis.com/css",
       "version": ""

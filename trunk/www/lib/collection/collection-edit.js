@@ -28,13 +28,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-;(function($, fb, propbox, formlib, editparams, i18n) {
+;(function($, fb, propbox, formlib, editparams) {
 
   // requires:
   // propbox.js @see lib/propbox/propbox.js
   // form.js @see lib/propbox/form.js
   // editparams.js @see lib/propbox/editparams.js
-  // i18n.js @see lib/i18n/i18n.js
   // jquery.metadata.js
 
 
@@ -49,7 +48,6 @@
     },
 
     row_edit_init: function(options) {
-      i18n.ize(options.form);
       propbox.init(options.form, {
         id: options.row.attr("data-id"),
         base_ajax_url: fb.h.ajax_url("lib/propbox"),
@@ -192,4 +190,4 @@
 
   };
 
-})(jQuery, window.freebase, window.propbox, window.formlib, window.editparams, window.i18n);
+})(jQuery, window.freebase, window.propbox, window.formlib, window.editparams);

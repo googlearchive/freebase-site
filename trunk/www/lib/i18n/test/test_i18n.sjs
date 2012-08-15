@@ -38,7 +38,9 @@ var i18n = acre.require("i18n/i18n.sjs");
 var freebase = acre.require("promise/apis").freebase;
 
 test("i18n", function() {
-  ok(i18n.lang, "lang: " + i18n.lang);   // must have a preferred lang
+    equal(i18n.LANG_TIERS.length, i18n.LANGS.length); // loaded all languages
+    ok(i18n.lang, "lang: " + i18n.lang);   // must have a preferred lang
+    ok(i18n.Globalize != null, "Globalize");       // loaded Globalize lib
 });
 
 test("i18n.mql.langs", function() {
@@ -48,8 +50,7 @@ test("i18n.mql.langs", function() {
   // ensure we have lang codes in freebase
   freebase.mqlread([{
     id: null,
-    "id|=": lang_ids,
-    type: "/type/lang"
+    "id|=": lang_ids
   }])
   .then(function(env) {
     result = env.result;
@@ -66,6 +67,123 @@ test("i18n.mql.langs", function() {
   });
   equal(langs.length, result.length);
 });
+
+test("i18n.get_lang", function() {
+  same(i18n.get_lang(), i18n.lang);
+  same(i18n.get_lang(false), i18n.lang);
+  same(i18n.get_lang(true), i18n.mql_lang);
+  same(i18n.get_lang(false, "/lang/zh"), "/lang/zh-CN");
+  same(i18n.get_lang(false, "/lang/zh-CN"), "/lang/zh-CN");
+  same(i18n.get_lang(true, "/lang/zh"), "/lang/zh");
+  same(i18n.get_lang(true, "/lang/zh-CN"), "/lang/zh");
+  same(i18n.get_lang(false, "zh"), "/lang/zh-CN");
+  same(i18n.get_lang(false, "zh-CN"), "/lang/zh-CN");
+  same(i18n.get_lang(true, "zh"), "/lang/zh");
+  same(i18n.get_lang(true, "zh-CN"), "/lang/zh");
+});
+
+test("i18n.get_lang_code", function() {
+  same(i18n.get_lang_code(), h.lang_code(i18n.lang));
+  same(i18n.get_lang_code(false), h.lang_code(i18n.lang));
+  same(i18n.get_lang_code(true), h.lang_code(i18n.mql_lang));
+  same(i18n.get_lang_code(false, "/lang/zh"), "zh-CN");
+  same(i18n.get_lang_code(false, "/lang/zh-CN"), "zh-CN");
+  same(i18n.get_lang_code(true, "/lang/zh"), "zh");
+  same(i18n.get_lang_code(true, "/lang/zh-CN"), "zh");
+  same(i18n.get_lang_code(false, "zh"), "zh-CN");
+  same(i18n.get_lang_code(false, "zh-CN"), "zh-CN");
+  same(i18n.get_lang_code(true, "zh"), "zh");
+  same(i18n.get_lang_code(true, "zh-CN"), "zh");
+});
+
+
+test("iso8601.is_time_hh", function() {
+
+    var valid = [
+        "00",
+        "23",
+        "01",
+        "T00",
+        "T23",
+        "T01"
+    ];
+    valid.forEach(function(t) {
+        ok(i18n.iso8601.is_time_hh(t), t);
+    });
+
+    var invalid = [
+        "0",
+        "T0",
+        "24",
+        "T24",
+        "T23:60"
+    ];
+    invalid.forEach(function(t) {
+        ok(!i18n.iso8601.is_time_hh(t), t);
+    });
+});
+
+
+test("iso8601.is_time_hhmm", function() {
+
+    var valid = [
+        "00:00",
+        "11:30",
+        "23:59",
+        "T12:00"
+    ];
+    valid.forEach(function(t) {
+        ok(i18n.iso8601.is_time_hhmm(t), t);
+    });
+
+    var invalid = [
+        "0",
+        "11",
+        "-1:50",
+        "24:00",
+        "T23:60",
+        "T23:59:1"
+    ];
+    invalid.forEach(function(t) {
+        ok(!i18n.iso8601.is_time_hhmm(t), t);
+    });
+});
+
+test("iso8601.is_time_hhmmss", function() {
+    var valid = [
+        "00:00:00",
+        "11:30:59",
+        "23:59:59",
+        "T12:00:00"
+    ];
+    valid.forEach(function(t) {
+        ok(i18n.iso8601.is_time_hhmmss(t), t);
+    });
+
+    var invalid = [
+        "00:00",
+        "11:30",
+        "23:59",
+        "T12:00",
+        "T12:59:60"
+    ];
+    invalid.forEach(function(t) {
+    ok(!i18n.iso8601.is_time_hhmmss(t), t);
+    });
+});
+
+
+test("is8601", function() {
+
+    var d = acre.freebase.date_from_iso("-0011");
+    ok(d, d.toString());
+
+
+    console.log(parseInt("-0000", 10), parseInt("-0000", 10));
+    console.log(parseInt("-0011", 10), parseInt("-0011", 10));
+});
+
+
 
 test("i18n.mql.query.text", function() {
   var langs = [i18n.lang];
@@ -133,23 +251,23 @@ test("display_name", function() {
 });
 
 
-test("nomalize_lang", function() {
+test("get_lang", function() {
 
   var tests = [
     "/lang/iw", "/lang/iw",
     "/lang/he", "/lang/iw",
-    "/lang/pt-br", "/lang/pt-br",
-    "/lang/pt", "/lang/pt-br",
-    "/lang/zh", "/lang/zh",
-    "/lang/zh-cn", "/lang/zh",
-    "/lang/zh-hans", "/lang/zh",
-    "/lang/zh-hant", "/lang/zh-hant",
-    "/lang/zh-tw", "/lang/zh-hant",
+    "/lang/pt-br", "/lang/pt",
+    "/lang/pt", "/lang/pt",
+    "/lang/zh", "/lang/zh-CN",
+    "/lang/zh-cn", "/lang/zh-CN",
+    "/lang/zh-hans", "/lang/zh-CN",
+    "/lang/zh-hant", "/lang/zh-TW",
+    "/lang/zh-tw", "/lang/zh-TW",
     "/lang/et", "/lang/et"
   ];
 
   for (var i=0,l=tests.length; i<l; i+=2) {
-    equal(i18n.normalize_lang(tests[i]), tests[i+1]);
+    equal(i18n.get_lang(null, tests[i]), tests[i+1]);
   }
 
 });

@@ -29,7 +29,6 @@
         data = JSON.parse(data);
         var next = data.result.cursor;
         var html = $(data.result.html);
-        i18n.ize(html);
         collection.init_menus(html);
         collection.load_blurbs(html);
         table.append(html);

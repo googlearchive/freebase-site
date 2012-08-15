@@ -328,7 +328,7 @@
       ${i18n_c.datetime(prop_value.value, attrs)}
     </acre:block>
     <acre:block elif="ect === '/type/int' || ect === '/type/float'">
-      ${i18n_c.number(prop_value.value, attrs)}
+      ${i18n_c.number(prop_value.value, attrs, ect === '/type/float')}
       <acre:block if="prop_structure.unit">
         ${prop_structure.unit.abbreviation || ""}
       </acre:block>
@@ -679,9 +679,28 @@ propbox edit forms
       </label>
     </span>
   </acre:block>
+  <acre:block elif="type === 'int'">
+    <span class="data-input ${type} ${JSON.stringify(data)}">      
+      <input class="fb-input" type="text" name="${name}" 
+             acre:attrs="prop_value ? {value:i18n.format_number(prop_value.value)} : {}"/>
+    </span>    
+  </acre:block>
+  <acre:block elif="type === 'float'">
+    <span class="data-input ${type} ${JSON.stringify(data)}">      
+      <input class="fb-input" type="text" name="${name}" 
+             acre:attrs="prop_value ? {value:i18n.format_number(prop_value.value, true)} : {}"/>
+    </span>    
+  </acre:block>
+  <acre:block elif="type === 'datetime'">
+    <span class="data-input ${type} ${JSON.stringify(data)}">      
+      <input class="fb-input" type="text" name="${name}" 
+             acre:attrs="prop_value ? {value:i18n.format_datetime(prop_value.value)} : {}"/>
+    </span>   
+  </acre:block>
   <acre:block else="">
-    <span class="data-input ${type} ${JSON.stringify(data)}">
-      <input class="fb-input" type="text" name="${name}" acre:attrs="prop_value ? {value:prop_value.value} : {}"/>
+    <span class="data-input ${type} ${JSON.stringify(data)}">      
+      <input class="fb-input" type="text" name="${name}" 
+             acre:attrs="prop_value ? {value:prop_value.value} : {}"/>
     </span>
   </acre:block>
 </acre:block>

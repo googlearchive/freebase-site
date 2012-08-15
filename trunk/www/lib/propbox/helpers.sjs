@@ -73,7 +73,7 @@ function data_input_type(type_id) {
  */
 function literal_validator(type_id) {
   if (type_id === "/type/datetime") {
-    return validators.Timestamp;
+    return validators.Datetime;
   }
   else if (type_id === "/type/int") {
     return validators.Int;

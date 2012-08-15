@@ -275,29 +275,33 @@
 <acre:block def="footer_script(exports)">
   <!!-- jquery -->
   <script src="${h.lib_base_url('jquery')}/jquery.min.js"></script>
-  <!!-- dojo -->
-  <acre:script>
-    var locale = i18n.dojo.locale();
-  </acre:script>
-  <script>
-    var djConfig = {
-      parseOnLoad: true,
-      locale: "${locale}"
-    };
-  </script>
-  <acre:block if="locale !== 'en'">
-    <script>
-      djConfig.extraLocale = ["en"];
-    </script>
-  </acre:block>
-  <script src="${h.lib_base_url('dojo')}/dojo/dojo.js"></script>
+
   <!!-- freebase.mf.js -->
   <acre:block if="exports.freebase_js">
     ${exports.freebase_js()}
   </acre:block>
   <script acre:else="" src="template/freebase.mf.js"></script>
+  <!!-- Globalize cultures and bundles -->
+  <acre:script>
+    var lib = acre.get_metadata();
+    var app = acre.get_metadata(acre.request.script.app.path);
+    var culture_code = i18n.get_globalize_culture_lang_code();
+    var culture = "globalize/cultures/globalize.culture." + culture_code + ".js";
+    var bundle = "bundles/globalize.bundle." + culture_code + ".js";
+  </acre:script>
+  <acre:block if="lib.files[culture]">
+    <script src="${h.static_url('lib/' + culture)}"></script>
+  </acre:block>
+  <acre:block if="lib.files[bundle]">
+    <script src="${h.static_url('lib/' + bundle)}"></script>
+  </acre:block>
+  <acre:block if="acre.current_script.app.path != acre.request.script.app.path && app.files[bundle]">
+    <script src="${h.static_url(bundle)}"></script>
+  </acre:block>
   <!!--TODO(culbertson): compile feedback with freebase.mf.js--!>
   <script>
+    // Set default Globalize.culture
+    Globalize.culture('${culture_code}');
     (function() { // Protect global namespace
       var prefix = ('https:' == document.location.protocol) ? 'https://ssl' : 'http://www';
       var script = document.createElement('script');
@@ -348,7 +352,7 @@
         },
         metadata: {}
       },
-      lang: i18n.lang,
+      lang: i18n.mql_lang,
       c: {},
       dateline: null,
       tid: null

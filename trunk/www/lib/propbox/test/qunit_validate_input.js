@@ -151,14 +151,15 @@
     });
 
     var i,l,j,k;
-    for (i=0,l=locales.length; i<l; i++) {
+    for (i=0,l=cultures.length; i<l; i++) {
       (function() {
-         var locale = locales[i];
-         test(locale, function() {
+         var culture = cultures[i];
+         test(culture, function() {
+           Globalize.culture(culture);
            for (var j=0,k=valid_numbers.length; j<k; j+=3) {
              try {
-               var intstr = dojo.number.format(valid_numbers[j], {locale:locale});
-               var parsed = $.validate_input["int"](intstr, {locales:[locale]});
+               var intstr = Globalize.format(valid_numbers[j], "n0");
+               var parsed = $.validate_input["int"](intstr);
                var expected_value = valid_numbers[j+1];
                ok(parsed && parsed.value === expected_value, [intstr, parsed.value, expected_value].join(" => "));
              }
@@ -179,14 +180,21 @@
     });
 
     var i,l,j,k;
-    for (i=0,l=locales.length; i<l; i++) {
+    for (i=0,l=cultures.length; i<l; i++) {
       (function() {
-         var locale = locales[i];
-         test(locale, function() {
+         var culture = cultures[i];
+         test(culture, function() {
+           Globalize.culture(culture);
            for (var j=0,k=valid_numbers.length; j<k; j+=3) {
              try {
-               var intstr = dojo.number.format(valid_numbers[j], {locale:locale});
-               var parsed = $.validate_input["float"](intstr, {locales:[locale]});
+               var format = "n";
+               var intstr = "" + valid_numbers[j];
+               var index = intstr.indexOf(".");
+               if (index !== -1) {
+                   format = "n" + intstr.substr(index + 1).length;
+               }
+               intstr =  Globalize.format(valid_numbers[j], format);
+               var parsed = $.validate_input["float"](intstr);
                var expected_value = valid_numbers[j+2];
                ok(parsed && parsed.value === expected_value, [intstr, parsed.value, expected_value].join(" => "));
              }
@@ -207,24 +215,33 @@
     });
 
     var valid = [
-      "2000", new Date(2000, 0),
-      "-0100", new Date(-100, 0),
-      "2000-04", new Date(2000, 3),
-      "2000-04-05", new Date(2000, 3, 5),
-      "2000-04-05T23:59:59", new Date(2000, 3, 5, 23, 59, 59)
+      "2000", "2000",
+      "2000-04", "2000-04",
+      "2000-04-05", "2000-04-05",
+      "2000-04-05T23:59:59", "2000-04-05T23:59:59",
+      "12:13", "12:13",
+      "T01:02", "01:02",
+      "01:02:03", "01:02:03",
+      "T01:02:03", "01:02:03",
+      "-0000", "-0000",
+      "0000", "0000",
+      "-0011", "-0011",
+      "1 B.C.E", "-0000",
+      "10 BCE", "-0009",
+      "101 B.C.", "-0100",
+      "1000 BC", "-0999",
+      "12345 bce", "-12344",
+      "11", "11"   // 11 AM
     ];
 
     test("valid", function() {
 
       for(var i=0,l=valid.length; i<l; i+=2) {
         var val = valid[i];
-        var date = valid[i+1];
         try {
           var result = $.validate_input.datetime(val);
-
-          equal(result.text, val);
-          equal(result.value, val);
-          equal(result.date.toString(), date.toString());
+          equal(result.text, val, "result.text");
+          equal(result.value, valid[i+1], "result.value");
         }
         catch(ex) {
           ok(false, ""+ex);
@@ -232,36 +249,45 @@
       }
     });
 
-    var somedate = new Date(2000, 3, 5);
+    var invalid = [
+      "1"
+    ];
+
+    test("invalid", function() {
+
+      for(var i=0,l=invalid.length; i<l; i+=2) {
+        var val = invalid[i];
+        try {
+          var result = $.validate_input.datetime(val);
+          ok(false, "Expected invalid datetime for: " + val);
+        }
+        catch(ex) {
+          ok(true, ""+ex);
+        }
+      }
+    });
+
+
+
+    var somedate = new Date(2000, 3, 5, 11, 12, 13);
     var formats = $.validate_input.datetime.formats;
 
-    for (var i=0,l=locales.length; i<l; i++) {
+    for (var i=0,l=cultures.length; i<l; i++) {
       (function() {
-         var locale =  dojo.i18n.normalizeLocale(locales[i]);
-         test(locale, function() {
-           var bundle = dojo.date.locale._getGregorianBundle(locale);
-           ok(bundle, "Got gregorian bundle for locale: " + locale);
-
+         var culture = cultures[i];
+         test(culture, function() {
+           Globalize.culture(culture);
            for (var j=0,k=formats.length; j<k; j+=2) {
-             var ymd = formats[j];
-             var dateFormats = formats[j+1];
-             for (var n=0,m=dateFormats.length; n<m; n++) {
-               var dateFormat = dateFormats[n];
-               var datePattern = bundle[dateFormat];
-               if (!datePattern) {
-                 ok(false, "datePattern does not exist: " + dateFormat);
-                 return;
-               }
-               try {
-                 datePattern = i18n.normalize_pattern(datePattern);
-                 var somedatestr = dojo.date.locale.format(somedate, {datePattern:datePattern, selector:"date", locale:locale});
-                 var parsed = $.validate_input.datetime(somedatestr, {locales:[locale]});
-                 var expected_value = dojo.date.locale.format(somedate, {datePattern:ymd, selector:"date"});
-                 ok(parsed && parsed.value === expected_value, [datePattern, somedatestr, parsed.value, expected_value].join(" => "));
-               }
-               catch (ex) {
-                 ok(false, [datePattern, ex].join(": "));
-               }
+             var format = formats[j];
+             var iso_format = formats[j+1];
+             try {
+               var somedatestr = Globalize.format(somedate, format);
+               var parsed = $.validate_input.datetime(somedatestr);
+               var expected_value = Globalize.format(somedate, iso_format);
+               ok(parsed && parsed.value === expected_value, [somedatestr, format, iso_format, parsed.value, expected_value].join(" => "));
+             }
+             catch (ex) {
+               ok(false, [datePattern, ex].join(": "));
              }
            }
          });

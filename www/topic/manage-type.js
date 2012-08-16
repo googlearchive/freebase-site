@@ -32,10 +32,18 @@
 (function($, fb, formlib, propbox) {
   var mt = fb.topic.manage_type = {
 
-    add_type_begin: function(trigger, type_id) {
+    add_type_begin: function(trigger, type_id, incompatible_types) {
+      incompatible_types = incompatible_types || {};
+      var included_types = [];
+      $.each(incompatible_types.included_types, function(i, t) {
+        if (!incompatible_types[t]) {
+          included_types.push(t);
+        }
+      });
+
       $.ajax($.extend(formlib.default_submit_ajax_options(), {
         url: fb.h.ajax_url("add_type_submit.ajax"),
-        data: {id:fb.c.id, type:type_id, lang:fb.h.lang_code(fb.lang)},
+        data: {id:fb.c.id, type:type_id, included_types:included_types, lang:fb.h.lang_code(fb.lang)},
         onsuccess: function(data) {
           var result = $(data.result.html).hide();
           $(".manage-types").after(result);
@@ -54,7 +62,8 @@
           }
 
           trigger.focus().select();
-        }
+        },
+        traditional: true
       }));
     },
 

@@ -91,6 +91,9 @@
               mydata.namespace = data.namespace;
             }
           }
+          if (data.incompatible_types) {
+              mydata.incompatible_types = data.incompatible_types;
+          }
           self.container.data("data", mydata);
           self.container.removeClass("error").addClass("valid");
           self.container.trigger("valid");
@@ -279,6 +282,8 @@
   $.validate_topic.prototype = {
     init: function() {
       var self = this;
+      // a map of ids to incompatible types
+      this.incompatible_types = {};
       this.input.suggest(this.options)
         .bind("fb-textchange.validate_topic", function() {
           if (self.input.val() === "") {
@@ -315,7 +320,8 @@
                     self.valid(data);
                 },
                 incompatible: self.options.incompatible_types.inline_suggest_incompatible_callback(self.input, {
-                    onConfirm: function() {
+                    onConfirm: function(id, ect, incompatible_types) {
+                        self.incompatible_types[id] = incompatible_types;
                         self.valid(data);
                     }
                 })
@@ -330,9 +336,16 @@
       this.input.trigger("invalid");
     },
 
+    /**
+     * @param incompatible_types:Object (optional) - 
+     * @see lib/incompatible_types/incompatible_types.js
+     */
     valid: function(data) {
       if (typeof data === "string") {
         data = {create_new:data};
+      }
+      if (data.id && this.incompatible_types[data.id]) {
+        data.incompatible_types = this.incompatible_types[data.id];
       }
       this.input.trigger("valid", data);
     },

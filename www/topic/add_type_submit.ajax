@@ -49,50 +49,45 @@ var SPEC = {
     return [
       validators.MqlId(params, "id", {required:true}),
       validators.MqlId(params, "type", {required:true}),
+      validators.MultiValue(params, "included_tyeps", {validator:validators.MqlId, if_empty:[]}),
       validators.LangId(params, "lang", {if_empty:"/lang/en"})
     ];
   },
 
-  run: function(id, type, lang) {
-    var q = {
-      id: type,
-      "/freebase/type_hints/included_types": [{
-        id: null,
-        optional: true,
-        index: null,
-        sort: "index"
-      }]
-    };
-    return freebase.mqlread(q)
-      .then(function(env) {
-        var types = [{id:type}].concat(env.result["/freebase/type_hints/included_types"]);
-        q = {
-          id: id,
-          type: types.map(function(t) {
-            return {id:t.id, connect:"insert"};
-          })
+  run: function(id, type, included_types, lang) {
+    var type_clause = [{
+        id: type,
+        connect: "insert"
+    }].concat(included_types.map(function(t) {
+        return {
+            id: t,
+            connect: "insert"
         };
-        return freebase.mqlwrite(q)
-          .then(function(env) {
-            var types = env.result.type.filter(function(t) {
-              return t.connect === "inserted";
-            });
-            if (types.length) {
-              return topic_api.topic_structure(id, {lang:lang, domain:"all"})
-                .then(function(topic) {
-                  return {
-                    topic: topic,
-                    types: types
-                  };
-                });
-            }
-            else {
+    }));
+    var q = {
+      id: id,
+      type: type_clause
+    };
+    return freebase.mqlwrite(q)
+      .then(function(env) {
+        var types = env.result.type.filter(function(t) {
+          return t.connect === "inserted";
+        });
+        if (types.length) {
+          return topic_api.topic_structure(id, {lang:lang, domain:"all"})
+            .then(function(topic) {
               return {
-                topic: null,
-                types: null
+                topic: topic,
+                types: types
               };
-            }
-          });
+            });
+        }
+        else {
+          return {
+            topic: null,
+            types: null
+          };
+        }
       })
       .then(function(topic_types) {
         return {
@@ -100,6 +95,6 @@ var SPEC = {
           list: acre.markup.stringify(components.add_type_result_list(id, topic_types.types))
         };
       });
-  }
+    }
 };
 

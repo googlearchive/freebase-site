@@ -52,10 +52,19 @@
       * 3 arguments:
       * 1) topic_id
       * 2) type_id
-      * 3) a map of incompatible types keyed by existing types (of topic_id).
-      *    The incompatible types are a subset of type_id and its included types
-      *    that are mutexes (/dataworld/incompatible_types) of an existing type
-      *    (of topic_id).
+      * 3) A map of type ids to a list of existing types of topic_id that 
+      *    are incompatible (/dataworld/incompatible_types). 
+      *    The keys may include the type_id we are trying to assert and/or
+      *    any of the included types of type_id that are incompatible
+      *    with any of the existing types of topic_id. This
+      *    map will also include the list of "included_types" of type_id,
+      *    so that one can distinguish the included type incompatibility.
+      *    For example, when trying to assert "/people/ethnicity" to a country:
+      * 
+      *     {
+      *        "/people/ethnicity": ["/location/location", "/location/country"],
+      *        "included_types": ["/common/topic"]
+      *     }
       * 
       * Usage:
       * 
@@ -110,7 +119,7 @@
       *           onLoad: function() {...},   // optional
       *           onClose: function() {...},  // optional
       *           onCancel: function() {...}, // optional
-      *           onConfirm: function(topic_id, incompatible_type_id) { ... } // optional
+      *           onConfirm: function(topic_id, incompatible_type_id, incompatible_types) { ... } // optional
       *       })
       *   })
       * 
@@ -122,8 +131,9 @@
       *     - onClose:Function - when the dialog is closed.
       *     - onCancel:Function - when the user clicks the cancel button.
       *     - onConfirm:Function - when the user confirms (override) the 
-      *         incompatibility dialog. This method will invoked with the topic_id
-      *         and the incompatible type_id.
+      *         incompatibility dialog. This method will invoked with the topic_id,
+      *         incompatible type_id, and the incompatible_types result from
+      *         lib/incompatible_types/incompatible_types.ajax
       */
      overlay_suggest_incompatible_callback: function(suggest_input, callbacks) {
          if (!it.overlay_dialog) {
@@ -169,7 +179,7 @@
                          $(".save", it.overlay_dialog).click(function() {
                              suggest_input.focus().select();
                              if (callbacks.onConfirm) {
-                                 callbacks.onConfirm(topic_id, incompatible_type_id);
+                                 callbacks.onConfirm(topic_id, incompatible_type_id, incompatible_types);
                              }
                          });                         
                          if (callbacks.onLoad) {
@@ -208,7 +218,7 @@
                      .click(function() {
                          suggest_input.focus().select();
                          if (callbacks.onConfirm) {
-                             callbacks.onConfirm(topic_id, incompatible_type_id);
+                             callbacks.onConfirm(topic_id, incompatible_type_id, incompatible_types);
                          }
                          it.inline_dialog.hide(callbacks.onClose);
                      });
@@ -247,7 +257,7 @@
            if (confirm(it.description_text(topic_id, incompatible_type_id, incompatible_types))) {
                suggest_input.focus().select();
                if (callbacks.onConfirm) {
-                   callbacks.onConfirm(topic_id, incompatible_type_id);
+                   callbacks.onConfirm(topic_id, incompatible_type_id, incompatible_types);
                }
            }
            else {
@@ -264,23 +274,72 @@
      },
 
      /**
-      * Generate the description html for the incompatible dialogs (overlay and inline).
+      * Generate the description html for the incompatible dialogs 
+      * (overlay and inline).
+      * 
+      * @param topic_id:String - The topic we are trying to assert the 
+      *     incompatible_type_id.
+      * @param incompatible_type_id:String - The incompatible type id.
+      * @param incompatible_types:Object - A map of type ids to
+      *    a list of existing types of topic_id that 
+      *    are incompatible (/dataworld/incompatible_types). 
+      *    The keys may include the type_id we are trying to assert and/or
+      *    any of the included types of type_id that are incompatible
+      *    with any of the existing types of topic_id. This
+      *    map will also include the list of "included_types" of type_id,
+      *    so that one can distinguish the included type incompatibility.
+      *    For example, when trying to assert "/people/ethnicity" to a country:
+      * 
+      *     {
+      *        "/people/ethnicity": ["/location/location", "/location/country"],
+      *        "included_types": ["/common/topic"]
+      *     }
+      *
       */
      description_html: function(topic_id, incompatible_type_id, incompatible_types) {
          var html = $("<div>");
-         $.each(incompatible_types, function(existing_id, types) {
-             html.append(it.reason_html(topic_id, existing_id, types));
-         });
-         html.append("<p>Are you sure you want to continue?<p>");
-         return html;
-     },
+         var div;
+         if (incompatible_types[incompatible_type_id]) {
+             div = $('<div><span class="incompatible-topic"></span> is already typed as <ul class="incompatible-existing"></ul>It\'s unlikely it should also be typed as <b class="incompatible-type"></b>.</div>');
+             $(".incompatible-topic", div).text(topic_id);
+             var ul = $(".incompatible-existing", div);
+             $.each(incompatible_types[incompatible_type_id], function(i, existing_id) {
+                 ul.append($('<li>').append($('<b>').text(existing_id)));
+             });
+             $(".incompatible-type", div).text(incompatible_type_id);
+             html.append(div);
+         }
 
-     reason_html: function(topic_id, existing_id, types) {         
-         var li = $('<p><span class="incompatible-topic"></span> is already typed as <b class="incompatible-existing"></b>, it\'s unlikely it should also be typed as <b class="incompatible-type"></b>.</p>');
-         $(".incompatible-topic", li).text(topic_id);
-         $(".incompatible-existing", li).text(existing_id);
-         $(".incompatible-type", li).text(types.join(", "));
-         return li;
+         var to_type = [incompatible_type_id];  // confirm will assert the types in this list
+         var not_to_type = [];                  // and NOT assert the types in this list
+         if (incompatible_types.included_types) {
+             $.each(incompatible_types.included_types, function(i, t) {
+                 if (incompatible_types[t]) {
+                     not_to_type.push(t);
+                 }
+                 else {
+                     to_type.push(t);
+                 }
+             });
+         }
+
+         div = $('<div>If you continue, <span class="incompatible-topic"></span> will be typed as <ul class="incompatible-to-type"></ul></div>');
+         $(".incompatible-topic", div).text(topic_id);
+         var ul = $(".incompatible-to-type", div);
+         $.each(to_type, function(i, id) {
+             ul.append($('<li>').append($('<b>').text(id)));
+         });
+         if (not_to_type.length) {
+             div.append('&nbsp;It will <b>*not*</b> be typed as <ul class="incompatible-not-to-type"></ul>');
+             ul = $(".incompatible-not-to-type", div);
+             $.each(not_to_type, function(i, id) {
+                 ul.append($('<li>').append($('<b>').text(id)));
+             });
+         }
+         html.append(div);
+         html.append("<p>Are you sure you want to continue?<p>");
+
+         return html;
      },
 
      /**

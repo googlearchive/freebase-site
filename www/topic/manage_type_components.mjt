@@ -41,7 +41,7 @@
   <li>
     <a class="close-msg" href="javascript:void(0);"
        onclick="return window.freebase.topic.remove_type(this, '${type.id}');">${_("x")}</a>
-    <a href="${h.fb_url(type.id)}" title="${type.id}">${type.text}</a>
+    <a href="${h.fb_url(type.id)}" title="${type.id}">${type.text || type.id}</a>
   </li>
 </acre:block>
 

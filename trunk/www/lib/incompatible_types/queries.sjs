@@ -44,7 +44,8 @@ function incompatible_types(topic_id, type_id) {
         "/freebase/type_hints/included_types": []
     })
     .then(function(env) {
-        var types = [type_id].concat(env.result["/freebase/type_hints/included_types"]);
+        var included_types = env.result["/freebase/type_hints/included_types"];
+        var types = [type_id].concat(included_types);
         /**
          * Now look up if there are any /dataworld/incompatible_types mutexes
          * including any types of topic_id and the type_id (and it's included types).
@@ -67,32 +68,35 @@ function incompatible_types(topic_id, type_id) {
         return freebase.mqlread(q)
             .then(function(env) {
                 if (env.result.length) {
-                    var incompatibles = {};
+                    var result = {
+                        included_types: included_types
+                    };
                     env.result.forEach(function(mutex) {
-                        mutex["existing:types"].forEach(function(existing_type) {
-                            var existing = incompatibles[existing_type.id];
-                            if (!existing) {
-                                existing = incompatibles[existing_type.id] = [];
+                        mutex["incompatible:types"].forEach(function(t1) {
+                            var incompatible = result[t1.id];
+                            if (!incompatible) {
+                                incompatible =
+                                    result[t1.id] = [];
                             }
-                            mutex["incompatible:types"].forEach(function(t) {
-                                if (existing_type.id !== t.id &&
-                                    existing.indexOf(t.id) === -1) {
-                                    existing.push(t.id);
+                            mutex["existing:types"].forEach(function(t2) {
+                                if (t1.id !== t2.id &&
+                                    incompatible.indexOf(t2.id) === -1) {
+                                    incompatible.push(t2.id);
                                 }
                             });
-                            if (!existing.length) {
-                                /**
-                                 * Remove empty lists from the result
-                                 */
-                                delete incompatibles[existing_type.id];
-                            }
                         });
                     });
-                    if (h.isEmptyObject(incompatibles)) {
+                    // remove empty lsits
+                    for (var k in result) {
+                        if (!result[k].length) {
+                            delete result[k];
+                        }
+                    }
+                    if (h.isEmptyObject(result)) {
                         return null;
                     }
                     else {
-                        return incompatibles;
+                        return result;
                     }
                 }
                 else {

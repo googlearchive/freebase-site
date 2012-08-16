@@ -44,8 +44,8 @@ test("incompatible_types /en/san_francisco and /people/person", function() {
     });
   acre.async.wait_on_results();
   ok(result, "/en/san_francisco and /people/person are incompatible");
-  ok(result["/location/location"] &&
-     result["/location/location"].indexOf("/people/person") !== -1, 
+  ok(result["/people/person"] &&
+     result["/people/person"].indexOf("/location/location") !== -1, 
      "expected /location/location to be incompatible with /people/person");
 });
 
@@ -56,35 +56,30 @@ test("incompatible_types /en/bob_dylan and /people/person", function() {
       result = r;
     });
   acre.async.wait_on_results();
-  ok(result === null, "/en/bob_dylan and /people/person are compatible");
+  ok(result && !result["/people/person"], "/en/bob_dylan and /people/person are compatible");
 });
 
 test("incompatible_types /en/avatar_2009 and /tv/tv_program", function() {
   var result;
-  q.incompatible_types("/en/bob_dylan", "/people/person")
+  q.incompatible_types("/en/avatar_2009", "/tv/tv_program")
     .then(function(r) {
       result = r;
-    });
+    });  
   acre.async.wait_on_results();
-  ok(result === null, "/en/avatar_2009 and /tv/tv_program are compatible");
+  ok(result && !result["/tv/tv_program"], "/en/avatar_2009 and /tv/tv_program are compatible");
 });
 
-test("incompatible_types /en/google and /location/country (/location/location)", function() {
-  /**
-   * /en/google is typed as /organization/organization.
-   * /location/country has an included type of /location/location
-   * /organization/organization and /location/location are "incompatible"
-   */
+test("incompatible_types /en/male and /location/country (/location/location)", function() {
   var result;
-  q.incompatible_types("/en/google", "/location/country")
+  q.incompatible_types("/en/male", "/location/country")
     .then(function(r) {
       result = r;
     });
   acre.async.wait_on_results();
-  ok(result, "/en/google and /location/country are incompatible");
-  ok(result["/organization/organization"] &&
-     result["/organization/organization"].indexOf("/location/location") !== -1, 
-     "expected /location/location to be incompatible with /organization/organization");
+  ok(result, "/en/male and /location/country are incompatible");
+  ok(result["/location/location"] &&
+     result["/location/location"].indexOf("/people/gender") !== -1, 
+     "expected /location/location to be incompatible with /people/gender");
 });
 
 acre.test.report();

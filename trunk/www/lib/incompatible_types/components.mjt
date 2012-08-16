@@ -51,7 +51,7 @@
 </acre:block>
 
 <acre:block def="inline_dialog()">
-  <div class="incompatible-inline-dialog" style="display:none;position:absolute">
+  <div class="modal incompatible-inline-dialog" style="display:none;position:absolute">
     <div class="modal-inner">
       <h1 class="modal-title">${_("Wait!")}</h1>
       <div class="modal-content">

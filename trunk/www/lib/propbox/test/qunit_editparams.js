@@ -148,6 +148,51 @@
 
       same(ep.clause({create_new:"foo", lang:"bar"}, "insert"), {id:null, name:{value:"foo", lang:"bar"}, create:"unconditional", connect:"insert"});
       same(ep.clause({create_new:"foo", lang:"bar"}, "update"), {id:null, name:{value:"foo", lang:"bar"}, create:"unconditional", connect:"update"});
+
+
+      same(ep.clause({
+                         id:"foo", 
+                         incompatible_types:{
+                             "/type/inc_type": ["/type/a"]
+                         }
+                     },
+                     "insert", 
+                     {
+                         id:"/type/ect", 
+                         included_types:["/type/inc_type"]
+                     }),
+                     {
+                         id:"foo", 
+                         connect:"insert", 
+                         type: [{
+                             id:"/type/ect",
+                             connect:"insert"
+                         }]
+                     });
+
+      same(ep.clause({
+                         id:"foo", 
+                         incompatible_types: {
+                             "/type/ect": ["/type/a", "/type/b"],
+                             "/type/inc_type": ["/type/c"]
+                         }
+                     },
+                     "insert", 
+                     {
+                         id:"/type/ect", 
+                         included_types:["/type/inc_type", "/type/inc_type2"]
+                     }),
+                     {
+                         id:"foo", 
+                         connect:"insert", 
+                         type:[{
+                             id:"/type/ect", 
+                             connect:"insert"
+                         }, {
+                             id:"/type/inc_type2", 
+                             connect:"insert"
+                         }]
+                     });
     });
 
 
@@ -608,14 +653,14 @@
         values: []
       };
       same(ep.parse(structure, context), []);
-      $(".fb-input", context).val("Dec 2009");
+      $(".fb-input", context).val("2009-12");
       same(ep.parse(structure, context), [{value:"2009-12", connect:"replace"}]);
     });
 
 
     test("unique-float-replace", function() {
       var context = $("#unique-float-replace");
-      $(".data-input", context).data_input({lang:"/lang/fr"});
+      $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/prop/id",
         unique: true,
@@ -623,7 +668,7 @@
         values: [{value:1.23}]
       };
       same(ep.parse(structure, context), []);
-      $(".fb-input", context).val("4,56");
+      $(".fb-input", context).val("4.56");
       same(ep.parse(structure, context), [{value:4.56, connect:"replace"}]);
     });
 

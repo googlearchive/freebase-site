@@ -370,7 +370,8 @@
       return data;
     },
 
-    type_clause: function(expected_type) {
+    type_clause: function(expected_type, incompatible_types) {
+      incompatible_types = incompatible_types || {};
       var clause = [];
       if (expected_type) {
         if (expected_type.enumeration) {
@@ -382,12 +383,15 @@
           return clause;
         }
         if (expected_type.id !== "/type/object") {
+          // we always want to assert the expected type,
+          // even if it's in the incompatible_types
+          // @see http://bugs.freebase.com/browse/SITE-1086
           clause.push({id:expected_type.id, connect:"insert"});
         }
         var inc_types = expected_type.included_types;
         if (inc_types) {
           $.each(inc_types, function(i, inc_type) {
-            if (inc_type !== "/type/object") {
+            if (!(inc_type === "/type/object" || incompatible_types[inc_type])) {
               clause.push({id:inc_type, connect:"insert"});
             }
           });
@@ -405,7 +409,7 @@
          * we want to assert the expected type and all its included types.
          */
         if (connect !== "delete" && expected_type && !expected_type.enumeration) {
-          var types = ep.type_clause(expected_type);
+          var types = ep.type_clause(expected_type, value.incompatible_types);
           if (types.length) {
             clause.type = types;
           }

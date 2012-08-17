@@ -40,7 +40,7 @@ var t = acre.require("flyout/flyout.mjt");
 var SPEC = {
     validate: function(params) {
         if (params.object && !params.id) {
-            // came from object routing (@see site/router.sjs)
+            // came from object routing (@see lib/routing/router.sjs)
             params.id = params.object.id;
         }
         if (params.lang) {

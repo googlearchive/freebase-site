@@ -176,7 +176,7 @@ function getLastXFromArray(num, array) {
 var SPEC = {  
   
     template: "browse.mjt",
-    template_base: "site/template/browse.mjt",   
+    template_base: "lib/template/browse.mjt",   
     run: function() {
 
         NUM_DAYS_CHART = 14;

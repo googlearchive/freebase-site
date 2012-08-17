@@ -42,7 +42,7 @@ var SPEC = {
   
   template: "browse.mjt",
   
-  template_base: "site/template/browse.mjt",
+  template_base: "lib/template/browse.mjt",
 
   run: function() {
     return {

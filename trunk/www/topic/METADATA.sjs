@@ -1,7 +1,7 @@
 var METADATA = {
   "mounts": {
-    "site":  "//site.www.trunk.svn.freebase-site.googlecode.dev"
+    "lib":  "//lib.www.trunk.svn.freebase-site.googlecode.dev"
   }
 };
 
-acre.require(METADATA.mounts.site + "/lib/helper/helpers.sjs").extend_metadata(METADATA, "site");
+acre.require(METADATA.mounts.lib + "/helper/helpers.sjs").extend_metadata(METADATA, "lib");

@@ -33,7 +33,7 @@ var SPEC = {
 
   template: "empty.mjt",
   
-  template_base: "site/template/browse.mjt",
+  template_base: "lib/template/browse.mjt",
 
   validate: function(params) { return []; },
 

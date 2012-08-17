@@ -84,14 +84,23 @@
              },
              success: function(data) {
                  var result = data.result;
-                 if ($.isEmptyObject(result)) {
-                     if (callbacks.compatible) {
-                         callbacks.compatible(topic_id, type_id);
+                 var incompatible = false;
+                 if (!$.isEmptyObject(result)) {
+                     $.each(result, function(k, v) {
+                         if (k !== "included_types") {
+                             incompatible = true;
+                             return false;
+                         }
+                     });
+                 }
+                 if (incompatible) {
+                     if (callbacks.incompatible) {
+                         // incompatible types
+                         callbacks.incompatible(topic_id, type_id, result);
                      }
                  }
-                 else if (callbacks.incompatible) {
-                     // incompatible types
-                     callbacks.incompatible(topic_id, type_id, result);
+                 else if (callbacks.compatible) {
+                     callbacks.compatible(topic_id, type_id);
                  }
              },
              error: function(xhr) {

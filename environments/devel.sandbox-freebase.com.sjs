@@ -6,49 +6,29 @@ var environment_rules = {
 
     // Override labels. All labels point to trunk by default.
     "labels" : {
-        "site": "//site" + codebase,
-        "lib": "//lib" + codebase,
-        "default":  "//default.dev"
+        "default": "//default.dev",
+        "lib":     "//lib" + codebase
     },
 
-    // Override prefix.
-    // For test urls
+    // Override prefix
     "prefix" : [
         // provides a backdoor for creating new keys with curl
-        {prefix:"/keystore",                app:"default",  script: "keystore.sjs"},
-        // Test routing rules to test non-user facing apps (core libraries, etc.)
-        {prefix:"/test_lib_appeditor-services",  app:"lib", script:"appeditor-services/test"},
-        {prefix:"/test_lib_collection",     app:"lib", script:"collection/test"},
-        {prefix:"/test_lib_filter",         app:"lib", script:"filter/test"},
-        {prefix:"/test_lib_flag",           app:"lib", script:"flag/test"},
-        {prefix:"/test_lib_handlers",       app:"lib", script:"handlers/test"},
-        {prefix:"/test_lib_helper",         app:"lib", script:"helper/test"},
-        {prefix:"/test_lib_i18n",           app:"lib", script:"i18n/test"},
-        {prefix:"/test_lib_incompatible_types",     app:"lib", script:"incompatible_types/test"},
-        {prefix:"/test_lib_permission",     app:"lib", script:"permission/test"},
-        {prefix:"/test_lib_promise",        app:"lib", script:"promise/test"},
-        {prefix:"/test_lib_propbox",        app:"lib", script:"propbox/test"},
-        {prefix:"/test_lib_queries",        app:"lib", script:"queries/test"},
-        {prefix:"/test_lib_routing",        app:"lib", script:"routing/test"},
-        {prefix:"/test_lib_schema",         app:"lib", script:"schema/test"},
-        {prefix:"/test_lib_suggest",        app:"lib", script:"suggest/test"},
-        {prefix:"/test_lib_template",       app:"lib", script:"template/test"},
-        {prefix:"/test_lib_test",           app:"lib", script:"test/test"},
-        {prefix:"/test_lib_validator",      app:"lib", script:"validator/test"},
-        {prefix:"/test_site_queries",       app:"site", script:"queries/test"},
-        {prefix:"/test_inspect",            app:"triples", script:"test"},
-        {prefix:"/test_sameas",             app:"sameas", script:"test"},
-        {prefix:"/test_schema",             app:"schema", script:"test"},
-        {prefix:"/test_topic",              app:"topic", script:"test"},
-        {prefix:"/test_data",               app:"data", script:"test"},
-        {prefix:"/test_query",              app:"query", script:"test"},
-        {prefix:"/test_flyout",             app:"flyout", script:"test"},
-
-        {prefix:"/warmer",                   app:"lib", script:"schema/warmer.controller"},
+        {prefix:"/keystore",   app:"default",  script: "keystore.sjs"},
 
         // sample app
-        {prefix:"/sample",             app:"sample"}
+        {prefix:"/sample",     app:"sample"}
+    ],
+
+    // overridde router list for devel so we can add the 'test' router
+    "routers" : [
+        "host",
+        "custom",
+        "test",
+        "static",
+        "ajax",
+        "prefix",
+        "object",
     ]
 };
 
-acre.require(environment_rules.labels.site + "/router.sjs").route(environment_rules, this);
+acre.require(environment_rules.labels.lib + "/routing/router.sjs").route(environment_rules, this);

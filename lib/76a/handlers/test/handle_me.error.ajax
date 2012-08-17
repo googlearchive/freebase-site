@@ -1,0 +1,21 @@
+var validators = acre.require("validator/validators");
+var deferred = acre.require("promise/deferred");
+
+var SPEC = {
+
+  method: "GET",
+
+  auth: false,
+
+  validate: function(params) {
+    throw new validators.Invalid("missing parameter");
+  },
+
+  run: function(topic1, topic2) {
+    return deferred.resolved({
+      topic1: topic1,
+      topic2: topic2
+    });
+  }
+
+};

@@ -1,0 +1,106 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+var i18n = acre.require("lib/i18n/i18n.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
+var queries = acre.require("queries.sjs");
+var editcomponents = acre.require("editcomponents.mjt");
+var promise_apis = acre.require("lib/promise/apis.sjs");
+var freebase = promise_apis.freebase;
+var deferred = promise_apis.deferred;
+var t = acre.require("group.mjt");
+
+/** connected responses corresponding to "insertions" **/
+var CONNECTED = {
+  "inserted": 1,
+  "updated": 1,
+  "present": 1
+};
+
+/**
+ * prop add form
+ */
+var SPEC = {
+
+  method: "POST",
+
+  auth: true,
+
+  validate: function(params) {
+    return [
+      validators.MqlId(params, "s", {required:true}), // subject id
+      validators.OneOf(params, "p", {required:true, oneof:["/type/usergroup/member"]}), // property id
+      validators.Json(params, "o", {required:true}), // object operations
+      validators.MqlId(params, "type", {required:false, if_empty:"/type/domain"}) // type id
+    ];
+  },
+
+  run: function(s, p, o, type) {
+    var q = {id:s};
+    q[p] = o;
+    return freebase.mqlwrite(q)
+      .then(function(env) {
+        return env.result;
+      })
+      .then(function(result) {
+        var clause = result[p];
+        var userid = clause.id;
+
+        // invalidate cache for review
+        acre.cache.remove('review_user_cached_' + s)
+
+        // deleted
+        if (!CONNECTED[clause.connect]) {
+          var undo_data = {
+            s: s,
+            p: p,
+            o: [{
+              id: userid,
+              connect: "insert"
+            }]
+          };
+          return {
+            html: acre.markup.stringify(editcomponents.deleted_user(undo_data, userid))
+          };
+        }
+
+        // inserted/updated
+        else {
+          return queries.user(userid, s, type)
+            .then(function(user) {
+              return {
+                html: acre.markup.stringify(t.user_table_row(user))
+              };
+            });
+        }
+      });
+  }
+};
+

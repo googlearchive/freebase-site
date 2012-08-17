@@ -141,6 +141,11 @@ var LANG_TIERS = [
     "ur"
 ];
 
+var CULTURE_MAP = {
+    "iw": "he",        // Globalize uses he
+    "es-419": "es-MX"  // there is no es-419 in Globalize, just use Mexico's
+};
+
 /**
  * Load lang info (from mql) that match each LANG_TIERS code.
  * Each lang info's id and key will directy correspond to
@@ -273,19 +278,26 @@ function get_lang_code(get_mql_code, for_lang_or_code) {
  * If the string bundle does not exist or the msgid does not exist in the string bundle,
  * just returns msgid.
  */
-var last_bundle_path = acre.request.script.app.path;
+var last_bundle_app = acre.request.script.app.host;
 function gettext(msgid) {
-  var culture = get_globalize_culture_lang_code();
-  if (last_bundle_path != acre.request.script.app.path) {
-      var app =  acre.get_metadata(acre.request.script.app.path);
-      var fname = "bundles/globalize.bundle." + culture + ".js";
-      if (app.files[fname]) {
-        // Requiring a bundle will extend the global "Globalize" variable
-        acre.require(acre.request.script.app.path + "/" + fname, JS_TO_SJS);
+  var culture_code = get_globalize_culture_lang_code();
+  if (last_bundle_app != acre.request.script.app.host) {
+      var app = null;
+      try {
+          app = acre.get_metadata("//bundles." + acre.request.script.app.host);
       }
-      last_bundle_path = acre.request.script.app.path;
+      catch (ex if (ex instanceof Error && ex.message &&
+                    ex.message.indexOf("Could not fetch data from") === 0)) {
+          // some apps do not have a bundle
+      }
+      var bundle = "globalize.bundle." + culture_code + ".js";
+      if (app && app.files[bundle]) {
+        // Requiring a bundle will extend the global "Globalize" variable
+        acre.require(app.path + "/" + bundle, JS_TO_SJS);
+      }
+      last_bundle_app = acre.request.script.app.host;
   }
-  var msg = Globalize.localize(msgid, culture);
+  var msg = Globalize.localize(msgid, culture_code);
   if (msg == null) {
       msg = Globalize.localize(msgid, "default");
   }
@@ -494,27 +506,33 @@ function set_lang(req_lang) {
 
   // add Globalize.cultures and default lang bundle (lib/bundle)
   // using the canonical lang code specified by LANG_TIERS
-  var lib = acre.get_metadata();
-  var code = get_globalize_culture_lang_code();
-  var fname = "globalize/cultures/globalize.culture." + code + ".js";
-  if (lib.files[fname]) {
+
+  // globalize cultures/bundles are their own "app" and not included in lib
+  var globalize_cultures = acre.get_metadata("//cultures.globalize." + acre.current_script.app.host);
+  var globalize_bundles = acre.get_metadata("//bundles." + acre.current_script.app.host);
+
+  var culture_code = get_globalize_culture_lang_code();
+  var culture = "globalize.culture." + culture_code + ".js";
+  var bundle = "globalize.bundle." + culture_code + ".js";
+  if (globalize_cultures.files[culture]) {
       // Requiring a culture will extend the global "Globalize" variable
-      acre.require(fname, JS_TO_SJS);
+      acre.require(globalize_cultures.path + "/" + culture, JS_TO_SJS);
   }
-  fname = "bundles/globalize.bundle." + code + ".js";
-  if (lib.files[fname]) {
+  if (globalize_bundles.files[bundle]) {
       // Requiring a bundle will extend the global "Globalize" variable
-      acre.require(fname, JS_TO_SJS);
+      acre.require(globalize_bundles.path + "/" + bundle, JS_TO_SJS);
   }
 };
+
 
 /**
  * Get the corresponding Globalize culture language code
  * given the lang id or code.
  */
+
 function get_globalize_culture_lang_code(for_lang_or_code) {
     var code = get_lang_code(false, for_lang_or_code);
-    return code;
+    return CULTURE_MAP[code] || code;
 };
 
 function format_number(number, is_float, format) {
@@ -531,7 +549,8 @@ function format_number(number, is_float, format) {
             format = "n0";
         }
     }
-    return Globalize.format(number, format, get_lang_code());
+    var culture = get_globalize_culture_lang_code();
+    return Globalize.format(number, format, culture);
 };
 
 function format_datetime(datetime, format) {
@@ -548,8 +567,9 @@ function format_date(date, format) {
     if (!d) {
         return date;
     }
+    var culture = get_globalize_culture_lang_code();
     if (format) {
-        date = Globalize.format(d, format, get_lang_code());
+        date = Globalize.format(d, format, culture);
     }
     else {
         var year = parseInt(d.getFullYear(), 10);
@@ -558,13 +578,13 @@ function format_date(date, format) {
             date = format_bce_year(year);
         }
         else if (iso8601.is_date_yyyy(date)) {
-            date = Globalize.format(d, "yyyy", get_lang_code());
+            date = Globalize.format(d, "yyyy", culture);
         }
         else if (iso8601.is_date_yyyymm(date)) {
-            date = Globalize.format(d, "Y", get_lang_code());
+            date = Globalize.format(d, "Y", culture);
         }
         else if (iso8601.is_date_yyyymmdd(date)) {
-            date = Globalize.format(d, "d", get_lang_code());
+            date = Globalize.format(d, "d", culture);
         }
     }
     return date;
@@ -590,20 +610,21 @@ function format_bce_year(year) {
  */
 function format_time(time, format) {
     var index = time.indexOf("T");
+    var culture = get_globalize_culture_lang_code();
     if (index !== -1) {
       time = time.substring(index + 1);
     }
     if (iso8601.is_time_hh(time)) {
       var d = Globalize.parseDate(time, "HH");
-      time = Globalize.format(d, format || "t", get_lang_code());
+      time = Globalize.format(d, format || "t", culture);
     }
     else if (iso8601.is_time_hhmm(time)) {
       var d = Globalize.parseDate(time, "HH:mm");
-      time = Globalize.format(d, format || "t", get_lang_code());
+      time = Globalize.format(d, format || "t", culture);
     }
     else if (iso8601.is_time_hhmmss(time)) {
       var d = Globalize.parseDate(time, "HH:mm:ss");
-      time = Globalize.format(d, format || "T", get_lang_code());
+      time = Globalize.format(d, format || "T", culture);
     }
     return time;
 };

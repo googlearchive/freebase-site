@@ -1,0 +1,261 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+ 
+<acre:script>
+  var templates = this.exports;
+  var outputPane;
+</acre:script>
+ 
+<acre:block def="tabs(id, oP)">
+
+  <acre:script>
+    outputPane = oP;
+  </acre:script>
+  
+  <div id="$id" class="cuecard-outputPane">
+    <div class="cuecard-outputPane-tabs section-tabs">
+      <ul class="section-tabset clear">
+        <li acre:for="index, tab in outputPane._TABS" class="section-tab">
+          <a href="#${id}-${tab.key}"><span>$tab.name</span></a>
+        </li>
+      </ul>
+    </div>
+    <div class="cuecard-outputPane-content tabbed-content module-section">
+      <div acre:for="tab in outputPane._TABS" class="cuecard-outputPane-tabBody cuecard-outputPane-$tab.key" id="${id}-${tab.key}">
+        ${templates[tab.key]()}
+      </div>
+    </div>
+  </div>
+  
+  <acre:block script="ondomready">
+    var el = $(outputPane._elmt);
+    outputPane._container = el.find(".cuecard-outputPane");
+    outputPane._tabsContainer = el.find(".cuecard-outputPane-tabs");
+    outputPane._contentContainer = el.find(".cuecard-outputPane-content");
+  </acre:block>
+</acre:block>
+
+
+<acre:block def="list(o, q)">
+  <table class="data-table" acre:if="o && o.result">
+    <acre:script>
+      function decantConstraints(q) {
+        function decant(val) {
+          if (jQuery.isPlainObject(val)) {
+            var has_keys = false;
+            for (var key in val) {
+              has_keys = true;
+              var tmp = decant(val[key])
+              if (tmp === undefined) {
+                delete val[key];
+              } else {
+                val[key] = tmp;
+              }
+            }
+            return has_keys ? val : undefined;
+          } else if (jQuery.isArray(val)) {
+            return val.length ? decant(val[0]) : undefined;
+          } else {
+            return (val === null) ? undefined : val;
+          }
+        };
+
+        return decant(q);
+      };
+    
+      function is_constraint(path, value) {
+    
+        function same_keys(o1, o2) {
+          for (var key in o1) {
+            var val1 = o1[key];
+            var val2 = o2[key];
+            val1 = jQuery.isArray(val1) ? val1[0] : val1;
+            val2 = jQuery.isArray(val2) ? val2[0] : val2;
+            if (val2 === undefined) return false;
+            if (jQuery.isPlainObject(val1) && jQuery.isPlainObject(val2)) {
+              if (!same_keys(val1, val2)) return false;
+            }
+          }
+          return true;
+        }
+    
+        var val = jQuery.extend(true, {}, constraints);
+        value = jQuery.isArray(value) ? value[0] : value;
+        for (var s = 0; s < path.length; s++) {
+          val = val[path[s]];
+          if (val === undefined) return false;
+        }
+        return jQuery.isPlainObject(val) ? same_keys(value, val) : true;
+      }
+    
+      var constraints = decantConstraints(q.query || {});
+    </acre:script>
+
+    <thead acre:def="thead(r, path)">
+      <tr>
+        <th acre:for="key, val in r" acre:if="!is_constraint(path.concat(key), val)">
+          ${key.split(":")[0].replace(/_/g, " ")} ${thead_value(val, path.concat(key))}
+        </th>
+      </tr>
+    </thead>
+
+    <acre:block def="thead_value(v, path)">
+      <acre:script>if (jQuery.isArray(v)) v = v[0];</acre:script>
+      <ul acre:if="jQuery.isPlainObject(v)">
+        <li acre:for="key, val in v" acre:if="!is_constraint(path.concat(key), val)">
+          ${key.split(":")[0].replace(/_/g, " ")} ${thead_value(val, path.concat(key))}
+        </li>
+      </ul>
+    </acre:block>
+
+    <acre:block def="row(r, path)">
+      <acre:block if="jQuery.isPlainObject(r)">
+        <td acre:for="key, val in r" acre:if="!is_constraint(path.concat(key), val)">
+          ${value(val, path.concat(key))}
+        </td>
+      </acre:block>
+      <td acre:else="">${value(val, path)}</td>
+    </acre:block>
+
+    <acre:block def="value(a, path)">
+      <acre:block choose="typeof a">
+        <acre:block when="string">
+          <a acre:if="/^\//.test(a)" class="cuecard-outputPane-dataLink" href="$a">$a</a>
+          <acre:block else="">$a</acre:block>
+        </acre:block>
+        <acre:block when="number">$a</acre:block>
+        <acre:block when="boolean">${a ? "true" : "false"}</acre:block>
+        <acre:block when="object">
+          <ul class="data-list" acre:if="jQuery.isArray(a)">
+            <li acre:for="val in a">
+              ${value(val, path)}
+            </li>
+          </ul>
+          <ul class="data-list" acre:elif="jQuery.isPlainObject(a)">
+            <li acre:for="key, val in a" acre:if="!is_constraint(path.concat(key), val)">
+              ${value(val, path.concat(key))}
+            </li>
+          </ul>
+        </acre:block>
+      </acre:block>
+    </acre:block>
+
+    <acre:block if="jQuery.isArray(o.result)">
+      ${thead(o.result[0], [])}
+      <tbody>
+        <tr acre:for="a in o.result">${row(a, [])}</tr>
+      </tbody>
+      <tfooter>
+        <tr>
+          <td>
+            <button acre:if="o.cursor" onclick="__cc_runPage(-1)">Previous</button>
+            <button acre:if="o.result.length==(q.query.limit || 100)" onclick="__cc_runPage(1)">Next</button>
+          </td>
+        </tr>
+      </tfooter>
+    </acre:block>
+    <acre:block else="">
+      <acre:block if="typeof o.result === 'object'">${thead(o.result, [])}</acre:block>
+      <tbody>
+        <tr>${row(o.result, [])}</tr>
+      </tbody>
+    </acre:block>
+  </table>
+</acre:block>
+
+
+<acre:block def="list_error(message)">
+  <link acre:if="outputPane._options.stylesheet" rel="stylesheet" href="$outputPane._options.stylesheet"/>
+  <div class="cuecard-outputPane-list-error">$message</div>
+</acre:block>
+
+
+<acre:block def="json()">
+</acre:block>
+
+
+<acre:block def="help()">
+  <div class="cuecard-outputPane-helpContent">
+    <h1 class="title">The Query Editor enables you to run 
+      <a href="http://wiki.freebase.com/wiki/Mql" rel="external help">MQL</a> queries in the browser and retrieve Freebase data</h1>
+    <h2>Enter your query and hit "Run" to get started.</h2>
+    <ul id="help-links" class="clear">
+      <li><a href="http://wiki.freebase.com/wiki/MQL" target="_blank">MQL API Guide</a></li>
+      <li><a href="http://wiki.freebase.com/wiki/MQL_Manual" target="_blank">MQL Reference</a></li>
+    </ul>
+
+    <div class="modal-inner" id="examples">
+      <div class="header">
+        <select class="cuecard-examples-technique">
+          <option acre:for="technique in CueCard.ExampleTechniques" 
+            acre:attrs="(technique === 'all')?{checked:'checked'}:{}" data-technique="$technique">
+            $technique (${CueCard.ExampleTechniqueMap[technique].length})
+          </option>
+        </select>
+        <h1 class="modal-title">
+          <span>Sample Queries</span>
+        </h1>
+      </div>
+      
+      <acre:block def="list_examples(technique)">
+        <a acre:for="index, example in CueCard.Examples" 
+           acre:if="((technique !== 'all') ? (example.techniques.indexOf(technique) !== -1) : true)"
+           href="javascript:void(0);" onclick="return selectExample('$index');" class="cuecard-examples-example" id="cuecard-example-$index">
+          $example.name
+        </a>
+      </acre:block>
+      
+      <div class="cuecard-examples-list"></div>
+    </div>
+    <acre:block script="ondomready">
+      selectTechnique = function(technique) {
+        technique = technique || 'all';
+        $(".cuecard-examples-list").acre(list_examples(technique));
+        return false;
+      }
+
+      selectExample = function(index) {
+        $(".cuecard-examples-example").removeClass("cuecard-examples-example-selected");
+        $("#cuecard-example-" + index).addClass("cuecard-examples-example-selected");
+        outputPane._options.queryEditor.content(CueCard.jsonize(CueCard.Examples[index].query, { indentCount: 2 }));
+        outputPane._options.queryEditor.run(false);
+        return false;
+      }
+
+      selectTechnique();
+      
+      $(".cuecard-examples-technique").change(function(){
+        var technique = $("option:selected", this).attr("data-technique");
+        selectTechnique(technique);
+      });
+    </acre:block>
+  </div>
+</acre:block>

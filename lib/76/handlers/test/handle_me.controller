@@ -1,0 +1,21 @@
+var deferred = acre.require("promise/deferred");
+
+var SPEC = {
+
+  method: "GET",
+
+  auth: false,
+
+  validate: function(params) {
+    return ["/en/blade_runner", "/en/bob_dylan"];
+  },
+
+  template: "handlers/test/handle_me.mjt",
+
+  run: function(id, id2) {
+    return {
+      topic: "Blade Runner",
+      topic2: deferred.resolved("Bob Dylan")
+    };
+  }
+};

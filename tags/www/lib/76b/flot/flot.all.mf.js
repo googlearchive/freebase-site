@@ -1,0 +1,11 @@
+[
+  "flot/flot.core.mf.js",
+  "flot/jquery.flot.fillbetween.js",
+  "flot/jquery.flot.navigate.js",
+  "flot/jquery.flot.stack.js",
+  "flot/jquery.flot.image.js",
+  "flot/jquery.flot.pie.js",
+  "flot/jquery.flot.threshold.js",
+  "flot/jquery.flot.crosshair.js",
+  "flot/jquery.flot.selection.js"
+]

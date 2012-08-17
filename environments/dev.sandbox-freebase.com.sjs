@@ -8,26 +8,26 @@ var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
 var environment_rules = {
 
     "labels" : {
-        "lib": "//75a.lib.www.tags.svn.freebase-site.googlecode.dev",
+        "lib": "//76b.lib.www.tags.svn.freebase-site.googlecode.dev",
         "default" : "//default.dev",
 
-        "site": "//45a.site" + tags_codebase,
-        "account": "//48a.account" + tags_codebase,
-        "appeditor": "//49a.appeditor" + tags_codebase,
-        "apps": "//49a.apps" + tags_codebase,
-        "create": "//45a.create" + tags_codebase,
-        "data": "//46a.data" + tags_codebase,
-        "discuss": "//4a.discuss" + tags_codebase,
-        "mdo": "//27a.mdo" + tags_codebase,
-        "policies": "//49a.policies" + tags_codebase,
-        "query": "//46a.query" + tags_codebase,
-        "review": "//28a.review" + tags_codebase,
-        "sameas": "//47a.sameas" + tags_codebase,
-        "sample": "//48a.sample" + tags_codebase,
-        "schema": "//52a.schema" + tags_codebase,
-        "topic": "//52a.topic" + tags_codebase,
-        "triples": "//48a.triples" + tags_codebase,
-        "users": "//26a.users" + tags_codebase
+        "site": "//46b.site" + tags_codebase,
+        "account": "//49b.account" + tags_codebase,
+        "appeditor": "//50b.appeditor" + tags_codebase,
+        "apps": "//50b.apps" + tags_codebase,
+        "create": "//46b.create" + tags_codebase,
+        "data": "//47b.data" + tags_codebase,
+        "discuss": "//5b.discuss" + tags_codebase,
+        "mdo": "//28b.mdo" + tags_codebase,
+        "policies": "//50b.policies" + tags_codebase,
+        "query": "//47a.query" + tags_codebase,
+        "review": "//29a.review" + tags_codebase,
+        "sameas": "//48a.sameas" + tags_codebase,
+        "sample": "//49a.sample" + tags_codebase,
+        "schema": "//53a.schema" + tags_codebase,
+        "topic": "//53a.topic" + tags_codebase,
+        "triples": "//49a.triples" + tags_codebase,
+        "users": "//27a.users" + tags_codebase
 
     },
 

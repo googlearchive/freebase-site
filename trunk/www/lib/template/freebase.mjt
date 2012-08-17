@@ -283,20 +283,33 @@
   <script acre:else="" src="template/freebase.mf.js"></script>
   <!!-- Globalize cultures and bundles -->
   <acre:script>
-    var lib = acre.get_metadata();
-    var app = acre.get_metadata(acre.request.script.app.path);
+    /**
+     * We lib/globalize/cultures, lib/bundles, and requested app's metadata
+     * to see if we need to include culture/bundle files for the current language.
+     */
+    // globalize cultures/bundles are their own "app" and not included in lib
+    var globalize_cultures = acre.get_metadata("//cultures.globalize." + acre.current_script.app.host);
+    var globalize_bundles = acre.get_metadata("//bundles." + acre.current_script.app.host);
+    var app_bundles = null;
+    try {
+      app_bundles = acre.get_metadata("//bundles." + acre.request.script.app.host);
+    }
+    catch (ex if (ex instanceof Error && ex.message &&
+                  ex.message.indexOf("Could not fetch data from") === 0)) {
+      // some apps do not have a bundle
+    }
     var culture_code = i18n.get_globalize_culture_lang_code();
-    var culture = "globalize/cultures/globalize.culture." + culture_code + ".js";
-    var bundle = "bundles/globalize.bundle." + culture_code + ".js";
+    var culture = "globalize.culture." + culture_code + ".js";
+    var bundle = "globalize.bundle." + culture_code + ".js";
   </acre:script>
-  <acre:block if="lib.files[culture]">
-    <script src="${h.static_url('lib/' + culture)}"></script>
+  <acre:block if="globalize_cultures.files[culture]">
+    <script src="${h.static_url(globalize_cultures.path + '/' + culture)}"></script>
   </acre:block>
-  <acre:block if="lib.files[bundle]">
-    <script src="${h.static_url('lib/' + bundle)}"></script>
+  <acre:block if="globalize_bundles.files[bundle]">
+    <script src="${h.static_url(globalize_bundles.path + '/' + bundle)}"></script>
   </acre:block>
-  <acre:block if="acre.current_script.app.path != acre.request.script.app.path && app.files[bundle]">
-    <script src="${h.static_url(bundle)}"></script>
+  <acre:block if="acre.current_script.app.path != acre.request.script.app.path && app_bundles && app_bundles.files[bundle]">
+    <script src="${h.static_url(app_bundles.path + '/' + bundle)}"></script>
   </acre:block>
   <!!--TODO(culbertson): compile feedback with freebase.mf.js--!>
   <script>

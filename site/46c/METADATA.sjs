@@ -1,12 +1,12 @@
 var METADATA = {
-  "app_version": 46, 
+  "app_version": "46", 
   "csrf_protection": "strong", 
   "app_key": "site", 
   "project": "freebase-site.googlecode.dev", 
   "mounts": {
-    "lib": "//76.lib.www.branches.svn.freebase-site.googlecode.dev"
+    "lib": "//76c.lib.www.tags.svn.freebase-site.googlecode.dev"
   }, 
-  "app_tag": null
+  "app_tag": "46c"
 };
 
 acre.require(METADATA.mounts.lib + "/helper/helpers.sjs").extend_metadata(METADATA, "lib");

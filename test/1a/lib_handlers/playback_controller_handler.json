@@ -1,0 +1,1 @@
+{"render":[],"require":[["to_module","{\"method\":\"GET\",\"auth\":false,\"template\":\"./handle_me.mjt\"}"]],"include":[["to_module","{\"method\":\"GET\",\"auth\":false,\"template\":\"./handle_me.mjt\"}"],["to_http_response","<p>content_body topic:Blade Runner, topic2:Bob Dylan</p>"]]}

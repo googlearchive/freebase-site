@@ -34,5 +34,5 @@ var environment_rules = {
 
 };
 
-acre.require(environment_rules.labels.lib + "/router.sjs").route(environment_rules, this);
+acre.require(environment_rules.labels.lib + "/routing/router.sjs").route(environment_rules, this);
 

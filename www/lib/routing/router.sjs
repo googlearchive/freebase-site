@@ -1054,9 +1054,10 @@ function is_proxyable(app_path, scope) {
  * If context is TRUE, do an acre.include instead of acre.route,
  * so that we do not lose the context of the original request include oauth credentials.
  */
-function route_path(path, context, md) {
-  if (context) {
-    var content = acre.include(path, md);
+function route_path(path, context, scope, md) {
+   if (context) {
+    scope = scope || this;
+    var content = acre.include.call(scope, path, md);
     var headers = content.headers;
     if (headers) {
       for (var k in headers) {
@@ -1142,7 +1143,7 @@ function TestRouter(rules) {
     for (var label in rules.labels) {
       test_labels["label/" + label] = rules.labels[label];
     }
-    route_path(test_path, true, {"mounts": test_labels});
+    route_path(test_path, true, null, {"mounts": test_labels});
   };
 };
 
@@ -1191,6 +1192,17 @@ function PrefixRouter(rules) {
   var app_labels = rules.labels;
   var route_list = [];
   var routing_tree = {};
+
+  // check cache for routing tables based on version of environments
+  var cached = false;
+  var env_md = acre.get_metadata(acre.request.script.path);
+  var cache_key = env_md.content_hash + ":prefix_routes";
+  var routes = acre.cache.get(cache_key);
+  if (routes) {
+    cached = true;
+    route_list = routes.route_list;
+    routing_tree = routes.routing_tree;
+  }
 
   var key_for_app = function(app, script) {
     var key = app;
@@ -1278,6 +1290,12 @@ function PrefixRouter(rules) {
   };
 
   var route = this.route = function(req) {
+    if (!cached) {
+      acre.cache.put(cache_key, {
+        route_list: route_list,
+        routing_tree: routing_tree
+      })
+    }
     var req_path = req.url.replace(req.app_url, "");
     // filter out query string
     var path = req_path;

@@ -1,0 +1,4 @@
+<acre:block def="content_body()">
+  Hello World!
+  ${JSON.stringify(acre.get_metadata("lib")).length}
+</acre:block>

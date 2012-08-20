@@ -1,0 +1,13 @@
+<acre:script>
+  var freebase = acre.require("lib/promise/apis").freebase;
+  var c = this.exports.c = {
+    name: freebase.mqlread({id:"/en/bob_dylan", name:null})
+      .then(function(env) {
+        return env.result.name;
+      })
+  };
+</acre:script>
+
+<acre:block def="content_body()">
+  Hello ${c.name}!
+</acre:block>

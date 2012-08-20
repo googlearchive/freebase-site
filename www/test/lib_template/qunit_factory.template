@@ -30,7 +30,7 @@
  !!-->
 <acre:script>
   var c = exports.c = {
-    template_base: "test/qunit.mjt"
+    template_base: "lib/test/qunit.mjt"
   };
 </acre:script>
 

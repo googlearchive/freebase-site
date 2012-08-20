@@ -1,0 +1,121 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+acre.require("lib/test/mock").playback(this, "./playback_article.json");
+
+var testing = acre.require("lib/queries/article.sjs");
+
+var h = acre.require("lib/helper/helpers.sjs");
+var apis = acre.require("lib/promise/apis.sjs");
+var deferred = apis.deferred;
+var freebase = apis.freebase;
+
+test("get_article", function() {
+    var result;
+    testing.get_article("/en/jack_kerouac")
+        .then(function(r) {
+            result = r;
+        });
+    acre.async.wait_on_results();
+    ok(result, "Got result");
+    ok(h.type(result["/en/jack_kerouac"]) === "array" && 
+       result["/en/jack_kerouac"].length, "Got article");
+});
+
+test("get_article (multiple)", function() {    
+    var result = null;
+    testing.get_article(["/en/jack_kerouac", "/en/david_bowie"])
+        .then(function(r) {
+            result = r;
+        });
+    acre.async.wait_on_results();
+    ok(result, "Got result");
+    ok(h.type(result["/en/jack_kerouac"]) === "array" &&
+       result["/en/jack_kerouac"].length, "Got /en/jack_kerouac article");
+    ok(h.type(result["/en/david_bowie"]) === "array" &&
+       result["/en/david_bowie"].length, "Got /en/david_bowie article");
+});
+
+
+test("get_article with prop_id", function() {
+    var result;
+    testing.get_article("/en/jack_kerouac", "/common/topic/article")
+        .then(function(r) {
+            result = r;
+        });
+    acre.async.wait_on_results();
+    ok(result, "Got result");
+    ok(h.type(result["/en/jack_kerouac"]) === "array" && 
+       result["/en/jack_kerouac"].length, "Got article");
+});
+
+test("get_article with prop_id (multiple)", function() {
+    var result = null;
+    testing.get_article(["/en/jack_kerouac", "/en/david_bowie"], "/common/topic/article")
+        .then(function(r) {
+            result = r;
+        });
+    acre.async.wait_on_results();
+    ok(result, "Got result");
+    ok(h.type(result["/en/jack_kerouac"]) === "array" && 
+       result["/en/jack_kerouac"].length, "Got /en/jack_kerouac article");
+    ok(h.type(result["/en/david_bowie"]) === "array" && 
+       result["/en/david_bowie"].length, "Got /en/david_bowie article");
+});
+
+test("get_article with article_id", function() {
+    var article_id;
+    freebase.mqlread({
+        id: "/en/jack_kerouac",
+        "/common/topic/article": {
+            id: null,
+            mid: null,
+            limit: 1
+        }
+    })
+    .then(function(env) {
+        article_id = env.result["/common/topic/article"].mid;
+    });
+    acre.async.wait_on_results();
+    ok(article_id, "testing /en/jack_kerouac article: " + article_id);
+
+    var result = null;
+    testing.get_article("/en/jack_kerouac", null, article_id)
+        .then(function(r) {
+            result = r;
+        });
+    acre.async.wait_on_results();
+    ok(result, "Got result");
+    ok(h.type(result["/en/jack_kerouac"]) === "array" &&
+       result["/en/jack_kerouac"].length == 1, "Got /en/jack_kerouac article");
+    same(result["/en/jack_kerouac"][0].id, article_id);
+});
+

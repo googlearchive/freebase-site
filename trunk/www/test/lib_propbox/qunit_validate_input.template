@@ -30,10 +30,10 @@
  !!-->
 
 <acre:script>
-  var h = acre.require("helper/helpers.sjs");
-  var i18n = acre.require("i18n/i18n.sjs");
+  var h = acre.require("lib/helper/helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
   var c = exports.c = {
-    template_base: "test/qunit.mjt"
+    template_base: "lib/test/qunit.mjt"
   };
   var cultures = "en,es,fr,de,it,pt,zh,ja,ko,ru,sv,fi,da,nl,el,ro,tr,hu".split(",");
 </acre:script>

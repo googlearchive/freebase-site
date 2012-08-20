@@ -1,0 +1,11 @@
+[
+    "lib/suggest/suggest.mf.js",
+    "lib/suggest/test/jquery.simulate.js",
+    "lib/suggest/test/test.js",
+    "lib/suggest/test/options.js",
+    "lib/suggest/test/events.js",
+    "lib/suggest/test/ux.js",
+    "lib/suggest/test/functional.js",
+    "lib/suggest/test/xss.js",
+    "lib/suggest/test/advanced.js"
+]

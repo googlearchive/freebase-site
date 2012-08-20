@@ -100,7 +100,7 @@
                      }
                  }
                  else if (callbacks.compatible) {
-                     callbacks.compatible(topic_id, type_id);
+                     callbacks.compatible(topic_id, type_id, result);
                  }
              },
              error: function(xhr) {

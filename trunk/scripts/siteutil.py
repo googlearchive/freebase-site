@@ -2002,13 +2002,16 @@ class Site:
 
     apps = SVNLocation(self.context, self.conf("svn_url") + "/trunk/www").ls()
 
-    for priority_app in ["site", "lib"]:
-      if priority_app in apps:
-        apps.remove(priority_app)
-        apps.insert(0, priority_app)
+    # Put lib in the front, so that a tag or branch for lib will be generated
+    # before any other app. Since all apps depend on lib, that's necessary. 
+    if "lib" in apps:
+      apps.remove("lib")
 
-    if not apps[0] == "lib":
-        apps.insert(0, "lib")
+    apps.insert(0, "lib")
+
+    # The test app does not need to be pushed out / branched / tagged.
+    if "test" in apps:
+      apps.remove("test")
 
     return apps
 

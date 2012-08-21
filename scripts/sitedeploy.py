@@ -1137,7 +1137,7 @@ var environment_rules = {
 
 };
 
-acre.require(environment_rules.labels.site + "/router.sjs").route(environment_rules);
+acre.require(environment_rules.labels.lib + "/routing/router.sjs").route(environment_rules, this);
 '''
 
     return True

@@ -329,13 +329,13 @@
             ${that_exports.discuss_content()}
         </acre:block>
         <acre:block else="">
-            <div class="table-title-wrapper clear">
+            <div class="discuss-table-title-wrapper clear">
                 <h2 class="table-title">${_("Comments")}</h2>
                 <a href="${h.static_url('lib/discuss/discuss.mf.js')}" onclick="return fb.nav_get_script(this, 'discuss.toggle_discuss',[]);">${_("Hide")}</a>
             </div>
             <div id="discuss-iframe-wrapper"> 
-                <iframe src="${h.docos_url(c.object.mid)}" id="discuss-frame" width="100%" height="100%">
-                </iframe>
+               <iframe src="" id="discuss-frame" width="100%" height="100%">
+               </iframe>
             </div>
         </acre:block>
     </div>

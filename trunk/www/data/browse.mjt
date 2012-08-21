@@ -40,13 +40,6 @@
 </acre:script>
 
 <acre:block def="head()">
-  <!!-- Redirect to user page if signed-in -->
-  <script acre:if="acre.request.base_path == '/'">
-    var user = SERVER.cookie("${h.account_cookie_name()}");
-    if (user) {
-      window.location.href= "/user/" + user;
-    }
-  </script>
   <meta name="description" 
         content="Freebase is a community-curated database of well-known people, places and things.">
   <meta name="keywords" 

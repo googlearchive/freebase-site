@@ -117,10 +117,6 @@ var exports = {
   // METADATA
   "extend_metadata" : extend_metadata,
 
-  // DOCOS
-  "docos_key" : docos_key,
-  "docos_url" : docos_url,
-
   // TOPIC
   "get_values" : get_values,
   "get_first_value" : get_first_value,
@@ -1729,31 +1725,6 @@ function extend_metadata(md, mount) {
 
   return md;
 };
-
-// ------------- DOCOS ---------------
-
-function docos_key(mid) {
-    if (mid.charAt(0) !== '/' || mid.charAt(2) !== '/') {
-        return "";
-    } 
-
-    var docosKey = "FREEBASE-0-" + mid.charAt(1) + "-" + mid.slice(3);
-    if (acre.request.server_name.indexOf("sandbox") != -1) {
-        var lastSunday = new Date();
-        lastSunday.setDate(lastSunday.getDate() - lastSunday.getDay());        
-        lastSunday = lastSunday.toString("yyyyMMdd");
-        docosKey += "-" + lastSunday;
-    }
-    return docosKey;
-}
-
-function docos_url(mid) {
-    var docosKey = docos_key(mid);
-    if (docosKey === "") {
-        return "";
-    }
-    return "";
-}
 
 // ------------- TOPIC ---------------
 

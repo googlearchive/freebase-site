@@ -47,7 +47,12 @@
             } else {  // Open discuss               
                 toPageWidth = "73%";
                 toDiscWidth = "23%";                
-                discDiv.show();                
+                discDiv.show();
+
+                if (!discDiv.data("initialized")) {
+                    $("#discuss-frame").attr("src", fb.h.docos_url(fb.c.id));
+                    discDiv.data("initialized", true);
+                }
             }
             
             var animationsCompleted = 0;

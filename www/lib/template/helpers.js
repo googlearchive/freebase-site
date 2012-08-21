@@ -304,8 +304,42 @@
      */
     lang_id: function(code) {
       return "/lang/" + h.lang_code(code);
-    }
+    },
 
+    // ------------- DOCOS ---------------
+
+    /**
+     * Get the discuss url for a given id. This will be the url
+     * of the discussions iframe.
+     *
+     * id: the id of the object to discuss as a string.
+     */
+
+    docos_url : function(id) {
+
+      if (id.charAt(0) !== '/') {
+        return "";
+      }
+
+      // Temporary - figure out why docos namespaces have to start with m-
+      // Probably a mis-configuration.
+      if (id.indexOf("/m/") != 0) {
+	  id = "/m" + id;
+      }
+
+      var docosKey = "FREEBASE-0" + id.replace(/\//g, "-");
+      if (fb.acre.request.server_name.indexOf("sandbox-freebase.com") != -1) {
+        var lastSunday = new Date();
+        lastSunday.setDate(lastSunday.getDate() - lastSunday.getDay());
+        docosKey += "-" + lastSunday.getFullYear() + (lastSunday.getMonth()+1) + lastSunday.getDate();
+      }
+
+      if (docosKey === "") {
+        return "";
+      }
+
+      return "https://docs.google.com/comments/d/" + docosKey + "/embed";
+    }
   };
 
 })(jQuery, window.freebase);

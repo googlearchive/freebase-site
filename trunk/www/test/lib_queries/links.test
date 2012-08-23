@@ -119,7 +119,7 @@ test("links_objects with filter", function() {
   equal(result.length, 0);
 });
 
-/* Uncomment once http://codereview.appspot.com/6352074/ is checked in
+
 test("writes attribution", function() {
   var result;
   q.writes("/user/netflixbot/attr/104", "/type/attribution")
@@ -129,7 +129,6 @@ test("writes attribution", function() {
   acre.async.wait_on_results();
   ok(result && result.length);
 });
-*/
 
 test("writes user", function() {
   var result;
@@ -182,11 +181,12 @@ test("mqlread_options", function() {
 test("apply null filters", function() {
     deepEqual(q.apply_limit({}), {limit: 100});
     deepEqual(q.apply_limit({}, null), {limit: 100});
-
-  ["timestamp", "historical", "domain_type_property"].forEach(function(k) {
-    deepEqual(q["apply_" + k]({}), {});
-    deepEqual(q["apply_" + k]({}, null), {});
-  });
+    deepEqual(q.apply_timestamp({}), {});
+    deepEqual(q.apply_timestamp({}, null), {});
+    deepEqual(q.apply_historical({}), {});
+    deepEqual(q.apply_historical({}, null), {});
+    deepEqual(q.apply_domain_type_property({}), {});
+    deepEqual(q.apply_domain_type_property({}, null), {});
 });
 
 test("apply_limit filter", function() {

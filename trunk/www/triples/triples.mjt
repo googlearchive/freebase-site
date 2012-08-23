@@ -38,6 +38,7 @@
   var fh = acre.require("lib/filter/helpers.sjs");
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var i18n_c = acre.require("lib/i18n/components.mjt");
+  var links_q = acre.require("lib/queries/links.sjs");
   var _ = i18n.gettext;
   var th = acre.require("helpers.sjs");
   var QUERY = _("query");
@@ -105,9 +106,6 @@
             <span class="sort-icon">${_("property")}</span>
           </th>
           <th class="column-header" scope="col">
-            <span class="sort-icon">&harr;</span>
-          </th>
-          <th class="column-header" scope="col">
             <span class="sort-icon">${_("source/target")}</span>
           </th>
           <th class="column-header" scope="col">
@@ -164,21 +162,15 @@
       var attr = h.get_attribution(o);
     </acre:script>
     <th class="row-header odd" scope="row">
-      <span class="wrapper">
+      <span class="wrapper truncate">
         ${property(id, o)}
         ${link_menu(o)}
       </span>
     </th>
-    <td class="even">
-      <acre:block if="outgoing">
-        <span class="arrow arrow-right">&#8680;</span>
-      </acre:block>
-      <acre:block else="">
-        <span class="arrow arrow-left">&#8678;</span>
-      </acre:block>
-    </td>
     <td class="odd">
-      ${o.target_value ? target_value(o) : (outgoing ? target(o) : source(o))}
+      <span class="truncate">
+        ${o.target_value ? target_value(o) : (outgoing ? target(o) : source(o))}
+      </span>
     </td>
     <td class="even">${user(attr)}</td>
     <td class="odd">${app(attr)}</td>
@@ -211,10 +203,16 @@
   </acre:block>
 </acre:block>
 
-<acre:block def="property(id, o)">
-  <a class="property property-value" data-id="${o.master_property.id}" 
-    href="${h.fb_url(id, [['links'],['property',o.master_property.id]])}">
-    ${o.master_property.id}
+<acre:block def="property(id, o)">  
+  <acre:script>
+    var pinfo = links_q.property_info(o);
+  </acre:script>
+  <acre:block if="pinfo['!']">
+    <span class="bang">!</span>
+  </acre:block>
+  <a class="property"
+     href="${h.fb_url(id, [['links'],['property',pinfo.id]])}">
+    ${pinfo.id}
   </a>
 </acre:block>
 

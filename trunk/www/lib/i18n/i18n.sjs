@@ -286,8 +286,7 @@ function gettext(msgid) {
       try {
           app = acre.get_metadata("//bundles." + acre.request.script.app.host);
       }
-      catch (ex if (ex instanceof Error && ex.message &&
-                    ex.message.indexOf("Could not fetch data from") === 0)) {
+      catch (ex) {
           // some apps do not have a bundle
       }
       var bundle = "globalize.bundle." + culture_code + ".js";

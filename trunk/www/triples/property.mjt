@@ -155,13 +155,15 @@
       var attr = h.get_attribution(o);
     </acre:script>
     <th class="row-header odd" scope="row">
-      <span class="wrapper">
+      <span class="wrapper truncate">
         ${triples.source(o)}
         ${triples.link_menu(o)}
       </span>
     </th>
     <td class="odd">
-      ${o.target_value ? triples.target_value(o) : triples.target(o)}
+      <span class="truncate">
+        ${o.target_value ? triples.target_value(o) : triples.target(o)}
+      </span>
     </td>
     <td class="even">${triples.user(attr)}</td>
     <td class="odd">${triples.app(attr)}</td>

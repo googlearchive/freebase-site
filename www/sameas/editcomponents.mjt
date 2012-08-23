@@ -35,8 +35,8 @@
   var _ = i18n.gettext;
   var form = acre.require("lib/propbox/form.mjt");
   var propbox = acre.require("lib/propbox/form.mjt");
-  var INBOUND = _("&#8678; /type/namespace/keys");
-  var OUTBOUND = _("&#8680; /type/object/key");
+  var INBOUND = _("/type/namespace/keys");
+  var OUTBOUND = _("/type/object/key");
 </acre:script>
 
 <acre:block def="add_key_form(id, is_ns, lang)">

@@ -92,85 +92,142 @@ function links_sort(/* array1, array2,..., filters */) {
   return all.slice(0, filters.limit || 100);
 };
 
-function links_incoming(id, filters, next, creator_clause) {
+/**
+ * Get all outgoing links from source
+ */
+function links_outgoing(source, filters, next, creator_clause) {
     filters = h.extend({}, filters);
-    var promises = {        
-        links_incoming_master: 
-                links_incoming_master(id, filters, next, creator_clause)
+    var promises = {
+        links_outgoing_master: links_outgoing_master(source, filters, next, creator_clause),
+        links_outgoing_reverse: links_outgoing_reverse(source, filters, next, creator_clause)
     };
+    return deferred.all(promises)
+        .then(function(r) {
+            var outgoing = r.links_outgoing_master || [];
+            if (r.links_outgoing_reverse && r.links_outgoing_reverse.length) {
+                outgoing = outgoing.concat(r.links_outgoing_reverse);
+            }
+            return outgoing;
+        });
+};
+
+/**
+ * All outgoing links from source without a reverse_property
+ */
+function links_outgoing_master(source, filters, next, creator_clause) {
+    var q = h.extend(links_outgoing_query(source), creator_clause);
+    q.master_property.reverse_property = {
+        id: null,
+        optional: "forbidden"
+    };
+    if (next) {
+        q['next:timestamp<'] = next;
+    }
+    apply_filters(q, filters);
+    return freebase.mqlread([q], mqlread_options(filters))
+        .then(function(env) {
+            return env.result;
+        });    
+};
+
+/**
+ * All outgoing links from source with a reverse_property.
+ */
+function links_outgoing_reverse(source, filters, next, creator_clause) {
+    var promises = {
+        outgoing: _links_outgoing_reverse(source, filters, next, creator_clause, false)
+    };
+    // If we're filtering, we try filtering on the reverse_property as well.
+    // For example, /music/artist/album and /music/album/artist 
+    // are the same property/link. When type=/music/artist or type=/music/album,
+    // this property/link should be found.
     if (filters.domain || filters.type || filters.property) {
-        /**
-         * When filtering by domain, type, or property, 
-         * we need to also consider the incoming master's
-         * reverse_property. 
-         * 
-         * For example, the reverse_property of 
-         * /music/album/artist is /music/artist/album.
-         * So when the filter property=/music/artist/album,
-         * we need to pick up the /music/album/artist links.
-         * 
-         * However, in order to prevent duplicates in
-         * links_incoming_master and link_incoming_reverse,
-         * we need to "forbid" the domain or type 
-         * the reverse_property belongs to.
-         * 
-         * For example, when the filter domain=/music,
-         * We will get both /music/album/artist (master_property)
-         * and /music/artist/album (reverse_property), which are
-         * the same links.
-         */
-        var forbid_clause;
-        if (filters.domain) {
-            forbid_clause = {
-                "forbid:master_property": {
-                        schema: {
-                            domain: {
-                                id: filters.domain,
-                                optional: "forbidden"
-                            }
-                        }
-                }
-            };
-        }
-        else if (filters.type) {
-            forbid_clause = {
-                "forbid:master_property": {
-                        schema: {
-                            id: filters.type,
-                            optional: "forbidden"
-                        }
-                    }
-            };
-        }        
-        promises.links_incoming_reverse = 
-            links_incoming_reverse(id, filters, next, creator_clause, forbid_clause);
+        promises.filter = _links_outgoing_reverse(source, filters, next, creator_clause, true);
     }
     return deferred.all(promises)
         .then(function(r) {
+            var outgoing = r.outgoing || [];
+            if (r.filter && r.filter.length) {
+                outgoing = outgoing.concat(r.filter);
+                outgoing = remove_duplicate_links(outgoing);
+            }
+            return outgoing;
+        });
+};
+
+function _links_outgoing_reverse(source, filters, next, creator_clause, filter_reverse_property) {
+    var q = h.extend(links_outgoing_query(source), creator_clause);
+    q.master_property.reverse_property = {
+        id: null
+    };
+    if (filter_reverse_property) {
+//        q.master_property["filter:reverse_property"] = null;
+    }
+    if (next) {
+        q['next:timestamp<'] = next;
+    }
+    apply_filters(q, filters);
+    return freebase.mqlread([q], mqlread_options(filters))
+        .then(function(env) {
+            return env.result;
+        });    
+};
+
+/**
+ * A standard /type/link query with source. You can always tell an outgoing
+ * link by checking "me:source" in the results.
+ */
+function links_outgoing_query(source) {
+    return {
+        type: "/type/link",
+        master_property: {
+            id: null,
+            unit: {
+                optional: true,
+                id: null,
+                type: "/type/unit",
+                "/freebase/unit_profile/abbreviation": null
+            }
+        },
+        "me:source": {id: source},
+        target: {id:null, mid:null, guid:null, name:i18n.mql.query.name(), optional:true},
+        target_value: {},
+        timestamp: null,
+        sort: "-timestamp",
+        optional: true
+    };
+};
+
+
+/**
+ * Get all incoming links to target.
+ */
+function links_incoming(target, filters, next, creator_clause) {
+    filters = h.extend({}, filters);
+    var promises = {
+        links_incoming_master: links_incoming_master(target, filters, next, creator_clause),
+        links_incoming_reverse: links_incoming_reverse(target, filters, next, creator_clause)
+    };
+    return deferred.all(promises)
+        .then(function(r) {
             var incoming = r.links_incoming_master || [];
-            if (r.links_incoming_reverse) {
-                incoming = links_sort(incoming, r.links_incoming_reverse, filters);
-            }  
+            if (r.links_incoming_reverse && r.links_incoming_reverse.length) {
+                incoming = incoming.concat(r.links_incoming_reverse);
+            }
             return incoming;
         });
 };
 
-function links_incoming_master(id, filters, next, creator_clause, extend_clause) {
-    var q = h.extend(links_incoming_query(id), creator_clause, extend_clause);
-    if (next) {
-        q['next:timestamp<'] = next;
-    }
-    apply_filters(q, filters);
-    return freebase.mqlread([q], mqlread_options(filters))
-        .then(function(env) {
-            return env.result;
-        });
-};
 
-function links_incoming_reverse(id, filters, next, creator_clause, extend_clause) {
-    var q = h.extend(links_incoming_query(id), creator_clause, extend_clause);
+/**
+ * Get all incoming links to target without a reverse_property.
+ * (e.g., !/some/property/without/reverse)
+ */ 
+function links_incoming_master(target, filters, next, creator_clause, extend_clause) {
+    var q = h.extend(links_incoming_query(target), creator_clause);
     q.master_property.reverse_property = {
-        id: null
+        id: null,
+        optional: "forbidden"
     };
     if (next) {
         q['next:timestamp<'] = next;
@@ -180,52 +237,124 @@ function links_incoming_reverse(id, filters, next, creator_clause, extend_clause
         .then(function(env) {
             return env.result;
         });
+}
+
+/**
+ * Get all incoming links to target with a reverse_property.
+ */
+function links_incoming_reverse(target, filters, next, creator_clause, extend_clause) {
+    var promises = {
+        incoming: _links_incoming_reverse(target, filters, next, creator_clause, false)
+    };
+    // If we're filtering, we try filtering on the reverse_property as well.
+    // For example, /music/artist/album and /music/album/artist 
+    // are the same property/link. When type=/music/artist or type=/music/album,
+    // this property/link should be found.
+    if (filters.domain || filters.type || filters.property) {
+        promises.filter = _links_incoming_reverse(target, filters, next, creator_clause, true);
+    }
+    return deferred.all(promises)
+        .then(function(r) {
+            var incoming = r.incoming || [];
+            if (r.filter && r.filter.length) {
+                incoming = incoming.concat(r.filter);
+                incoming = remove_duplicate_links(incoming);
+            }
+            return incoming;
+        });
 };
 
+function _links_incoming_reverse(target, filters, next, creator_clause, filter_reverse_property) {
+    var q = h.extend(links_incoming_query(target), creator_clause);
+    q.master_property.reverse_property = {
+        id: null
+    };
+    if (filter_reverse_property) {
+        q.master_property["filter:reverse_property"] = null;
+    }
+    if (next) {
+        q['next:timestamp<'] = next;
+    }
+    apply_filters(q, filters);
+    return freebase.mqlread([q], mqlread_options(filters))
+        .then(function(env) {
+            return env.result;
+        });    
+};
+
+/**
+ * A standard /type/link query with target. You can always tell an incoming
+ * link by checking "me:target" in the results.
+ */
 function links_incoming_query(target) {
-  return {
-    type: "/type/link",
-    master_property: {
-      id: null
-    },
-    source: {id:null, mid:null, guid:null, name:i18n.mql.query.name()},
-    "me:target": {id:target, guid:null},
-    target_value: {},
-    timestamp: null,
-    sort: "-timestamp",
-    optional: true
-  };
+    return {
+        type: "/type/link",
+        master_property: {
+            id: null
+        },
+        source: {id:null, mid:null, guid:null, name:i18n.mql.query.name()},
+        "me:target": {id:target, guid:null},
+        target_value: {},
+        timestamp: null,
+        sort: "-timestamp",
+        optional: true
+    };
 };
 
-function links_outgoing(id, filters, next, creator_clause) {
-  filters = h.extend({}, filters);
-  var q = [h.extend({
-    type: "/type/link",
-    master_property: {
-      id: null,
-      unit: {
-        optional: true,
-        id: null,
-        type: "/type/unit",
-        "/freebase/unit_profile/abbreviation": null
-      }
-    },
-    "me:source": {id: id},
-    target: {id:null, mid:null, guid:null, name:i18n.mql.query.name(), optional:true},
-    target_value: {},
-    timestamp: null,
-    sort: "-timestamp",
-    optional: true
-  }, creator_clause)];
-  if (next) {
-    q[0]["next:timestamp<"] = next;
-  }
-  apply_filters(q[0], filters);
-  return freebase.mqlread(q, mqlread_options(filters))
-    .then(function(env) {
-      return env.result;
+
+function remove_duplicate_links(list) {
+    var seen = {};
+    return list.filter(function(item) {
+        if (seen[item.timestamp]) {
+            return false;
+        }
+        else {
+            seen[item.timestamp] = true;
+            return true;
+        }
     });
 };
+
+/**
+ * A helper to determine what property/id to display.
+ * For outgoing properties, we always want to display to master_property.
+ * For incoming properties we want to try to display the reverse_property 
+ * since it's always more relevant. For example, for /en/blade_runner,
+ * you want to display /film/film/starring and not the master_property, 
+ * /film/performance/film. If a reverse_property is not found,
+ * then we want to prepend it with "!" (i.e., !/people/person/nationality).
+ */
+function property_info(link) {
+    var info = {};
+    var incoming = link["me:target"];
+    var outgoing = link["me:source"];
+    
+    if (incoming) {
+        if (link.master_property.reverse_property) {
+            return {
+                id: link.master_property.reverse_property.id,
+                label: link.master_property.reverse_property.id,
+                reverse_property: true
+            };
+        }
+        else {
+            return {
+                id: link.master_property.id,
+                label: "!" + link.master_property.id,
+                "!": true,
+                reverse_property: false
+            };
+        }
+    }
+    else {
+        return {
+            id: link.master_property.id,
+            label: link.master_property.id,
+            reverse_property: false
+        };
+    }
+};
+
 
 /**
  *  Synthesize /type/object/attribution links
@@ -233,18 +362,6 @@ function links_outgoing(id, filters, next, creator_clause) {
  */
 function links_objects(id, filters, next, creator_clause) {
     filters = h.extend({}, filters);
-    var q = h.extend({
-      id: id,
-      mid: null,
-      guid: null,
-      name: i18n.mql.query.name(),
-      "the:attribution": {id:null, mid:null, guid:null, name:i18n.mql.query.name()},
-      timestamp: null,
-      sort: "-timestamp",
-    }, creator_clause);
-    if (next) {
-        q['next:timestamp<'] = next;
-    }
 
     // special-case filters since this isn't a /type/link query
     if ((filters.domain && filters.domain !== "/type") ||
@@ -252,6 +369,20 @@ function links_objects(id, filters, next, creator_clause) {
         (filters.property && filters.property !== "/type/object/attribution")) {
       return deferred.resolved([]);
     }
+
+    var q = h.extend({
+      id: id,
+      mid: null,
+      guid: null,
+      name: i18n.mql.query.name(),
+      "the:attribution": {id:null, mid:null, guid:null, name:i18n.mql.query.name()},
+      timestamp: null,
+      sort: "-timestamp"
+    }, creator_clause);
+    if (next) {
+        q['next:timestamp<'] = next;
+    }
+
     apply_limit(q, filters.limit);
     apply_timestamp(q, filters.timestamp);
 
@@ -274,7 +405,7 @@ function links_objects(id, filters, next, creator_clause) {
           };
           object.target = object["the:attribution"];
           return object;
-        })
+        });
       });
 }
 
@@ -410,38 +541,30 @@ function apply_historical(clause, historical) {
 
 function apply_domain_type_property(clause, domain, type, property) {
     clause = clause || {};
-    if (clause.master_property && clause.master_property.reverse_property) {
-        // apply filter on master_property.reverse_property if it 
-        // exists
-        if (domain) {
-            clause["filter:master_property"] = {
-                reverse_property: {
-                    schema:{domain:domain}
-                }
-            };
-        }
-        else if (type) {
-            clause["filter:master_property"] = {
-                reverse_property: {
-                    schema:type
-                }
-            };
-        }
-        else if (property) {
-            clause["filter:master_property"] = {
-                reverse_property: property
-            };
-        }
+    var filter_clause = null;
+    if (domain) {
+        filter_clause = {
+            schema: {
+                domain: domain
+            }
+        };
     }
-    else {
-        if (domain) {
-            clause["filter:master_property"] = {schema:{domain:domain}};
+    else if (type) {
+        filter_clause = {
+            schema: type
+        };
+    }
+    else if (property) {
+        filter_clause = property;
+    }
+    if (filter_clause) {
+        if (clause.master_property && 
+            h.type(clause.master_property) === "object" &&
+            "filter:reverse_property" in clause.master_property) {
+            clause.master_property["filter:reverse_property"] = filter_clause;
         }
-        else if (type) {
-            clause["filter:master_property"] = {schema:type};
-        }
-        else if (property) {
-            clause["filter:master_property"] = property;
+        else {
+            clause["filter:master_property"] = filter_clause;
         }
     }
     return clause;

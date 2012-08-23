@@ -42,7 +42,7 @@ for all *non-propbox* tables
 
 
 .table {
-  table-layout:fixed; width:100%;
+  width:100%;
 }
 
 /*
@@ -131,7 +131,9 @@ for all *non-propbox* tables
   border-bottom: 1px solid #d5d7d8;
   font-size: 1.2em;
   vertical-align: top;
-  word-break: break-word; /* stop long strings from breaking table layout */
+  white-space: nowrap;
+  /* word-break: break-word; stop long strings from breaking table layout */
+  overflow: hidden;
 }
 
 /* .odd is a column-based style, NOT row */

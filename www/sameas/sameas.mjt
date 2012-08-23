@@ -43,8 +43,8 @@
   var DELETE = _("Delete");
   var TYPE_OBJECT_KEY = "/type/object/key";
   var TYPE_NAMESPACE_KEYS = "/type/namespace/keys";
-  var INBOUND = _("&#8678; /type/namespace/keys");
-  var OUTBOUND = _("&#8680; /type/object/key");
+  var INBOUND = _("/type/namespace/keys");
+  var OUTBOUND = _("/type/object/key");
 </acre:script>
 
 <acre:block def="head()">
@@ -115,7 +115,7 @@
       <thead>
         <tr>
           <th class="column-header" scope="col">
-            <span class="sort-icon">&harr;</span>
+            <span class="sort-icon">${_("property")}</span>
           </th>
           <th class="column-header first {sorter: 'string'}" scope="col">
             <span class="sort-icon">${_("key")}</span>
@@ -195,9 +195,11 @@
       </span>
     </th>
     <td class="even">
-      <span class="literal-value literal-value-key property-value key-value"
-            data-value="${link.target_value.value}">
-        ${link.target_value.value}
+      <span class="truncate">
+        <span class="literal-value literal-value-key property-value key-value"
+              data-value="${link.target_value.value}">
+          ${link.target_value.value}
+        </span>
       </span>
     </td>
     <td class="odd">
@@ -213,8 +215,10 @@
           other_name = other.id;
         }
       </acre:script>
-      <a class="property-value key-namespace"
-         data-id="${other_id}" href="${h.fb_url(other_id)}">${other_name}</a>
+      <span class="truncate">
+        <a class="property-value key-namespace"
+           data-id="${other_id}" href="${h.fb_url(other_id)}">${other_name}</a>
+      </span>
     </td>
     <td class="even">
       ${freebase_components.creator_link(attr.creator, null, [["writes"]])}

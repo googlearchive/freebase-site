@@ -69,12 +69,6 @@
         return;
       }
       var a_next = $("#infinitescroll-next");
-
-
-      var width = $("#infinitescroll").width();
-      $("#infinitescroll").width(width);
-
-
       tbody.infinitescroll({
         //debug: true,
         loading: {

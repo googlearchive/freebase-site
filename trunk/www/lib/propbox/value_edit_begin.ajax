@@ -61,19 +61,23 @@ var SPEC = {
   },
 
   run: function(s, p, replace, lang, namespace) {
-    return queries.prop_structure(p, lang)
-      .then(function(prop_structure) {
-        var ect = prop_structure.expected_type.id;
-        if (ect === "/common/document") {
-          return SPEC.run_document(s, prop_structure, replace, lang);
-        }
-        else if (ect === "/common/image") {
-          return SPEC.run_image(s, prop_structure, replace, lang);
-        }
-        else {
-          return SPEC.run_default(s, prop_structure, replace, lang, namespace);
-        }
-      }); 
+    // we want to make sure we are looking at the latest
+    return freebase.touch()
+      .then(function() {
+        return queries.prop_structure(p, lang)
+          .then(function(prop_structure) {
+            var ect = prop_structure.expected_type.id;
+            if (ect === "/common/document") {
+              return SPEC.run_document(s, prop_structure, replace, lang);
+            }
+            else if (ect === "/common/image") {
+              return SPEC.run_image(s, prop_structure, replace, lang);
+            }
+            else {
+              return SPEC.run_default(s, prop_structure, replace, lang, namespace);
+            }
+          }); 
+        });
   },
 
   run_document: function(s, prop_structure, replace, lang) {
@@ -137,16 +141,22 @@ var SPEC = {
     promises.push(queries.prop_values(s, prop_structure, replace, lang, namespace));
     promises.push(queries.get_enumerated_types(prop_structure, lang));
     return deferred.all(promises)
-      .then(function([prop_values, enum_types]) {
-        var prop_value = h.first_element(prop_values);
-        return {
-          // <debug>
-          prop_structure: prop_structure,
-          prop_value: prop_value,
-          // </debug>
-          html: acre.markup.stringify(propbox.value_edit_form(s, 
-              prop_structure, prop_value, lang))
-        };
+      .then(function([prop_values, enum_types]) {       
+        if (prop_values.length) {
+          var prop_value = h.first_element(prop_values);
+          return {
+            html: acre.markup.stringify(propbox.value_edit_form(s, 
+                prop_structure, prop_value, lang))
+          };            
+        }
+        else {
+          // The "replace" value is no longer valid.
+          // Alert use to reload (touch) and try again.
+          return {
+            invalid: true,
+            reload: true
+          };
+        }
       });
   }
 };

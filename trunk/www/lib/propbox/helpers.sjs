@@ -244,7 +244,7 @@ function to_prop_structure(prop_schema, lang, all) {
  */
 function to_prop_values(prop_structure, prop_data, lang) {
   prop_data = prop_data || [];
-  if (!h.isArray(prop_data)) {
+  if (prop_data != null && !h.isArray(prop_data)) {
     prop_data = [prop_data];
   };
   if (prop_structure.unique && 

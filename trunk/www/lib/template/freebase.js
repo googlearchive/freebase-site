@@ -267,7 +267,7 @@
                   page_state.removeClass(t);
               });
               page_state.addClass(log_type);
-              status_msg.text(str);
+              status_msg.text(str);                  
               last_level = log_type;
               window.clearTimeout(timer);
               if (sticky) {
@@ -297,7 +297,7 @@
           doing: function(str) {
               // doing() is for tasks that take time.
               // The message should be cancelled with clear().
-              return _show('notice', str, 2000 * SECONDS);
+              return _show('notice', str, 2000 * SECONDS, false);
           },
           info: function(str, sticky) {
               return _show('info', str, 4 * SECONDS, sticky);
@@ -310,6 +310,34 @@
           },
           error: function(str, sticky) {
               return _show('error', str, 6 * SECONDS, sticky);
+          },
+          /**
+           * A safe way to include <a> links into the status message:
+           * 
+           * fb.status.sprintf('warning', 'click on %s or %s', 'me1', me1_click_handler, 'me2', me2_click_handler);
+           */
+          sprintf: function(logtype, str/**, a1, a1_onclick, a2, a2_onclick, ... */) {
+              var args = Array.prototype.slice.call(arguments).slice(2);
+              var parts = str.split("%s");
+              if (parts.length > 1 && args.length > 1 && args.length % 2 == 0) {
+                  var msg = $("<span>");
+                  for (var i=0,l=parts.length; i<l; i++) {
+                      msg.append(document.createTextNode(parts[i]));
+                      var a = $('<a href="#">');
+                      a.text(args.shift());
+                      var onclick = args.shift();
+                      if ($.type(onclick) === "function") {
+                          a.click(onclick);
+                      }
+                      msg.append(a);
+                  }
+                  var s = _show(logtype, "", null, true);
+                  status_msg.empty().append(msg);                  
+                  return s;
+              }
+              else {
+                  return _show(logtype, str, null, true);
+              }
           },
           clear : _clear
       };

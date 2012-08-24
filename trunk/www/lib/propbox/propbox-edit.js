@@ -28,7 +28,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-;(function($, propbox, formlib, editparams) {
+;(function($, propbox, formlib, editparams, status) {
 
   // requires:
   // propbox.js @see lib/propbox/propbox.js
@@ -194,20 +194,34 @@
           lang: propbox.options.lang
         },
         onsuccess: function(data) {
-          var html = $(data.result.html);
-          var structure = html.metadata();
-          var ect = structure.expected_type.id;
-          if (ect === "/common/document") {
-             // modal document editing
-              return edit.value_edit_document(prop_section, prop_row, html, structure);
-          }
-          else if (ect === "/common/image") {
-              // modal image editing
-              return edit.value_edit_image(prop_section, prop_row, html, structure);
+          if (data.result.invalid) {
+            status.clear();
+            setTimeout(function() {
+                status.sprintf('warning', 
+                               'The value you are trying edit is no longer valid. ' +
+                               'Please %s to continue editing.', 
+                               "reload", function() {
+                                   window.location.reload(true);
+                                   return false;
+                               });
+            });
           }
           else {
-              // default inline editing
-              return edit.value_edit(prop_section, prop_row, html, structure);
+            var html = $(data.result.html);
+            var structure = html.metadata();
+            var ect = structure.expected_type.id;
+            if (ect === "/common/document") {
+               // modal document editing
+                return edit.value_edit_document(prop_section, prop_row, html, structure);
+            }
+            else if (ect === "/common/image") {
+                // modal image editing
+                return edit.value_edit_image(prop_section, prop_row, html, structure);
+            }
+            else {
+                // default inline editing
+                return edit.value_edit(prop_section, prop_row, html, structure);
+            }
           }
         }
       }));
@@ -562,4 +576,4 @@
   };
 
 
-})(jQuery, window.propbox, window.formlib, window.editparams);
+})(jQuery, window.propbox, window.formlib, window.editparams, window.freebase.status);

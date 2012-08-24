@@ -1,0 +1,151 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ *
+ */
+
+.form-group {
+  margin: 20px 0;
+}
+
+.modal .table {
+  border-top: 0;
+}
+
+.modal .table thead th {
+  font-weight: bold;
+  padding: 3px 2px;
+  font-size: 12px;
+  border-bottom: 1px solid #d6d7d8;
+}
+
+.modal tbody th.row-header {
+  padding-left: 0;
+}
+
+#text-edit-form .data-input {
+  background: none;
+  padding-right: 0;
+  margin-right: 5px;
+  border-width: 1px;
+}
+
+#text-edit-form .lang {
+  line-height: 2.6;
+}
+
+#text-edit-form .form-note {
+  font-size: 12px;
+  font-style: italic;
+}
+
+#text-edit-form .modal-title .key {
+  font-size: 12px;
+  font-weight: normal;
+  color: #333;
+}
+
+/*
+ * This is a fixed height, which will likely
+ * cause problems in the future. A more robust
+ * solution would to either:
+ *   1. dynamically size the element according to
+ *      browser dimensions
+ *   2. only add a height if we have more than N values
+ *
+ */
+
+#language-values {
+  height: 405px;
+  overflow: auto;
+}
+
+#language-values td.lang {
+  width: 300px;
+}
+
+#language-values .icon-link {
+  text-indent: -9999px;
+}
+
+#language-values .delete-row {
+  vertical-align: middle;
+}
+
+#language-values tbody tr:hover {
+  background: #f1f2f3;
+  .transition(background, 0.1s,ease-in-out);
+}
+
+#language-values .new {
+  background: #edf7f3;
+}
+
+.preferred {
+  /*background: #e7edf7;*/
+}
+.preferred .lang {
+  font-weight: bold;
+}
+
+#text-edit-form .form-label {
+  padding-left: 5px;
+  margin-bottom: 7px;
+}
+
+#text-edit-form .icon-link {
+  padding-left: 5px;
+  font-size: 11px;
+}
+
+.lang-warning {
+  visibility: hidden;
+}
+
+.lang-select-submit,
+.lang-select-container {
+  display: inline-block;
+  padding: 1px 2px;
+}
+
+#text-edit-form .form-group .fb-input {
+  width: 150px;
+}
+
+.lang-select-submit.focused,
+.lang-select-container.focused {
+  .box_shadow(0,0,6px, #61D7F7);
+}
+
+#text-edit-form .message {
+  margin: 0;
+}

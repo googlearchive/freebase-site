@@ -338,11 +338,10 @@ class App:
       d_app.copy_to_acre_dir()
       d_app = d_app.dependency()
 
-    #routing still happens with the trunk version of lib and site
+    #routing still happens with the trunk version of lib 
     #since we are using the devel environment to run acre locally
 
     App.Get(c, "lib", version=None).copy_to_acre_dir()
-    App.Get(c, "site", version=None).copy_to_acre_dir()
     App.Get(c, "environments", version=None, tag=None).copy_to_acre_dir()
 
     #app files will be a list of file paths starting at the app route

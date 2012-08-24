@@ -1,0 +1,200 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+var freebase = acre.require("lib/promise/apis").freebase;
+var apis = acre.require("lib/promise/apis.sjs");
+var freebase = apis.freebase;
+var deferred = apis.deferred;
+
+// Functions to get number of entities with type
+// over last X number of days
+function typeCurrentCount(id) {
+    return [{
+        "type": id,        
+        "return":"count"
+    }]​;
+}
+function typeCreatedAfter(id, date) {
+  return [{
+      "type": id,
+      "attribution": null,
+      "timestamp": null,
+      "timestamp>=": date,
+      "sort":"timestamp",
+      "limit":100000
+  }]​;
+}
+function typeDeletedAfter(id, date) {
+    return [{
+      "type": {
+        "id": id,
+        "link": {
+          "operation": "delete",          
+          "timestamp>=": date,
+          "timestamp": null
+        },
+        "sort":  "-link.timestamp",
+        "limit": 1
+      },      
+      "limit":100000,
+      "sort": "-type.link.timestamp"
+    }]​;
+}
+function getActiveTopicsInLastDays(type, days) {
+    var targetDate = new Date();
+    targetDate.setDate(targetDate.getDate() - days);
+    targetDate = acre.freebase.date_to_iso(targetDate);
+    var current = freebase.mqlread(typeCurrentCount(type)).then(function(result){            
+        return {
+            "count": result.result[0]
+        };
+    });
+    var created = freebase.mqlread(typeCreatedAfter(type, targetDate)).then(function(result){
+        var today = new Date();
+        var topicsByDate = [];
+        for (var i = 0; i < days; i++) {
+            topicsByDate[i] = 0;
+        }
+        for (var i = 0, l = result.result.length; i < l; i++) {
+            var topic = result.result[i];                
+            var dayDifference = parseInt((today.getTime() - acre.freebase.date_from_iso(topic.timestamp))/(24*3600*1000));                
+            topicsByDate[dayDifference] += 1;
+        }
+        return {
+            "result": topicsByDate
+        };        
+    });
+    var deleted = freebase.mqlread(typeDeletedAfter(type, targetDate)).then(function(result){        
+        var today = new Date();
+        var topicsByDate = [];
+        for (var i = 0; i < days; i++) {
+            topicsByDate[i] = 0;
+        }
+        for (var i = 0, l = result.result.length; i < l; i++) {
+            var topic = result.result[i];                
+            var dayDifference = parseInt((today.getTime() - acre.freebase.date_from_iso(topic.type.link.timestamp))/(24*3600*1000));                
+            topicsByDate[dayDifference] += 1;
+        }
+        return {
+            "result": topicsByDate
+        };
+    });
+    var promises = [current, created, deleted];
+    return deferred.all(promises).then(function(results){
+        var activeTopics = [];
+        var topicsCreated = results[1].result;
+        var topicsDeleted = results[2].result;        
+        activeTopics[0] = results[0].count;
+        for (var i = 1; i < days; i++) {
+            // Active topic i days ago = 
+            //      Active Flags i-1 days ago 
+            //      - Number of Flags created ith day 
+            //      + number flags deleted ith day
+
+            activeTopics[i] = activeTopics[i-1] - topicsCreated[i] + topicsDeleted[i];
+        }
+        return {
+            "activeTopics": activeTopics
+        };
+    });
+}
+
+function topCreatorsInLastXDays(type, days) {
+    var targetDate = new Date();
+    targetDate.setDate(targetDate.getDate() - days);
+    targetDate = acre.freebase.date_to_iso(targetDate);
+    return freebase.mqlread(typeCreatedAfter(type, targetDate)).then(function(env){
+        var topusers = [];        
+        var topuserscores = {};
+        var results = env.result;        
+        results.forEach(function(created) {            
+            if (!topuserscores[created.attribution]) {
+                topusers.push(created.attribution);
+                topuserscores[created.attribution] = 1;
+            } else {          
+                topuserscores[created.attribution] += 1;
+            }
+        });
+        topusers.sort(function(a, b) {
+            return topuserscores[a] < topuserscores[b];
+        });
+
+        var leaders = [];
+        topusers.forEach(function(user) {
+            leaders.push({
+                "id": user,
+                "v": topuserscores[user]
+            });
+        });
+        return {
+            "topcreators": leaders
+        };
+
+        
+    });
+}
+
+// Helper to grab end of an array
+function getLastXFromArray(num, array) {
+    if (num > array.length) {
+        return array;
+    }
+    if (num < 1) {
+        return [];
+    }
+    return array.slice(array.length - num - 1, array.length - 1);
+}   
+
+var SPEC = {  
+  
+    template: "browse.mjt",
+    template_base: "lib/template/browse.mjt",   
+    run: function() {
+
+        NUM_DAYS_CHART = 14;
+        NUM_DAYS_GRAPH = 30;
+
+        var topFlagCreators = topCreatorsInLastXDays("/freebase/review_flag", NUM_DAYS_CHART);
+        var topVoteCreators = topCreatorsInLastXDays("/freebase/flag_judgment", NUM_DAYS_CHART);
+        var activeReviewFlags = getActiveTopicsInLastDays("/freebase/review_flag", NUM_DAYS_GRAPH);
+        var activeJudgments = getActiveTopicsInLastDays("/freebase/flag_judgment", NUM_DAYS_GRAPH);
+
+        return deferred.all([activeReviewFlags, activeJudgments, topFlagCreators, topVoteCreators]).then(function(results){
+            return {                
+                "activeFlags": results[0].activeTopics,
+                "activeJudgments": results[1].activeTopics,
+                "topFlagCreators": results[2].topcreators,
+                "topVoteCreators": results[3].topcreators
+            };
+        });
+    }
+};
+

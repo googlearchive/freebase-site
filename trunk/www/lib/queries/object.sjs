@@ -82,6 +82,7 @@ function object(id, props) {
           timestamp: get_first_value(topic, "/type/object/timestamp").value,
           image: get_first_value(topic, "/common/topic/image"),
 
+          permission: get_permission(topic),
           description: get_description(topic),
           notability: get_notability(topic),
           linkcount: get_linkcount(topic),
@@ -114,6 +115,14 @@ function get_description(topic) {
     }
   }
   return description;
+};
+
+function get_permission(topic) {
+  var permission = get_first_value(topic, "/type/object/permission");
+  if (permission && (permission.id === "/boot/all_permission")) {
+    permission = null;
+  }
+  return permission;
 };
 
 /**

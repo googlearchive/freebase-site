@@ -142,7 +142,7 @@
     <acre:block if="that_exports.page_flag">
       ${that_exports.page_flag()}
     </acre:block>
-    <acre:block elif="c.object.flag">
+    <acre:block if="c.object.flag">
       <div class="page-flag">
         <acre:block if="c.object.flag">
           <acre:script>
@@ -152,13 +152,11 @@
           <acre:script>
             var perm_obj = {id: flag.creator};
           </acre:script>
-          <div class="page-flag-kind">
-            <span class="page-flag-msg">${msg}</span>
-            <a href="${h.fb_url('/review?flags=' + flag.id)}">${_("Vote on this issue here")}</a>.
-            <span class="edit-perm ${JSON.stringify(perm_obj)}">
-              <a href="#" onclick="return window.freebase.flag.undo(this, '${flag.id}');">Undo</a>.
-            </span>
-          </div>
+          <span class="page-flag-msg">${msg}</span>
+          <a href="${h.fb_url('/review?flags=' + flag.id)}">${_("Vote on this issue here")}</a>.
+          <span class="edit-perm ${JSON.stringify(perm_obj)}">
+            <a href="#" onclick="return window.freebase.flag.undo(this, '${flag.id}');">Undo</a>.
+          </span>
         </acre:block>
       </div>
     </acre:block>
@@ -221,7 +219,7 @@
         </span>
 
         <!!-- Object Name !!-->
-          <h1>
+          <h1 acre:attrs="c.object.permission ? {'class':'lock'} : {}">
             <span acre:if="c.object.name">
               ${c.object.name.value}
               <ul class="inline-menu nicemenu">
@@ -277,6 +275,14 @@
             <span class="key">
               <strong>${_("mid")}</strong>:
               <span>${c.object.mid}</span>
+            </span>
+            <span acre:if="c.object.permission" class="key">
+              <strong>${_("permission")}</strong>:
+              <span>
+                <a href="${h.fb_url(c.object.permission.id)}">
+                  ${c.object.permission.id}
+                </a>
+              </span>
             </span>
             <span acre:for="nk in c.nav_keys" 
                   acre:if="(exec(nk, c) && nk.key)" class="key">

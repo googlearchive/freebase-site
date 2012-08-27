@@ -108,10 +108,15 @@ function topic_structure(id, options) {
                 // Gather up all asserted properties' types
                 var types = [];
                 var types_seen = {};
+                var no_filters = !(options.domain || options.type || options.property);
                 for (var pid in topic_props) {
                     // skip reverse properties (!/.../.../...)
                     if (proploader.is_prop_id(pid)) {
                         var t = proploader.get_type_id(pid);
+                        // Don't show /type/object properties unless explicity asked
+                        if (no_filters && (t === "/type/object")) {
+                            continue;
+                        }
                         if (t && !types_seen[t]) {
                             types.push(t);
                             types_seen[t] = true;

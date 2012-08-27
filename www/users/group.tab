@@ -52,9 +52,20 @@ var SPEC = {
   },
 
   run: function(object, type) {
+    var groups;
+    switch (type) {
+      case "/type/usergroup":
+        groups = queries.usergroup(object.id);
+        break;
+      case "/type/permission":
+        groups = queries.permission_usergroups(object.id, type);
+        break;
+      default:
+        groups = queries.permission_usergroups(object.permission.id, type);
+    }
     return { 
       object: object,
-      usergroups: queries.object_usergroups(object.id, type)
+      usergroups: groups
     };
   }
 };

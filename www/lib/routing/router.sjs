@@ -219,12 +219,6 @@ function init_rules(lib) {
           "script": "versions.tab"
         },
         {
-          "name": _("Editors"),
-          "key": "editors",
-          "app": "users",
-          "script": "group.tab"
-        },
-        {
           "name": _("Writes"),
           "key": "writes",
           "app": "triples",
@@ -267,12 +261,6 @@ function init_rules(lib) {
           "key": "schema",
           "app": "schema",
           "script": "domain.tab"
-        },
-        {
-          "name": _("Editors"),
-          "key": "editors",
-          "app": "users",
-          "script": "group.tab"
         }
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
       "gear": [
@@ -320,11 +308,11 @@ function init_rules(lib) {
       "nav_keys": [
         {
           "label": _("domain"),
-          "key": (function() { 
-            return object_query.get_first_value(this.object.props["/type/type/domain"]).id;
+          "key": (function() {
+            return object_query.get_first_value(this.object, "/type/type/domain").id;
           }),
           "url": (function() { 
-            var id = object_query.get_first_value(this.object.props["/type/type/domain"]).id;
+            var id = object_query.get_first_value(this.object, "/type/type/domain").id;
             return h.fb_url(id, [['schema']]); 
           })
         }
@@ -375,10 +363,10 @@ function init_rules(lib) {
         {
           "label": _("type"),
           "key": (function() { 
-            return object_query.get_first_value(this.object.props["/type/property/schema"]).id;
+            return object_query.get_first_value(this.object, "/type/property/schema").id;
           }),
           "url": (function() { 
-            var id = object_query.get_first_value(this.object.props["/type/property/schema"]).id;
+            var id = object_query.get_first_value(this.object, "/type/property/schema").id;
             return h.fb_url(id, [['schema']]); 
           })
         }
@@ -445,12 +433,43 @@ function init_rules(lib) {
       "type": "/type/usergroup",
       "tabs": [
         {
-          "name": _("Editors"),
-          "key": "editors",
+          "name": _("Members"),
+          "key": "members",
           "app": "users",
-          "script": "group.tab"
+          "script": "group.tab",
         }
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
+      "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
+    },
+    {
+      "name": _("Permission"),
+      "type": "/type/permission",
+      "tabs": [
+        {
+          "name": _("Members"),
+          "key": "members",
+          "app": "users",
+          "script": "group.tab",
+        },
+        {
+          "name": _("Properties"),
+          "key": "props",
+          "app": "topic",
+          "script": "topic.tab"
+        },
+        {
+          "name": _("Links"),
+          "key": "links",
+          "app": "triples",
+          "script": "triples.tab"
+        },
+        {
+          "name": _("Keys"),
+          "key": "keys",
+          "app": "sameas",
+          "script": "sameas.tab"
+        },
+      ],
       "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
     },
     {
@@ -737,7 +756,7 @@ function init_rules(lib) {
           "key": "keys",
           "app": "sameas",
           "script": "sameas.tab"
-        }        
+        }
       ],
       "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
     }

@@ -35,31 +35,47 @@ var deferred = acre.require("lib/promise/deferred");
 var freebase = acre.require("lib/promise/apis").freebase;
 
 /**
+* Gets the members of a usergroup
+*
+* @param id:String - usergroup id
+* @return A promise that returns an array of usergroups
+**/
+function usergroup(id) {
+  return freebase.mqlread(group_query(id))
+  .then(function(env) {
+    return env.result;
+  })
+  .then(function(result) {
+    return [format_group(result)];
+  });
+};
+
+/**
 * Gets the permitted users (grouped by usergroup) 
-* for any permissioned object.  Works for usergroups
-* themselves too (always returns list of one usergroup)
+* for any permissioned object.
 *
 * @param id:String - permissioned object id
 * @param type:String - the type of object... primarily used to return
 *                      other objects of the same type for each user
 * @return A promise that returns an array of usergroups
 **/
-function object_usergroups(id, type) {
-  return freebase.mqlread(group_query(id, type))
+function permission_usergroups(id, type) {
+  return freebase.mqlread({
+    "id" : id,
+    "type": "/type/permission",
+    "permits" : [group_query(null, "forbidden", true)],
+    "boot:permits" : [group_query(null, "required", true)]
+  })
   .then(function(env) {
     return env.result;
   })
   .then(function(result) {
     var groups = [];
-    result.forEach(function(g) {
-      var group = h.extend({}, g);
-      group.users = g.member.map(format_user);
-      delete group.member;
-      group.metadata = {
-        id: group.id,
-        type: type
-      };
-      groups.push(group);
+    result.permits.forEach(function(g) {
+      groups.push(format_group(g));
+    });
+    result["boot:permits"].forEach(function(g) {
+      groups.push(format_group(g));
     });
     return groups;
   });
@@ -96,28 +112,42 @@ function format_user(u) {
   return user;
 };
 
-function group_query(id, type) {
-  var q = [{
+function format_group(g, type) {
+  var group = h.extend({}, g);
+  group.users = [];
+  if (h.isArray(g.member)) {
+    group.users = g.member.map(format_user);
+    delete group.member;
+  }
+  group.metadata = {
+    id: group.id,
+    type: type || null,
+    boot: g.key ? true : false
+  };
+  return group;
+};
+
+function group_query(id, boot, optional) {
+  if (typeof boot === "undefined") {
+    boot = true;
+  }
+  var q = {
+    "id" : id,
     "type": "/type/usergroup",
-    "id": null,
     "name": i18n.mql.query.name(),
-    "member": user_query(null, id, type)
-  }];
-  if (type == "/type/usergroup") {
-    acre.freebase.extend_query(q, {
-      "id": id
-    });
-  } else {
-    acre.freebase.extend_query(q, {
-      "permitted.controls.id": id,
-      "key": {
-        "namespace": "/boot",
-        "optional": "forbidden"
-      }
-    });
+    "key": {
+      "namespace": "/boot",
+      "optional": boot
+    }
+  }
+  if (boot !== "required") {
+    q.member = user_query(null, id);
+  }
+  if (optional) {
+    q.optional = true;
   }
   return q;
-};
+}
 
 function user_query(userid, objectid, object_type) {
   var q = {
@@ -133,9 +163,10 @@ function user_query(userid, objectid, object_type) {
         "controls": {
           "id": null,
           "name": i18n.mql.query.name(),
+          "optional": true,
           "limit": 1
         },
-        "limit": 1
+        "limit": 1,
       },
       "key": {
         "namespace": "/boot",

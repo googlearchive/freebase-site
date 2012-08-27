@@ -43,6 +43,9 @@
 </acre:block>
 
 <acre:block def="page_content()">
+  <acre:block if="!c.usergroups || !c.usergroups.length">
+    <h1 class="table-title">${_("No usergroups found")}</h1>
+  </acre:block>
   <acre:block for="group in c.usergroups">
     <h1 class="table-title">${i18n.display_name(group)}</h1>
     <table class="table">
@@ -55,6 +58,15 @@
         </tr>
       </thead>
       <tbody class="${JSON.stringify(group.metadata)}">
+        <tr acre:if="group.metadata.boot && !group.users.length">
+           <th colspan="4" class="table-empty-column" scope="col">
+            <p>
+              <a href="${h.fb_url(group.metadata.id)}">
+                ${h.sprintf("View users in %s", group.metadata.id)}
+              </a>
+            </p>
+          </th>
+        </tr>
         <acre:block for="user in group.users">
           ${user_table_row(user)}
         </acre:block>

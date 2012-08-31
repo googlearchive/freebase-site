@@ -1,7 +1,7 @@
 [
-  "lib/jquerytools/toolbox.expose.js",
-  "lib/jquerytools/overlay.js",
+  "lib/jquerytools/js/toolbox.expose.js",
+  "lib/jquerytools/js/overlay.js",
   "lib/filter/filters.mf.js",
   "lib/propbox/propbox.mf.js",
-  "topic.js"
+  "js/topic.js"
 ]

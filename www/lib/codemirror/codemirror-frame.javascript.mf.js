@@ -1,10 +1,10 @@
 [
-  "codemirror/util.js", 
-  "codemirror/stringstream.js", 
-  "codemirror/select.js", 
-  "codemirror/undo.js", 
-  "codemirror/editor.js", 
-  "codemirror/tokenize.js",
-  "codemirror/tokenizejavascript.js",
-  "codemirror/parsejavascript.js"
+  "codemirror/js/util.js", 
+  "codemirror/js/stringstream.js", 
+  "codemirror/js/select.js", 
+  "codemirror/js/undo.js", 
+  "codemirror/js/editor.js", 
+  "codemirror/js/tokenize.js",
+  "codemirror/js/tokenizejavascript.js",
+  "codemirror/js/parsejavascript.js"
 ]

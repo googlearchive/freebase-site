@@ -1,16 +1,16 @@
 [
   "globalize/globalize.js",
-  "template/json2.js",
-  "template/jquery.factory.js",
-  "template/jquery.localstore.js",
-  "template/jquery.metadata.js",
-  "template/tablesorter.js",
+  "template/js/json2.js",
+  "template/js/jquery.factory.js",
+  "template/js/jquery.localstore.js",
+  "template/js/jquery.metadata.js",
+  "template/js/tablesorter.js",
   "jqueryui/jquery.ui.core.mf.js",
   "suggest/suggest.mf.js",
-  "template/freebase.js",
-  "template/helpers.js",
-  "permission/permission.js",
-  "incompatible_types/incompatible-types.js",
-  "i18n/i18n.js",
-  "flag/flag.js"
+  "template/js/freebase.js",
+  "template/js/helpers.js",
+  "permission/js/permission.js",
+  "incompatible_types/js/incompatible-types.js",
+  "i18n/js/i18n.js",
+  "flag/js/flag.js"
 ]

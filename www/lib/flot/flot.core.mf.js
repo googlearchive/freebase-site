@@ -1,5 +1,5 @@
 [
-  "flot/excanvas.js",
-  "flot/jquery.flot.js",
-  "flot/jquery.colorhelpers.js"
+  "flot/js/excanvas.js",
+  "flot/js/jquery.flot.js",
+  "flot/js/jquery.colorhelpers.js"
 ]

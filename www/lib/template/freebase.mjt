@@ -186,7 +186,7 @@
     <a href="${h.fb_url()}">
       <img alt="${_('Freebase logo')}"
            id="fb-logo"
-           acre:attrs="h.is_production() ? {src: h.static_url(acre.resolve('template/freebase-logo-production.png'))} : {src: h.static_url(acre.resolve('template/freebase-logo-sandbox.png'))}"
+           acre:attrs="h.is_production() ? {src: h.static_url(acre.resolve('template/img/freebase-logo-production.png'))} : {src: h.static_url(acre.resolve('template/img/freebase-logo-sandbox.png'))}"
            border="0" height="21" width="120" />
     </a>
   </acre:block>
@@ -234,7 +234,7 @@
     <div id="copyright">
       <a href="http://www.google.com/" rel="nofollow">
         &#169; <script> document.write(new Date().getFullYear());</script>
-        <img src="template/google-logo.png" alt="Google" width="62" height="23" />
+        <img src="template/img/google-logo.png" alt="Google" width="62" height="23" />
       </a>
       <a title="${acre.request.script.path}" href="/appeditor#!path=${acre.request.script.path}" id="sourcelink">${_("View Source")}</a>
       &nbsp;

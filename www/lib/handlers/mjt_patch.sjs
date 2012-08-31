@@ -39,7 +39,7 @@
 var h = acre.require("helper/helpers.sjs").exports;
 
 var mjt_patch = function (script) {
-  
+
   var to_process = {
     "src": {
       "img": "static",

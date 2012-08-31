@@ -42,7 +42,7 @@
 <acre:block def="head()">
   <link rel="stylesheet" type="text/css" href="lib/editor-bundle.mf.css" />
   <link rel="stylesheet" type="text/css" href="editor.mf.css" />
-  <link rel="stylesheet" type="text/css" href="lib/template/chosen.jquery.css" />
+  <link rel="stylesheet" type="text/css" href="lib/template/css/chosen.jquery.css" />
 </acre:block>
 
 <acre:block def="content_body()">

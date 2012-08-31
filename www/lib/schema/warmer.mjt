@@ -51,5 +51,5 @@
 </acre:block>
 
 <acre:block def="footer_script()">
-  <script src="schema/warmer.js"></script>
+  <script src="schema/warmer.mf.js"></script>
 </acre:block>

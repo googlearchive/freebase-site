@@ -35,13 +35,9 @@ var hh = acre.require("handlers/helpers.sjs");
 // return actual handler from custom handler registration function
 var handler = function() {
   return {
-    'to_js': function(script) {
-      var res = {
-        body: preprocessor(script)
-      };
-      return "var module = ("+JSON.stringify(res)+");";
-    },
+    'to_js': acre.handlers.passthrough.to_js,
     'to_module': function(compiled_js, script) {
+      compiled_js.module.body = preprocessor(script, compiled_js.module.body);
       return compiled_js.module;
     },
     'to_http_response': function(module, script) {
@@ -63,12 +59,10 @@ function quote_url(url) {
   return url;
 };
 
-function preprocessor(script) {
-  var str = script.get_content().body;
-
+function preprocessor(script, str) {
   var buf = [],
       m,
-      url_regex = /url\s*\(\s*['"]*([^\)]+)['"]*\s*\)/gi,
+      url_regex = /url\s*\(\s*['"]*([^'"\)]+)['"]*\s*\)/gi,
       scheme_regex = /^\w+\:\/\//;
 
   str.split(/[\n\r\f]/).forEach(function(l) {
@@ -79,7 +73,7 @@ function preprocessor(script) {
         url = quote_url(url);
       }
       else {
-        var path = script.scope.acre.resolve(url);
+        var path = script.scope.acre.resolve(url) || url;
         url = quote_url(h.static_url(path));
       }
       return "url(" + url + ")";

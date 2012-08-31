@@ -1,4 +1,4 @@
 [
-  "propbox/kbs.js",
-  "propbox/propbox.js"
+  "propbox/js/kbs.js",
+  "propbox/js/propbox.js"
 ]

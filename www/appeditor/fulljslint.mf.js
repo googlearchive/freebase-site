@@ -1,3 +1,3 @@
 [
-	"fulljslint.js"
+	"js/fulljslint.js"
 ]

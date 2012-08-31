@@ -1,10 +1,10 @@
 [
   "lib/template/freebase.ui.mf.css",
-  "lib/template/freebase.ui.combomenu.less",
-  "lib/template/freebase.ui.infinitescroll.less",
-  "lib/template/freebase.ui.propbox.less",
-  "lib/template/freebase.ui.datainput.less",
-  "lib/template/freebase.ui.i18n.less",
+  "lib/template/css/freebase.ui.combomenu.less",
+  "lib/template/css/freebase.ui.infinitescroll.less",
+  "lib/template/css/freebase.ui.propbox.less",
+  "lib/template/css/freebase.ui.datainput.less",
+  "lib/template/css/freebase.ui.i18n.less",
   "lib/filter/filters.mf.css",
-  "sameas.less"
+  "css/sameas.less"
 ]

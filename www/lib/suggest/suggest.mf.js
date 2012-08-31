@@ -1,3 +1,3 @@
 [ 
-    'suggest/suggest.js'
+    'suggest/js/suggest.js'
 ]

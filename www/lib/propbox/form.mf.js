@@ -1,8 +1,8 @@
 [
-  "jquerytools/toolbox.expose.js",
-  "jquerytools/overlay.js",
-  "propbox/jquery.mqlkey.js",
-  "propbox/jquery.validate_input.js",
-  "propbox/jquery.data_input.js",
-  "propbox/form.js"
+  "jquerytools/js/toolbox.expose.js",
+  "jquerytools/js/overlay.js",
+  "propbox/js/jquery.mqlkey.js",
+  "propbox/js/jquery.validate_input.js",
+  "propbox/js/jquery.data_input.js",
+  "propbox/js/form.js"
 ]

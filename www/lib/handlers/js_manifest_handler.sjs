@@ -28,6 +28,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+var h = acre.require("helper/helpers.sjs");
 var hh = acre.require("handlers/helpers.sjs");
 
 var handler = function() {
@@ -64,7 +66,7 @@ var handler = function() {
         var buf = [];
         for (var i=0; i < mf.length; i++) {
           var path = mf[i];
-          buf.push("\n/** " + path + "**/\n");
+          buf.push("\n/** " + path + " **/\n");
           var req = script.scope.acre.require(path, metadata_overrides);
           buf.push(req.body);
         }

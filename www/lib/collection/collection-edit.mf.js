@@ -1,5 +1,5 @@
 [
-  "propbox/propbox.js",
+  "propbox/js/propbox.js",
   "propbox/propbox-edit.mf.js",
-  "collection/collection-edit.js"
+  "collection/js/collection-edit.js"
 ]

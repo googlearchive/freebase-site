@@ -1,4 +1,4 @@
 [
   "lib/propbox/form.mf.js",
-  "manage-type.js"
+  "js/manage-type.js"
 ]

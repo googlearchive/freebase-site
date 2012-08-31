@@ -1,3 +1,3 @@
 [
-  "codemirror/codemirror.js"
+  "codemirror/js/codemirror.js"
 ]

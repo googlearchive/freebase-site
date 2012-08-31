@@ -1,9 +1,9 @@
 [
-  "lib/jquerytools/tabs.js",
+  "lib/jquerytools/js/tabs.js",
   "lib/jqueryui/jquery.ui.core.mf.js",
-  "lib/jqueryui/jquery.ui.dialog.js",
-  "lib/template/jquery.nicemenu.js",
-  "lib/template/jquery.radiotoggle.js",
-  "lib/template/chosen.jquery.js",
-  "editor.js"
+  "lib/jqueryui/js/jquery.ui.dialog.js",
+  "lib/template/js/jquery.nicemenu.js",
+  "lib/template/js/jquery.radiotoggle.js",
+  "lib/template/js/chosen.jquery.js",
+  "js/editor.js"
 ]

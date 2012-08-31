@@ -1,3 +1,3 @@
 [
-  "template/modernizr.js"
+  "template/js/modernizr.js"
 ]

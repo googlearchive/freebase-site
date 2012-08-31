@@ -1,5 +1,5 @@
 [
-  "lib/template/chosen.jquery.js",
+  "lib/template/js/chosen.jquery.js",
   "lib/propbox/form.mf.js",
-  "sameas-edit.js"
+  "js/sameas-edit.js"
 ]

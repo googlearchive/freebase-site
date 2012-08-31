@@ -486,9 +486,51 @@ Validator.factory(scope, "OneOf", {
 });
 
 
+/**
+ * RegExp for iso8601 date
+ * m[1] = year
+ * m[2] = month
+ * m[3] = day
+ *
+ * m[>1] are optional
+ */
+var iso_date = "([\\+\\-]?\\d{4,})(?:-(0[1-9]|1[0-2])(?:-([12]\\d|0[1-9]|3[01]))?)?";
 
 /**
- * Timestamp (must pass acre.freebase.date_from_iso)
+ * RegExp for iso8601 time
+ * m[1] = hours
+ * m[2] = minutes
+ * m[3] = seconds
+ * m[4] = fractional second (ie, .001)
+ * m[5] = Z or UTC offset (i.e., -08:00)
+ * m[6] = offset sign (+/-)
+ * m[7] = offset hours
+ * m[8] = offset minutes
+ *
+ * m[>1] are optional
+ */
+var iso_time = "([01]\\d|2[0-3])(?:\\:([0-5]\\d)(?:\\:([0-5]\\d))?)?(\\.\\d+)?([zZ]|([+-])([01]\\d|2[0-3])(?:\\:([0-5]\\d))?)?";
+
+/**
+ * RegExp for iso8601 datetime
+ * m[1] = matched date
+ * m[2] = year
+ * m[3] = month
+ * m[4] = day
+ * m[5] = matched time
+ * m[6] = hours
+ * m[7] = minutes
+ * m[8] = seconds
+ * m[9] = fractional second (ie, .001)
+ * m[10] = Z or UTC offset (i.e., -08:00)
+ * m[11] = UTC offset sign (+/-)
+ * m[12] = UTC offset hours
+ * m[13] = UTC offset minutes
+ */
+var iso_datetime_regex = new RegExp('^(' + iso_date + ')(?:T(' + iso_time + '))?$');
+
+/**
+ * Timestamp (must pass iso_datetime_regex)
  */
 Validator.factory(scope, "Timestamp", {
   "defaults": {
@@ -499,22 +541,41 @@ Validator.factory(scope, "Timestamp", {
     if (val === "__now__") {
       return options.date ? new Date() : val;
     }
-
-    var date;
-    try {
-      date = acre.freebase.date_from_iso(val);
-      if (!date) {
-        throw(date);
-      }
-    }
-    catch (ex) {
-      return this.invalid(this.key, val, "is not a valid ISO8601 date string");
-    }
     if (options.date) {
-      return date;
+        var m = iso_datetime_regex.exec(val);
+        if (m) {
+            var year = parseInt(m[2], 10);
+            var month = m[3] != null ? parseInt(m[3], 10) - 1 : 0;
+            var date = m[4] != null ? parseInt(m[4], 10) : 1;
+            var hours = m[6] != null ? parseInt(m[6], 10) : 0;
+            var minutes = m[7] != null ? parseInt(m[7], 10) : 0;
+            var seconds = m[8] != null ? parseInt(m[8], 10) : 0;
+            var milliseconds = m[9] != null ? parseFloat(m[9], 10) : 0;
+            milliseconds = milliseconds * 1000; // 0 - 999
+            var offsethours = m[12] != null ? parseInt(m[12], 10) : 0;
+            var offsetminutes = m[13] != null ? parseInt(m[13], 10) : 0;
+            if (m[11] === "+") {
+                hours -= offsethours;
+                minutes -= offsetminutes;
+            }
+            else if (m[11] === "-") {
+                hours += offsethours;
+                minutes += offsetminutes;
+            }
+            var d = new Date();
+            d.setUTCFullYear(year, month, date);
+            d.setUTCHours(hours, minutes, seconds, milliseconds);
+            return d;
+        }
+        else {
+            return this.invalid(this.key, val, "is not a valid ISO8601 date string");
+        }
+    }
+    else if (iso_datetime_regex.test(val)) {
+        return val;
     }
     else {
-      return val;
+        return this.invalid(this.key, val, "is not a valid ISO8601 date string");
     }
   }
 });
@@ -552,24 +613,27 @@ Validator.factory(scope, "Datetime", {
  */
 Validator.factory(scope, "Datejs", {
   "defaults": {
-    date: false   // if TRUE convert to date, else converted to ISO8601 (yyyy-MM-ddTHH:mm:ss)
+    date: false   // if TRUE convert to date,
+                  // else converted to ISO8601 (yyyy-MM-ddTHH:mm:ss)
   },
   "string": function(val, options) {
-    var date;
+    var date = null;
     try {
       date = datejs.Date.parse(val);
-      if (!date) {
-        throw(date);
-      }
     }
     catch (ex) {
-      return this.invalid(this.key, val, "is not a recognized date string");
+      date = null;
     }
-    if (options.date) {
-      return date;
+    if (date) {
+        if (options.date) {
+            return date;
+        }
+        else {
+            return date.toString("yyyy-MM-ddTHH:mm:ss").replace(/T00\:00\:00$/, "");
+        }
     }
     else {
-      return date.toString("yyyy-MM-ddTHH:mm:ss").replace(/T00\:00\:00$/, "");
+        return Timestamp(val, options);
     }
   }
 });

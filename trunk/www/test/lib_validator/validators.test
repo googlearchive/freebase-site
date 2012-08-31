@@ -240,14 +240,56 @@ test("valdiators.OneOf", oneof_test, function() {
 
 
 var timestamp_test = {
-  valid: ["2009", "2009-01-01", "2009-12-31T23:00:01"],
-  invalid: ["2009/10/01", "10", "2009-1-1", "2009-10-10T1:1:1"]
+  valid: [
+      ["2009", 2009, 0, 1, 0, 0, 0, 0],
+      ["2009-02-03", 2009, 1, 3, 0, 0, 0, 0],
+      ["2009-10-23T11", 2009, 9, 23, 11, 0, 0, 0],
+      ["2009-04-01T09:59", 2009, 3, 1, 9, 59, 0, 0],
+      ["2009-12-31T23:00:01", 2009, 11, 31, 23, 0, 1, 0],
+      ["2009-11-01T09:10:11.010", 2009, 10, 1, 9, 10, 11, 10],
+      ["2012-04-08T09:57:17.0012Z", 2012, 3, 8, 9, 57, 17, 1],
+
+      // javascript Date only supports 0-999 millisecond precision
+      ["2009-11-01T09:10:11.9999Z", 2009, 10, 1, 9, 10, 11, 999],
+      ["2012-01-01T00:00:00+09:30", 2011, 11, 31, 14, 30, 0, 0],
+
+      ["-0001", -1, 0, 1, 0, 0, 0, 0],
+      ["0000", 0, 0, 1, 0, 0, 0, 0],
+      ["-0000", 0, 0, 1, 0, 0, 0, 0],
+      ["+0000", 0, 0, 1, 0, 0, 0, 0],
+      ["-12345", -12345, 0, 1, 0, 0, 0, 0],
+      ["+12345", 12345, 0, 1, 0, 0, 0, 0]
+  ],
+
+  invalid: [
+      "2009/10/01", "2009-1-1", "2009-10-10T1:1:1",
+      "0", "10", "123",
+      "2012-00, 2012-13", "2012-1", "2012-123",
+      "2012-12-00", "2012-12-32", "2012-08-1", "2012-11-005",
+      "2012-01-02T24", "2012-01-02T0", "2012-01-02T001",
+      "2012-01-02T00:60", "2012-01-02T00:1", "2012-01-02T23:059",
+      "2012-01-02T11:05:60", "2012-01-02T11:05:0", "2012-01-02T11:05:005"
+      ]
 };
 
 test("validators.Timestamp", timestamp_test, function() {
-  timestamp_test.valid.forEach(function(val) {
-    strictEqual(validators.Timestamp(val), val);
-  });
+  var valid = timestamp_test.valid;
+  for (var i=0,l=valid.length; i<l; i++) {
+      strictEqual(validators.Timestamp(valid[i][0]), valid[i][0]);
+  }
+
+  var fields = ["FullYear", "Month", "Date",
+                "Hours", "Minutes", "Seconds", "Milliseconds"];
+
+  for (var i=0,l=valid.length; i<l; i++) {
+      var d = validators.Timestamp(valid[i][0], {date:true});
+
+      for (var k=0,l2=fields.length; k<l2; k++) {
+          var expected = valid[i][k+1];
+          var result = d["getUTC"+fields[k]]();
+          same(result, expected, valid[i][k+1] + ": " + fields[k]);
+      }
+  }
 
   timestamp_test.invalid.forEach(function(val) {
     try {
@@ -265,14 +307,14 @@ test("validators.Timestamp", timestamp_test, function() {
 
 
 var datejs_test = {
-  valid: ["today", "yesterday", "now", "2009/11/05", "2009-1-1"].concat(timestamp_test.valid)
+  valid: ["today", "yesterday", "now", "2009/11/05", "2009-1-1"].concat(timestamp_test.valid.map(function(v){ return v[0]; }))
 };
 
 test("validators.Datejs", datejs_test, function() {
   datejs_test.valid.forEach(function(val) {
     var d = validators.Datejs(val);
     ok(d, "validate datejs string: " + d);
-    ok(acre.freebase.date_from_iso(d), "valid iso8601");
+    ok(validators.Timestamp(d, {if_invalid:null}), "valid iso8601");
   });
 });
 

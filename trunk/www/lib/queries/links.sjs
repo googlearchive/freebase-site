@@ -518,7 +518,15 @@ function apply_timestamp(clause, timestamp) {
     }
     var len = timestamp.length;
     if (len === 1) {
-      clause["filter:timestamp>="] = fh.timestamp(timestamp[0]);
+      // 2010-09-25T18:42:24.0007Z
+      if (/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+Z/.test(timestamp[0])) {
+        // if full timestamp, look for that link with exact timestamp
+        clause["filter:timestamp"] = fh.timestamp(timestamp[0]);
+      }
+      else {
+        // otherwise get everything since that timestamp
+        clause["filter:timestamp>="] = fh.timestamp(timestamp[0]);
+      }
     }
     else if (len === 2) {
       timestamp.sort(function(a,b) {

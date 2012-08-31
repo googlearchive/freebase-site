@@ -190,11 +190,6 @@
          name="${name}" acre:attrs="placeholder ? {placeholder:placeholder}: {}"/>
 </acre:block>
 
-<acre:block def="limit_slider(name, value)">
-  <input type="hidden" name="${name}" value="${value}" />
-  <div class="limit-slider"></div>
-</acre:block>
-
 <acre:block def="domains_input(name, checked)">
   <label for="${name}">
     <input type="checkbox" name="${name}" value="all" 
@@ -239,6 +234,23 @@
       </acre:block>
     </li>
     <li>
+      <a href="javascript:void(0);" class="filter-help-trigger">?</a>
+      <div class="filter-help tooltip">
+        <div class="filter-help-content">
+          ${_("You can enter a timestamp in many ways. Try:")}        
+        </div>
+        <ul class="filter-help-list">
+          <li class="filter-help-listitem">__now__</li>
+          <li class="filter-help-listitem">2012-08-14</li>
+          <li class="filter-help-listitem">2012-08-14T02:27:46</li>
+        </ul>
+        <div class="filter-help-content">
+          ${_("You can get a specific link by specifying the full timestamp: ")}
+          </div>
+        <ul class="filter-help-list">
+          <li class="filter-help-listitem">2012-08-14T02:27:46.0006Z</li>
+        </ul>
+      </div>
       <a class="filter-form-trigger" href="javascript:void(0)">${_("custom")}&hellip;</a>
       ${filter_form(base_url, filters, 'timestamp', timestamp_input, ['timestamp'], true)}
     </li>
@@ -248,7 +260,6 @@
 <acre:block def="timestamp_input(name)">
   <input type="text" class="text-input date-input" name="timestamp" placeholder="${_('from')}"/> to
   <input type="text" class="text-input date-input" name="timestamp" placeholder="${_('to')}"/>
-  <input type="submit" style="display:none;" />
 </acre:block>
 
 <acre:block def="creator_filter(base_url, filters)">

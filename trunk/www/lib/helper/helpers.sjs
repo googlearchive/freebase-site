@@ -96,6 +96,7 @@ var exports = {
   "fb_url": fb_url,
   "ajax_url": ajax_url,
   "static_url": static_url,
+  "build_query_url": build_query_url,
   "reentrant_url": reentrant_url,
   "legacy_fb_url": legacy_fb_url,
   "fb_api_url": fb_api_url,
@@ -1336,6 +1337,31 @@ function static_url(path) {
   var args = Array.prototype.slice.call(arguments);
   args.unshift("/static");
   return reentrant_url.apply(null, args);
+};
+
+/**
+ * Pre-fill query editor for basic context elements
+ */
+function build_query_url(topic_id, type_id, prop_id) {
+  var q = [{
+    "id" : null,
+    "name" : null
+  }];
+  if (topic_id) {
+    acre.freebase.extend_query(q, {id: topic_id});
+  }
+  if (type_id) {
+    acre.freebase.extend_query(q, {type: type_id});
+  }
+  if (prop_id) {
+    var ext = {};
+    ext[prop_id] = [{
+      "id": null,
+      "name": null
+    }];
+    acre.freebase.extend_query(q, ext);
+  }
+  return fb_url('/query', {q:JSON.stringify(q), autorun: 1});
 };
 
 function reentrant_url(prefix, path) {

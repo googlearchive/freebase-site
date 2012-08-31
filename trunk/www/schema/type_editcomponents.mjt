@@ -145,7 +145,7 @@
               };
             </acre:script>
             ${h.template_sprintf(_("This property is being delegated to %(delegated)s. You cannot change the %(expected_type)s or %(uniqueness)s."), sprintf_args)}
-          <a href="${schema_h.build_query_url(type_id, prop.id)}">${_('View instances')} &raquo;</a>
+          <a href="${h.build_query_url(null, type_id, prop.id)}">${_('View instances')} &raquo;</a>
           </div>
           <div acre:elif="prop.used" class="form-msg" acre:trim="">
             <acre:block if="prop.unique">
@@ -160,7 +160,7 @@
               </acre:script>
               ${h.template_sprintf(_("This property is being used. You cannot change the %(expected_type)s or %(uniqueness)s."), sprintf_args)}
             </acre:block>
-            <a href="${schema_h.build_query_url(type_id, prop.id)}">${_('View instances')} &raquo;</a>
+            <a href="${h.build_query_url(null, type_id, prop.id)}">${_('View instances')} &raquo;</a>
           </div>
           <div class="form-field fb-property-name">
             <label>

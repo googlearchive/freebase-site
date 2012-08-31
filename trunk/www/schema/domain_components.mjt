@@ -53,13 +53,13 @@
         </li>
         <li class="row-menu-item"><a href="${h.fb_url(type.id, [['links']])}">${_('Inspect Type')}</a></li>
         <li class="row-menu-item">
-          <a href="${sh.build_query_url(type.id)}">${h.template_sprintf(_('Browse %s instances'), i18n_c.number(type.instance_count))}</a>
+          <a href="${h.build_query_url(null, type.id)}">${h.template_sprintf(_('Browse %s instances'), i18n_c.number(type.instance_count))}</a>
         </li>
       </ul>
     </th>
     <td class="even">$type.id</td>
     <td class="odd numeric">${i18n_c.number(type.properties && type.properties.length || 0)}</td>
-    <td class="even numeric"><a href="${sh.build_query_url(type.id)}">${i18n_c.number(type.instance_count)}</a></td>
+    <td class="even numeric"><a href="${h.build_query_url(null, type.id)}">${i18n_c.number(type.instance_count)}</a></td>
     <td class="odd description">
       <acre:script>
         var blurb = article.get_text(type);

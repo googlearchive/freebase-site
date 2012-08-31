@@ -447,7 +447,7 @@
             </li>
           </acre:block>
           <li class="row-menu-item">
-            <a href="${ph.build_query_url(topic.id, prop_structure, prop_structure.expected_type.id === '/type/text' ? null : lang)}">${QUERY_PROPERTY}</a>
+            <a href="${h.build_query_url(topic.id, null, prop_structure.id)}">${QUERY_PROPERTY}</a>
           </li>
 	  <li class="row-menu-item">
             <acre:script>

@@ -320,7 +320,7 @@ function init_rules(lib) {
       "gear": [
         {
           "name": _("Build Query"),
-          "url": (function() { return h.fb_url("/queryeditor", {type: this.object.id}); })
+          "url": (function() { return h.build_query_url(null, this.object.id); })
         },
         {
           "name": _("Add Topic"),
@@ -372,6 +372,10 @@ function init_rules(lib) {
         }
       ],
       "gear": [
+        {
+          "name": _("Build Query"),
+          "url": (function() { return h.build_query_url(null, null, this.object.id); })
+        },
         {
           "name": _("<b>Delete</b> Property"),
           "app": "lib",

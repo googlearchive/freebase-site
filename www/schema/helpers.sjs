@@ -42,13 +42,6 @@ function isGlobal(id) {
          id.indexOf('/base/') == -1;
 }
 
-/*
-    Returns a query string for provided property
-*/
-function build_query_url(type_id, prop_id) {
-  return h.fb_url("/query", {type: type_id, property: prop_id});
-};
-
 function sort_by_id(a,b) {
   return b.id < a.id;
 };

@@ -60,7 +60,7 @@
 
         <li class="row-menu-item"><a href="${h.fb_url(prop.id, [['links']])}">${INSPECT_PROPERTY}</a></li>
         <li class="row-menu-item last">
-          <a href="${sh.build_query_url(type_id, prop.id)}">${BUILD_QUERY}</a>
+          <a href="${h.build_query_url(null, type_id, prop.id)}">${BUILD_QUERY}</a>
         </li>
       </ul>
     </th>

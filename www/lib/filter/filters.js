@@ -74,37 +74,23 @@
             // something from the suggest list
             return false;
         });
-    },
-
-    init_limit_slider_filter: function(context, default_value, min, max, step) {
-      // slider for controlling property limit
-      var slider = $(".limit-slider", context);
-      var current = $(".current-limit", context);
-      var input = $("input[name=limit]", context);
-      var val = parseInt(input.val() || default_value, 10);
-
-      slider.slider({
-        value: val,
-        min: min || 1,
-        max: max || 100,
-        step: step || 10,
-        slide: function(e, ui) {
-          current.css({'color': '#f71'});
-          current.text(ui.value);
-        },
-        stop: function(e, ui) {
-          current.css({'color': '#333'});
-          input.val(ui.value);
-          if (ui.value != val) {
-            input[0].form.submit();
-          }
-        }
-      });
     }
   };
 
   $(function() {
-
+    $(".filter-form :input").keypress(function(e) {
+      if (e.keyCode === 13) {
+        this.form.submit();
+      }
+      return true;
+    });
+    $(".filter-help-trigger").tooltip({
+          events: {def: "click,mouseout"},
+          position: "top center",
+          effect: "fade",
+          delay: 300,
+          offset: [-8, 0]
+      });
     // *** Initialize triggers for showing/hiding hidden inputs
     $(".filter-form-trigger").click(function(){
       var $form = $(this).siblings(".filter-form");

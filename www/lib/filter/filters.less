@@ -29,21 +29,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var h = acre.require("helper/helpers.sjs");
-var validators = acre.require("validator/validators.sjs");
-var fh = acre.require("filter/helpers.sjs");
+.filter-help-trigger {
+    float: right;
+}
 
-/**
- * Like validators.Datejs but handles strings/keys in fh.TIMESTAMPS
- * (e.g, "this week|month|year")
- */
-validators.Validator.factory(this, "Timestamp", {
-  "string": function(val, options) {
-    if (val in fh.TIMESTAMPS) {
-      return val;
-    }
-    else {
-      return validators.Datejs(val, h.extend({}, options, {date:false}));
-    }
-  }
-});
+.filter-help {
+    display: block;
+    display: none;
+    text-align: left;
+    margin: 3px 0px 0px;
+    padding: 5px 1em;
+    color: #484848;
+    border: 1px solid #EBB08A;
+    background-color: #FCF3DB;
+    max-width: 25em;
+    min-width: 15em;
+    width: 20em;
+    .rounded_corners(5px);
+    z-index: 1;
+}
+
+.filter-help-content {
+    margin-top: .5em;
+}
+
+.filter-help .filter-help-list {
+    padding-left: 0;
+    margin: 0.6em 0 0 1.3em;
+    font-weight: normal;
+    list-style-type: disc;
+}

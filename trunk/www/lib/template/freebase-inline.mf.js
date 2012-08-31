@@ -1,3 +1,3 @@
 [
-  "template/freebase-inline.js"
+  "template/js/freebase-inline.js"
 ]

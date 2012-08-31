@@ -1,5 +1,5 @@
 [          
-    "lib/template/helpers.js",
+    "lib/template/js/helpers.js",
     "lib/propbox/form.mf.js",
-    "queue.js" 
+    "js/queue.js" 
 ]

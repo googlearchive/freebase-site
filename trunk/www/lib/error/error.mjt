@@ -109,11 +109,20 @@
           <p class="line" acre:if="user_script">
             at ${sourcelink(einfo, user_script)}
           </p>
-        </div>
-
-        <div acre:if="'x-metaweb-tid' in acre.request.headers" class='tid'>
-          <a target='_new' href="http://stats.metaweb.com/query/transaction?tid=$acre.request.headers['x-metaweb-tid']">
-            TID</a>
+          <p class="line" acre:else="">
+            <acre:script>
+              var line;
+              for (var l=0,len=einfo.stack.length; l < len; l++) {
+                if (is_user_script(einfo.stack[l])) {
+                  line = einfo.stack[l];
+                  break;
+                }
+              }
+            </acre:script>
+            <acre:block if="line">
+              at ${sourcelink(line, true)}
+            </acre:block>
+          </p>
         </div>
       </acre:block>
     </div>

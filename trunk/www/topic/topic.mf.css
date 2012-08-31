@@ -1,9 +1,9 @@
 [
-  "lib/template/mixins.less",
-  "lib/template/freebase.ui.datainput.less",
-  "lib/template/freebase.ui.combomenu.less",
-  "lib/template/freebase.ui.bargraph.less",
-  "lib/template/freebase.ui.i18n.less",
+  "lib/template/css/mixins.less",
+  "lib/template/css/freebase.ui.datainput.less",
+  "lib/template/css/freebase.ui.combomenu.less",
+  "lib/template/css/freebase.ui.bargraph.less",
+  "lib/template/css/freebase.ui.i18n.less",
   "lib/filter/filters.mf.css",
-  "topic.less"
+  "css/topic.less"
 ]

@@ -1,6 +1,6 @@
 [
-  "lib/template/jquery.showrow.js",
-  "lib/jquerytools/tabs.js",
-  "lib/jquerytools/tooltip.js",
-  "schema.js"
+  "lib/template/js/jquery.showrow.js",
+  "lib/jquerytools/js/tabs.js",
+  "lib/jquerytools/js/tooltip.js",
+  "js/schema.js"
 ]

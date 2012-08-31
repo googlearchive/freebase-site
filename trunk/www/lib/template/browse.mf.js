@@ -1,5 +1,5 @@
 [
   "template/freebase.mf.js",
-  "template/jquery.nicemenu.js",
-  "template/browse.js"
+  "template/js/jquery.nicemenu.js",
+  "template/js/browse.js"
 ]

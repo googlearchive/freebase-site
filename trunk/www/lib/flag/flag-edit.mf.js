@@ -1,4 +1,4 @@
 [
   "propbox/form.mf.js",
-  "flag/flag-edit.js"
+  "flag/js/flag-edit.js"
 ]

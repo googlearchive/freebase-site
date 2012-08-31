@@ -1,5 +1,5 @@
 [
-  "lib/jquerytools/tabs.js",
+  "lib/jquerytools/js/tabs.js",
   "lib/flot/flot.core.mf.js",
-  "browse.js"
+  "js/browse.js"
 ]

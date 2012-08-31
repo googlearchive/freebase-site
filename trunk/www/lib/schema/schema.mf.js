@@ -1,4 +1,4 @@
 [
     "propbox/form.mf.js",
-    "schema/schema.js"
+    "schema/js/schema.js"
 ]

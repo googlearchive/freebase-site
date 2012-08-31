@@ -1,6 +1,6 @@
 [
-  "jqueryui/jquery.ui.core.js",
-  "jqueryui/jquery.ui.widget.js",
-  "jqueryui/jquery.ui.mouse.js",
-  "jqueryui/jquery.ui.position.js"
+  "jqueryui/js/jquery.ui.core.js",
+  "jqueryui/js/jquery.ui.widget.js",
+  "jqueryui/js/jquery.ui.mouse.js",
+  "jqueryui/js/jquery.ui.position.js"
 ]

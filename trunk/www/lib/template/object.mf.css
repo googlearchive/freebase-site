@@ -1,12 +1,12 @@
 [
   "template/freebase.mf.css",
-  "template/freebase.ui.masthead.less",
-  "template/freebase.ui.table.less",
-  "template/freebase.ui.modal.less",
-  "template/freebase.ui.module.less",
-  "template/freebase.ui.datainput.less",
-  "template/freebase.ui.i18n.less",
-  "template/freebase.ui.propbox.less",
-  "template/jquery.nicemenu.css",
-  "template/site.less"
+  "template/css/freebase.ui.masthead.less",
+  "template/css/freebase.ui.table.less",
+  "template/css/freebase.ui.modal.less",
+  "template/css/freebase.ui.module.less",
+  "template/css/freebase.ui.datainput.less",
+  "template/css/freebase.ui.i18n.less",
+  "template/css/freebase.ui.propbox.less",
+  "template/css/jquery.nicemenu.css",
+  "template/css/site.less"
 ]

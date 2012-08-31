@@ -1,7 +1,7 @@
 [
   "schema-edit.mf.js",
-  "lib/jqueryui/jquery.ui.sortable.js",
-  "suggest_expected_type.js",
-  "suggest_property.js",
-  "type-edit.js"
+  "lib/jqueryui/js/jquery.ui.sortable.js",
+  "js/suggest_expected_type.js",
+  "js/suggest_property.js",
+  "js/type-edit.js"
 ]

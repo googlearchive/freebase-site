@@ -50,8 +50,8 @@ test("quote_url", function() {
 
 function assert_content(content) {
   // assert transformation of urls in handlers/test/handle_me.css
-  ok(content.indexOf("url(lib/template/ui-icons.png)") === -1, "expected url(lib/template/ui-icons.png) to be transformed");
-  ok(content.indexOf('url("' + h.static_url(acre.resolve("lib/template/ui-icons.png")) + '")') >= 0, "expected url(lib/template/ui-icons.png) to be transformed");
+  ok(content.indexOf("url(lib/template/img/ui-icons.png)") === -1, "expected url(lib/template/img/ui-icons.png) to be transformed");
+  ok(content.indexOf('url("' + h.static_url(acre.resolve("lib/template/img/ui-icons.png")) + '")') >= 0, "expected url(lib/template/img/ui-icons.png) to be transformed");
 
   ok(content.indexOf("url(http") === -1, "expected url to be quoted");
   ok(content.indexOf('url("http') >= 0, "expected url to be quoted");
@@ -61,15 +61,9 @@ var self = this;
 test("preprocessor", function() {
   var content = acre.get_source("./handle_me.css");
   var script = {
-    get_content: function() {
-      return {
-        body: acre.get_source("./handle_me.css")
-      };
-    },
     scope: self
   };
-
-  var result = css_handler.preprocessor(script);
+  var result = css_handler.preprocessor(script, content);
   assert_content(result);
 });
 

@@ -1,4 +1,4 @@
 [
-  "schema-edit.mf.js",
-  "domain-edit.js"
+  "js/schema-edit.mf.js",
+  "js/domain-edit.js"
 ]

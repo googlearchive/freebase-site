@@ -1,8 +1,8 @@
 [
-  "lib/template/mixins.less",
-  "lib/template/freebase.ui.tabs.less",
-  "lib/template/freebase.ui.infinitescroll.less",
-  "lib/template/freebase.ui.datatable.less",
-  "lib/template/freebase.ui.combomenu.less",
-  "collection.less"
+  "lib/template/css/mixins.less",
+  "lib/template/css/freebase.ui.tabs.less",
+  "lib/template/css/freebase.ui.infinitescroll.less",
+  "lib/template/css/freebase.ui.datatable.less",
+  "lib/template/css/freebase.ui.combomenu.less",
+  "css/collection.less"
 ]

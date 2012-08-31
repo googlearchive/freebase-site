@@ -1,3 +1,3 @@
 [
-	"codeassist.js"
+	"js/codeassist.js"
 ]

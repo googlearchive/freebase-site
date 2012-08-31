@@ -28,6 +28,7 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 var h = acre.require("helper/helpers.sjs");
 var hh = acre.require("handlers/helpers.sjs");
 
@@ -44,11 +45,9 @@ var less = function(data) {
 
 var handler = function() {
   return {
-    'to_js': function(script) {
-      return "var res = ("+JSON.stringify(script.get_content())+");";
-    },
+    'to_js': acre.handlers.passthrough.to_js,
     'to_module' : function(compiled_js, script) {
-      var res = compiled_js.res;
+      var res = compiled_js.module;
 
       if (!compiled_js.compiled) {
         try {
@@ -65,7 +64,7 @@ var handler = function() {
         var buf = [];
         for (var i=0; i < mf.length; i++) {
           var path = mf[i];
-          buf.push("\n/** " + path + "**/\n");
+          buf.push("\n/** " + path + " **/\n");
           var req = script.scope.acre.require(path);
           buf.push(req.body);
         }

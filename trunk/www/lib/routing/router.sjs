@@ -771,7 +771,7 @@ function init_rules(lib) {
     {prefix:"/appeditor",          app:"appeditor"},
     {prefix:"/policies",           app:"policies"},
     {prefix:"/account",            app:"account"},
-    {prefix:"/favicon.ico",        app:"lib", script:"template/favicon.ico"},
+    {prefix:"/favicon.ico",        app:"lib", script:"template/img/favicon.ico"},
     {prefix:"/sample",             app:"sample"},
     {prefix:"/suggest",            app:"lib", script:"suggest"},
     {prefix:"/robots.txt",         app:"lib", script:"routing/robots.sjs"},

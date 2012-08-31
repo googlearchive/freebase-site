@@ -73,7 +73,7 @@
 <acre:block def="logo()">
   <div id="header-appsmenu">
     <div id="button-apps">
-      <img id="logo" src="logo-freebase.png" alt="" />
+      <img id="logo" src="img/logo-freebase.png" alt="" />
       <p><span class="button-menu">Apps</span></p>
     </div>
   </div>

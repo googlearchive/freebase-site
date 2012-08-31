@@ -37,7 +37,7 @@
 </acre:script>
 
 <acre:block def="head()">
-  <link rel="stylesheet" type="text/css" href="scripts/warmer.css" />
+  <link rel="stylesheet" type="text/css" href="scripts/warmer.mf.css" />
 </acre:block>
 
 <acre:block def="content_body()">

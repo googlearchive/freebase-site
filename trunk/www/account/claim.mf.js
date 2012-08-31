@@ -1,4 +1,4 @@
 [
-  "jquery.form.js",
-  "claim.js"
+  "js/jquery.form.js",
+  "js/claim.js"
 ]

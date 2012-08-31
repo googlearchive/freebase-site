@@ -1,4 +1,4 @@
 [
   "schema.mf.js",
-  "type.js"
+  "js/type.js"
 ]

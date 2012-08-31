@@ -1,5 +1,5 @@
 [
-  "lib/jquerytools/tabs.js",
-  "jquery.form.js",
-  "register.js"
+  "lib/jquerytools/js/tabs.js",
+  "js/jquery.form.js",
+  "js/register.js"
 ]

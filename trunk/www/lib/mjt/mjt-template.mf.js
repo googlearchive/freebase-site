@@ -1,9 +1,9 @@
 [
-  "mjt/header.js",
-  "mjt/util.js",
-  "mjt/markup.js",
-  "mjt/eval.js",
-  "mjt/template.js",
-  "mjt/linker.js",
-  "mjt/mjtjquery.js"
+  "mjt/js/header.js",
+  "mjt/js/util.js",
+  "mjt/js/markup.js",
+  "mjt/js/eval.js",
+  "mjt/js/template.js",
+  "mjt/js/linker.js",
+  "mjt/js/mjtjquery.js"
 ]

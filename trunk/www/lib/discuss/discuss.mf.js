@@ -1,3 +1,3 @@
 [
-    "discuss/discuss.js"
+    "discuss/js/discuss.js"
 ]

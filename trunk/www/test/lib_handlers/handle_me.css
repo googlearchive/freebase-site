@@ -2,7 +2,7 @@
     opacity: 0.8;
     display: inline-block;
     padding: 3px 0 2px 22px;
-    background: url(lib/template/ui-icons.png) no-repeat;
+    background: url(lib/template/img/ui-icons.png) no-repeat;
     line-height: 1;
     font-weight: bold;
 }

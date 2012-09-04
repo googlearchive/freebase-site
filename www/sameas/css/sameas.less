@@ -48,7 +48,7 @@
   .wrapper {
     position: relative;
     display: inline-block;
-    padding: 0 45px 6px 0;
+    padding-right: 20px;
   }
 }
 
@@ -128,4 +128,19 @@ td:hover .truncate {
   background: #f8f8f8;
   .rounded_corners();
   -webkit-box-shadow: 0 0 4px #999;
+}
+
+#keys.two-column {
+    display: inline-block;
+    white-space: nowrap;
+}
+#keys.two-column #type-object-key,
+#keys.two-column #type-namespace-keys {
+    float: left;
+    min-width: 600px;
+    display: inline-block;
+}
+
+#keys.two-column #type-namespace-keys {
+    margin-left: 20px;
 }

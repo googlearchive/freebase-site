@@ -37,14 +37,6 @@ var filters = acre.require("lib/filter/filters.sjs");
 var filter_validators = acre.require("lib/filter/validators.sjs");
 
 var myfilters = {
-  property: {
-    validator: validators.OneOf,
-    options: {
-        oneof: ["/type/object/key", "/type/namespace/keys"],
-        if_empty: null,
-        if_invalid: null
-    }
-  },
   timestamp: {
     validator: validators.MultiValue,
     options: {validator: filter_validators.Timestamp, if_empty:null}
@@ -84,7 +76,8 @@ var SPEC = {
       id: object.id,
       object: object,
       filters: f,
-      keys: queries.keys(object.id, f, null, lang)
+      type_object_key: queries.get_type_object_key(object.id, f, null, lang),
+      type_namespace_keys: queries.get_type_namespace_keys(object.id, f, null, lang)
     };
   }
 };

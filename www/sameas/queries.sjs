@@ -36,105 +36,89 @@ var freebase = apis.freebase;
 var deferred = apis.deferred;
 var fh = acre.require("lib/filter/helpers.sjs");
 var creator = acre.require("lib/queries/creator.sjs");
-var links_sort = acre.require("lib/queries/links.sjs").links_sort;
+var links = acre.require("lib/queries/links.sjs");
 
-function keys(id, filters, next, lang) {
+
+/**
+ * /type/object/key
+ */
+function get_type_object_key(id, filters, next, lang, extend_clause) {
     filters = h.extend({}, filters);
     return creator.by(filters.creator, "/type/user")
         .then(function(creator_clause) {
-            var promises = {};
-            if (filters.property === "/type/namespace/keys") {
-                promises.incoming = keys_incoming(id, filters, next, lang, creator_clause);
-                promises.outgoing = deferred.resolved([]);
+            var q = h.extend({
+                type: "/type/link",
+                master_property: "/type/namespace/keys",
+                source: {
+                    // this object (e.g., id) has a key in this namespace
+                    id: null,
+                    mid: null,
+                    "/type/namespace/uri_template": {
+                        template: null,
+                        optional: true
+                    }
+                },     
+                target: {
+                    id: id,
+                    mid: null
+                },   
+                target_value: {
+                    // this is the key value
+                    value: null
+                },
+                timestamp: null,
+                sort: "-timestamp",
+                optional: true
+            }, creator_clause, extend_clause);
+            if (next) {
+                q['next:timestamp<'] = next;
             }
-            else if (filters.property === "/type/object/key") {
-                promises.incoming = deferred.resolved([]);
-                promises.outgoing = keys_outgoing(id, filters, next, lang, creator_clause);
-            }
-            else {
-                promises.incoming = keys_incoming(id, filters, next, lang, creator_clause);
-                promises.outgoing = keys_outgoing(id, filters, next, lang, creator_clause);
-            }
-            return deferred.all(promises)
-                .then(function(result) {
-                    return keys_sort(result.incoming, result.outgoing, filters);
+            apply_filters(q, filters);
+            return freebase.mqlread([q], links.mqlread_options(filters))
+                .then(function(env) {
+                    return env.result;
                 });
         });
-};
-
-function keys_sort(a, b, filters) {
-    return links_sort(a, b, filters);
 };
 
 /**
  * /type/namespace/keys
  */
-function keys_incoming(id, filters, next, lang, creator_clause, extend_clause) {
-    var q = h.extend({
-        type: "/type/link",
-        master_property: "/type/namespace/keys",
-        "me:source": {id:id},
-        target: {
-            // this is the object that has the key in this namespace (e.g. id)
-            id: null,
-            mid: null,
-            name: i18n.mql.text_clause(lang),
-            "topic:type": {
-                id: "/common/topic",
+function get_type_namespace_keys(id, filters, next, lang, extend_clause) {
+    filters = h.extend({}, filters);
+    return creator.by(filters.creator, "/type/user")
+        .then(function(creator_clause) {
+            var q = h.extend({
+                type: "/type/link",
+                master_property: "/type/namespace/keys",
+                source: {
+                    id: id,
+                    "/type/namespace/uri_template": {
+                        template: null,
+                        optional: true
+                    }
+                },
+                target: {
+                    // this is the object that has the key in this namespace (e.g. id)
+                    id: null,
+                    mid: null
+                },
+                target_value: {
+                    // this is the key value
+                    value: null
+                },
+                timestamp: null,
+                sort: "-timestamp",
                 optional: true
+            }, creator_clause, extend_clause);
+            if (next) {
+                q['next:timestamp<'] = next;
             }
-        },
-        target_value: {
-            // this is the key value
-            value: null
-        },
-        timestamp: null,
-        sort: "-timestamp",
-        optional: true
-    }, creator_clause, extend_clause);
-    if (next) {
-        q['next:timestamp<'] = next;
-    }
-    apply_filters(q, filters);
-    return freebase.mqlread([q], mqlread_options(filters))
-        .then(function(env) {
-            return env.result;
-        });
-};
-
-/**
- * /type/object/key
- */
-function keys_outgoing(id, filters, next, lang, creator_clause, extend_clause) {
-    var q = h.extend({
-        type: "/type/link",
-        master_property: "/type/namespace/keys",
-        "me:target": {id:id},
-        source: {
-            // this object (e.g., id) has a key in this namespace
-            id: null,
-            mid: null,
-            name: i18n.mql.text_clause(lang),
-            "topic:type": {
-                id: "/common/topic",
-                optional: true
-            }
-        },        
-        target_value: {
-            // this is the key value
-            value: null
-        },
-        timestamp: null,
-        sort: "-timestamp",
-        optional: true
-    }, creator_clause, extend_clause);
-    if (next) {
-        q['next:timestamp<'] = next;
-    }
-    apply_filters(q, filters);
-    return freebase.mqlread([q], mqlread_options(filters))
-        .then(function(env) {
-            return env.result;
+            apply_filters(q, filters);
+            return freebase.mqlread([q], links.mqlread_options(filters))
+                .then(function(env) {
+                    return env.result;
+                });
         });
 };
 
@@ -142,61 +126,25 @@ function apply_filters(q, filters) {
   if (!filters) {
     return q;
   }
-  apply_timestamp(q, filters.timestamp);
-  apply_creator(q, filters.creator);
-  apply_historical(q, filters.historical);
+  links.apply_timestamp(q, filters.timestamp);
+  links.apply_historical(q, filters.historical);
 };
 
 
-function apply_timestamp(q, timestamp) {
-  if (timestamp) {
-    if (!h.isArray(timestamp)) {
-      timestamp = [timestamp];
+function key_info(link) {
+    var info = {
+        value: link.target_value.value,
+        decoded: acre.freebase.mqlkey_unquote(link.target_value.value),
+        namespace: link.source.id,
+        object: link.target.mid
+    };
+    if (link.source["/type/namespace/uri_template"] &&
+        link.source["/type/namespace/uri_template"].template) {
+        info.url = resolve_uri_template(link.source["/type/namespace/uri_template"].template, info.decoded);
     }
-    var len = timestamp.length;
-    if (len === 1) {
-      q.key[0].link["filter:timestamp>="] = fh.timestamp(timestamp[0]);
-    }
-    else if (len === 2) {
-      timestamp.sort(function(a,b) {
-        return b < a;
-      });
-      q.key[0].link["filter:timestamp>="] = fh.timestamp(timestamp[0]);
-      q.key[0].link["filter:timestamp<"] = fh.timestamp(timestamp[1]);
-    }
-  }
-  return q;
+    return info;
 };
 
-function apply_creator(q, creator) {
-  if (creator) {
-    if (!h.isArray(creator)) {
-      creator = [creator];
-    }
-    if (creator.length) {
-      q.key[0].link["filter:creator"] = {
-        "id|=": creator
-      };
-    }
-  }
-  return q;
-};
-
-function apply_historical(clause, historical) {
-  if (historical) {
-    clause.valid = null;
-    clause.operation = null;
-  }
-  return clause;
-};
-
-function mqlread_options(filters) {
-  var options = {};
-  if (!filters) {
-    return options;
-  }
-  if (filters.as_of_time) {
-    options.as_of_time = filters.as_of_time;
-  }
-  return options;
+function resolve_uri_template(template, key) {
+    return template.replace(/\{key\}/g, key);
 };

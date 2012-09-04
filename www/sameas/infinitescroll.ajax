@@ -40,17 +40,28 @@ var SPEC = {
   validate: function(params) {
     return [
       validators.MqlId(params, "id", {required:true}),
+      validators.OneOf(params, "p", {                 // property id
+          required: true,
+          oneof: ["/type/object/key", "/type/namespace/keys"]
+      }),
       filters.validate(params, tab.inspect_filters),
       validators.Timestamp(params, "next", {required:true}),
       validators.LangId(params, "lang", {if_empty:"/lang/en"})
     ];
   },
 
-  run: function(id, f, next, lang) {
-    return queries.keys(id, f, next)
+  run: function(id, p, f, next, lang) {
+    var promise = null;
+    if (p === "/type/namespace/keys") {
+        promise = queries.get_type_namespace_keys(id, f, next, lang);
+    }
+    else {
+        promise = queries.get_type_object_key(id, f, next, lang);
+    }
+    return promise
       .then(function(result) {
         return {
-          html: acre.markup.stringify(sameas.keys_body(id, result, f, lang))
+          html: acre.markup.stringify(sameas.keys_body(id, result, f, lang, p === "/type/namespace/keys"))
         };
       });
   }

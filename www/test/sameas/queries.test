@@ -34,12 +34,11 @@ var q = acre.require("label/sameas/queries.sjs");
 
 acre.require("mock").playback(this, "./playback_queries.json");
 
-function assert_incoming_key(keys, namespace, value) {
+function assert_key(keys, object, namespace, value) {
   for (var i=0,l=keys.length; i<l; i++) {
     var k = keys[i];
-    var incoming = k["me:source"] ? true : false;
-    if (incoming && 
-        k.target.id === namespace &&
+    if (k.target.id === object &&
+        k.source.id === namespace && 
         k.target_value.value === value) {
       return true;
     }
@@ -47,37 +46,24 @@ function assert_incoming_key(keys, namespace, value) {
   return false;
 };
 
-function assert_outgoing_key(keys, namespace, value) {
-  for (var i=0,l=keys.length; i<l; i++) {
-    var k = keys[i];
-    var outgoing = k["me:target"] ? true : false;
-    if (outgoing &&
-        k.source.id === namespace &&
-        k.target_value.value === value) {
-      return true;
-    }
-  }
-  return false;
-};
-
-test("keys_incoming", function() {
+test("get_type_namespace_keys", function() {
   var keys;
-  q.keys_incoming("/film")
+  q.get_type_namespace_keys("/film")
     .then(function(r) {
       keys = r;
     });
   acre.async.wait_on_results();
   ok(h.isArray(keys) && keys.length, "Got keys");
-  ok(assert_incoming_key(keys, "/film/film", "film"));
+  ok(assert_key(keys, "/film/film", "/film", "film"));
 });
 
-test("keys_outgoing", function() {
+test("get_type_object_key", function() {
   var keys;
-  q.keys_outgoing("/film")
+  q.get_type_object_key("/film")
     .then(function(r) {
       keys = r;
     });
   acre.async.wait_on_results();
   ok(h.isArray(keys) && keys.length, "Got keys");
-  ok(assert_outgoing_key(keys, "/", "film"));
+  ok(assert_key(keys, "/film", "/", "film"));
 });

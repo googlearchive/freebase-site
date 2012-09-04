@@ -45,21 +45,17 @@ var SPEC = {
     validate: function(params) {
         return [
             validators.MqlId(params, "id", {required:true}),
+            validators.OneOf(params, "p", {                 // property id
+                required: true,
+                oneof: ["/type/object/key", "/type/namespace/keys"]
+            }),
             validators.LangId(params, "lang", {if_empty:"/lang/en"})
         ];
     },
 
-    run: function(id, lang) {
-        // is id a namespace?
-        return freebase.mqlread({
-            id: id,
-            type: "/type/namespace"
-        })
-        .then(function(env) {
-            var is_namespace = env.result ? true : false;
-            return {
-                html: acre.markup.stringify(editcomponents.add_key_form(id, is_namespace, lang))
-            };
-        });
+    run: function(id, p, lang) {
+        return {
+            html: acre.markup.stringify(editcomponents.add_key_form(id, p, lang))
+        };
     }
 };

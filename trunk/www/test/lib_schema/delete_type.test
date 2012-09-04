@@ -29,9 +29,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-acre.require("lib/test/mock").playback(this, "./playback_delete_type.json");
+acre.require("mock").playback(this, "./playback_delete_type.json");
 
-var test_helpers = acre.require("lib/test/helpers.sjs");
+var test_helpers = acre.require("helpers.sjs");
 var freebase = acre.require("lib/promise/apis.sjs").freebase;
 var delete_type = acre.require("lib/schema/delete_type.sjs").delete_type;
 

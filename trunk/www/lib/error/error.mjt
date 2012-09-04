@@ -109,7 +109,7 @@
           <p class="line" acre:if="user_script">
             at ${sourcelink(einfo, user_script)}
           </p>
-          <p class="line" acre:else="">
+          <p class="line" acre:elif="einfo.stack">
             <acre:script>
               var line;
               for (var l=0,len=einfo.stack.length; l < len; l++) {

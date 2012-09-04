@@ -40,10 +40,10 @@
  *   2. have local write_user as appeditoruser with the auth secrect
  */
 
-acre.require("lib/test/mock").playback(this, "./playback_delete_domain.json");
+acre.require("mock").playback(this, "./playback_delete_domain.json");
 
 var freebase = acre.require("lib/promise/apis").freebase;
-var test_helpers = acre.require("lib/test/helpers");
+var test_helpers = acre.require("helpers");
 var delete_domain = acre.require("lib/schema/delete_domain").delete_domain;
 
 // this test requires user to be logged in

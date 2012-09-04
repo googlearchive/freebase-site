@@ -33,7 +33,7 @@
   var pb = acre.require("lib/propbox/propbox.mjt");
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var c = exports.c = {
-    template_base: "lib/test/qunit.mjt"
+    template_base: "qunit.mjt"
   };
 </acre:script>
 
@@ -43,12 +43,12 @@
 
 <acre:block def="head()">
   <script src="lib/globalize/globalize.js"></script>
-  <script src="lib/suggest/suggest.js"></script>
-  <script src="lib/template/jquery.metadata.js"></script> 
-  <script src="lib/i18n/i18n.js"></script> 
-  <script src="lib/propbox/jquery.validate_input.js"></script>  
-  <script src="lib/propbox/jquery.data_input.js"></script>
-  <script src="lib/propbox/editparams.js"></script>
+  <script src="lib/suggest/js/suggest.js"></script>
+  <script src="lib/template/js/jquery.metadata.js"></script> 
+  <script src="lib/i18n/js/i18n.js"></script> 
+  <script src="lib/propbox/js/jquery.validate_input.js"></script>  
+  <script src="lib/propbox/js/jquery.data_input.js"></script>
+  <script src="lib/propbox/js/editparams.js"></script>
   <script src="./qunit_editparams.js"></script>
 </acre:block>
 

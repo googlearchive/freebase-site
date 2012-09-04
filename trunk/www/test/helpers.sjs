@@ -29,8 +29,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var h = acre.require("helper/helpers.sjs");
-var freebase = acre.require("promise/apis").freebase;
+var h = acre.require("lib/helper/helpers.sjs");
+var freebase = acre.require("lib/promise/apis").freebase;
 
 function random() {
   var r = [];

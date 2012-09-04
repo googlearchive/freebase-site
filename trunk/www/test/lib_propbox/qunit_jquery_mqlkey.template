@@ -31,7 +31,7 @@
 
 <acre:script>
  var c = exports.c = {
-    template_base: "lib/test/qunit.mjt"
+    template_base: "qunit.mjt"
   };
 </acre:script>
 
@@ -40,7 +40,7 @@
 </acre:block>
 
 <acre:block def="head()">
-  <script src="lib/propbox/jquery.mqlkey.js"></script>
+  <script src="lib/propbox/js/jquery.mqlkey.js"></script>
   <script src="./qunit_jquery_mqlkey.js"></script>
 </acre:block>
 

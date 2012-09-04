@@ -29,24 +29,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-acre.require('/test/lib').enable(this);
-
-var i18n = acre.require("i18n/i18n.sjs");
-acre.require("globalize/cultures/globalize.culture.he.js");
+var i18n = acre.require("lib/i18n/i18n.sjs");
 
 test("cultures", function() {
   // do we have all the cultures for all the i18n.LANG_TIERS
 
+  var lib = acre.get_metadata("lib");
+  var culture_files = acre.get_metadata("//cultures.globalize." + lib.host).files;
   var cultures = [];
-  var lib = acre.get_metadata();
   i18n.LANG_TIERS.forEach(function(code) {
       if (code === "en") {
           // en is the default
           return;
       }
       var g_code = i18n.get_globalize_culture_lang_code(code);
-      var fname = "globalize/cultures/globalize.culture." + g_code + ".js";
-      if (lib.files[fname]) {
+      var fname = "globalize.culture." + g_code + ".js";
+      if (culture_files[fname]) {
           ok(true, [code, fname].join("=>"));
           cultures.push(fname);
           return;
@@ -59,7 +57,7 @@ test("cultures", function() {
               if (key != code) {
                   g_code = i18n.get_globalize_culture_lang_code(key);
                   fname = "globalize/cultures/globalize.culture." + g_code + ".js";
-                  if (lib.files[fname]) {
+                  if (culture_files[fname]) {
                       ok(true, [code, fname].join("==>"));
                       cultures.push(fname);
                       return;
@@ -70,6 +68,3 @@ test("cultures", function() {
       ok(false, "Could not file culture for: " + code);
   });
 });
-
-
-acre.test.report();

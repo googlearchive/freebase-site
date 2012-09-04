@@ -30,7 +30,7 @@
  !!-->
 <acre:script>
   var c = exports.c = {
-    template_base: "lib/test/qunit.mjt"
+    template_base: "qunit.mjt"
   };
 </acre:script>
 
@@ -39,7 +39,7 @@
 </acre:block>
 
 <acre:block def="head()">
-  <script src="lib/template/jquery.factory.js"></script>
+  <script src="lib/template/js/jquery.factory.js"></script>
   <script src="./qunit_factory.js"></script>
 </acre:block>
 

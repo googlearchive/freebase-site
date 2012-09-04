@@ -33,7 +33,7 @@ var h = acre.require("lib/helper/helpers.sjs");
 var q = acre.require("label/users/queries.sjs");
 var object_query = acre.require("lib/queries/object.sjs");
 
-acre.require("lib/test/mock").playback(this, "./playback_queries.json");
+acre.require("mock").playback(this, "./playback_queries.json");
 
 function get_object(id) {
     var d = object_query.object(id)

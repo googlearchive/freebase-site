@@ -31,7 +31,7 @@
 
 <acre:script>
  var c = exports.c = {
-    template_base: "lib/test/qunit.mjt"
+    template_base: "qunit.mjt"
   };
 </acre:script>
 
@@ -41,5 +41,5 @@
 
 <acre:block def="head()">
   <script src="./qunit_helpers.js"></script>
-  <script src="lib/template/helpers.js"></script>
+  <script src="lib/template/js/helpers.js"></script>
 </acre:block>

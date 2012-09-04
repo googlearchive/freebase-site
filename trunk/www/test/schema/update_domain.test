@@ -40,10 +40,10 @@
  *   2. have local write_user as appeditoruser with the auth secrect
  */
 
-acre.require("lib/test/mock").playback(this, "./playback_update_domain.json");
+acre.require("mock").playback(this, "./playback_update_domain.json");
 
 var schema_helpers = acre.require("label/schema/helpers");
-var test_helpers = acre.require("lib/test/helpers");
+var test_helpers = acre.require("helpers");
 var freebase = acre.require("lib/promise/apis").freebase;
 var update_domain = acre.require("label/schema/update_domain").update_domain;
 

@@ -40,6 +40,7 @@
   var i18n_c = acre.require("i18n/components.mjt");
   var _ = i18n.gettext;
   var components = acre.require("template/components.mjt");
+  var discuss_c = acre.require("discuss/components.mjt");
   var image = acre.require("template/imagecomponents.mjt");
   var base = acre.require("template/freebase.mjt");
   var self= this;
@@ -330,22 +331,7 @@
           ${that_exports.page_content()}
         </acre:block>
     </div>
-    <div id="page-discuss-wrapper">
-        <acre:block if="that_exports.discuss_content">
-            ${that_exports.discuss_content()}
-        </acre:block>
-        <acre:block else="">
-            <div class="discuss-table-title-wrapper clear">
-                <h2 class="table-title">${_("Comments")}</h2>
-                <a href="${h.static_url('lib/discuss/discuss.mf.js')}" onclick="return fb.nav_get_script(this, 'discuss.toggle_discuss',[]);">${_("Hide")}</a>
-            </div>
-            <div id="discuss-iframe-wrapper"> 
-               <iframe src="" id="discuss-frame" width="100%" height="100%">
-               </iframe>
-            </div>
-        </acre:block>
-    </div>
-    <div class="clear"></div>
+    ${discuss_c.discuss_frame()}
   </div>
 
 </acre:block>

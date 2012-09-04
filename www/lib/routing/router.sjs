@@ -171,16 +171,22 @@ function init_rules(lib) {
 
   // *********** OBJECT *************
 
-  var DEFAULT_DISCUSS_GEAR = {
-    "name": _("<b>Discuss</b>"),
-    "app": "lib",
-    "script": "discuss/discuss.mf.js",
-    "method": "discuss.toggle_discuss",
-    "args": (function() { return [this.object.id]; })
-  };
-
   var DEFAULT_GEAR = [
-    DEFAULT_DISCUSS_GEAR
+    {
+      "name": _("<b>Discuss</b>"),
+      "app": "lib",
+      "script": "discuss/discuss.mf.js",
+      "method": "discuss.toggle_discuss",
+      "args": (function() { return [this.object.mid]; })
+    },
+    {
+      "name": _("<b>Discuss</b> - Archive"),
+      "url": (function() { return h.legacy_fb_url("/discuss/threads", this.object.id); })
+    },
+    {
+      "name": _("<b>View</b> on old site"),
+      "url": (function() { return h.legacy_fb_url("/edit/topic", this.object.id); })
+    }
   ];
 
   var DEFAULT_MORE_TABS = [
@@ -264,10 +270,6 @@ function init_rules(lib) {
         }
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
       "gear": [
-        {
-          "name": _("<b>Discuss</b> Domain - Archive"),
-          "url": (function() { return h.legacy_fb_url("/discuss/threads", this.object.id); })
-        },
         {
           "name": _("<b>Delete</b> Domain"),
           "app": "lib",
@@ -425,12 +427,7 @@ function init_rules(lib) {
           "script": "writes.tab"
         }
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
-      "gear": [
-        {
-          "name": _("<b>Discuss</b> with this user - Archive"),
-          "url": (function() { return h.legacy_fb_url("/discuss/threads", this.object.id); })
-        }
-      ].concat(h.extend(true, [], DEFAULT_GEAR))
+      "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
     },
     {
       "name": _("Usergroup"),
@@ -635,14 +632,6 @@ function init_rules(lib) {
             "name": _("<b>Flag</b> as objectionable"),
             "onclick": "return window.freebase.flag.offensive(this);"
           }]
-        },
-        {
-          "name": _("<b>Discuss</b> Topic - Archive"),
-          "url": (function() { return h.legacy_fb_url("/discuss/threads", this.object.id); })
-        },
-        {
-          "name": _("<b>Edit</b> on old site"),
-          "url": (function() { return h.legacy_fb_url("/edit/topic", this.object.id); })
         }
       ].concat(h.extend(true, [], DEFAULT_GEAR))
     },

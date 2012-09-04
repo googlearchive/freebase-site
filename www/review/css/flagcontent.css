@@ -35,6 +35,9 @@
     width: 100%;
     height: 100%;
 }
+#page-discuss-wrapper {
+    padding-right: 20px;
+}
 .discuss-content {
     background-color: #fff;
     display:none;

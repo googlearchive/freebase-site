@@ -39,7 +39,7 @@ var exports = {
   }
 };
 
-var validators = acre.require("validator/validators");
+var validators = acre.require("lib/validator/validators");
 
 // ?mock=0 to disabled mock record/playback
 var mock = validators.StringBool(acre.request.params, "mock", {if_empty: true});
@@ -47,9 +47,9 @@ var mock = validators.StringBool(acre.request.params, "mock", {if_empty: true});
 var self = this;
 
 if (mock) {
-  var apis = acre.require("promise/apis");
-  var deferred = acre.require("promise/deferred");
-  var h = acre.require("helper/helpers.sjs");
+  var apis = acre.require("lib/promise/apis");
+  var deferred = acre.require("lib/promise/deferred");
+  var h = acre.require("lib/helper/helpers.sjs");
 
   /**
    * Mock record phase.

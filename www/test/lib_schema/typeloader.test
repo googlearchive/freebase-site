@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-acre.require("lib/test/mock")
+acre.require("mock")
     .playback(this, "./playback_typeloader.json");
 
 var h = acre.require("lib/helper/helpers.sjs");

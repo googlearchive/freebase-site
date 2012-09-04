@@ -32,7 +32,7 @@
 var h = acre.require("lib/helper/helpers.sjs");
 var q = acre.require("label/sameas/queries.sjs");
 
-acre.require("lib/test/mock").playback(this, "./playback_queries.json");
+acre.require("mock").playback(this, "./playback_queries.json");
 
 function assert_incoming_key(keys, namespace, value) {
   for (var i=0,l=keys.length; i<l; i++) {

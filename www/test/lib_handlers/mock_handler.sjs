@@ -39,7 +39,7 @@ var exports = {
 };
 
 var h = acre.require("lib/helper/helpers.sjs");
-var mock_lib = acre.require("lib/test/mock");
+var mock_lib = acre.require("mock");
 var validators = acre.require("lib/validator/validators");
 
 // ?mock=0 to disabled mock record/playback

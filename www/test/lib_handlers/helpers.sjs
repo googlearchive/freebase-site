@@ -28,7 +28,7 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-var test_helpers = acre.require("lib/test/helpers");
+var test_helpers = acre.require("helpers");
 
 /**
  * Generate a valid metadata object to overwrite the default handler for a given extension.

@@ -29,10 +29,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-acre.require("lib/test/mock").playback(this, "./playback_create_type.json");
+acre.require("mock").playback(this, "./playback_create_type.json");
 
 var schema_helpers = acre.require("label/schema/helpers");
-var test_helpers = acre.require("lib/test/helpers");
+var test_helpers = acre.require("helpers");
 var freebase = acre.require("lib/promise/apis").freebase;
 var create_type = acre.require("label/schema/create_type").create_type;
 

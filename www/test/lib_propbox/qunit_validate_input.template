@@ -33,9 +33,10 @@
   var h = acre.require("lib/helper/helpers.sjs");
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var c = exports.c = {
-    template_base: "lib/test/qunit.mjt"
+    template_base: "qunit.mjt"
   };
   var cultures = "en,es,fr,de,it,pt,zh,ja,ko,ru,sv,fi,da,nl,el,ro,tr,hu".split(",");
+  var lib_host = acre.get_metadata("lib").host;
 </acre:script>
 
 <acre:block def="title()">
@@ -48,10 +49,10 @@
   </script>
   <script src="lib/globalize/globalize.js"></script>
   <acre:block for="culture in cultures">
-    <script src="${h.static_url('lib/globalize/cultures/globalize.culture.' + culture + '.js')}"></script>
+    <script src="${h.static_url('//cultures.globalize." + lib_host + "globalize.culture.' + culture + '.js')}"></script>
   </acre:block>
-  <script src="lib/i18n/i18n.js"></script>
-  <script src="lib/propbox/jquery.validate_input.js"></script>
+  <script src="lib/i18n/js/i18n.js"></script>
+  <script src="lib/propbox/js/jquery.validate_input.js"></script>
   <script src="./qunit_validate_input.js"></script>
 </acre:block>
 

@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-acre.require("lib/test/mock").playback(this, "./playback_process_flag.json");
+acre.require("mock").playback(this, "./playback_process_flag.json");
 
 var freebase = acre.require("lib/promise/apis.sjs").freebase;
 var voteSJS = acre.require("label/review/vote.sjs");

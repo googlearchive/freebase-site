@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-acre.require("lib/test/mock").playback(this, "./playback_create_article.json");
+acre.require("mock").playback(this, "./playback_create_article.json");
 
 var lib = acre.require("lib/queries/create_article");
 var create_article = lib.create_article;

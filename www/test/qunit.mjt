@@ -30,8 +30,8 @@
  !!-->
 
 <acre:script>
-  var h = acre.require("helper/helpers.sjs");
-  var i18n = acre.require("i18n/i18n.sjs");
+  var h = acre.require("lib/helper/helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
   var _ = i18n.gettext;
 </acre:script>
 
@@ -48,10 +48,10 @@
       <title acre:else="">Freebase - Qunit</title>  
 
       <!-- freebase suggest -->
-      <link rel="stylesheet" type="text/css" href="test/qunit.mf.css" />
+      <link rel="stylesheet" type="text/css" href="qunit.mf.css" />
       <!-- jquery -->
       <script src="${h.lib_base_url('jquery')}/jquery.min.js"></script>
-      <script src="test/qunit.mf.js"></script>
+      <script src="qunit.mf.js"></script>
 
       <!-- any additional head content (i.e., css, js, etc.)-->
       <acre:block if="exports.head">

@@ -32,7 +32,7 @@
 <acre:script>
   var h = acre.require("lib/helper/helpers.sjs");
   var c = exports.c = {
-    template_base: "lib/test/qunit.mjt"
+    template_base: "qunit.mjt"
   };
 </acre:script>
 

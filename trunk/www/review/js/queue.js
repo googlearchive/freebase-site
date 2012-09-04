@@ -270,54 +270,6 @@
             animationsCompleted++;
         }
     }
-    function toggleDiscuss() {
-
-        var pageDiv = $('#flag-content');
-        var discDiv = $('#discuss-content');
-
-        if (!pageDiv || !discDiv) {
-            return;
-        }
-
-        var toPageWidth;
-        var toDiscWidth;
-        if (discDiv.width() > 0) { // Close discuss
-            toPageWidth = '100%';
-            toDiscWidth = 0;
-        } else {  // Open discuss
-            toPageWidth = '74%';
-            toDiscWidth = '25%';
-            discDiv.show();
-        }
-
-        var animationsCompleted = 0;
-        function transitionComplete() {
-            if (toDiscWidth === 0) {
-                discDiv.hide();
-            }
-            currentDiv.find('.toggle-discuss').find('button').removeAttr('disabled');
-        }
-
-        currentDiv.find('.toggle-discuss').find('button').attr('disabled', true);
-        pageDiv.animate({'width': toPageWidth},{
-            duration: 'normal',
-            complete: function() {
-                animationsCompleted++;
-                if (animationsCompleted === 2) {
-                    transitionComplete();
-                }
-            }
-        });
-        discDiv.animate({'width': toDiscWidth},{
-            duration: 'normal',
-            complete: function() {
-                animationsCompleted++;
-                if (animationsCompleted === 2) {
-                    transitionComplete();
-                }
-            }
-        });
-    }
     function modalForm(obj) {
         var form_options = {
             'form': obj,
@@ -362,7 +314,8 @@
             return false;
         });
         currentDiv.find('.toggle-discuss').find('button').click(function() {
-            toggleDiscuss();
+            var id = $(this).parent(".toggle-discuss").attr("data-id");
+            fb.discuss.toggle_discuss(id);
             return false;
         });
         currentDiv.find('.vote-form').find('button').click(function() {

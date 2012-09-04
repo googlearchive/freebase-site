@@ -1,39 +1,40 @@
-/*
-* Copyright 2012, Google Inc.
-* All rights reserved.
-*
-* Redistribution and use in source and binary forms, with or without
-* modification, are permitted provided that the following conditions are
-* met:
-*
-*     * Redistributions of source code must retain the above copyright
-* notice, this list of conditions and the following disclaimer.
-*     * Redistributions in binary form must reproduce the above
-* copyright notice, this list of conditions and the following disclaimer
-* in the documentation and/or other materials provided with the
-* distribution.
-*     * Neither the name of Google Inc. nor the names of its
-* contributors may be used to endorse or promote products derived from
-* this software without specific prior written permission.
-*
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-* A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-* LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-* DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-* THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-* OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
 
 <acre:script>
     var c = this.exports.c = {};
     var helper = acre.require("lib/helper/helpers.sjs");
     var i18n = acre.require("lib/i18n/i18n.sjs");
     var i18n_c = acre.require("lib/i18n/components.mjt");
+    var discuss_c = acre.require("lib/discuss/components.mjt");
     var propboxForm = acre.require("lib/propbox/form.mjt");
     var _ = i18n.gettext;   
 
@@ -83,25 +84,23 @@
 
 <acre:block def="itempanel(displayInfo)">  
   <div class="topic-frame">
-    <div acre:if="displayInfo.items.length === 1" id="flag-content" class="flag-content"> 
-        <iframe src="${displayInfo.items[0].url}" width="100%" frameborder="0" style="height: auto; min-height: 800px;">
-        </iframe>
-    </div>
-    <div acre:else="" id="flag-content" class="flag-content">
-      <div class="topic-frame topic-frame-left">
-        <iframe src="${displayInfo.items[0].url}" width="100%" frameborder="0" style="height: auto; min-height: 800px;">
-        </iframe>
+    <div id="page-content-wrapper">
+      <div acre:if="displayInfo.items.length === 1" id="flag-content" class="flag-content"> 
+          <iframe src="${displayInfo.items[0].url}" width="100%" frameborder="0" style="height: auto; min-height: 800px;">
+          </iframe>
       </div>
-      <div class="topic-frame topic-frame-right">
-        <iframe src="${displayInfo.items[1].url}" width="100%" frameborder="0" style="height: auto; min-height: 800px;">
-        </iframe>
+      <div acre:else="" id="flag-content" class="flag-content">
+        <div class="topic-frame topic-frame-left">
+          <iframe src="${displayInfo.items[0].url}" width="100%" frameborder="0" style="height: auto; min-height: 800px;">
+          </iframe>
+        </div>
+        <div class="topic-frame topic-frame-right">
+          <iframe src="${displayInfo.items[1].url}" width="100%" frameborder="0" style="height: auto; min-height: 800px;">
+          </iframe>
+        </div>
       </div>
     </div>
-    <div id="discuss-content" class="discuss-content">
-      <iframe src="${helper.docos_url(displayInfo.id)}" id="discuss-frame" width="100%" style="height: auto; min-height: 800px;">
-      </iframe>
-    </div>
-    <div class="clear"></div>
+    ${discuss_c.discuss_frame()}
   </div>      
 </acre:block>
 
@@ -136,7 +135,7 @@
         <a href="" id="get-link-list" onclick="return false">${LINK_TO_HOTLIST}</a>
       </div>
       <div class="flag-options">                
-        <form class="toggle-discuss" style="display:inline;"> ${propboxForm.cancel_button(DISCUSS)}</form>
+        <form class="toggle-discuss" data-id="${displayInfo.id}" style="display:inline;"> ${propboxForm.cancel_button(DISCUSS)}</form>
         <form class="toggle-share"   style="display:inline;"> ${propboxForm.cancel_button(SHARE)}</form>
       </div>         
     </div>

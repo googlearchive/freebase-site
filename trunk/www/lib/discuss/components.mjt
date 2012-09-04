@@ -30,31 +30,21 @@
  !!-->
 
 <acre:script>
-    var c = this.exports.c = {};
-    var helper = acre.require("lib/helper/helpers.sjs");
-    var i18n = acre.require("lib/i18n/i18n.sjs");
-    var i18n_c = acre.require("lib/i18n/components.mjt");
-    var _ = i18n.gettext;
-
-    var DISCUSSION_FOR_S = ;
+  var h = acre.require("helper/helpers.sjs");
+  var i18n = acre.require("i18n/i18n.sjs");
+  var _ = i18n.gettext;
 </acre:script>
 
-<acre:block def="head()">
-    <link rel="stylesheet" type="text/css" href="discuss.mf.css" />   
-</acre:block>
-
-<acre:block def="page_content()">    
-    <div class="discuss-tab">
-        <div class="discuss-title"> 
-             ${helper.template_sprintf(DISCUSSION_FOR_S, i18n.display_name(c.object))}
-        </div>        
-        ${discuss_widget(c.object.mid)}
+<acre:block def="discuss_frame()">
+  <div id="page-discuss-wrapper">
+    <div class="discuss-table-title-wrapper clear">
+      <h2 class="table-title">${_("Comments")}</h2>
+      <a href="${h.static_url('lib/discuss/discuss.mf.js')}" onclick="return fb.nav_get_script(this, 'discuss.toggle_discuss',[]);">${_("Hide")}</a>
     </div>
+    <div id="discuss-iframe-wrapper"> 
+      <iframe src="" id="discuss-frame" width="100%" height="100%">
+      </iframe>
+    </div>
+  </div>
+  <div class="clear"></div>
 </acre:block>
-
-<acre:block def="discuss_widget(mid)">                
-    <iframe src="${helper.docos_url(mid)}" id="discuss-frame" width="100%" height="100%">
-    </iframe>
-</acre:block>
-
-

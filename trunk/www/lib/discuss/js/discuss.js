@@ -34,10 +34,10 @@
 
     $.extend(fb.discuss, {
         
-        toggle_discuss: function(e) {
+        toggle_discuss: function(id) {
            
             var pageDiv = $("#page-content-wrapper");
-            var discDiv = $("#page-discuss-wrapper");           
+            var discDiv = $("#page-discuss-wrapper");      
             var toPageWidth; 
             var toDiscWidth;
 
@@ -50,7 +50,7 @@
                 discDiv.show();
 
                 if (!discDiv.data("initialized")) {
-                    $("#discuss-frame").attr("src", fb.h.docos_url(fb.c.id));
+                    $("#discuss-frame").attr("src", fb.discuss.docos_url(id));
                     discDiv.data("initialized", true);
                 }
             }
@@ -80,6 +80,38 @@
                     }
                 }
             }); 
+        },
+
+        /**
+         * Get the discuss url for a given id. This will be the url
+         * of the discussions iframe.
+         *
+         * id: the id of the object to discuss as a string.
+         */
+        docos_url : function(id) {
+
+          if (id.charAt(0) !== '/') {
+            return "";
+          }
+
+          // Temporary - figure out why docos namespaces have to start with m-
+          // Probably a mis-configuration.
+          if (id.indexOf("/m/") != 0) {
+          id = "/m" + id;
+          }
+
+          var docosKey = "FREEBASE-0" + id.replace(/\//g, "-");
+          if (fb.acre.request.server_name.indexOf("sandbox-freebase.com") != -1) {
+            var lastSunday = new Date();
+            lastSunday.setDate(lastSunday.getDate() - lastSunday.getDay());
+            docosKey += "-" + lastSunday.getFullYear() + (lastSunday.getMonth()+1) + lastSunday.getDate();
+          }
+
+          if (docosKey === "") {
+            return "";
+          }
+
+          return "https://docs.google.com/comments/d/" + docosKey + "/embed";
         }
     });
 

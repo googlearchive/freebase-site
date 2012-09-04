@@ -63,8 +63,8 @@ function permission_usergroups(id, type) {
   return freebase.mqlread({
     "id" : id,
     "type": "/type/permission",
-    "permits" : [group_query(null, "forbidden", true)],
-    "boot:permits" : [group_query(null, "required", true)]
+    "permits" : [group_query(null, type, "forbidden", true)],
+    "boot:permits" : [group_query(null, type, "required", true)]
   })
   .then(function(env) {
     return env.result;
@@ -72,10 +72,10 @@ function permission_usergroups(id, type) {
   .then(function(result) {
     var groups = [];
     result.permits.forEach(function(g) {
-      groups.push(format_group(g));
+      groups.push(format_group(g, type));
     });
     result["boot:permits"].forEach(function(g) {
-      groups.push(format_group(g));
+      groups.push(format_group(g, type));
     });
     return groups;
   });
@@ -127,7 +127,7 @@ function format_group(g, type) {
   return group;
 };
 
-function group_query(id, boot, optional) {
+function group_query(id, type, boot, optional) {
   if (typeof boot === "undefined") {
     boot = true;
   }
@@ -141,7 +141,7 @@ function group_query(id, boot, optional) {
     }
   }
   if (boot !== "required") {
-    q.member = user_query(null, id);
+    q.member = user_query(null, id, type);
   }
   if (optional) {
     q.optional = true;
@@ -163,7 +163,6 @@ function user_query(userid, objectid, object_type) {
         "controls": {
           "id": null,
           "name": i18n.mql.query.name(),
-          "optional": true,
           "limit": 1
         },
         "limit": 1,
@@ -172,6 +171,7 @@ function user_query(userid, objectid, object_type) {
         "namespace": "/boot",
         "optional": "forbidden"
       },
+      "optional": true,
       "limit": 3
     }]
   };

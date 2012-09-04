@@ -31,15 +31,26 @@
 
 var h = acre.require("lib/helper/helpers.sjs");
 var q = acre.require("label/users/queries.sjs");
+var object_query = acre.require("lib/queries/object.sjs");
 
 acre.require("lib/test/mock").playback(this, "./playback_queries.json");
+
+function get_object(id) {
+    var d = object_query.object(id)
+    .then(function(obj) {
+      o = obj;
+    });
+};
 
 test("app", function() {
   var type = "/freebase/apps/acre_app";
   var groups;
-  q.object_usergroups("/user/jdouglas/acre", type)
-    .then(function(r) {
-      groups = r;
+  object_query.object("/user/jdouglas/acre")
+    .then(function(obj) {
+      return q.permission_usergroups(obj.permission.id, type)
+        .then(function(r) {
+          groups = r;
+        });
     });
   acre.async.wait_on_results();
   ok(h.isArray(groups) && groups.length, "Got usergroups");
@@ -52,9 +63,12 @@ test("app", function() {
 test("domain", function() {
   var type = "/freebase/domain_profile";
   var groups;
-  q.object_usergroups("/film", type)
-    .then(function(r) {
-      groups = r;
+  object_query.object("/film")
+    .then(function(obj) {
+      return q.permission_usergroups(obj.permission.id, type)
+        .then(function(r) {
+          groups = r;
+        });
     });
   acre.async.wait_on_results();
   ok(h.isArray(groups) && groups.length, "Got usergroups");
@@ -66,7 +80,7 @@ test("domain", function() {
 
 test("usergroup", function() {
   var groups;
-  q.object_usergroups("/boot/schema_group", "/type/usergroup")
+  q.usergroup("/boot/schema_group", "/type/usergroup")
     .then(function(r) {
       groups = r;
     });

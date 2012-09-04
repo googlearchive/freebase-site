@@ -38,10 +38,20 @@
      * ADD KEY
      */
 
-    add_key_begin: function(trigger, body) {
+    add_key_begin: function(trigger, is_type_namespace_keys) {
+
+      var body = is_type_namespace_keys ? 
+            $("#type-namespace-keys > .table > tbody") : 
+            $("#type-object-key > .table > tbody");
+
+
       $.ajax($.extend(formlib.default_begin_ajax_options(), {
         url: fb.h.ajax_url("add_key_begin.ajax"),
-        data: {id:fb.c.id, lang:fb.lang},
+        data: {
+            id: fb.c.id, 
+            lang: fb.lang,
+            p: is_type_namespace_keys ? "/type/namespace/keys" : "/type/object/key"
+        },
         onsuccess: function(data) {
           var form = $(data.result.html);
           var event_prefix = "fb.sameas.add_key.";
@@ -67,10 +77,6 @@
 
     add_key_init: function(options) {
         edit.init_modal_help(options.form);
-        var select = $("select[name=p]", options.form)
-            .change(function(e) {
-                edit.edit_key_reset(options);
-            });
         edit.edit_key_reset(options);
     },
 
@@ -92,12 +98,12 @@
     },
 
     add_key_submit: function(options, ajax_options) {
-        var select = $("select[name=p]", options.form);
+        var p = $("input[name=p]", options.form).val();
         var namespace = $(":input[name=namespace]", options.form);
         var key = $(":input[name=value]", options.form);
         $.extend(ajax_options.data, {
             s: fb.c.id,
-            p: select.val(),
+            p: p,
             namespace: namespace.data("data.suggest").id,
             value: key.val()
         });
@@ -117,20 +123,18 @@
     },
 
     edit_key_reset: function(options) {
-        var select = $("select[name=p]", options.form);
+        var p = $("input[name=p]", options.form).val();
         var namespace = $(":input[name=namespace]", options.form);
         var key = $(":input[name=value]", options.form);
-        if (select.is(":disabled")) { 
+        if (namespace.is(":disabled")) { 
             /**
              * Edit existing key
-             */            
-            // disable changing namespace
-            fb.disable(namespace);
+             */ 
             
             // validate key values
             formlib.init_mqlkey(key, {
                 mqlread: fb.mqlread,
-                namespace: select.val() === "/type/namespace/keys" ? fb.c.id : namespace.attr("data-id"),
+                namespace: p === "/type/namespace/keys" ? fb.c.id : namespace.attr("data-id"),
                 check_key: true
             });
             key
@@ -149,13 +153,6 @@
              * Add a new key
              */
 
-            // changing incoming/outgoing resets the form
-            select
-                .unbind()
-                .change(function(e) {
-                    edit.edit_key_reset(options);
-                });
-
             // clear out input values
             namespace.val("");
 
@@ -167,21 +164,13 @@
 
             // hook up suggest to namespace input
             var suggest_options = null;
-            if (select.val() === "/type/namespace/keys") {
+            if (p === "/type/namespace/keys") {
                 // namespace input can be any object
                 suggest_options = $.extend({}, fb.suggest_options.service_defaults);
-
-                // change the label of the namespace input
-                $(".form-label-object", options.form).show();
-                $(".form-label-namespace", options.form).hide();
             }
             else {
                 // namespace input needs to be a namespace
                 suggest_options = fb.suggest_options.instance("/type/namespace");
-
-                // change the label of the namespace input
-                $(".form-label-object", options.form).hide();
-                $(".form-label-namespace", options.form).show();
             }
             namespace
                 .suggest(suggest_options)
@@ -192,7 +181,7 @@
                     // validate key values
                     formlib.init_mqlkey(key, {
                         mqlread: fb.mqlread,
-                        namespace: select.val() === "/type/namespace/keys" ? fb.c.id : data.id,
+                        namespace: p === "/type/namespace/keys" ? fb.c.id : data.id,
                         check_key: true
                     });
                     key
@@ -216,8 +205,7 @@
      * EDIT KEY
      */
 
-    edit_key_begin: function(key_row) {
-        var key_property = $(".key-property", key_row).attr("data-id");
+    edit_key_begin: function(key_row, is_type_namespace_keys) {
         var key_namespace = $(".key-namespace", key_row).attr("data-id");
         var key_value = $(".key-value", key_row).attr("data-value");
 
@@ -225,7 +213,7 @@
             url: fb.h.ajax_url("edit_key_begin.ajax"),
             data: {
                 s: fb.c.id,
-                p: key_property,
+                p: is_type_namespace_keys ? "/type/namespace/keys" : "/type/object/key",
                 namespace: key_namespace,
                 value: key_value,
                 lang: fb.lang
@@ -316,8 +304,7 @@
     /**
      * DELETE KEY
      */
-    delete_key_begin: function(key_row) {
-        var key_property = $(".key-property", key_row).attr("data-id");
+    delete_key_begin: function(key_row, is_type_namespace_keys) {
         var key_namespace = $(".key-namespace", key_row).attr("data-id");
         var key_value = $(".key-value", key_row).attr("data-value");
 
@@ -325,7 +312,7 @@
             url: fb.h.ajax_url("delete_key_begin.ajax"),
             data: {
                 s: fb.c.id,
-                p: key_property,
+                p: is_type_namespace_keys ? "/type/namespace/keys" : "/type/object/key",
                 namespace: key_namespace,
                 value: key_value,
                 lang: fb.lang

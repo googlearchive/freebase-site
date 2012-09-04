@@ -35,11 +35,9 @@
   var _ = i18n.gettext;
   var form = acre.require("lib/propbox/form.mjt");
   var propbox = acre.require("lib/propbox/form.mjt");
-  var INBOUND = _("/type/namespace/keys");
-  var OUTBOUND = _("/type/object/key");
 </acre:script>
 
-<acre:block def="add_key_form(id, is_ns, lang)">
+<acre:block def="add_key_form(id, p, lang)">
   <div class="modal">
     <div class="modal-inner">
       <h1 class="modal-title">
@@ -56,25 +54,10 @@
         </div>
         <div class="form-group clear">
           <div class="form-row">
-            <select name="p">
-              <option value="/type/namespace/keys" 
-                      acre:attrs="is_ns ? {selected:'selected'} : {}">
-                ${INBOUND}
-              </option>
-              <option value="/type/object/key" 
-                      acre:attrs="!is_ns ? {selected:'selected'} : {}">
-                ${OUTBOUND}</option>
-            </select>
-          </div>
-          <div class="form-row">
-            <acre:block if="is_ns">
+            <acre:block if="p === '/type/namespace/keys'">
               <label class="form-label form-label-object">${_('object')}</label>
-              <label class="form-label form-label-namespace"
-                     style="display:none;">${_('namespace')}</label>
             </acre:block>
             <acre:block else="">
-              <label class="form-label form-label-object"
-                     style="display:none;">${_('object')}</label>
               <label class="form-label form-label-namespace">${_('namespace')}</label>
             </acre:block>
             <input class="text-input" type="text" name="namespace"/>
@@ -91,16 +74,14 @@
     </div>
     <div class="modal-buttons">
       <input type="hidden" name="s" value="${id}"/>
+      <input type="hidden" name="p" value="${p}"/>
       <input type="hidden" name="lang" value="${lang}"/>
       ${form.submit_buttons()}
     </div>
   </div>
 </acre:block>
 
-<acre:block def="edit_key_form(id, property, namespace, value, lang)">
-  <acre:script>
-    var is_ns = property === "/type/namespace/keys";
-  </acre:script>
+<acre:block def="edit_key_form(id, p, namespace, value, lang)">
   <div class="modal">
     <div class="modal-inner">
       <h1 class="modal-title">
@@ -117,26 +98,10 @@
         </div>
         <div class="form-group clear">
           <div class="form-row">
-            <select name="p" disabled="disabled">
-              <option value="/type/namespace/keys" 
-                      acre:attrs="is_ns ? {selected:'selected'} : {}">
-                ${INBOUND}
-              </option>
-              <option value="/type/object/key" 
-                      acre:attrs="!is_ns ? {selected:'selected'} : {}">
-                ${OUTBOUND}
-              </option>
-            </select>
-          </div>
-          <div class="form-row">
-            <acre:block if="is_ns">
+            <acre:block if="p === '/type/namespace/keys'">
               <label class="form-label form-label-object">${_('object')}</label>
-              <label class="form-label form-label-namespace"
-                     style="display:none;">${_('namespace')}</label>
             </acre:block>
             <acre:block else="">
-              <label class="form-label form-label-object"
-                     style="display:none;">${_('object')}</label>
               <label class="form-label form-label-namespace">${_('namespace')}</label>
             </acre:block>
             <input class="text-input" type="text" name="namespace"
@@ -154,6 +119,7 @@
     </div>
     <div class="modal-buttons">
       <input type="hidden" name="s" value="${id}"/>
+      <input type="hidden" name="p" value="${p}"/>
       <input type="hidden" name="replace" value="${value}"/>
       <input type="hidden" name="lang" value="${lang}"/>
       ${form.submit_buttons()}

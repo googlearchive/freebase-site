@@ -49,25 +49,29 @@
       // Initialize filters
       propbox.init_menus();
 
-      sameas.init_infinitescroll();
+       $(".infinitescroll > tbody").each(function() {
+          sameas.init_infinitescroll($(this));
+      });
     },
 
-    init_infinitescroll: function() {
-      var tbody = $("#infinitescroll > tbody");
+    infid: 0,
+
+    init_infinitescroll: function(tbody) {
       var next = tbody.attr("data-next");
       if (!next) {
         // nothing to scroll
+        tbody.next("tfoot").remove();
         return;
       }
-      var a_next = $("#infinitescroll-next");
+      var a_next = tbody.next("tfoot").find(".infinitescroll-next");
       tbody.infinitescroll({
         //debug: true,
         loading: {
           msgText: "Fetching more links",
           img: fb.h.static_url("lib/template/img/horizontal-loader.gif")
         },
-        nextSelector: "#infinitescroll-next",
-        navSelector: "#infinitescroll-next",
+        nextSelector: a_next,
+        navSelector: a_next,
         dataType: "json",
         pathParse: function() {
           return [
@@ -75,7 +79,8 @@
             ""
           ];
         },
-        appendCallback: false
+        appendCallback: false,
+        infid: sameas.infid++
       }, function(data) {
         data = JSON.parse(data);
         var html = $(data.result.html);
@@ -89,39 +94,43 @@
           tbody.attr("data-next", next);
           // update links count
           var len = $(">tr", tbody).length;
-          var context = $("[name=infinitescroll-count]");
+          var table = tbody.parent("table");
+          var context = table.prev(".table-title").find("[name=infinitescroll-count]");
           $(".number", context).attr("data-value", len).text(len);
           // re-init tablesorter
-          tbody.parent("table").trigger("update");
+          table.trigger("update");
         }
         else {
           //console.log("STOP INFINITE SCROLL!!!");
-          $(window).unbind('.infscr');
+          var inst = tbody.data("infinitescroll");
+          if (inst) {
+              inst.unbind();
+          }
         }
       });
       $(window).trigger("scroll");
     },
 
-    add_key: function(e) {
+    add_key: function(e, is_type_namespace_keys) {
       var trigger = $(this);
       fb.get_script(fb.h.static_url("sameas-edit.mf.js"), function() {
-        sameas.edit.add_key_begin(trigger, $("#infinitescroll > tbody:first"));
+        sameas.edit.add_key_begin(trigger, is_type_namespace_keys);
       });
       return false;
     },
 
-    edit_key: function(context) {
+    edit_key: function(context, is_type_namespace_keys) {
       var key_row = $(context).parents(".submenu").data("headmenu").parents(".data-row:first");
       fb.get_script(fb.h.static_url("sameas-edit.mf.js"), function() {
-        sameas.edit.edit_key_begin(key_row);
+        sameas.edit.edit_key_begin(key_row, is_type_namespace_keys);
       });
       return false;
     },
 
-    delete_key: function(context) {
+    delete_key: function(context, is_type_namespace_keys) {
       var key_row = $(context).parents(".submenu").data("headmenu").parents(".data-row:first");
       fb.get_script(fb.h.static_url("sameas-edit.mf.js"), function() {
-        sameas.edit.delete_key_begin(key_row);
+        sameas.edit.delete_key_begin(key_row, is_type_namespace_keys);
       });
       return false;
     }

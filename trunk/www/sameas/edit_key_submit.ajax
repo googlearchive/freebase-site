@@ -87,23 +87,22 @@ var SPEC = {
             };
             return freebase.mqlwrite(q)
                 .then(function(env) {
-                    var creator_clause = creator.extend({});
                     promise = null;
                     if (p === "/type/namespace/keys") {
-                        promise = queries.keys_incoming(s, {}, null, lang, creator_clause, {
-                            "incoming:target": {id: namespace},
-                            "incoming:target_value": {value: value}
+                        promise = queries.get_type_namespace_keys(s, {}, null, lang, {
+                            "f:target": {id: namespace},
+                            "f:target_value": {value: value}
                         });
                     }
                     else {
-                        promise = queries.keys_outgoing(s, {}, null, lang, creator_clause, {
-                            "outgoing:source": {id: namespace},
-                            "outgoing:target_value": {value: value}
+                        promise = queries.get_type_object_key(s, {}, null, lang, {
+                            "f:source": {id: namespace},
+                            "f:target_value": {value: value}
                         });
                     }
                     return promise.then(function(key) {
                         return {
-                            html: acre.markup.stringify(t.keys_body(s, key, {}))
+                            html: acre.markup.stringify(t.keys_body(s, key, {}, p === "/type/namespace/keys"))
                         };
                     });
                 });

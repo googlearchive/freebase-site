@@ -276,6 +276,7 @@ function type(type_id, page) {
         type: type_id,
         "/common/topic/article": {
           id: null,
+          limit: 1,
           optional: true
         },
         optional: true

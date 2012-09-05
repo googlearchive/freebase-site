@@ -35,7 +35,7 @@ var apis = acre.require("promise/apis.sjs");
 var freebase = apis.freebase;
 var deferred = apis.deferred;
 var t = acre.require("flyout/flyout.mjt");
-
+var i18n = acre.require("i18n/i18n.sjs");
 
 var SPEC = {
     validate: function(params) {
@@ -56,7 +56,7 @@ var SPEC = {
     run: function(id, langs, callback) {
         return freebase.get_topic(id, {
             lang: langs.map(function(lang) {
-                return h.lang_code(i18n.get_lang(lang, true));
+                return h.lang_code(i18n.get_lang(true, lang));
             }),
             filter: ["suggest"]
         })

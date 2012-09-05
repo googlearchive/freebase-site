@@ -75,7 +75,6 @@ function init_rules(lib) {
     "apps":       "//apps" + codebase,
     "create":     "//create" + codebase,
     "data":       "//data" + codebase,
-    "discuss":    "//discuss" + codebase,
     "mdo":        "//mdo" + codebase,
     "policies":   "//policies" + codebase,
     "query":      "//query" + codebase,

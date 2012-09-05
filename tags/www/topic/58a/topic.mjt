@@ -1,0 +1,220 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var image = acre.require("lib/template/imagecomponents");  
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+  var filter_components = acre.require("lib/filter/components.mjt");
+  var fh = acre.require("lib/filter/helpers.sjs");
+  var propbox = acre.require("lib/propbox/propbox.mjt");
+  var mt = acre.require("manage_type_components.mjt");
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="topic.mf.css" />
+</acre:block>
+
+<acre:block def="page_content()">
+  <div class="column nav">
+    ${filters()}
+    <p class="keyboard-shortcuts module">
+      <a href="javascript:void(0);" rel="#overlay">${_("Keyboard shortcuts available")}</a>
+    </p>
+  </div>
+  <div class="column data" id="topic-data">
+    <acre:block if="c.topic">
+      ${manage_types()}  
+      ${propbox.topicbox(c.topic, i18n.lang)}
+
+
+      <acre:block if="!(c.filters.domain || c.filters.type || c.filters.property)">
+
+        <div class="section domain domain-section">
+          <div class="header">
+
+            <acre:block if="c.filters.domains === 'all'">
+              <span class="status commons">${_("Freebase Commons")}</span>
+              <h1 class="kbs">
+                <span class="mark">
+                  <a href="#" id="show-all-domains-link">${_("Show only Commons")}</a>
+                </span>
+              </h1>
+            </acre:block>
+            <acre:block else="">
+              <span class="status user">${_("User Domain")}</span>
+              <h1 class="kbs">
+                <span class="mark">
+                  <a href="#" id="show-all-domains-link">${_("Show all domains")}</a>
+                </span>
+              </h1>
+            </acre:block>
+          </div>    
+        </div>
+      </acre:block>
+      </acre:block>
+     
+    </acre:block>
+
+    <acre:block else="">
+      Error retrieving topic data
+    </acre:block>
+  </div>
+  ${keyboard_shortcuts()}
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="topic.mf.js"></script>
+</acre:block>
+
+<acre:block def="filters()">
+  <div class="module">
+    <h2 class="module-title">
+      <a href="javascript:void(0);" class="trigger">Collapse column</a>
+      <span>Filter this data</span>
+    </h2>
+    <div class="module-section">
+      ${filter_components.linkcount_filter(c.id, c.filters, c.object.linkcount)}
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="manage_types()">
+  <div class="toolbar clear">
+    <ul class="">
+      <li>
+        <a href="#" class="toolbar-trigger icon-link">
+          <span class="manage-type-icon">${_("Manage Types")}</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="manage-types toolbar-pane clear">
+    <div class="topic-types">
+      <h3 class="toolbar-pane-title">${h.sprintf("%s is typed as:", i18n.display_name(c.object))}</h3>
+      <div class="topic-type-list">
+        <ul>
+          <acre:script>
+          var types = c.object.type.slice().sort(function(a,b) {
+            return b.text.toLowerCase() < a.text.toLowerCase();
+          });
+          var filters = c.filters;
+          ["domain", "type", "property"].forEach(function(k) {
+            filters = fh.remove_filter(filters, k);
+          });                                                        
+          </acre:script>
+          <acre:block for="type in types">
+            ${mt.type_li(type)}
+            <acre:block if="i18n.lang !== type.lang">
+              ${i18n_c.lang_code(type.lang, i18n.lang)}
+            </acre:block>
+          </acre:block>
+        </ul>
+      </div>
+    </div>
+    <h3 class="toolbar-pane-title">${_("Add a new Type")}</h3>
+    <div name="add-type-form" class="add-type">
+      <span class="data-input">
+        <input type="" id="add-type-input" class="fb-input" 
+               value="" placeholder="${_('Start typing for suggestions...')}" name="" />
+      </span>
+    </div>
+    <!!--
+    <h3 class="toolbar-pane-title">${_("Suggested Types")}</h3>
+    <ul class="suggested-types">
+      <li>lorem ipsum</li>
+      <li>lorem ipsum</li>
+    </ul>
+    !!-->
+  </div>
+</acre:block>
+
+<acre:block def="keyboard_shortcuts()">
+  <div class="modal" style="display:none" id="overlay">
+    <div class="modal-inner">
+      <h1 class="modal-title">${_("Keyboard Shortcuts")}</h1>
+      <div class="modal-content clear">
+        <div class="column">
+          <h2 class="modal-sub-title">${_("Navigation")}</h2>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("/")}</dt>
+            <dd class="key-desc">${_("search Freebase")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("j")}</dt>
+            <dd class="key-desc">${_("next item")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("k")}</dt>
+            <dd class="key-desc">${_("previous item")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("p")}</dt>
+            <dd class="key-desc">${_("next Property")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("P")}</dt>
+            <dd class="key-desc">${_("previous Property")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("t")}</dt>
+            <dd class="key-desc">${_("next Type")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("T")}</dt>
+            <dd class="key-desc">${_("previous Type")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("d")}</dt>
+            <dd class="key-desc">${_("next Domain")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("D")}</dt>
+            <dd class="key-desc">${_("previous Domain")}</dd>
+          </dl>
+        </div>
+        <div class="column middle">
+          <h2 class="modal-sub-title">Editing</h2>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("e")}</dt>
+            <dd class="key-desc">${_("edit / add new value")}</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <button class="button cancel">Close</button>
+    </div>
+  </div>
+</acre:block>

@@ -160,7 +160,7 @@
         <div id="user-controls">
           <ul>
             <li>
-              <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?domains'">${_("Domains")}</a>
+              <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?schema'">${_("Schema")}</a>
             </li>
             <li>
               <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?queries'">${_("Queries")}</a>

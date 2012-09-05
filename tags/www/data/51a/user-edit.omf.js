@@ -1,1 +1,0 @@
-["lib/schema/schema.omf.js"]

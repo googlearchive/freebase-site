@@ -1,0 +1,121 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var h = acre.require("helper/helpers.sjs");
+  var i18n = acre.require("i18n/i18n.sjs");
+  var _ = i18n.gettext;
+  var pb = acre.require("propbox/propbox.mjt");
+  var form = acre.require("propbox/form.mjt");
+</acre:script>
+
+<acre:block def="text_edit_form(prop_structure, prop_values, lang)">
+  <acre:script>
+    var langs = i18n.mql.langs(true);
+    var vlangs = h.map_array(prop_values, "lang");
+    var structure = h.extend({}, prop_structure, {values:prop_values});
+    var current_language = "English";
+  </acre:script>
+  <div class="modal ${JSON.stringify(structure)}" id="text-edit-form">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <span>${prop_structure.text}</span>
+        <span class="key">${prop_structure.id}</span>
+      </h1>
+      <div class="modal-content">
+        <div class="form-group form-row">
+          <p class="form-note" acre:if="prop_structure.unique">${_("This property is unique. Only one value allowed per language.")}</p>
+          <label class="form-label" for="${prop_structure.id}">${_("Add new")}</label>
+          ${pb.data_input("/type/text", prop_structure.id, null, lang)}
+          <span class="lang-select-container">
+            <select class="lang-select">
+              <option value="">${_("Language")}</option>
+              <acre:block for="l in langs">
+                <acre:script>
+                  var disabled = prop_structure.unique && vlangs[l.id];
+                  var selected = !disabled && lang == l.id;
+                  var attrs = {};
+                  if (disabled) {
+                    attrs.disabled = "disabled";
+                  }
+                 if (selected) {
+                   attrs.selected = "selected";
+                 }
+                 if (l.id === lang) {
+                   current_language = l.name;
+                 }
+                </acre:script>
+                <option value="${l.id}" acre:attrs="attrs">${l.name}</option>
+              </acre:block>
+            </select>
+          </span>
+          <span class="lang-select-submit">
+            <button class="icon-link add" href="javascript:void(0);" >
+              ${_("Add")}
+            </button>
+          </span>
+        </div>
+        <div class="form-group" id="language-values">
+          <table class="table table-sortable">
+            <thead>
+              <tr>
+                <th class="" scope="col"><span class="sort-icon">${_("Value")}</span></th>
+                <th class="" scope="col"><span class="sort-icon">${_("Language")}</span></th>
+                <th class="{sorter:false}" scope="col">&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody class="values">
+              <acre:block for="i,value in prop_values">
+                <tr>
+                  <th scope="row" class="row-header">
+                    ${pb.data_input("/type/text", prop_structure.id, value, lang)}
+                  </th>
+                  <td class="lang">
+                    <span>${i18n.LANGS_BY_ID[value.lang] && i18n.LANGS_BY_ID[value.lang].name || value.lang}</span>
+                  </td>
+                  <td class="delete-row">
+                    <a class="icon-link delete" href="javascript:void(0);"><span class="delete-icon">${_("delete")}</span></a>
+                  </td>
+                </tr>
+              </acre:block>
+            </tbody>
+          </table>
+        </div>
+        <p class="message lang-warning">
+          ${h.sprintf(_("You are adding values outside your current language. Only %s values will be displayed after save. To view other values, toggle to the appropriate language."), current_language)}
+        </p>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      ${form.submit_buttons()}
+    </div>
+  </div>
+</acre:block>

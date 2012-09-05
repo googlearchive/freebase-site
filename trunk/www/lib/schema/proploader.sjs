@@ -74,8 +74,10 @@ function loads(prop_ids, lang) {
     var seen = {};
     prop_ids.forEach(function(prop_id) {
         result[prop_id] = null; // mark property in the result to retrieve for later
-        var type_id = get_type_id(prop_id);
-        if (!seen[type_id]) {            
+        var type_id = h.id_key(prop_id, true)[0];
+        if (type_id &&
+            !/^\/[mg]$/.test(type_id) && // for mids, do an actual schema query to get the type_id later
+            !seen[type_id]) {            
             type_ids.push(type_id);
             seen[type_id] = true;
         }
@@ -155,35 +157,6 @@ function loads(prop_ids, lang) {
 };
 
 /**
- * Get the prefix ns of a fully qualified prop_id, which is the type id.
- *
- * get_type_id("/a/b/c") ==> "/a/b"
- */
-function get_type_id(prop_id) {
-    assert(is_prop_id(prop_id), "Expected a valid property id: " + prop_id);
-    var parts = prop_id.split("/");
-    parts.pop();
-    var type_id = parts.join("/");
-    return type_id;
-};
-
-/**
- * Is prop_id a fully qualified property path/id?
- */
-function is_prop_id(prop_id) {
-    var r = validators.MqlId(prop_id, {if_empty:null, if_invalid:null});
-    if (r) {
-        // property paths should be at least 3 levels
-        // /domain/type/path
-        var parts = prop_id.split("/");
-        return parts.length > 3;
-    }
-    else {
-        return false;
-    }
-};
-
-/**
  * Load a list of heterogenous property paths.
  * 
  * A property path can either be a SINGLE fully qualified property id
@@ -244,8 +217,8 @@ function load_paths(paths, lang) {
         // only 2 level path is supported
         var parts = path.split(".", 2);
         if (parts.length) {
-            var first = parts[0];
-            assert(is_prop_id(first), "First property path must be fully qualified");
+            var first = parts[0];            
+            assert(first[0] === "/", "First property path must be fully qualified");
             if (!seen[first]) {
                 prop_ids.push(first);
                 seen[first] = true;
@@ -254,7 +227,7 @@ function load_paths(paths, lang) {
             var second = null;
             if (parts.length === 2) {
                 second = parts[1];
-                if (is_prop_id(second)) {
+                if (second[0] === "/") {
                     if (!seen[second]) {
                         prop_ids.push(second);
                         seen[second] = true;
@@ -293,7 +266,7 @@ function load_paths(paths, lang) {
                 if (parts.length === 2) {
                     var second = parts[1];
                     var prop2;
-                    if (is_prop_id(second)) {
+                    if (second[0] === "/") {
                         prop2 = props[second];
                         assert(prop2, "Second property did not load", second);
                         prop2 = h.extend(true, {}, prop2);

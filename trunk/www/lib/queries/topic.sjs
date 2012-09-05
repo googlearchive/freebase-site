@@ -111,8 +111,8 @@ function topic_structure(id, options) {
                 var no_filters = !(options.domain || options.type || options.property);
                 for (var pid in topic_props) {
                     // skip reverse properties (!/.../.../...)
-                    if (proploader.is_prop_id(pid)) {
-                        var t = proploader.get_type_id(pid);
+                    var t = h.id_key(pid, true)[0];
+                    if (t[0] === "/") {
                         // Don't show /type/object properties unless explicity asked
                         if (no_filters && (t === "/type/object")) {
                             continue;
@@ -152,7 +152,7 @@ function topic_structure(id, options) {
                         });
                     }
                     else if (prop_filter) {
-                        var prefix = proploader.get_type_id(prop_filter);
+                        var prefix = h.id_key(prop_filter, true)[0];
                         types = types.filter(function(t) {
                            return prefix === t;
                         });

@@ -1,1 +1,0 @@
-["schema.omf.js", "js/type.js"]

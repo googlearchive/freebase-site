@@ -1442,7 +1442,7 @@ function ObjectRouter(rules) {
     });
   };
 
-  this.route = function(req) {
+  this.route = function(req, scope) {
 
     var path_info = req.path_info;
 
@@ -1481,7 +1481,7 @@ function ObjectRouter(rules) {
       }
       // Redirect topics that have been merged
       else if (o.replaced_by) {
-        return h.redirect(self, o.replaced_by.id);
+        return h.redirect(scope, o.replaced_by.id);
       }
       // For topics and some other types, we always to force mids
       else if (rule.use_mid) {

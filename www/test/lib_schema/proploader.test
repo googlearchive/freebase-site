@@ -34,31 +34,6 @@ acre.require("mock").playback(this, "./playback_proploader.json");
 var h = acre.require("lib/helper/helpers.sjs");
 var proploader = acre.require("lib/schema/proploader.sjs");
 
-test("is_prop_id", function() {
-    var valid = ["/a/b/c", "/a/b/c/d", "/a/b/c/d/e"];
-    valid.forEach(function(id) {
-        ok(proploader.is_prop_id(id), "valid:" + id);
-    });
-    var invalid = ["/a/b", "/a", "/", ""];
-    invalid.forEach(function(id) {
-        ok(!proploader.is_prop_id(id), "invalid: " + id);
-    });
-});
-
-test("get_type_id", function() {
-    same(proploader.get_type_id("/a/b/c"), "/a/b");
-    var invalid = ["/a/b", "/a", "/", ""];
-    invalid.forEach(function(id) {
-        try {
-            proploader.get_type_id(id);
-            ok(false, "Expected invalid property id: " + id);
-        }
-        catch (ex) {
-            ok(true, ""+ex);
-        }
-    });
-});
-
 test("load", function() {
     var schema;
     var pid = "/film/performance/film";

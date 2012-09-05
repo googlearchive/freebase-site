@@ -71,6 +71,8 @@ test("id_key", function() {
   same(h.id_key("/a/b/c", true), ["/a/b", "c"]);
   same(h.id_key("abc"), "abc");
   same(h.id_key("abc", true), ["/", "abc"]);
+  same(h.id_key("!/a/b/c"), "c");
+  same(h.id_key("!/a/b/c", true), ["!/a/b", "c"]);
 });
 
 test("lang_code", function() {

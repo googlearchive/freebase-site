@@ -77,7 +77,7 @@
     <tbody>
       <tr>
         <td class="subject" rowspan="2">
-          <a href="${h.fb_url(c.property.key.namespace, [['schema']])}">${c.property.key.namespace}</a>
+          <a href="${h.fb_url(c.property.schema.id, [['schema']])}">${c.property.schema.id}</a>
         </td>
         <td class="predicate">
           <span class="current-prop">

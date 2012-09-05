@@ -1,0 +1,305 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+--------------------------------------
+BASIC LAYOUT
+--------------------------------------
+ */
+
+#content {
+  margin: 0 auto;
+}
+
+#page-header {
+  padding: 10px 0;
+  .page-title {
+    margin-left: 40px;
+  }
+}
+
+  
+#body-left {
+  float: left;
+  width: 66em;
+}
+
+#body-right { 
+  float: left;
+  width: 29em;
+}
+
+/*
+--------------------------------------
+TYPOGRAPHY
+--------------------------------------
+ */
+
+
+strong {
+    font-weight:bold;
+}
+
+
+h2 {
+    color:#ff7711;
+    font-size:1.6em;
+    font-weight:bold;
+    padding: 0 0 6px 0;
+    margin: 0px
+}
+
+.attribution-right h3 { 
+    font-size: 1.8em;
+    color: #999;
+    padding: 0 4px 8px 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+.syntax {
+  font-family: 'Droid Sans Mono', 'Andale Mono', Monaco, 'Courier New', Courier;
+  margin-bottom: 1.4em;
+  font-size: 1.3em;
+  word-wrap: break-word;
+}
+
+/*
+--------------------------------------
+ATTRIBUTION ALL
+--------------------------------------
+ */
+
+.box-feature {
+     position: relative;
+     background: #fff;
+     border: 1px #cdf solid;
+     -moz-border-radius: 4px;
+     -webkit-border-radius: 4px;
+     padding: 8px 0;
+     margin:0 0 15px 0;
+     }
+
+.attribution-all p {
+    font-size: 1.2em;
+    margin: 18px 0px 18px 60px;
+}
+.attribution-all dl {
+    padding: 0 0 10px 0;
+    font-size: 1.3em;
+}
+.attribution-all dt {
+    margin: 10px 0 0 0;
+    color:#222;
+    font-weight:bold;
+}
+.attribution-all dd {
+    margin: 0 0 8px 0;
+}
+
+.attribution-left h3 { font-size: 1.4em; padding: 8px 12px 0 12px;}
+.attribution-left h3.right { float: right;}
+
+/*
+--------------------------------------
+ATTRIBUTION-LEFT
+--------------------------------------
+ */
+
+.attribution-left p {
+    margin:10px 30px 10px 0;
+}
+
+.attribution-left .box-feature {
+    margin:0 30px 15px 0;
+}
+
+.attribution-left .box-feature p {
+    margin:0;
+}
+
+.display-code {
+    margin: 10px;
+    padding: 6px;
+    font-size:1.2em;
+    border:1px solid #ddd;
+    background: #F5F5F5 none repeat scroll 0 0;
+    white-space: pre;
+    overflow: auto;
+}
+
+.freebase-attribution {
+    margin:10px 0 0 10px;
+    line-height: 1.2em;
+}
+
+.full-col-opt input {margin:3px 6px 3px 0px;}
+.full-col-opt label {
+        font-size:1.2em;
+}
+.full-col-opt {
+    margin: 0 30px 5px 0;
+}
+
+.attribution-left .full-col-opt p {
+    margin:0 0 10px 22px;
+}
+
+#attribute-option {
+    position:absolute;
+    right:10px;
+    top:10px;
+    font-size:1.2em;
+}
+/*
+--------------------------------------
+TYPE-SELECT
+--------------------------------------
+ */
+ul#type-select    {
+    overflow:auto;
+    clear:both;
+}
+#type-select li{
+    list-style-type:none;
+    float:left;
+}
+#type-select li#leftCol {
+    width:300px;
+}
+
+#type-select li#rightCol {
+    width:280px;
+}
+.radio {
+    float:left;
+    margin:3px 0 0 0;}    
+    
+#type-select h2 {
+    margin-left:22px;
+}
+
+#type-select p {
+    margin:0 0 12px 22px;
+}
+#type-select #leftCol p, #type-select #leftCol h2 {
+    width:250px;
+}
+/*
+--------------------------------------
+BODY-RIGHT
+--------------------------------------
+ */
+#body-right h2 {margin-left:2px;}
+#body-right .box-feature {
+    margin-bottom:30px;
+}
+#body-right p{
+    margin:0px 2px;
+}
+#license-features li {
+    padding-left:65px;
+    min-height:52px;
+}
+li#share{
+    background:url(img/icons-sprite.png) no-repeat 0 0;
+}
+li#remix{
+    background:url(img/icons-sprite.png) no-repeat 0 -90px;
+}
+li#attribution{
+    background:url(img/icons-sprite.png) no-repeat 0 -190px;
+}
+
+.toc { padding: 0 0 18px 6px; }
+.toc-item { list-style: disc inside; padding: 3px 0; font-size: 1.2em; font-weight: bold; }
+.toc-item.on a { color: #222; }
+/*
+--------------------------------------
+BOX FEATURE
+--------------------------------------
+ */
+
+.box-feature h2 {
+    margin:0 10px 0px 10px;
+}
+.box-feature h4 {
+    border-top: 1px solid #ddd;
+    font-size: 1.4em;
+    font-weight: bold;
+    margin: 12px 0 0 0;
+    padding: 8px 12px 0 12px;
+    }
+.box-feature p { font-size: 1.3em; padding: 4px 12px; line-height: 1.3; }
+
+.box-feature li {
+    list-style-type:none; 
+    margin: 9px 20px 9px 20px;
+    font-size: 1.2em;
+    line-height: 1.3;
+    }
+.box-feature li h5 {
+    font-size: 1.1em;
+    font-weight: bold;
+    padding: 0 0 3px 0;
+    color:#222;
+    margin: 0px;
+    }
+
+/*
+--------------------------------------
+POLICY DOCS
+--------------------------------------
+ */
+
+.policies-right h2, .policies-right ul { padding: 0 0 0 20px; } 
+
+.content-box {
+    padding: 1em;
+    border: 1px solid #c7ddff;
+    .rounded_corners(6px);
+    background: #fff;
+    zoom: 1;
+}
+
+.content-box ul li { list-style: disc outside; padding: 4px 0 8px 0; margin-left: 24px; font-size: 1.3em; }
+.content-box ol li { list-style: decimal outside; padding: 4px 0 8px 0; margin-left: 24px; font-size: 1.3em; }
+.content-box ol li ul { margin: .8em 0;}
+.content-box ol li ol li { font-size: 1em; }
+.content-box ol li ul li { font-size: 1em; list-style: disc outside; }
+.content-box li p { font-size: 1em; }
+
+.content-box h3 { font-size: 1.3em; font-weight: bold; margin: 8px 0 4px; }
+.content-box h4 { font-size: 1.3em; font-weight: bold; margin: 8px 0 4px; }
+
+.content-box p { 
+  margin-bottom: 1.4em;
+  font-size: 1.2em;
+}

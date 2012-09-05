@@ -1,0 +1,33 @@
+[{
+  "type":          "/type/link",
+  "master_property": "/type/namespace/keys",
+  "source": {
+    "id": "/freebase/apps/hosts/com/freebaseapps",
+    "limit" : 0
+  },
+  "timestamp":     null,
+  "sort" : "-timestamp",
+  "target": {
+    "id":   null,
+    "/freebase/apps/acre_app_version/acre_app" : {
+      "id" : null,
+      "optional" : true
+    },
+    "type": {
+      "id|=" : [
+        "/freebase/apps/acre_app", 
+        "/freebase/apps/acre_app_version"
+      ],
+      "id" : null
+    },
+    "a:creator": {
+      "id":       "/user/prune",
+      "optional": "forbidden"
+    },
+    "b:creator": {
+      "id":       "/user/xtine",
+      "optional": "forbidden"
+    },
+  },
+  "limit" : 25
+}]

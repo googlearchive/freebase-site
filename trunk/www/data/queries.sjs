@@ -274,6 +274,10 @@ function type(type_id, page) {
         limit: 30,
         name: i18n.mql.query.name(),
         type: type_id,
+        "/common/topic/article": {
+          id: null,
+          optional: true
+        },
         optional: true
       }];
 

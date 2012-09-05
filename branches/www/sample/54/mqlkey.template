@@ -1,0 +1,94 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var h = acre.require("lib/helper/helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var _ = i18n.gettext;
+  var apis = acre.require("lib/promise/apis.sjs");
+  var deferred = apis.deferred;
+  var freebase = apis.freebase;
+  var c = this.exports.c = {
+    namespaces: freebase.mqlread([{
+        id: null,
+        type: "/type/domain",
+        owners: [{member: [{id:"/user/jdouglas"}]}]
+      }])
+      .then(function(env) {
+        return env.result;
+      })    
+  };
+</acre:script>
+
+
+<acre:block def="content_body()">
+  <select name="ns" id="ns">
+    <acre:block for="ns in c.namespaces">
+      <option id="${ns.id}">${ns.id}</option>
+    </acre:block>
+  </select>
+  
+  <input name="name" id="name" placeholder="name"/>
+
+  <input name="key" id="key" placeholder="key"/>
+  <span class="key-status"></span>
+</acre:block>
+
+
+
+
+<acre:block def="footer_script()">
+  <script src="lib/propbox/form.mf.js"></script>
+  <script>
+    $(function() {
+      var ns = $("#ns");
+      var name = $("#name");
+      var key = $("#key");
+
+      function initform() {
+        formlib.init_mqlkey(key, {
+          source: name,
+          mqlread: fb.mqlread,
+          namespace: ns.val()
+        });
+      };
+
+      ns.change(function() {        
+        initform();
+        key.val("");
+        name.trigger("change");
+      });
+    
+
+      initform();
+    });
+  </script>
+</acre:block>

@@ -282,6 +282,5 @@
 </acre:block>
 
 <acre:block def="footer_script()">
-  <script src="lib/template/jquery.tablesorter.js"></script>
   <script src="sameas.mf.js"></script>
 </acre:block>

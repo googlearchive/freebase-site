@@ -190,9 +190,7 @@ function domain(id) {
  * Type query
  * Get a type and a subset of instances
  */
-function type(type_id, page) {
-  // define our current language
-  var lang = i18n.lang;
+function type(type_id, query) {
 
   return schema.load(type_id)
     .then(function(r) {
@@ -216,59 +214,8 @@ function type(type_id, page) {
           return summary;
         }));
 
-      // build two separate arrays
-      // one holds disambiguating properties
-      // the other olds non-disambiguating properties
-      var disambiguators = [];
-      var properties = [];
-      this_type.properties.forEach(function(prop) {
-        if (prop["/freebase/property_hints/disambiguator"]) {
-          disambiguators.push(prop);
-        }
-        else {
-          properties.push(prop);
-        }
-      });
-
-      // join the two arrays together, keeping disambiguators first
-      properties = disambiguators.concat(properties);
-
-      // We need to check whether we have any mediated properties.
-      // If so, we want to limit the number of properties returned
-      // to just 1 so as not to overwhelm the page layout.
-      // Otherwise, return up to 3 properties.
-
-      var mediated_properties = false;
-      var PROP_COUNT = 3;
-
-      if (properties.length < PROP_COUNT) {
-        prop_length = properties.length;
-      }
-      else {
-        prop_length = PROP_COUNT;
-      }
-
-      for (i=0; i < prop_length; i++) {
-        if(properties[i]['expected_type']['/freebase/type_hints/mediator']) {
-          mediated_properties = true;
-          break;
-        }
-      }
-
-      if(mediated_properties === true) {
-        properties = properties.slice(0,1);
-      }
-      else {
-        properties = properties.slice(0,3);
-      }
-
-      /**
-       * Now that we have properties to display
-       * we need to construct an instance query,
-      */
-
-      // our basic query shape
-      var q = [{
+      // our basic collection query shape
+      var q = {
         id: null,
         mid: null,
         limit: 30,
@@ -280,17 +227,18 @@ function type(type_id, page) {
           optional: true
         },
         optional: true
-      }];
+      };
 
-      // push each of the properties onto
-      // our instance query
-      properties.forEach(function(prop_structure) {
-        var prop_clause = ph.mqlread_query(null, prop_structure, null, lang)[prop_structure.id];
-        prop_clause[0].limit = 5;
-        q[0][prop_structure.id] = prop_clause;
-      });
+      if (query) {
+        if (h.isArray(query)) {
+          query = query[0];
+        }
+        q = h.extend(q, query);
+      } else {
+        extend_type_query(q, this_type);
+      }
 
-      promises.push(collection.query(q));
+      promises.push(collection.query([q]));
 
       return deferred.all(promises)
         .then(function([activity, collection]) {
@@ -298,10 +246,70 @@ function type(type_id, page) {
             activity: activity,
             table: collection,
             root_type_is_mediator: this_type["/freebase/type_hints/mediator"] === true,
-            domain: this_type.domain
+            domain: this_type.domain,
+            query: query
           };
         });
     });
+};
+
+function extend_type_query(q, type) {
+  // define our current language
+  var lang = i18n.lang;
+
+  // build two separate arrays
+  // one holds disambiguating properties
+  // the other olds non-disambiguating properties
+  var disambiguators = [];
+  var properties = [];
+  type.properties.forEach(function(prop) {
+    if (prop["/freebase/property_hints/disambiguator"]) {
+      disambiguators.push(prop);
+    }
+    else {
+      properties.push(prop);
+    }
+  });
+
+  // join the two arrays together, keeping disambiguators first
+  properties = disambiguators.concat(properties);
+
+  // We need to check whether we have any mediated properties.
+  // If so, we want to limit the number of properties returned
+  // to just 1 so as not to overwhelm the page layout.
+  // Otherwise, return up to 3 properties.
+
+  var mediated_properties = false;
+  var PROP_COUNT = 3;
+
+  if (properties.length < PROP_COUNT) {
+    prop_length = properties.length;
+  }
+  else {
+    prop_length = PROP_COUNT;
+  }
+
+  for (i=0; i < prop_length; i++) {
+    if(properties[i]['expected_type']['/freebase/type_hints/mediator']) {
+      mediated_properties = true;
+      break;
+    }
+  }
+
+  if(mediated_properties === true) {
+    properties = properties.slice(0,1);
+  }
+  else {
+    properties = properties.slice(0,3);
+  }
+
+  // push each of the properties onto
+  // our instance query
+  properties.forEach(function(prop_structure) {
+    var prop_clause = ph.mqlread_query(null, prop_structure, null, lang)[prop_structure.id];
+    prop_clause[0].limit = 5;
+    q[prop_structure.id] = prop_clause;
+  });
 };
 
 /**

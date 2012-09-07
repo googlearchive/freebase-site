@@ -4,7 +4,6 @@
   "template/js/jquery.factory.js",
   "template/js/jquery.localstore.js",
   "template/js/jquery.metadata.js",
-  "template/js/tablesorter.js",
   "jqueryui/jquery.ui.core.mf.js",
   "suggest/suggest.mf.js",
   "template/js/freebase.js",

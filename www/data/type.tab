@@ -38,12 +38,13 @@ var SPEC = {
 
   validate: function(params) {
     return [
-      params.object
+      params.object,
+      validators.Json(params, "q", {if_missing: null})
     ];
   },
 
-  run: function(object, page) {
-    return queries.type(object.id)
+  run: function(object, query) {
+    return queries.type(object.id, query)
       .then(function(c) {
         c.id = object.id;
         c.object = object;

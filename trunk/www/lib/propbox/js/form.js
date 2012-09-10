@@ -660,11 +660,15 @@
          var errmsg = null;
          try {
              var data = JSON.parse(msg);
-             if (data && 
-                 $.isArray(data.messages) && 
-                 data.messages.length) {
-                 errmsg = data.messages[0].message;
-             }             
+             if (data) {
+                 if (data.error && data.error.message) {
+                     errmsg = data.error.message;
+                 }
+                 else if ($.isArray(data.messages) && 
+                          data.messages.length) {
+                     errmsg = data.messages[0].message;
+                 }             
+             }
          }
          catch (ex) {
              // ignore;

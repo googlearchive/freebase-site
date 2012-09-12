@@ -79,7 +79,13 @@
 
       if (this.options.source) {
         this.source = $(this.options.source);
-        this.source_generate = true;
+        // we only want to generate a new key for an empty input value
+        if (this.source.val() === "") {
+          this.source_generate = true;
+        }
+        else {
+          this.source_generate = false;
+        }
         this.input.bind("change.mqlkey", function() {
           self.source_generate = false;
         });

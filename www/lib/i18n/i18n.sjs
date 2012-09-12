@@ -235,7 +235,7 @@ function get_lang(get_mql_id, for_lang_or_code) {
             return get_mql_id ? l["m:id"] : l.id;
         }
         else {
-            return for_lang;
+            return for_lang_or_code;
         }
     }
     else {
@@ -260,7 +260,7 @@ function get_lang_code(get_mql_code, for_lang_or_code) {
             return get_mql_code ? h.lang_code(l["m:id"]) : h.lang_code(l.id);
         }
         else {
-            return for_code;
+            return for_lang_or_code;
         }
     }
     else {

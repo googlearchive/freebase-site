@@ -56,6 +56,13 @@
 <acre:block def="create_account_pane()">
   <h2 class="current">Create a new Freebase account</h2>
   <div class="pane">
+    <p>
+      <i>
+        For now, new accounts can only be created on <a href="https://www.freebase.com/signin/login">www.freebase.com</a>
+        using the Google option.  It may also take up to 24 hours for newly created accounts to begin working.
+      </i>
+    </p>
+    <!--
     <form name="account-create"
           method="post"
           action="${h.ajax_url('/register_create_submit')}">
@@ -75,8 +82,7 @@
       </fieldset>
 
       <p>By clicking the "Create my Account" button below, you are agreeing to
-        the <a target="_blank" href="/policies/tos">Freebase Terms of Service</a>,
-        the <a target="_blank" href="/policies/privacy">Freebase Privacy Policy</a>,
+        the <a target="_blank" href="/policies/tos">Freebase Terms of Service</a>
         and to receive email announcements about changes to the Freebase service.
       </p>
 
@@ -84,12 +90,13 @@
         Create my Account
       </button>
     </form>
+    -->
   </div>
 </acre:block>
 
 <acre:block def="claim_account_pane()">
-  <h2>Connect to an existing Freebase account</h2>
-  <div class="pane" style="display: none">
+  <h2 class="current">Connect to an existing Freebase account</h2>
+  <div class="pane">
     <form name="account-claim"
           method="post"
           action="${h.ajax_url('/register_claim_submit')}">
@@ -109,8 +116,7 @@
       </fieldset>
 
       <p>By clicking the "Connect my Account" button below, you are agreeing to
-        the <a target="_blank" href="/policies/tos">Freebase Terms of Service</a>,
-        the <a target="_blank" href="/policies/privacy">Freebase Privacy Policy</a>,
+        the <a target="_blank" href="/policies/tos">Freebase Terms of Service</a>
         and to receive email announcements about changes to the Freebase service.
       </p>
 

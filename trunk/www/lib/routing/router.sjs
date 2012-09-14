@@ -178,14 +178,6 @@ function init_rules(lib) {
       "script": "discuss/discuss.mf.js",
       "method": "discuss.toggle_discuss",
       "args": (function() { return [this.object.mid]; })
-    },
-    {
-      "name": _("<b>Discuss</b> - Archive"),
-      "url": (function() { return h.legacy_fb_url("/discuss/threads", this.object.id); })
-    },
-    {
-      "name": _("<b>View</b> on old site"),
-      "url": (function() { return h.legacy_fb_url("/edit/topic", this.object.id); })
     }
   ];
 

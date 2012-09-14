@@ -136,7 +136,10 @@
       </div>
       <div class="flag-options">                
         <form class="toggle-discuss" data-id="${displayInfo.id}" style="display:inline;"> ${propboxForm.cancel_button(DISCUSS)}</form>
-        <form class="toggle-share"   style="display:inline;"> ${propboxForm.cancel_button(SHARE)}</form>
+        <!!--
+           Disable sharing links/options until we know what this is supposed to do
+            <form class="toggle-share"   style="display:inline;"> ${propboxForm.cancel_button(SHARE)}</form>
+            -->
       </div>         
     </div>
   </div>

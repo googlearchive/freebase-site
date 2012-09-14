@@ -36,7 +36,7 @@
    ]
   },
   {
-    "host": [".@ACRE_SITE_HOST@", "@ACRE_SITE_HOST@"],
+    "host": [".@ACRE_METAWEB_BASE_ADDR@", "@ACRE_METAWEB_BASE_ADDR@"],
     "rules": [
       {
         "from": {

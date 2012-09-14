@@ -25,7 +25,7 @@
    ]
   },
   {
-    "host": [".@ACRE_SITE_HOST@", "@ACRE_SITE_HOST@", "@APPENGINE_APP_ID@.appspot.com"],
+    "host": [".@ACRE_METAWEB_BASE_ADDR@", "@ACRE_METAWEB_BASE_ADDR@", "@APPENGINE_APP_ID@.appspot.com"],
     "rules": [
       {
         "from": {

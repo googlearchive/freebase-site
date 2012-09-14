@@ -75,6 +75,7 @@ function init_rules(lib) {
     "apps":       "//apps" + codebase,
     "create":     "//create" + codebase,
     "data":       "//data" + codebase,
+    "i18n":       "//i18n" + codebase,
     "mdo":        "//mdo" + codebase,
     "policies":   "//policies" + codebase,
     "query":      "//query" + codebase,
@@ -208,6 +209,13 @@ function init_rules(lib) {
       "key": "keys",
       "app": "sameas",
       "script": "sameas.tab",
+      "more": true
+    }, 
+    {
+      "name": _("i18n"),
+      "key": "i18n",
+      "app": "i18n",
+      "script": "i18n.tab",
       "more": true
     }
   ];
@@ -436,7 +444,7 @@ function init_rules(lib) {
           "name": _("Members"),
           "key": "members",
           "app": "users",
-          "script": "group.tab",
+          "script": "group.tab"
         }
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
       "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
@@ -449,7 +457,7 @@ function init_rules(lib) {
           "name": _("Members"),
           "key": "members",
           "app": "users",
-          "script": "group.tab",
+          "script": "group.tab"
         },
         {
           "name": _("Properties"),
@@ -587,6 +595,12 @@ function init_rules(lib) {
           "key": "keys",
           "app": "sameas",
           "script": "sameas.tab"
+        }, 
+        {
+            "name": _("i18n"),
+            "key": "i18n",
+            "app": "i18n",
+            "script": "i18n.tab"
         }
       ],
       "nav_keys": [

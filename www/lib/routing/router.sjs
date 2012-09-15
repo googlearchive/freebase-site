@@ -61,7 +61,7 @@ function init_rules(lib) {
     "static",
     "ajax",
     "prefix",
-    "object",
+    "object"
   ];
 
   // Trunk labels for all apps in this site.
@@ -75,6 +75,7 @@ function init_rules(lib) {
     "apps":       "//apps" + codebase,
     "create":     "//create" + codebase,
     "data":       "//data" + codebase,
+    "formbuilder":"//formbuilder" + codebase,
     "i18n":       "//i18n" + codebase,
     "mdo":        "//mdo" + codebase,
     "policies":   "//policies" + codebase,
@@ -775,6 +776,8 @@ function init_rules(lib) {
     {prefix:"/robots.txt",         app:"lib", script:"routing/robots.sjs"},
 
     {prefix:"/flyout",             app:"lib", script:"flyout/flyout.controller"},
+    {prefix:"/formbuilder",        app:"formbuilder", 
+                                   script:"formbuilder.controller"},
 
     {prefix:"/account/claim",      app:"account", script:"claim.controller"},
 

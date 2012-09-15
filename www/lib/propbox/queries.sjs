@@ -48,7 +48,7 @@ function prop_schemas(pids, lang) {
     .then(function(result) {
       var schemas = [];
       pids.forEach(function(pid, i) {
-        var schema = result[pid];
+        var schema = result[pid] || null;
         schemas.push(schema);
       });
       return schemas;
@@ -66,7 +66,12 @@ function prop_schemas(pids, lang) {
 function prop_structure(pid, lang) {
   return prop_schema(pid, lang)
     .then(function(schema) {
-      return ph.to_prop_structure(schema, lang);
+      if (schema) {
+        return ph.to_prop_structure(schema, lang);
+      }
+      else {
+        return null;
+      }
     });
 };
 
@@ -76,7 +81,12 @@ function prop_structures(pids, lang) {
     .then(function(schemas) {
       var structures = [];
       schemas.forEach(function(schema) {
-        structures.push(ph.to_prop_structure(schema, lang));
+        if (schema) {
+          structures.push(ph.to_prop_structure(schema, lang));
+        }
+        else {
+          structures.push(null);
+        }
       });
       return structures;
     });

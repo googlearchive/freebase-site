@@ -32,7 +32,7 @@
 var validators = acre.require("lib/validator/validators.sjs");
 var sameas = acre.require("sameas.mjt");
 var queries = acre.require("queries.sjs");
-var tab = acre.require("sameas.tab");
+var links = acre.require("lib/queries/links.sjs");
 var filters = acre.require("lib/filter/filters.sjs");
 
 var SPEC = {
@@ -44,7 +44,7 @@ var SPEC = {
           required: true,
           oneof: ["/type/object/key", "/type/namespace/keys"]
       }),
-      filters.validate(params, tab.inspect_filters),
+      filters.validate(params, links.links_filters),
       validators.Timestamp(params, "next", {required:true}),
       validators.LangId(params, "lang", {if_empty:"/lang/en"})
     ];

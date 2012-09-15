@@ -30,30 +30,8 @@
  */
 
 var h = acre.require("lib/helper/helpers.sjs");
-var validators = acre.require("lib/validator/validators.sjs");
 var filters = acre.require("lib/filter/filters.sjs");
-var filter_validators = acre.require("lib/filter/validators.sjs");
-var queries = acre.require("lib/queries/links.sjs");
-
-var inspect_filters = {
-  timestamp: {
-    validator: validators.MultiValue,
-    options: {validator: filter_validators.Timestamp, if_empty:null}
-  },
-  as_of_time: {
-    validator: validators.Datejs,
-    options: {if_invalid:null}
-  },
-  creator: {
-    validator: validators.MultiValue,
-    options: {validator: validators.MqlId, if_empty:null}
-  },
-  historical: {
-    validator: validators.StringBool,
-    options: {if_empty:null}
-  }
-};
-
+var links = acre.require("lib/queries/links.sjs");
 
 var SPEC = {
 
@@ -63,7 +41,7 @@ var SPEC = {
     return [
       params.object,
       (function() {
-        var f = filters.validate(params, inspect_filters);
+        var f = filters.validate(params, links.links_filters);
         f[params.current_tab.key] = "";
         f.type = o.routed_type;
         return f;
@@ -81,7 +59,7 @@ var SPEC = {
       // filter components
       filters: f,
 
-      property_links: queries.property_links(id, f)
+      property_links: links.property_links(id, f)
     };
   }
 

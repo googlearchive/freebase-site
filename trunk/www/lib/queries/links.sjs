@@ -36,6 +36,35 @@ var freebase = apis.freebase;
 var fh = acre.require("filter/helpers.sjs");
 var proploader = acre.require("schema/proploader.sjs");
 var creator = acre.require("queries/creator.sjs");
+var validators = acre.require("validator/validators.sjs");
+var filter_validators = acre.require("filter/validators.sjs");
+
+/**
+ * Common filters used for links queries.
+ */
+var links_filters = {
+  timestamp: {
+    validator: validators.MultiValue,
+    options: {validator: filter_validators.Timestamp, if_empty:null}
+  },
+  as_of_time: {
+    validator: validators.Datejs,
+    options: {if_invalid:null}
+  },
+  creator: {
+    validator: validators.MultiValue,
+    options: {validator: validators.MqlId, if_empty:null}
+  },
+  historical: {
+    validator: validators.StringBool,
+    options: {if_empty:null}
+  },
+  sort: {
+    validator: validators.OneOf,
+    options: {oneof: ['timestamp', '-timestamp'], if_empty:'-timestamp'}
+  }
+};
+
 
 function links(id, filters, next) {  
   return creator.by(filters.creator, "/type/user")
@@ -83,11 +112,17 @@ function links_sort(/* array1, array2,..., filters */) {
   var args = Array.prototype.slice.call(arguments);
   var filters = h.isPlainObject(args[args.length - 1]) ? args.pop() : {};
   var all = [];
+  var asc = filters.sort === 'timestamp';
   args.forEach(function(arg) {
     all = all.concat(arg);
   });
   all.sort(function(a, b) {
-    return b.timestamp > a.timestamp;
+    if (asc) {
+      return b.timestamp < a.timestamp;
+    }
+    else {
+      return b.timestamp > a.timestamp;        
+    }
   });
   return all.slice(0, filters.limit || 100);
 };
@@ -115,13 +150,18 @@ function links_outgoing(source, filters, next, creator_clause) {
  * All outgoing links from source without a reverse_property
  */
 function links_outgoing_master(source, filters, next, creator_clause) {
-    var q = h.extend(links_outgoing_query(source), creator_clause);
+    var q = h.extend(links_outgoing_query(source, filters.sort), creator_clause);
     q.master_property.reverse_property = {
         id: null,
         optional: "forbidden"
     };
     if (next) {
-        q['next:timestamp<'] = next;
+        if (filters.sort === 'timestamp') {
+            q['next:timestamp>'] = next;
+        }
+        else {
+            q['next:timestamp<'] = next;            
+        }
     }
     apply_filters(q, filters);
     return freebase.mqlread([q], mqlread_options(filters))
@@ -156,7 +196,7 @@ function links_outgoing_reverse(source, filters, next, creator_clause) {
 };
 
 function _links_outgoing_reverse(source, filters, next, creator_clause, filter_reverse_property) {
-    var q = h.extend(links_outgoing_query(source), creator_clause);
+    var q = h.extend(links_outgoing_query(source, filters.sort), creator_clause);
     q.master_property.reverse_property = {
         id: null
     };
@@ -164,7 +204,12 @@ function _links_outgoing_reverse(source, filters, next, creator_clause, filter_r
 //        q.master_property["filter:reverse_property"] = null;
     }
     if (next) {
-        q['next:timestamp<'] = next;
+        if (filters.sort === 'timestamp') {
+            q['next:timestamp>'] = next;
+        }
+        else {
+            q['next:timestamp<'] = next;            
+        }
     }
     apply_filters(q, filters);
     return freebase.mqlread([q], mqlread_options(filters))
@@ -177,7 +222,7 @@ function _links_outgoing_reverse(source, filters, next, creator_clause, filter_r
  * A standard /type/link query with source. You can always tell an outgoing
  * link by checking "me:source" in the results.
  */
-function links_outgoing_query(source) {
+function links_outgoing_query(source, sort) {
     return {
         type: "/type/link",
         master_property: {
@@ -193,7 +238,7 @@ function links_outgoing_query(source) {
         target: {id:null, mid:null, guid:null, name:i18n.mql.query.name(), optional:true},
         target_value: {},
         timestamp: null,
-        sort: "-timestamp",
+        sort: sort === 'timestamp' ? 'timestamp' : '-timestamp',
         optional: true
     };
 };
@@ -224,13 +269,18 @@ function links_incoming(target, filters, next, creator_clause) {
  * (e.g., !/some/property/without/reverse)
  */ 
 function links_incoming_master(target, filters, next, creator_clause, extend_clause) {
-    var q = h.extend(links_incoming_query(target), creator_clause);
+    var q = h.extend(links_incoming_query(target, filters.sort), creator_clause);
     q.master_property.reverse_property = {
         id: null,
         optional: "forbidden"
     };
     if (next) {
-        q['next:timestamp<'] = next;
+        if (filters.sort === 'timestamp') {
+            q['next:timestamp>'] = next;
+        }
+        else {
+            q['next:timestamp<'] = next;            
+        }
     }
     apply_filters(q, filters);
     return freebase.mqlread([q], mqlread_options(filters))
@@ -265,7 +315,7 @@ function links_incoming_reverse(target, filters, next, creator_clause, extend_cl
 };
 
 function _links_incoming_reverse(target, filters, next, creator_clause, filter_reverse_property) {
-    var q = h.extend(links_incoming_query(target), creator_clause);
+    var q = h.extend(links_incoming_query(target, filters.sort), creator_clause);
     q.master_property.reverse_property = {
         id: null
     };
@@ -273,7 +323,12 @@ function _links_incoming_reverse(target, filters, next, creator_clause, filter_r
         q.master_property["filter:reverse_property"] = null;
     }
     if (next) {
-        q['next:timestamp<'] = next;
+        if (filters.sort === 'timestamp') {
+            q['next:timestamp>'] = next;
+        }
+        else {
+            q['next:timestamp<'] = next;            
+        }
     }
     apply_filters(q, filters);
     return freebase.mqlread([q], mqlread_options(filters))
@@ -286,7 +341,7 @@ function _links_incoming_reverse(target, filters, next, creator_clause, filter_r
  * A standard /type/link query with target. You can always tell an incoming
  * link by checking "me:target" in the results.
  */
-function links_incoming_query(target) {
+function links_incoming_query(target, sort) {
     return {
         type: "/type/link",
         master_property: {
@@ -296,7 +351,7 @@ function links_incoming_query(target) {
         "me:target": {id:target, guid:null},
         target_value: {},
         timestamp: null,
-        sort: "-timestamp",
+        sort: sort === 'timestamp' ? 'timestamp' : '-timestamp',
         optional: true
     };
 };
@@ -377,14 +432,19 @@ function links_objects(id, filters, next, creator_clause) {
       name: i18n.mql.query.name(),
       "the:attribution": {id:null, mid:null, guid:null, name:i18n.mql.query.name()},
       timestamp: null,
-      sort: "-timestamp"
+      sort: filters.sort === 'timestamp' ? 'timestamp' : '-timestamp'
     }, creator_clause);
     if (next) {
-        q['next:timestamp<'] = next;
+        if (filters.sort === 'timestamp') {
+            q['next:timestamp>'] = next;
+        }
+        else {
+            q['next:timestamp<'] = next;            
+        }
     }
 
     apply_limit(q, filters.limit);
-    apply_timestamp(q, filters.timestamp);
+    apply_timestamp(q, filters.timestamp, filters.sort);
 
     return freebase.mqlread([q], mqlread_options(filters))
       .then(function(env) {
@@ -437,11 +497,16 @@ function links_writes(filters, next, creator_clause) {
     },
     target_value: {},
     timestamp: null,
-    sort: "-timestamp",
+    sort: filters.sort === 'timestamp' ? 'timestamp' : '-timestamp',
     optional: true
   }, creator_clause);
   if (next) {
-    q["next:timestamp<"] = next;
+      if (filters.sort === 'timestamp') {
+          q['next:timestamp>'] = next;
+      }
+      else {
+          q['next:timestamp<'] = next;            
+      }
   }
   apply_filters(q, filters);
   return freebase.mqlread([q], mqlread_options(filters))
@@ -475,13 +540,18 @@ function links_property(id, filters, next, creator_clause) {
         target: {id:null, mid:null, name:i18n.mql.query.name(), optional:true},
         target_value: {},
         timestamp: null,
-        sort: "-timestamp"
+        sort: filters.sort === 'timestamp' ? 'timestamp' : '-timestamp'
       }, creator_clause);
       if (next) {
-        q["next:timestamp<"] = next;
+        if (filters.sort === 'timestamp') {
+            q['next:timestamp>'] = next;
+        }
+        else {
+            q['next:timestamp<'] = next;            
+        }
       }
       apply_limit(q, filters.limit);
-      apply_timestamp(q, filters.timestamp);
+      apply_timestamp(q, filters.timestamp, filters.sort);
       apply_historical(q, filters.historical);
       return freebase.mqlread([q], mqlread_options(filters))
         .then(function(env) {
@@ -501,7 +571,7 @@ function apply_filters(clause, filters) {
   }
   // creator is already applied in links query
   apply_limit(clause, filters.limit);
-  apply_timestamp(clause, filters.timestamp);
+  apply_timestamp(clause, filters.timestamp, filters.sort);
   apply_historical(clause, filters.historical);
   apply_domain_type_property(clause, filters.domain, filters.type, filters.property);
 };
@@ -511,7 +581,7 @@ function apply_limit(clause, limit) {
   return clause;
 };
 
-function apply_timestamp(clause, timestamp) {
+function apply_timestamp(clause, timestamp, sort) {
   if (timestamp) {
     if (!h.isArray(timestamp)) {
       timestamp = [timestamp];
@@ -524,7 +594,7 @@ function apply_timestamp(clause, timestamp) {
         clause["filter:timestamp"] = fh.timestamp(timestamp[0]);
       }
       else {
-        // otherwise get everything since that timestamp
+        // otherwise get everything earlier than this timestamp
         clause["filter:timestamp>="] = fh.timestamp(timestamp[0]);
       }
     }

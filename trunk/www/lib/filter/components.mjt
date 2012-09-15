@@ -306,3 +306,19 @@
     </label>
   </h2>
 </acre:block>
+
+<acre:block def="sort_timestamp_filter(base_url, filters)">
+  ${filter_form(base_url, filters, 'sort', sort_timestamp_input, ['sort', filters.sort])}
+</acre:block>
+
+<acre:block def="sort_timestamp_input(name, sort)">
+  <h2 style="margin-top:10px;" class="filter-title">
+    <label>
+      <input acre:if="sort === 'timestamp'" class="sort-toggle" 
+             name="sort" value="-timestamp" type="checkbox" checked="checked" onchange="this.form.submit()"/> 
+      <input acre:else="" class="sort-toggle" 
+             name="sort" value="timestamp" type="checkbox" onchange="this.form.submit()"/> 
+      Show earliest writes first
+    </label>
+  </h2>
+</acre:block>

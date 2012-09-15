@@ -67,11 +67,16 @@ function get_type_object_key(id, filters, next, lang, extend_clause) {
                     value: null
                 },
                 timestamp: null,
-                sort: "-timestamp",
+                sort: filters.sort === 'timestamp' ? 'timestamp' : '-timestamp',
                 optional: true
             }, creator_clause, extend_clause);
             if (next) {
-                q['next:timestamp<'] = next;
+                if (filters.sort === 'timestamp') {
+                    q['next:timestamp>'] = next;
+                }
+                else {
+                    q['next:timestamp<'] = next;            
+                }
             }
             apply_filters(q, filters);
             return freebase.mqlread([q], links.mqlread_options(filters))
@@ -108,11 +113,16 @@ function get_type_namespace_keys(id, filters, next, lang, extend_clause) {
                     value: null
                 },
                 timestamp: null,
-                sort: "-timestamp",
+                sort: filters.sort === 'timestamp' ? 'timestamp' : '-timestamp',
                 optional: true
             }, creator_clause, extend_clause);
             if (next) {
-                q['next:timestamp<'] = next;
+                if (filters.sort === 'timestamp') {
+                    q['next:timestamp>'] = next;
+                }
+                else {
+                    q['next:timestamp<'] = next;            
+                }
             }
             apply_filters(q, filters);
             return freebase.mqlread([q], links.mqlread_options(filters))
@@ -126,7 +136,7 @@ function apply_filters(q, filters) {
   if (!filters) {
     return q;
   }
-  links.apply_timestamp(q, filters.timestamp);
+  links.apply_timestamp(q, filters.timestamp, filters.sort);
   links.apply_historical(q, filters.historical);
 };
 

@@ -30,9 +30,8 @@
  */
 
 var validators = acre.require("lib/validator/validators.sjs");
-var queries = acre.require("lib/queries/links.sjs");
+var links = acre.require("lib/queries/links.sjs");
 var property = acre.require("property.mjt");
-var tab = acre.require("writes.tab");
 var filters = acre.require("lib/filter/filters.sjs");
 
 var SPEC = {
@@ -40,14 +39,14 @@ var SPEC = {
   validate: function(params) {
     return [
       validators.MqlId(params, "id", {required:true}),
-      filters.validate(params, tab.inspect_filters),
+      filters.validate(params, links.links_filters),
       validators.Timestamp(params, "next", {required:true}),
       validators.LangId(params, "lang", {if_empty:"/lang/en"})
     ];
   },
 
   run: function(id, f, next, lang) {
-    return queries.property_links(id, f, next)
+    return links.property_links(id, f, next)
       .then(function(result) {
         return {
           html: acre.markup.stringify(property.property_body(id, result, f))

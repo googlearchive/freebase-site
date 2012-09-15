@@ -32,28 +32,9 @@
 var h = acre.require("lib/helper/helpers.sjs");
 var i18n = acre.require("lib/i18n/i18n.sjs");
 var queries = acre.require("queries.sjs");
+var links = acre.require("lib/queries/links.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
 var filters = acre.require("lib/filter/filters.sjs");
-var filter_validators = acre.require("lib/filter/validators.sjs");
-
-var myfilters = {
-  timestamp: {
-    validator: validators.MultiValue,
-    options: {validator: filter_validators.Timestamp, if_empty:null}
-  },
-  as_of_time: {
-    validator: validators.Datejs,
-    options: {if_invalid:null}
-  },
-  creator: {
-    validator: validators.MultiValue,
-    options: {validator: validators.MqlId, if_empty:null}
-  },
-  historical: {
-    validator: validators.StringBool,
-    options: {if_empty:null}
-  }
-};
 
 var SPEC = {
 
@@ -63,7 +44,7 @@ var SPEC = {
     return [
       params.object,
       (function() {
-        var f = filters.validate(params, myfilters);
+        var f = filters.validate(params, links.links_filters);
         f[params.current_tab.key] = "";
         return f;
       })(),

@@ -36,6 +36,35 @@ body,
 
 #content {
     background: white;
+    clear: both;
+}
+
+#header .topic-image,
+#header .topic-name,
+#header .topic-mid {
+    display: block;
+    float: left;
+}
+
+#header .topic-image {
+    line-height: .5em;
+}
+
+#header .topic-name,
+#header .topic-mid {
+    margin-left: 6px;
+    font-size: 2.5em;
+    display: block;
+}
+
+#header .topic-name {
+    color: #888;
+}
+
+#header .topic-mid {
+    font-family: monospace;
+    margin-top: 6px;
+    font-weight: bold;
 }
 
 .fb-site-only {

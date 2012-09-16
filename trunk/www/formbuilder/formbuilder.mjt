@@ -42,6 +42,17 @@
 </acre:block>
 
 <acre:block def="header(exports)">
+  <header role="banner" id="header">
+    <a class="topic-image" href="${h.fb_url(c.id)}" target="_new">
+      <img src="${h.image_url(c.id, [['maxwidth','40'],['maxheight','40'],['mode','fillcropmid'],['errorid','/freebase/no_image_png']])}"/>
+    </a>
+    <span class="topic-name">${c.name}</span>
+    <span class="topic-mid">${c.id}</span>
+    <span class="notice" id="page-state">
+      <a href="" class="close-msg">close</a>
+      <pre class="status-msg"></pre>
+    </span>
+  </header>
 </acre:block>
 
 <acre:block def="content_body()">

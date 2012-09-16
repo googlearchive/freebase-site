@@ -48,7 +48,7 @@ var SPEC = {
             validators.MqlId(params, "id", {required:true}),
             validators.MultiValue(params, "p", {
                 validator: validators.MqlId,
-                required: true
+                if_empty: []
             }),
             validators.Int(params, "limit", {if_empty:101}),
             validators.LangId(params, "lang", {if_empty:"/lang/en"})
@@ -58,7 +58,9 @@ var SPEC = {
     run: function(id, pids, limit, lang) {
         var topic_options = {
             lang: h.lang_code(i18n.get_lang(true, lang)),
-            filter: pids,
+            filter: pids.concat([
+                "/type/object/name"
+            ]),
             limit: limit
         };
         var promises = {
@@ -84,8 +86,16 @@ var SPEC = {
                         });
                     }
                 });
+                var name = topic.property['/type/object/name'];
+                if (name && name.values && name.values.length) {
+                    name = name.values[0].text;
+                }
+                else {
+                    name = topic.id;
+                }
                 return {
-                    id: id,
+                    id: topic.id,
+                    name: name,
                     topic: topic,
                     propboxes: propboxes
                 };

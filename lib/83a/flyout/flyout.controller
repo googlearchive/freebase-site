@@ -1,0 +1,155 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+var h = acre.require("helper/helpers.sjs");
+var validators = acre.require("validator/validators.sjs");
+var apis = acre.require("promise/apis.sjs");
+var freebase = apis.freebase;
+var deferred = apis.deferred;
+var t = acre.require("flyout/flyout.mjt");
+var i18n = acre.require("i18n/i18n.sjs");
+
+var SPEC = {
+    validate: function(params) {
+        if (params.object && !params.id) {
+            // came from object routing (@see lib/routing/router.sjs)
+            params.id = params.object.id;
+        }
+        if (params.lang) {
+            params.lang = params.lang.split(",");
+        }
+        return [
+            validators.MqlId(params, "id", {required:true}),
+            validators.MultiValue(params, "lang", {validator:validators.LangId, if_empty:["/lang/en"]}),
+            params.callback || params.jsonp // callback validation will done by lib/template/json_p.mjt
+        ];
+    },
+
+    run: function(id, langs, callback) {
+        return freebase.get_topic(id, {
+            lang: langs.map(function(lang) {
+                return h.lang_code(i18n.get_lang(true, lang));
+            }),
+            filter: ["suggest"]
+        })
+        .then(function(r) {
+            var name = id;
+            var article = "";
+            var image = false;
+            var notable_props = [];
+            var notability = [id];
+
+            if (r.property) {
+                // name
+                if (r.property["/type/object/name"]) {
+                    name = r.property["/type/object/name"].values[0].text;
+                }
+
+                // article
+                if (r.property["/common/topic/article"]) {
+                    article = r.property["/common/topic/article"].values[0].text;
+                }
+
+                // image
+                if (r.property["/common/topic/image"]) {
+                    image = true;
+                }                
+
+                // notable (disambiguating) properties
+                var props = r.property["/common/topic/notable_properties"];
+                if (props && props.values) {
+                    props.values.forEach(function(prop) {
+                        // only use it if we have a property name
+                        // and the values of that property is returned in the topic result.
+                        if (prop.text) {
+                            var prop_id = prop.id;
+                            if (r.property[prop_id]) {
+                                // The Topic API sometimes returns mids as property ids
+                                // (internal bug filed).
+                                var prop_value = r.property[prop_id].values[0].text;
+                                notable_props.push([prop.text, prop_value]);
+                            }
+                        }
+                    });
+                }
+
+                // notability (notable_for and notable_types)
+                var notable_for = r.property["/common/topic/notable_for"];
+                var notable_types = r.property["/common/topic/notable_types"];
+                var seen = {};
+                if (notable_for || notable_types) {
+                    notability = [];
+                    [notable_for, notable_types].forEach(function(notable) {
+                        if (notable && notable.values) {
+                            notable.values.forEach(function(n) {
+                                if (n.id && !seen[n.id]) {
+                                    notability.push(n.text);
+                                    seen[n.id] = true;
+                                }
+                            });
+                        }
+                    });                    
+                }
+            }
+
+            // this is the flyout summary
+            return {
+                name: name,
+                article: article,
+                image: image,
+                notable_props: notable_props,
+                notability: notability
+            };            
+        })
+        .then(function(summary) {
+            if (callback) {
+                return {
+                    template: "template/json_p.mjt",
+                    def: "json_p",
+                    def_args: [{
+                        id: id, 
+                        html: acre.markup.stringify(t.render_flyout(id, langs[0], summary))
+                    }]
+                };
+            }
+            else {
+                acre.response.set_header('content-type', 'text/html');
+                return {
+                    template: "flyout/flyout.mjt",
+                    def: "render_flyout",
+                    def_args: [id, langs[0], summary]
+                };
+            }
+        });
+    }
+};
+
+

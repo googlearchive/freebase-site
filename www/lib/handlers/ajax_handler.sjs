@@ -83,6 +83,9 @@ function handler() {
 
 
 function to_ajax_response(ret) {
+  if (h.isArray(ret) || typeof ret !== "object") {
+    return to_ajax_response(new lib.ServiceError(null, null, "Ajax response must be a dictionary"));
+  }
   var resp = {body:null, headers:{}};
 
   // update transaction id and extract the timestamp from it

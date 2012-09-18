@@ -51,15 +51,19 @@ var SPEC = {
                 if_empty: []
             }),
             validators.Int(params, "limit", {if_empty:101}),
-            validators.LangId(params, "lang", {if_empty:"/lang/en"})
+            validators.LangId(params, "lang", {if_empty:"/lang/en"}),
+
+            // template/layout options
+            validators.StringBool(params, "header", {if_empty:true}) // show header?
         ];
     },
 
-    run: function(id, pids, limit, lang) {
+    run: function(id, pids, limit, lang, header) {
         var topic_options = {
             lang: h.lang_code(i18n.get_lang(true, lang)),
             filter: pids.concat([
-                "/type/object/name"
+                "/type/object/name",
+                "/common/topic/image"
             ]),
             limit: limit
         };
@@ -93,11 +97,23 @@ var SPEC = {
                 else {
                     name = topic.id;
                 }
+                var image = topic.property['/common/topic/image'];
+                if (image && image.values && image.values.length) {
+                    image = true;
+                }
+                else {
+                    image = false;
+                }
+
                 return {
                     id: topic.id,
+                    image: image,
                     name: name,
                     topic: topic,
-                    propboxes: propboxes
+                    propboxes: propboxes,
+
+                    // template/layout options
+                    header: header
                 };
             });
     }

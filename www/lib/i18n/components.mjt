@@ -50,7 +50,7 @@
       <acre:script>
         var parts = param.split("=", 2);
       </acre:script>
-      <input type="hidden" name="${parts[0]}" value="${parts.length === 2 ? parts[1] : ''}" />
+      <input type="hidden" name="${parts[0]}" value="${parts.length === 2 ? decodeURIComponent(parts[1]) : ''}" />
     </acre:block>
     <select name="lang" 
             onchange="return freebase.dispatch(event, freebase.lang_select, [this.value], this);">

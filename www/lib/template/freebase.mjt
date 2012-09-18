@@ -154,26 +154,36 @@
   <acre:block else="">
     <div id="nav-utilities" class="clear">
       <div class="nav-user-controls" id="signedin" style="display:none;">
-        <strong id="nav-username">
-          <a href="${h.fb_url('/')}" class="trigger" title="View your profile">${_("You")}</a>
-        </strong>
-        <div id="user-controls">
-          <ul>
-            <li>
-              <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?schema'">${_("Schema")}</a>
-            </li>
-            <li>
-              <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?queries'">${_("Queries")}</a>
-            </li>
-            <li>
-              <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?apps'">${_("Apps")}</a>
-            </li>
-          </ul>
-          <a href="${h.account_url('signout')}" title="Sign out of Freebase" rel="nofollow" id="nav-signout">Sign Out</a>
-        </div>
+        <acre:block if="exports.nav_user_signedin">
+          ${exports.nav_user_signedin()}
+        </acre:block>
+        <acre:block else="">
+          <strong id="nav-username">
+            <a href="${h.fb_url('/')}" class="trigger" title="View your profile">${_("You")}</a>
+          </strong>
+          <div id="user-controls">
+            <ul>
+              <li>
+                <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?schema'">${_("Schema")}</a>
+              </li>
+              <li>
+                <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?queries'">${_("Queries")}</a>
+              </li>
+              <li>
+                <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?apps'">${_("Apps")}</a>
+              </li>
+            </ul>
+            <a href="${h.account_url('signout')}" title="Sign out of Freebase" rel="nofollow" id="nav-signout">Sign Out</a>
+          </div>
+        </acre:block>        
       </div>
       <div class="nav-user-controls anonymous" id="signedout" style="display:none;">
-        <a href="${h.account_url('signin')}" title="Sign in to your Freebase account" rel="nofollow">Sign In or Sign Up</a>
+        <acre:block if="exports.nav_user_signedout">
+          ${exports.nav_user_signedout()}
+        </acre:block>
+        <acre:block else="">
+          <a href="${h.account_url('signin')}" title="Sign in to your Freebase account" rel="nofollow">Sign In or Sign Up</a>
+        </acre:block>
       </div>
       ${i18n_c.lang_select()}
     </div>

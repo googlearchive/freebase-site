@@ -108,8 +108,6 @@ function init_rules(lib) {
     {host:"sandbox.freebase.com", url:"http://sandbox-freebase.com"},
     {host:"acre.freebase.com", url:"http://www.freebase.com/appeditor"},
     {host:"acre.sandbox-freebase.com", url:"http://www.sandbox-freebase.com/appeditor"},
-    {host:"api.freebase.com", url:"http://wiki.freebase.com/wiki/Freebase_API"},
-    {host:"api.sandbox-freebase.com", url:"http://wiki.freebase.com/wiki/Freebase_API"},
     {host:"metaweb.com", url:"http://www.freebase.com"},
     {host:"www.metaweb.com", url:"http://www.freebase.com"}
   ];
@@ -1390,7 +1388,20 @@ function CustomRouter(rules) {
   };
 
   this.route = function(req) {
-    // only applies to homepage and "/browse"
+
+    // redirect custom hosts for bases
+    var site_host = h.parse_uri(acre.freebase.site_host).host;
+    var site_parts = site_host.split(".");
+    var req_parts = req.server_name.split(".");
+    if ((site_parts.length === 3) && (req_parts.length === 3) 
+        && (req_parts[0] !== site_parts[0]) && (req_parts[0].length >= 5)
+        && (req_parts[1] === site_parts[1]) && (req_parts[2] === site_parts[2])) {
+      acre.response.status = 301;
+      acre.response.set_header("location", "//" + site_host + "/base/" + req_parts[0]);
+      acre.exit();
+    }
+
+    // handle homepage and "/browse"
     if ((req.path_info in route_map) ||
         (req.path_info === "/" && !(
           ("props" in req.params) || ("links" in req.params) || ("ids" in req.params)

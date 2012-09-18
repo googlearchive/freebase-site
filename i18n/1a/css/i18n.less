@@ -1,0 +1,37 @@
+.data-row{
+  .wrapper {
+    position: relative;
+    display: inline-block;
+    padding-right: 20px;
+  }
+}
+
+tr .combo-menu {
+  top: -5px;
+}
+
+.truncate {
+  display: block;
+  overflow:hidden;
+  text-overflow: ellipsis;
+  max-width: 20em;
+}
+
+th:hover .truncate,
+td:hover .truncate {
+  position: absolute;
+  max-width: 1000px;
+  z-index: 10;
+  background: #f8f8f8;
+  .rounded_corners();
+  -webkit-box-shadow: 0 0 4px #999;
+}
+
+
+.missing {
+    color: #FAC;
+}
+
+.form-row {
+    padding: 5px 15px;
+}

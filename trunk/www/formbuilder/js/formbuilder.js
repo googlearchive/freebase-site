@@ -33,6 +33,10 @@
     var formbuilder = fb.formbuilder = {
 
         init: function() {
+            if (fb.c.header) {
+                $("#header").fadeIn();
+            }
+
             // Initialize all nicemenus
             $(".nicemenu").nicemenu();
 
@@ -51,6 +55,10 @@
                 incompatible_types: fb.incompatible_types
             });
 
+            $(window)
+                .bind("fb.user.signedin", function(e, user) {
+                    $("#signedin > a:first").text(user.name);
+                });
         }
 
     };

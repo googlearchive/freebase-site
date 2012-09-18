@@ -28,31 +28,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-html,
-body,
-#content {
-    height: 100%;
-}
 
 #content {
     background: white;
     clear: both;
 }
 
+#header {
+    display:none;
+}
+
+#header-shim,
 #header .topic-image,
 #header .topic-name,
 #header .topic-mid {
     display: block;
     float: left;
-}
-
-#header .topic-image {
-    line-height: .5em;
+    margin-right: 6px;
 }
 
 #header .topic-name,
 #header .topic-mid {
-    margin-left: 6px;
     font-size: 2.5em;
     display: block;
 }
@@ -70,4 +66,24 @@ body,
 .fb-site-only {
     visibility: hidden;
     display: none;
+}
+
+#signedin a {
+    display: block;
+    font-weight: bold;
+    padding: 0px 20px;
+    height: 40px;
+    line-height: 3.7;
+    overflow: hidden;
+}
+
+
+.topic-mid {
+    cursor: pointer;
+}
+
+.topic-mid:hover {
+    background: #DDD;
+    border-radius: 7px;
+    color: #888;
 }

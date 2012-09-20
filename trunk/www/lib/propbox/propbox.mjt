@@ -442,9 +442,6 @@
             <li acre:else="" class="row-menu-item">
               <a href="#" onclick="return propbox.prop_add(this, ${prop_structure.unique});">${ADD_NEW_VALUE}</a>
             </li>
-            <li acre:if="ect === '/type/text'" class="row-menu-item fb-site-only">
-              <a href="#" onclick="return i18n.text_edit(this, '${h.ajax_url('lib/i18n')}', '${topic.id}', '${prop_structure.id}', '${lang}')">${EDIT_LOCALIZED_TEXT}</a>
-            </li>
           </acre:block>
           <li class="row-menu-item fb-site-only">
             <a href="${h.build_query_url(topic.id, null, prop_structure.id)}">${QUERY_PROPERTY}</a>
@@ -484,7 +481,7 @@
           <li class="row-menu-item"><a href="#" onclick="return propbox.value_delete(this);">${DELETE}</a></li>
           <acre:block if="!is_blob && topic && prop_structure && prop_value && lang">
             <li acre:if="!h.is_literal_type(prop_structure.expected_type.id)" class="row-menu-item fb-site-only">
-              <a href="#" onclick="return i18n.text_edit(this, '${h.ajax_url('lib/i18n')}', '${prop_value.id}', '/type/object/name', '${lang}')">${EDIT_LOCALIZED_TEXT}</a>          
+              <a href="${h.fb_url(prop_value.id, [['i18n']])}">${EDIT_LOCALIZED_TEXT}</a>
             </li>
           </acre:block>
         </ul>

@@ -1,5 +1,57 @@
-[
-    "lib/template/js/jquery.tablesorter.js",
-    "lib/template/js/tablesorter.js",
-    "js/user.js"
-]
+
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Additional Licenses for Third Party components can be found here:
+ * http://wiki.freebase.com/wiki/Freebase_Site_License
+ *
+ */
+(function(c){c.extend({tablesorter:new (function(){function b(a,d){o(a+","+((new Date).getTime()-d.getTime())+"ms")}function o(a){typeof console!="undefined"&&typeof console.debug!="undefined"?console.log(a):alert(a)}function p(a,d){if(a.config.debug)var f="";var h=a.tBodies[0].rows;if(a.tBodies[0].rows[0]){var e=[];h=h[0].cells;for(var n=h.length,g=0;g<n;g++){var j=false;if(c.metadata&&c(d[g]).metadata()&&c(d[g]).metadata().sorter)j=r(c(d[g]).metadata().sorter);else if(a.config.headers[g]&&a.config.headers[g].sorter)j=
+r(a.config.headers[g].sorter);if(!j)a:{j=h[g];for(var k=q.length,l=1;l<k;l++)if(q[l].is(c.trim(z(a.config,j)),a,j)){j=q[l];break a}j=q[0]}if(a.config.debug)f+="column:"+g+" parser:"+j.id+"\n";e.push(j)}}a.config.debug&&o(f);return e}function r(a){for(var d=q.length,f=0;f<d;f++)if(q[f].id.toLowerCase()==a.toLowerCase())return q[f];return false}function s(a){if(a.config.debug)var d=new Date;for(var f=a.tBodies[0]&&a.tBodies[0].rows.length||0,h=a.tBodies[0].rows[0]&&a.tBodies[0].rows[0].cells.length||
+0,e=a.config.parsers,n={row:[],normalized:[]},g=0;g<f;++g){var j=a.tBodies[0].rows[g],k=[];n.row.push(c(j));for(var l=0;l<h;++l)k.push(e[l].format(z(a.config,j.cells[l]),a,j.cells[l]));k.push(g);n.normalized.push(k)}a.config.debug&&b("Building cache for "+f+" rows:",d);return n}function z(a,d){if(!d)return"";var f="";return f=a.textExtraction=="simple"?d.childNodes[0]&&d.childNodes[0].hasChildNodes()?d.childNodes[0].innerHTML:d.innerHTML:typeof a.textExtraction=="function"?a.textExtraction(d):c(d).text()}
+function x(a,d){if(a.config.debug)var f=new Date;for(var h=d.row,e=d.normalized,n=e.length,g=e[0].length-1,j=c(a.tBodies[0]),k=[],l=0;l<n;l++){k.push(h[e[l][g]]);if(!a.config.appender)for(var v=h[e[l][g]],u=v.length,t=0;t<u;t++)j[0].appendChild(v[t])}a.config.appender&&a.config.appender(a,k);k=null;a.config.debug&&b("Rebuilt table:",f);y(a);setTimeout(function(){c(a).trigger("sortEnd")},0)}function E(a){if(a.config.debug)var d=new Date;for(var f=[],h=0;h<a.tHead.rows.length;h++)f[h]=0;$tableHeaders=
+c("thead th",a);$tableHeaders.each(function(e){this.count=0;this.column=e;var n=a.config.sortInitialOrder;this.order=i=typeof n!="Number"?n.toLowerCase()=="desc"?1:0:n==1?n:0;if(!(n=c.metadata&&c(this).metadata().sorter===false?true:false))n=a.config.headers[e]&&a.config.headers[e].sorter===false?true:false;if(n)this.sortDisabled=true;this.sortDisabled||c(this).addClass(a.config.cssHeader);a.config.headerList[e]=this});if(a.config.debug){b("Built headers:",d);o($tableHeaders)}return $tableHeaders}
+function y(a){for(var d=a.config.widgets,f=d.length,h=0;h<f;h++)A(d[h]).format(a)}function A(a){for(var d=w.length,f=0;f<d;f++)if(w[f].id.toLowerCase()==a.toLowerCase())return w[f]}function F(a,d){for(var f=d.length,h=0;h<f;h++)if(d[h][0]==a)return true;return false}function B(a,d,f,h){d.removeClass(h[0]).removeClass(h[1]);var e=[];d.each(function(){this.sortDisabled||(e[this.column]=c(this))});a=f.length;for(d=0;d<a;d++)e[f[d][0]].addClass(h[f[d][1]])}function G(a){if(a.config.widthFixed){var d=
+c("<colgroup>");c("tr:first td",a.tBodies[0]).each(function(){d.append(c("<col>").css("width",c(this).width()))});c(a).prepend(d)}}function C(a,d,f){if(a.config.debug)var h=new Date;for(var e="var sortWrapper = function(a,b) {",n=d.length,g=0;g<n;g++){var j=d[g][0],k=d[g][1],l="e"+g;e+="var "+l+" = "+(a.config.parsers[j].type=="text"?k==0?"sortText":"sortTextDesc":k==0?"sortNumeric":"sortNumericDesc")+"(a["+j+"],b["+j+"]); ";e+="if("+l+") { return "+l+"; } ";e+="else { "}g=f.normalized[0].length-
+1;e+="return a["+g+"]-b["+g+"];";for(g=0;g<n;g++)e+="}; ";e+="return 0; ";e+="}; ";eval(e);f.normalized.sort(sortWrapper);a.config.debug&&b("Sorting on "+d.toString()+" and dir "+k+" time:",h);return f}var q=[],w=[];this.defaults={cssHeader:"header",cssAsc:"headerSortUp",cssDesc:"headerSortDown",sortInitialOrder:"asc",sortMultiSortKey:"shiftKey",sortForce:null,sortAppend:null,textExtraction:"simple",parsers:{},widgets:[],widgetZebra:{css:["even","odd"]},headers:{},widthFixed:false,cancelSelection:true,
+sortList:[],headerList:[],dateFormat:"us",decimal:".",debug:false};this.benchmark=b;this.construct=function(a){return this.each(function(){if(this.tHead&&this.tBodies){var d,f,h,e;this.config={};e=c.extend(this.config,c.tablesorter.defaults,a);d=c(this);f=E(this);this.config.parsers=p(this,f);h=s(this);var n=[e.cssDesc,e.cssAsc];G(this);f.click(function(g){d.trigger("sortStart");var j=d[0].tBodies[0]&&d[0].tBodies[0].rows.length||0;if(!this.sortDisabled&&j>0){c(this);j=this.column;this.order=this.count++%
+2;if(g[e.sortMultiSortKey])if(F(j,e.sortList))for(g=0;g<e.sortList.length;g++){var k=e.sortList[g],l=e.headerList[k[0]];if(k[0]==j){l.count=k[1];l.count++;k[1]=l.count%2}}else e.sortList.push([j,this.order]);else{e.sortList=[];if(e.sortForce!=null){k=e.sortForce;for(g=0;g<k.length;g++)k[g][0]!=j&&e.sortList.push(k[g])}e.sortList.push([j,this.order])}setTimeout(function(){B(d[0],f,e.sortList,n);x(d[0],C(d[0],e.sortList,h))},1);return false}}).mousedown(function(){if(e.cancelSelection){this.onselectstart=
+function(){return false};return false}});d.bind("update",function(){this.config.parsers=p(this,f);h=s(this)}).bind("sorton",function(g,j){c(this).trigger("sortStart");e.sortList=j;for(var k=e.sortList,l=this.config,v=k.length,u=0;u<v;u++){var t=k[u],D=l.headerList[t[0]];D.count=t[1];D.count++}B(this,f,k,n);x(this,C(this,k,h))}).bind("appendCache",function(){x(this,h)}).bind("applyWidgetId",function(g,j){A(j).format(this)}).bind("applyWidgets",function(){y(this)});if(c.metadata&&c(this).metadata()&&
+c(this).metadata().sortlist)e.sortList=c(this).metadata().sortlist;e.sortList.length>0&&d.trigger("sorton",[e.sortList]);y(this)}})};this.addParser=function(a){for(var d=q.length,f=true,h=0;h<d;h++)if(q[h].id.toLowerCase()==a.id.toLowerCase())f=false;f&&q.push(a)};this.addWidget=function(a){w.push(a)};this.formatFloat=function(a){a=parseFloat(a);return isNaN(a)?0:a};this.formatInt=function(a){a=parseInt(a);return isNaN(a)?0:a};this.isDigit=function(a,d){var f="\\"+d.decimal;return RegExp("/(^[+]?0("+
+f+"0+)?$)|(^([-+]?[1-9][0-9]*)$)|(^([-+]?((0?|[1-9][0-9]*)"+f+"(0*[1-9][0-9]*)))$)|(^[-+]?[1-9]+[0-9]*"+f+"0+$)/").test(c.trim(a))};this.clearTableBody=function(a){if(c.browser.msie)(function(){for(;this.firstChild;)this.removeChild(this.firstChild)}).apply(a.tBodies[0]);else a.tBodies[0].innerHTML=""}})});c.fn.extend({tablesorter:c.tablesorter.construct});var m=c.tablesorter;m.addParser({id:"text",is:function(){return true},format:function(b){return c.trim(b.toLowerCase())},type:"text"});m.addParser({id:"digit",
+is:function(b,o){return c.tablesorter.isDigit(b,o.config)},format:function(b){return c.tablesorter.formatFloat(b)},type:"numeric"});m.addParser({id:"currency",is:function(b){return/^[\u00c3\u201a\u00c2\u00a3$\u00c3\u00a2\u00e2\u20ac\u0161\u00c2\u00ac?.]/.test(b)},format:function(b){return c.tablesorter.formatFloat(b.replace(new RegExp(/[^0-9.]/g),""))},type:"numeric"});m.addParser({id:"ipAddress",is:function(b){return/^\d{2,3}[\.]\d{2,3}[\.]\d{2,3}[\.]\d{2,3}$/.test(b)},format:function(b){b=b.split(".");
+for(var o="",p=b.length,r=0;r<p;r++){var s=b[r];o+=s.length==2?"0"+s:s}return c.tablesorter.formatFloat(o)},type:"numeric"});m.addParser({id:"url",is:function(b){return/^(https?|ftp|file):\/\/$/.test(b)},format:function(b){return jQuery.trim(b.replace(new RegExp(/(https?|ftp|file):\/\//),""))},type:"text"});m.addParser({id:"isoDate",is:function(b){return/^\d{4}[\/-]\d{1,2}[\/-]\d{1,2}$/.test(b)},format:function(b){return c.tablesorter.formatFloat(b!=""?(new Date(b.replace(new RegExp(/-/g),"/"))).getTime():
+"0")},type:"numeric"});m.addParser({id:"percent",is:function(b){return/\%$/.test(c.trim(b))},format:function(b){return c.tablesorter.formatFloat(b.replace(new RegExp(/%/g),""))},type:"numeric"});m.addParser({id:"usLongDate",is:function(b){return b.match(new RegExp(/^[A-Za-z]{3,10}\.? [0-9]{1,2}, ([0-9]{4}|'?[0-9]{2}) (([0-2]?[0-9]:[0-5][0-9])|([0-1]?[0-9]:[0-5][0-9]\s(AM|PM)))$/))},format:function(b){return c.tablesorter.formatFloat((new Date(b)).getTime())},type:"numeric"});m.addParser({id:"shortDate",
+is:function(b){return/\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}/.test(b)},format:function(b,o){var p=o.config;b=b.replace(/\-/g,"/");if(p.dateFormat=="us")b=b.replace(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/,"$3/$1/$2");else if(p.dateFormat=="uk")b=b.replace(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/,"$3/$2/$1");else if(p.dateFormat=="dd/mm/yy"||p.dateFormat=="dd-mm-yy")b=b.replace(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2})/,"$1/$2/$3");return c.tablesorter.formatFloat((new Date(b)).getTime())},type:"numeric"});
+m.addParser({id:"time",is:function(b){return/^(([0-2]?[0-9]:[0-5][0-9])|([0-1]?[0-9]:[0-5][0-9]\s(am|pm)))$/.test(b)},format:function(b){return c.tablesorter.formatFloat((new Date("2000/01/01 "+b)).getTime())},type:"numeric"});m.addParser({id:"metadata",is:function(){return false},format:function(b,o,p){b=o.config;b=!b.parserMetadataName?"sortValue":b.parserMetadataName;return c(p).metadata()[b]},type:"numeric"});m.addWidget({id:"zebra",format:function(b){if(b.config.debug)var o=new Date;c("tr:visible",
+b.tBodies[0]).filter(":even").removeClass(b.config.widgetZebra.css[1]).addClass(b.config.widgetZebra.css[0]).end().filter(":odd").removeClass(b.config.widgetZebra.css[0]).addClass(b.config.widgetZebra.css[1]);b.config.debug&&c.tablesorter.benchmark("Applying Zebra widget",o)}})})(jQuery);
+(function(c){c(function(){if(c.tablesorter){var m=c("<div>");c.tablesorter.defaults.cssAsc="column-header-asc";c.tablesorter.defaults.cssDesc="column-header-desc";c.tablesorter.defaults.cssHeader="column-header";c.tablesorter.addParser({id:"datetime",is:function(){return false},format:function(b){m.html(b);return m.find("time:first").attr("datetime")},type:"text"});c.tablesorter.addParser({id:"ignoreCase",is:function(){return false},format:function(b){m.html(b);return m.text().toLowerCase()},type:"text"});
+c.tablesorter.addParser({id:"string",is:function(){return false},format:function(b){m.html(b);return m.text()},type:"text"});c.tablesorter.addParser({id:"number",is:function(){return false},format:function(b){m.html(b);b=m.find(".number:first").attr("data-value");if(b==null)return Number.MAX_VALUE;return b},type:"numeric"});c(".table-sortable").each(function(){c(this).tablesorter()})}})})(jQuery);
+(function(c,m){var b={init:function(){c("#create-domain").click(function(o){b.create_domain_begin(o);return false})},create_domain_begin:function(o){m.get_script(m.h.static_url("user-edit.mf.js"),function(){m.schema.create_domain_begin(o)})}};c(b.init)})(jQuery,window.freebase);

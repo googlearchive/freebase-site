@@ -1,1 +1,0 @@
-["lib/template/js/jquery.tablesorter.js", "lib/template/js/tablesorter.js", "lib/filter/filters.omf.js", "lib/propbox/propbox.omf.js", "lib/template/js/jquery.infinitescroll.js", "js/sameas.js"]

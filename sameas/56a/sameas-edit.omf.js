@@ -1,1 +1,0 @@
-["lib/template/js/chosen.jquery.js", "lib/propbox/form.omf.js", "js/sameas-edit.js"]

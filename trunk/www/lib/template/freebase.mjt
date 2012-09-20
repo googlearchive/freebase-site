@@ -114,6 +114,12 @@
 </acre:block>
 
 <acre:block def="inner_body(exports)">
+  <!!-- for status messages !!-->
+  <span class="notice" id="page-state">
+    <a href="" class="close-msg">close</a>
+    <pre class="status-msg"></pre>
+  </span>
+
   <!!-- header !!-->
   <acre:block if="exports.header">
     ${exports.header(exports)}
@@ -144,10 +150,6 @@
 
 <acre:block def="header(exports)">
 <header role="banner" id="header">
-  <span class="notice" id="page-state">
-    <a href="" class="close-msg">close</a>
-    <pre class="status-msg"></pre>
-  </span>
   <acre:block if="exports.nav_utils">
     ${exports.nav_utils()}
   </acre:block>

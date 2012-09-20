@@ -65,7 +65,7 @@ function object(id, props) {
     };
     return freebase.get_topic(id, api_options)
       .then(function(topic) {
-        var types = get_values(topic, "/type/object/type");
+        var types = get_values(topic, "/type/object/type") || [];
         var type_map = (types && types.length) ? h.map_array([].concat(types), "id") : {};
         type_map["/type/object"] = true; // all objects are implicitly /type/object
 

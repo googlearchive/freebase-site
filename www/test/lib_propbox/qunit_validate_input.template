@@ -51,7 +51,6 @@
   <acre:block for="culture in cultures">
     <script src="${h.static_url('//cultures.globalize." + lib_host + "globalize.culture.' + culture + '.js')}"></script>
   </acre:block>
-  <script src="lib/i18n/js/i18n.js"></script>
   <script src="lib/propbox/js/jquery.validate_input.js"></script>
   <script src="./qunit_validate_input.js"></script>
 </acre:block>

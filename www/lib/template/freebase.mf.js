@@ -10,6 +10,5 @@
   "template/js/helpers.js",
   "permission/js/permission.js",
   "incompatible_types/js/incompatible-types.js",
-  "i18n/js/i18n.js",
   "flag/js/flag.js"
 ]

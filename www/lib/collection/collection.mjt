@@ -222,7 +222,7 @@
               </span>
               <ul class="submenu row-menu">
                 <li class="row-menu-item">
-                  <a href="#" class="edit-localized" onclick="return i18n.text_edit(this, '${h.ajax_url('lib/i18n')}', '${topic.id}', '/type/object/name', '${lang}', false)">${_("Edit localized...")}</a>          
+                  <a href="${h.fb_url(topic.id, [['i18n']])}">${_("Edit localized...")}</a>
                 </li>
               </ul>
             </li>          

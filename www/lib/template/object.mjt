@@ -220,46 +220,36 @@
         </span>
 
         <!!-- Object Name !!-->
-          <h1 acre:attrs="c.object.permission ? {'class':'lock'} : {}">
-            <span acre:if="c.object.name">
-              ${c.object.name.value}
-              <ul class="inline-menu nicemenu">
-                <li class="inline-menu-item nicemenu-item">
-                  <span class="headmenu">
-                    <a href="#" class="menu-trigger" onclick="return false;">
-                      ${c.object.name ? i18n_c.lang_code(c.object.name.lang, null, true) : "edit"}
-                    </a>
-                  </span>
-                  <ul class="submenu localization">
-                    <acre:script>
-                      var ajax_prefix = h.ajax_url('lib/i18n');
-                    </acre:script>
-                    <li class="edit">                    
-                      <a href="#" onclick="return i18n.text_edit(this, '${ajax_prefix}', '${c.object.id}', '/type/object/name', '${i18n.lang}', true);" class="icon-link">
-                       <span class="edit-icon">${_("View/edit localized names")} &hellip;</span>
-                      </a>
-                    </li>
-                    <!--
-                    <acre:block for="(var i=1,l=c.object.name.length; i<l; i++)">
-                      <acre:script>
-                        var n = c.object.name[i];
-                      </acre:script>
-                      <li class="">
-                        <a href="${h.build_url(null, c.object.id, [['lang', h.lang_code(n.lang)]])}">
-                          ${n.value}
-                          ${i18n_c.lang_code(n.lang, null, true)}
-                        </a>
-                      </li>
-                    </acre:block>
-                    -->
-                  </ul>
+        <h1 acre:attrs="c.object.permission ? {'class':'lock'} : {}">
+          <acre:script>
+            var name = c.object.name ? c.object.name.value : c.object.id;
+          </acre:script>
+          ${name}
+          <ul class="inline-menu nicemenu">
+            <li class="inline-menu-item nicemenu-item">
+              <span class="headmenu">
+                <a href="#" class="menu-trigger" onclick="return false;">
+                  <acre:block if="c.object.name">
+                    ${i18n_c.lang_code(c.object.name.lang, null, true)}
+                  </acre:block>
+                  <acre:block else="">
+                    <sup class="lang-code">${_('edit')}</sup>
+                  </acre:block>
+                </a>
+              </span>
+              <ul class="submenu localization">
+                <acre:script>
+                  var ajax_prefix = h.ajax_url('lib/i18n');
+                </acre:script>
+                <li>
+                  <a href="${h.fb_url(c.object.id, [['i18n']])}" class="icon-link">
+                    <span class="edit-icon">${_("View/edit localized names")} &hellip;</span>
+                  </a>
                 </li>
-              </ul> 
-            </span>
-            <span acre:else="">
-              ${c.object.id}
-            </span>
-          </h1>
+              </ul>
+            </li>
+          </ul> 
+        </h1>
 
           <acre:block if="that_exports.nav_flags">
             <span class="flags">

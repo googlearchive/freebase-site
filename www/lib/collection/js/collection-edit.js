@@ -74,20 +74,6 @@
           $(".modal-nav-title", options.form).text(name);
       }
 
-      // edit localized name trigger update current row/form
-      $(".edit-localized", options.form)
-          .click(function() {
-              // We don't want to have a modal on modal dialog.
-              // Close the collection row edit dialog.
-              options.form.trigger(options.event_prefix + "cancel");
-              return false;
-          })
-          .bind("i18n.edit.text_edit.cancel", function() {
-              // Once the i18n text edit dialog closes,
-              // reopen the collection row edit dialog
-              edit.row_edit_begin(options.row);
-          });
-
       // update navs
       var prev = $(".modal-nav-prev", options.form).unbind();
       var next = $(".modal-nav-next", options.form).unbind();

@@ -189,27 +189,31 @@ function init_rules(lib) {
       "more": true
     },
     {
-      "name": _("Links"),
-      "key": "links",
-      "app": "triples",
-      "script": "triples.tab",
+      "name": _("I18n"),
+      "key": "i18n",
+      "app": "i18n",
+      "script": "i18n.tab",
       "more": true
-    }, 
+    },
     {
       "name": _("Keys"),
       "key": "keys",
       "app": "sameas",
       "script": "sameas.tab",
       "more": true
-    }, 
+    },
     {
-      "name": _("i18n"),
-      "key": "i18n",
-      "app": "i18n",
-      "script": "i18n.tab",
+      "name": _("Links"),
+      "key": "links",
+      "app": "triples",
+      "script": "triples.tab",
       "more": true
     }
   ];
+
+  var DEFAULT_MORE_TABS_WITHOUT_I18N = DEFAULT_MORE_TABS.filter(function(tab) {
+    return tab.key !== "i18n";
+  });
 
   rules["object"] =  [
     {
@@ -265,8 +269,14 @@ function init_rules(lib) {
           "key": "schema",
           "app": "schema",
           "script": "domain.tab"
+        },
+        {
+          "name": _("I18n"),
+          "key": "i18n",
+          "app": "i18n",
+          "script": "i18n.tab"
         }
-      ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS_WITHOUT_I18N)),
       "gear": [
         {
           "name": _("<b>Delete</b> Domain"),
@@ -298,13 +308,19 @@ function init_rules(lib) {
           "script": "type.tab"
         },
         {
+          "name": _("I18n"),
+          "key": "i18n",
+          "app": "i18n",
+          "script": "i18n.tab"
+        },
+        {
           "name": _("Add Topic"),
           "key": "create",
           "app": "create",
           "script": "type.controller",
           "hidden": true
         }
-      ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS_WITHOUT_I18N)),
       "nav_keys": [
         {
           "label": _("domain"),
@@ -357,8 +373,14 @@ function init_rules(lib) {
           "key": "instances",
           "app": "triples",
           "script": "property.tab"
+        },
+        {
+          "name": _("I18n"),
+          "key": "i18n",
+          "app": "i18n",
+          "script": "i18n.tab"
         }
-      ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS_WITHOUT_I18N)),
       "nav_keys": [
         {
           "label": _("type"),
@@ -457,17 +479,17 @@ function init_rules(lib) {
           "script": "topic.tab"
         },
         {
-          "name": _("Links"),
-          "key": "links",
-          "app": "triples",
-          "script": "triples.tab"
-        },
-        {
           "name": _("Keys"),
           "key": "keys",
           "app": "sameas",
           "script": "sameas.tab"
         },
+        {
+          "name": _("Links"),
+          "key": "links",
+          "app": "triples",
+          "script": "triples.tab"
+        }
       ],
       "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
     },
@@ -555,6 +577,12 @@ function init_rules(lib) {
           "script": "topic.tab"
         },
         {
+          "name": _("I18n"),
+          "key": "i18n",
+          "app": "i18n",
+          "script": "i18n.tab"
+        },
+        {
           "name": _("Links"),
           "key": "links",
           "app": "triples",
@@ -576,22 +604,22 @@ function init_rules(lib) {
           "script": "topic.tab"
         },
         {
-          "name": _("Links"),
-          "key": "links",
-          "app": "triples",
-          "script": "triples.tab"
+            "name": _("I18n"),
+            "key": "i18n",
+            "app": "i18n",
+            "script": "i18n.tab"
         },
         {
           "name": _("Keys"),
           "key": "keys",
           "app": "sameas",
           "script": "sameas.tab"
-        }, 
+        },
         {
-            "name": _("i18n"),
-            "key": "i18n",
-            "app": "i18n",
-            "script": "i18n.tab"
+          "name": _("Links"),
+          "key": "links",
+          "app": "triples",
+          "script": "triples.tab"
         }
       ],
       "nav_keys": [
@@ -743,16 +771,22 @@ function init_rules(lib) {
           "script": "topic.tab"
         },
         {
-          "name": _("Links"),
-          "key": "links",
-          "app": "triples",
-          "script": "triples.tab"
+          "name": _("I18n"),
+          "key": "i18n",
+          "app": "i18n",
+          "script": "i18n.tab"
         },
         {
           "name": _("Keys"),
           "key": "keys",
           "app": "sameas",
           "script": "sameas.tab"
+        },
+        {
+          "name": _("Links"),
+          "key": "links",
+          "app": "triples",
+          "script": "triples.tab"
         }
       ],
       "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))

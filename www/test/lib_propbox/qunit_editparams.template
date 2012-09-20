@@ -45,7 +45,6 @@
   <script src="lib/globalize/globalize.js"></script>
   <script src="lib/suggest/js/suggest.js"></script>
   <script src="lib/template/js/jquery.metadata.js"></script> 
-  <script src="lib/i18n/js/i18n.js"></script> 
   <script src="lib/propbox/js/jquery.validate_input.js"></script>  
   <script src="lib/propbox/js/jquery.data_input.js"></script>
   <script src="lib/propbox/js/editparams.js"></script>

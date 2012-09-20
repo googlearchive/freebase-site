@@ -35,11 +35,13 @@
     add_type_begin: function(trigger, type_id, incompatible_types) {
       incompatible_types = incompatible_types || {};
       var included_types = [];
-      $.each(incompatible_types.included_types, function(i, t) {
-        if (!incompatible_types[t]) {
-          included_types.push(t);
-        }
-      });
+      if (incompatible_types.included_types) {
+        $.each(incompatible_types.included_types, function(i, t) {
+          if (!incompatible_types[t]) {
+            included_types.push(t);
+          }
+        });
+      }
 
       $.ajax($.extend(formlib.default_submit_ajax_options(), {
         url: fb.h.ajax_url("add_type_submit.ajax"),

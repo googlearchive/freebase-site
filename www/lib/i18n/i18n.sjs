@@ -138,7 +138,12 @@ var LANG_TIERS = [
     "kn",
     "ml",
     "te",
-    "ur"
+    "ur",
+    "km",
+    "lo",
+    "ne",
+    "si",
+    "dz"
 ];
 
 var CULTURE_MAP = {

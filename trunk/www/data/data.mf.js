@@ -1,6 +1,5 @@
 [
-  "lib/template/js/jquery.tablesorter.js",
-  "lib/template/js/tablesorter.js",
+  "lib/template/tablesorter.mf.js",
   "lib/flot/flot.core.mf.js",
   "lib/jquerytools/js/tabs.js",
   "lib/propbox/propbox.mf.js",

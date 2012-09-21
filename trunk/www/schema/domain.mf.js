@@ -1,6 +1,5 @@
 [
-  "lib/template/js/jquery.tablesorter.js",
-  "lib/template/js/tablesorter.js",
+  "lib/template/tablesorter.mf.js",
   "schema.mf.js",
   "js/domain.js"
 ]

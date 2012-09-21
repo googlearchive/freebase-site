@@ -61,7 +61,7 @@ var SPEC = {
     return promise
       .then(function(result) {
         return {
-          html: acre.markup.stringify(sameas.keys_body(id, result, f, lang, p === "/type/namespace/keys"))
+          html: acre.markup.stringify(sameas.keys_body(id, result, f, p === "/type/namespace/keys"))
         };
       });
   }

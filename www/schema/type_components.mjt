@@ -41,7 +41,7 @@
 
   var EDIT_PROPERTY = _('Edit property');
   var DELETE_PROPERTY = _('Delete property');
-  var INSPECT_PROPERTY = _('Inspect Property');
+  var INSPECT_PROPERTY = _('Property links');
   var BUILD_QUERY = _('Build query');
 </acre:script>
 
@@ -58,7 +58,7 @@
           <a href="${h.static_url('lib/schema/schema.mf.js')}" class="icon-link" onclick="return freebase.nav_get_script(this, 'schema.delete_property_begin', ['${prop.id}']);"><span class="delete-icon">${DELETE_PROPERTY}</span></a>
         </li>
 
-        <li class="row-menu-item"><a href="${h.fb_url(prop.id, [['links']])}">${INSPECT_PROPERTY}</a></li>
+        <li class="row-menu-item"><a href="${h.fb_url(prop.id, [['instances']])}">${INSPECT_PROPERTY}</a></li>
         <li class="row-menu-item last">
           <a href="${h.build_query_url(null, type_id, prop.id)}">${BUILD_QUERY}</a>
         </li>

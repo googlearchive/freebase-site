@@ -41,8 +41,8 @@
   var links_q = acre.require("lib/queries/links.sjs");
   var _ = i18n.gettext;
   var th = acre.require("helpers.sjs");
-  var QUERY = _("query");
-  var LINKS = _("links");
+  var QUERY = _("View query");
+  var LINKS = _("Property links");
   var MORE = _("+");
 </acre:script>
 
@@ -296,7 +296,7 @@
         <a href="javascript:void(0);" class="more-action">menu</a>
       </span>
       <ul class="submenu row-menu">
-        <li class="row-menu-item"><a href="${h.fb_url(o.master_property.id, [['links']])}">${LINKS}</a></li>
+        <li class="row-menu-item"><a href="${h.fb_url(o.master_property.id, [['instances']])}">${LINKS}</a></li>
         <li class="row-menu-item"><a href="${h.fb_url('/query', [['q',JSON.stringify(th.query(o))],['autorun',1]])}">${QUERY}</a></li>
       </ul>
     </li>

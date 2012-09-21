@@ -42,7 +42,7 @@
   var queries = acre.require("queries.sjs");
   var EDIT = _("Edit");
   var DELETE = _("Delete");
-  var LINK = _("Link");
+  var LINK = _("Inspect link");
 </acre:script>
 
 <acre:block def="head()">

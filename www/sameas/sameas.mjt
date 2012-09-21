@@ -74,7 +74,7 @@
       </div>
     </div>
   </div>
-  <div class="column links${c.filters.historical ? ' historical' : ''}" 
+  <div class="column keys${c.filters.historical ? ' historical' : ''}" 
        id="keys-data" role="main">
     <acre:script>
       var is_ns = c.type_namespace_keys.length > 0 || c.object.type_map["/type/namespace"];
@@ -82,8 +82,8 @@
 
     <acre:block if="is_ns">
       <div id="keys" class="section two-column">
-        ${type_object_key(c.id, c.type_object_key, c.filters)}        
         ${type_namespace_keys(c.id, c.type_namespace_keys, c.filters)}
+        ${type_object_key(c.id, c.type_object_key, c.filters)}
       </div>       
     </acre:block>
     <acre:block else="">

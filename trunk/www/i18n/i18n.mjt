@@ -43,7 +43,7 @@
   var MISSING = _("(double click to add)");
   var EDIT = _("Edit");
   var DELETE = _("Delete");
-  var LINK = _("Link");
+  var LINK = _("Inspect link");
 </acre:script>
 
 <acre:block def="head()">
@@ -57,16 +57,16 @@
       <thead>
         <tr>
           <th class="column-header first {sorter: 'string'}" scope="col">
-            <span class="sort-icon">${_("value")}</span>
+            <span class="sort-icon">${_("Name")}</span>
           </th>
           <th class="column-header {sorter: 'string'}" scope="col">
-            <span class="sort-icon">${_("lang")}</span>
+            <span class="sort-icon">${_("Language")}</span>
           </th>
           <th class="column-header {sorter: 'string'}" scope="col">
-            <span class="sort-icon">${_("timestamp")}</span>
+            <span class="sort-icon">${_("Code")}</span>
           </th>
           <th class="column-header {sorter: 'string'}" scope="col">
-            <span class="sort-icon">${_("description")}</span>
+            <span class="sort-icon">${_("Timestamp")}</span>
           </th>
         </tr>
       </thead>
@@ -99,15 +99,15 @@
       </span>
     </th>
     <td class="even">
-      ${lang_code}
+      ${i18n.LANGS_BY_CODE[lang_code].name}
     </td>
     <td class="odd">
+      ${lang_code}
+    </td>
+    <td class="even">
       <acre:block if="name.link">
         ${name.link.timestamp}
       </acre:block>
-    </td>
-    <td class="even">
-      ${i18n.LANGS_BY_CODE[lang_code].name}
     </td>
   </tr>
 </acre:block>
@@ -139,13 +139,13 @@
       </span>
     </th>
     <td class="even">
-      ${lang_code}
+      ${i18n.LANGS_BY_CODE[lang_code].name}
     </td>
     <td class="odd">
-      -
+      ${lang_code}
     </td>
     <td class="even">
-      ${i18n.LANGS_BY_CODE[lang_code].name}
+      -
     </td>
   </tr>
 </acre:block>

@@ -1429,7 +1429,8 @@ function CustomRouter(rules) {
     var req_parts = req.server_name.split(".");
     if ((site_parts.length === 3) && (req_parts.length === 3) 
         && (req_parts[0] !== site_parts[0]) && (req_parts[0].length >= 5)
-        && (req_parts[1] === site_parts[1]) && (req_parts[2] === site_parts[2])) {
+        && (req_parts[1] === site_parts[1]) && (req_parts[2] === site_parts[2])
+        && req_parts[0] !== "devel") {
       acre.response.status = 301;
       acre.response.set_header("location", "//" + site_host + "/base/" + req_parts[0]);
       acre.exit();

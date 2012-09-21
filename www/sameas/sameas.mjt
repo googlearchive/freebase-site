@@ -107,10 +107,10 @@
     <table class="table table-sortable infinitescroll">
       <thead>
         <tr>
-          <th class="column-header first {sorter: 'string'}" scope="col">
+          <th class="column-header first {sorter: 'ignoreCase'}" scope="col">
             <span class="sort-icon">${_("key")}</span>
           </th>
-          <th class="column-header first {sorter: 'string'}" scope="col">
+          <th class="column-header first {sorter: 'ignoreCase'}" scope="col">
             <span class="sort-icon">${_("decoded")}</span>
           </th>
           <th class="column-header {sorter: 'string'}" scope="col">
@@ -162,10 +162,10 @@
     <table class="table table-sortable infinitescroll">
       <thead>
         <tr>
-          <th class="column-header first {sorter: 'string'}" scope="col">
+          <th class="column-header first {sorter: 'ignoreCase'}" scope="col">
             <span class="sort-icon">${_("key")}</span>
           </th>
-          <th class="column-header first {sorter: 'string'}" scope="col">
+          <th class="column-header first {sorter: 'ignoreCase'}" scope="col">
             <span class="sort-icon">${_("decoded")}</span>
           </th>
           <th class="column-header {sorter: 'string'}" scope="col">

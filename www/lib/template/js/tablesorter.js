@@ -45,10 +45,11 @@
         $.tablesorter.addParser({
           // set a unique id
           id: "datetime",
-          is: function(s) { return false; },
-          format: function(s) {
-            div.html(s);
-            return div.find("time:first").attr("datetime");
+          is: function(s, table, cell) {
+            return false;
+          },
+          format: function(s, table, cell) {
+            return $("[datetime]:first", cell).attr("datetime");
           },
           type: "text"
         });
@@ -57,9 +58,8 @@
           // set a unique id
           id: "ignoreCase",
           is: function(s) { return false; },
-          format: function(s) {
-            div.html(s);
-            return div.text().toLowerCase();
+          format: function(s, table, cell) {
+            return s.toLowerCase();
           },
           type: "text"
         });
@@ -68,9 +68,8 @@
           // set a unique id
           id: "string",
           is: function(s) { return false; },
-          format: function(s) {
-            div.html(s);
-            return div.text();
+          format: function(s, table, cell) {
+            return s;
           },
           type: "text"
         });
@@ -79,11 +78,10 @@
           // set a unique id
           id: "number",
           is: function(s) { return false; },
-          format: function(s) {
-            div.html(s);
-            var n = div.find(".number:first").attr("data-value");
+          format: function(s, table, cell) {
+            var n = $(".number:first", cell).attr("data-value");
             if (n == null) {
-              return Number.MAX_VALUE;
+              n = Number.MIN_VALUE;
             }
             return n;
           },

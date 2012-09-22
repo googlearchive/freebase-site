@@ -79,6 +79,7 @@ if (!Globalize) {
  */
 var LANG_TIERS = [
     "en",
+    "en-US",
     "ar",
     "zh-CN",
     "zh-TW",

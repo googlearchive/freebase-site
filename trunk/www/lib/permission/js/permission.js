@@ -36,6 +36,10 @@
      init: function() {
        if (!fb.user) {
          // if no user, don't need to waste our time with the permission query
+         setTimeout(function() {
+           p.has_permission = false;
+           $(window).trigger("fb.permission.has_permission", p.has_permission);
+         });
          return;
        }
        var c = fb.c;
@@ -64,8 +68,11 @@
      }
    };
 
-   // only check permission if user is signedin
+   // check permission when user is signedin
    $(window).bind("fb.user.signedin", p.init);
+
+   // if user is signeout, fb.permission.has_permission is always FALSE
+   $(window).bind("fb.user.signedout", p.init);
 
    // enable/show edit controls if user has permission
    $(window).bind("fb.permission.has_permission", function(e, has_permission) {

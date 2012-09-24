@@ -15,7 +15,10 @@
     "controller": "handlers/controller_handler.sjs",
     "ajax": "handlers/ajax_handler.sjs",
     "test": "handlers/test_handler.sjs",
-    "coffee_script": "handlers/coffee_script_handler.sjs"
+    "coffee_script": "handlers/coffee_script_handler.sjs",
+    "js_to_sjs": "handlers/js_to_sjs_handler.sjs",
+    "markdown": "handlers/markdown_handler.sjs",
+    "mjt_markdown": "handlers/mjt_markdown_handler.sjs"
   },
   "extensions": {
     "ico" : { 
@@ -74,6 +77,18 @@
     "test": {
       "handler": "test",
       "media_type": "text/html"
+    },
+    "markdown": {
+      "handler": "markdown",
+      "media_type": "text/html",
+    },
+    "md": {
+      "handler": "markdown",
+      "media_type": "text/html",
+    },
+    "mjtmd": {
+      "handler": "mjt_markdown",
+      "media_type": "text/html",
     },
     "gif": {
       "media_type": "image/gif", 

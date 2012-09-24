@@ -52,7 +52,7 @@ function CodeAssist(container, editor, options) {
     }
 }
 
-CodeAssist.helperUrl = "http://acreassist.freebaseapps.com/";
+CodeAssist.helperUrl = fb.acre.appeditor.service_path;
 
 CodeAssist.prototype.dispose = function() {
     this._cancelPopup();
@@ -545,6 +545,7 @@ CodeAssist.prototype._internalStartApiAssist = function(
     } else {
         var url = CodeAssist.helperUrl + "assist?segments=" + encodeURIComponent(segments);
         var onDone = function(o) {
+            o = o.result;
             if (o.length > 0) {
                 createPopup();
                 new CueCard.SuggestionController(
@@ -558,11 +559,11 @@ CodeAssist.prototype._internalStartApiAssist = function(
         var onError = function() {
         };
         
-        CueCard.JsonpQueue.call(
-            url,
-            onDone,
-            onError
-        );
+        $.ajax(url, {
+            dataType: "json",
+            success: onDone,
+            error: onError
+        });
     }
 };
 
@@ -712,6 +713,7 @@ CodeAssist.prototype._internalStartFunctionArgumentAssist = function(
     
     var url = CodeAssist.helperUrl + "assist_args?segments=" + encodeURIComponent(segments);
     var onDone = function(o) {
+        o = o.result;
         if (o) {
             createPopup();
             self._showFunctionArgumentAssistance(o, argumentIndex, positioning);
@@ -720,11 +722,11 @@ CodeAssist.prototype._internalStartFunctionArgumentAssist = function(
     var onError = function() {
     };
     
-    CueCard.JsonpQueue.call(
-        url,
-        onDone,
-        onError
-    );
+    $.ajax(url, {
+        dataType: "json",
+        success: onDone,
+        error: onError
+    });
 };
 
 CodeAssist.prototype._showFunctionArgumentAssistance = function(entry, argumentIndex, positioning) {

@@ -299,16 +299,10 @@
     <ul>
       <li><a href="#0" acre:onclick="return ui.do_show_dialog('keyboard_shortcuts')">
         Keyboard Shortcuts</a></li>
-      <li><a href="#0" acre:onclick="return ui.do_show_dialog('documentation', [ui.get_store().get_freebase_url() + '/docs/iframe/acre_api'])">
+      <li><a href="#0" acre:onclick="return ui.do_show_dialog('documentation', [ui.get_store().get_freebase_url() + '/appeditor/docs/apis'])">
         Acre API Reference</a></li>
-      <li><a href="#0" acre:onclick="return ui.do_show_dialog('documentation', [ui.get_store().get_freebase_url() + '/docs/iframe/acre_templates'])">
+      <li><a href="#0" acre:onclick="return ui.do_show_dialog('documentation', [ui.get_store().get_freebase_url() + '/appeditor/docs/templates'])">
         Acre Template Tag Reference</a></li>
-      <li><a href="#0" acre:onclick="return ui.do_show_dialog('documentation', [ui.get_store().get_freebase_url() + '/docs/iframe/js_reference'])">
-        Javascript Reference</a></li>
-      <li><a href="#0" acre:onclick="return ui.do_show_dialog('documentation', [ui.get_store().get_freebase_url() + '/docs/iframe/mql'])">
-        MQL Reference Guide</a></li>
-      <li><a href="${ui.get_store().get_freebase_url()}/docs/" target="_new">
-        Freebase Documentation Hub</a></li>
     </ul>
   </div>
   <div class="section">

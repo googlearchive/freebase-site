@@ -122,12 +122,13 @@ var exports = {
   "get_values" : get_values,
   "get_first_value" : get_first_value,
   "has_value" : has_value,
-  "link_count" : link_count
+  "link_count" : link_count,
+
+  // MARKDOWN
+  "get_markdown_converter" : get_markdown_converter
 };
 
 var self = this;
-
-// Global requires go here
 
 
 // -------- UTIL ------------
@@ -1781,4 +1782,9 @@ function link_count(topic_result) {
     return linkcount;
 }
 
+// ---------- MARKDOWN --------------------
 
+function get_markdown_converter(sanitized) {
+  var Markdown = acre.require("markdown/markdown.sjs").Markdown;
+  return (sanitized === false) ? new Markdown.Converter() : Markdown.getSanitizingConverter();
+};

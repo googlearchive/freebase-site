@@ -67,6 +67,7 @@ var exports = {
   // MATH
   "round": round,
   "format_stat": format_stat,
+  "is_scientific_notation": is_scientific_notation,
 
   // SPRINTF
   "sprintf": sprintf,
@@ -795,6 +796,20 @@ function format_stat(number) {
   }
   return ""+number;
 }
+
+function is_scientific_notation(number) {
+  var str = '' + number;
+  var parts = str.split(/[eE]/);
+  if (parts.length === 2) {
+    var left = trim(parts[0]);
+    var right = trim(parts[1]);
+    if (/^[+-]*\d+$/.test(right) &&
+        !isNaN(parseFloat(left, 10))) {
+      return true;
+    }
+  }
+  return false;
+};
 
 
 // ------------- SPRINTF ---------------

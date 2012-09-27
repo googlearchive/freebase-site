@@ -39,4 +39,10 @@ test("round", function() {
 });
 
 
-
+test("is_scientific_notation", function() {
+  ok(h.is_scientific_notation('1e-9'));
+  ok(h.is_scientific_notation('1 E -9'));
+  ok(h.is_scientific_notation('3.14e23'));
+  ok(h.is_scientific_notation('3.14E+23'));
+  ok(!h.is_scientific_notation('a1bcde23'));
+});

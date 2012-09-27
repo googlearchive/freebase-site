@@ -197,7 +197,7 @@
         number = Globalize.parseFloat(val);
       }
       else {
-        number = Globalize.parseInt(val);
+        number = Globalize.parseInt(val, 10);
       }
       if (isNaN(number)) {
         throw vi.invalid("number", val);

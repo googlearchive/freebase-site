@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 var h = acre.require("helper/helpers.sjs");
 var i18n = acre.require("i18n/i18n.sjs");
 var datejs = acre.require("datejs/date.sjs");
@@ -168,7 +167,7 @@ Validator.Class.prototype = {
     }
     try {
       this.pre_to_js(this.val, this.options);
-      var js_val = this[this.get_typeof(this.val)](this.val, this.options);
+      var js_val = this[this.get_typeof(this.val)].apply(this, [this.val, this.options]);
       this.post_to_js(js_val, this.options);
       return js_val;
     }
@@ -968,7 +967,7 @@ Validator.factory(scope, "AcreResource", {
 
     var DEFAULT_HOST_NS = "/freebase/apps/hosts";
 
-    var APPEDITOR_SERVICE_PATH = "/appeditor/services/"
+    var APPEDITOR_SERVICE_PATH = "/appeditor/services/";
 
     var ACRE_TO_FREEBASE_MAP = {
       "freebaseapps.com"           : {
@@ -1145,4 +1144,3 @@ Validator.factory(scope, "AcreResource", {
     return resource;
   }
 })
-

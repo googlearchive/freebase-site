@@ -171,18 +171,6 @@ test("iso8601.is_time_hhmmss", function() {
 });
 
 
-test("is8601", function() {
-
-    var d = acre.freebase.date_from_iso("-0011");
-    ok(d, d.toString());
-
-
-    console.log(parseInt("-0000", 10), parseInt("-0000", 10));
-    console.log(parseInt("-0011", 10), parseInt("-0011", 10));
-});
-
-
-
 test("i18n.mql.query.text", function() {
   var langs = [i18n.lang];
   if (i18n.lang !== "/lang/en") {
@@ -270,3 +258,91 @@ test("get_lang", function() {
 
 });
 
+test('format_bce_year', function() {
+  equal(i18n.format_bce_year('0000'), '1 BCE');
+  equal(i18n.format_bce_year(-100), '101 BCE');
+  equal(i18n.format_bce_year('-0001'), '2 BCE');
+  equal(i18n.format_bce_year(1), 1);
+  equal(i18n.format_bce_year('1'), '1');
+  equal(i18n.format_bce_year('2012'), '2012');
+});
+
+test('format_time', function() {
+  var culture = i18n.get_globalize_culture_lang_code();
+
+  var tests = [
+    'T12', '12', 'HH', 't',
+    '12', '12', 'HH', 't',
+    'T13:43', '13:43', 'HH:mm', 't',
+    '23:59:59', '23:59:59', 'HH:mm:ss', 'T',
+    '24:00:00', '24:00:00', null,  null, // invalid
+    'T23:59:59.1234', '23:59:59.1234', null, null  // milliseconds
+  ];
+
+  for (var i=0,l=tests.length; i<l; i+=4) {
+    var actual = tests[i];
+    var expected = tests[i+1];
+    var parse = tests[i+2];
+    var format = tests[i+3];
+    if (expected && parse && format) {
+      var d = Globalize.parseDate(expected, parse);
+      equal(i18n.format_time(actual), Globalize.format(d, format, culture));
+    }
+    else if (expected) {
+      equal(i18n.format_time(actual), expected);
+    }
+  };
+});
+
+test('format_date', function() {
+  var culture = i18n.get_globalize_culture_lang_code();
+
+  var tests = [
+    '2012-08-26T19:49:52.0009Z', 'f',
+    '2012-08-26', 'd',
+    '2012-08', 'Y',
+    '2012', 'yyyy'
+  ];
+
+  for (var i=0,l=tests.length; i<l; i+=2) {
+    var actual = tests[i];
+    var format = tests[i+1];
+    var d = acre.freebase.date_from_iso(actual);
+    equal(i18n.format_date(actual), Globalize.format(d, format, culture));
+  }
+});
+
+
+
+test('format_number', function() {
+  var culture = i18n.get_globalize_culture_lang_code();
+
+  var tests = [
+    1e-9, true, null,
+    1e-2, true, null,
+    1.00, true, "n2",
+    0.0, true, "n2",
+    0, true, 'n2',
+    0, false, 'n0',
+    -0, false, 'n0',
+    1.00, false, "n0",
+    -1.50, false, 'n0',
+    1.49, false, 'n0',
+    1e+9, false, 'n0',
+    1.32e+102, false, null
+  ];
+
+  for (var i=0,l=tests.length; i<l; i+=3) {
+    var actual = tests[i];
+    var is_float = tests[i+1];
+    var format = tests[i+2];
+    var expected;
+    if (format) {
+      expected = Globalize.format(actual, format, culture);
+    }
+    else {
+      expected = actual;
+    }
+    equal(i18n.format_number(actual, is_float), expected);
+  };
+});

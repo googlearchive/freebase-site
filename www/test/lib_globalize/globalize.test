@@ -38,11 +38,12 @@ test("cultures", function() {
   var culture_files = acre.get_metadata("//cultures.globalize." + lib.host).files;
   var cultures = [];
   i18n.LANG_TIERS.forEach(function(code) {
-      if (code === "en") {
+      var g_code = i18n.get_globalize_culture_lang_code(code);
+      if (g_code === "en") {
           // en is the default
           return;
       }
-      var g_code = i18n.get_globalize_culture_lang_code(code);
+
       var fname = "globalize.culture." + g_code + ".js";
       if (culture_files[fname]) {
           ok(true, [code, fname].join("=>"));

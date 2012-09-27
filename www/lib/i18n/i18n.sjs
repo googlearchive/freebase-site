@@ -33,6 +33,7 @@
 var h = acre.require("helper/helpers.sjs");
 var deferred = acre.require("promise/deferred");
 var freebase = acre.require("promise/apis").freebase;
+var validators = acre.require('validator/validators.sjs');
 var topscope = this.__proto__;
 
 /**
@@ -149,7 +150,8 @@ var LANG_TIERS = [
 
 var CULTURE_MAP = {
     "iw": "he",        // Globalize uses he
-    "es-419": "es-MX"  // there is no es-419 in Globalize, just use Mexico's
+    "es-419": "es-MX", // there is no es-419 in Globalize, just use Mexico's
+    "dz": "en"         // this is no dz in Globalize
 };
 
 /**
@@ -540,22 +542,42 @@ function get_globalize_culture_lang_code(for_lang_or_code) {
     return CULTURE_MAP[code] || code;
 };
 
-function format_number(number, is_float, format) {
-    if (!format) {
-        if (is_float) {
-            format = "n";
-            var str = "" + number;
-            var index = str.indexOf(".");
-            if (index !== -1) {
-                format = "n" + str.substr(index + 1).length;
-            }
-        }
-        else {
-            format = "n0";
-        }
+/**
+ * Globalize.format takes a format 'nX' where X is the
+ * number of decimal places you want in the output.
+ * So for int, we use 'n0' for floats, 'n' means the default 2
+ * decimal precision. For floats, we try to figure out the
+ * number of decimals so that we can echo back the number
+ * in the current locale. For scientific notations,
+ * we want to just echo it back without any locale formatting.
+ * @param {number} number The number to format.
+ * @param {boolean} is_float Whether or not number is a float.
+ * @param {string} opt_format Use this format if specified.
+ * @return {string} The formatted number in current locale.
+ * @see https://github.com/jquery/globalize#format
+ */
+function format_number(number, is_float, opt_format) {
+  if (typeof number !== 'number') {
+    return number;
+  }
+  if (!opt_format) {
+    var str = '' + number;
+    if (h.is_scientific_notation(number)) {
+      return number;
     }
-    var culture = get_globalize_culture_lang_code();
-    return Globalize.format(number, format, culture);
+    else if (is_float) {
+      opt_format = 'n';
+      var index = str.indexOf('.');
+      if (index !== -1) {
+        opt_format = 'n' + str.substr(index + 1).length;
+      }
+    }
+    else {
+      opt_format = 'n0';
+    }
+  }
+  var culture = get_globalize_culture_lang_code();
+  return Globalize.format(number, opt_format, culture);
 };
 
 function format_datetime(datetime, format) {
@@ -590,6 +612,9 @@ function format_date(date, format) {
         }
         else if (iso8601.is_date_yyyymmdd(date)) {
             date = Globalize.format(d, "d", culture);
+        }
+        else {
+            date = Globalize.format(d, "f", culture);
         }
     }
     return date;

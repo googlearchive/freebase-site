@@ -644,8 +644,13 @@
       */
      check_api_response: function(data, textStatus, xhr) {
        if ($.isPlainObject(data)) {
+         if (data.error && data.error.code === 401) {
+           status.info("Authorizing...");
+           $(window).trigger("fb.user.unauthorized");
+           return false;
+         }
          // JSON
-         if (data.code !== "/api/status/ok") {
+         else if (data.code !== "/api/status/ok") {
            return false;
          }
        }

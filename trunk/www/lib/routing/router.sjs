@@ -215,6 +215,14 @@ function init_rules(lib) {
     return tab.key !== "i18n";
   });
 
+  // The yellow-strip banner above the object masthead.
+  var DEFAULT_BANNERS = [{
+    "key": "banners",
+    "app": "lib",
+    "script": "queries/object.sjs",
+    "promise": "get_object_banners"
+  }];
+
   rules["object"] =  [
     {
       "name": _("App"),
@@ -251,6 +259,10 @@ function init_rules(lib) {
     {
       "name": _("Domain"),
       "type": "/type/domain",
+      "properties": [
+        "/freebase/domain_profile/category"
+      ],
+      "promises": h.extend(true, [], DEFAULT_BANNERS),
       "tabs": [
         {
           "name": _("Data"),
@@ -292,8 +304,13 @@ function init_rules(lib) {
       "name": _("Type"),
       "type": "/type/type",
       "properties": [
-        "/type/type/domain"
+        "/type/type/domain", 
+        "/freebase/type_hints/deprecated",
+        "/freebase/type_hints/mediator",
+        "/freebase/type_hints/enumeration",
+        "/freebase/type_hints/never_assert"
       ],
+      "promises": h.extend(true, [], DEFAULT_BANNERS),
       "tabs": [
         {
           "name": _("Schema"),
@@ -359,8 +376,14 @@ function init_rules(lib) {
       "name": _("Property"),
       "type": "/type/property",
       "properties": [
-        "/type/property/schema"
+        "/type/property/schema",
+        "/freebase/property_hints/deprecated",
+        "/type/property/requires_permission",
+        "/freebase/property_hints/disambiguator",
+        "/freebase/property_hints/display_none",
+        "/type/property/delegated"
       ],
+      "promises": h.extend(true, [], DEFAULT_BANNERS),
       "tabs": [
         {
           "name": _("Schema"),
@@ -1567,9 +1590,9 @@ function route(environment_rules) {
   var error_page_path = acre.resolve(lib_md.error_page);
   acre.response.set_error_page(error_page_path);
 
-  function do_router(router) {
-    var name = router[0];
-    var router_class = router[1];
+  function do_router(router_info) {
+    var name = router_info[0];
+    var router_class = router_info[1];
     var router = new router_class(rules);
     var rule = rules[name];
     if (router.add) {

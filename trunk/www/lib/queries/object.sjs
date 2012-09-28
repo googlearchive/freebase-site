@@ -32,6 +32,7 @@ var h = acre.require("helper/helpers.sjs");
 var deferred = acre.require("promise/deferred");
 var freebase = acre.require("promise/apis").freebase;
 var i18n = acre.require("i18n/i18n.sjs");
+var _ = i18n.gettext;
 
 /* default filters we need for any object */
 var OBJECT_FILTERS = [ 
@@ -184,11 +185,11 @@ function get_user_badge(topic) {
     }
     /* /freebase/badges/topcontributor */
     else if (group_ids["/m/02h53fx"]) {
-      label = "Top User"
+      label = "Top User";
     }
     /* /freebase/bots */
     else if (group_ids["/m/02h53f9"]) {
-      label = "Bot"
+      label = "Bot";
     }
   }
 
@@ -211,3 +212,87 @@ function topic_count() {
 };
 
 
+/**
+ * Get the relevant object banner info.
+ * All object type relevant properties should be declared in the
+ * properties section.
+ * For example, we ask for "/freebase/type_hints/mediator" and
+ * "/freebase/type_hints/enumeration" for /type/type and
+ * we display whether or not the type is a MEDIATOR or ENUMERATION,
+ * in the object banner.
+ * @param {object} obj The object query result.
+ * @param {string} obj_type The object type that matched in the object routing.
+ * @return {promise} A list of banner info.
+ */
+function get_object_banners(obj, obj_type) {
+  var banners = [];
+  obj_type = obj_type.id;
+  if (obj_type === '/type/domain') {
+    var category = get_values(obj, '/freebase/domain_profile/category');
+    if (category && h.is_commons_domain(category)) {
+      banners.push(_('Commons domain'));
+    }
+    else if (h.is_commons_domain(obj)) {
+      banners.push(_('Commons domain'));
+    }
+    else {
+      banners.push(_('User domain'));
+    }
+  }
+  else if (obj_type === '/type/type') {
+    var deprecated = get_first_value(obj, '/freebase/type_hints/deprecated');
+    var mediator = get_first_value(obj, '/freebase/type_hints/mediator');
+    var enumeration = get_first_value(obj, '/freebase/type_hints/enumeration');
+    var never_assert = get_first_value(
+        obj, '/freebase/type_hints/never_assert');
+    if (deprecated && deprecated.value === true) {
+      banners.push(_('This type is Deprecated.'));
+    }
+    if (mediator && mediator.value === true) {
+      banners.push(_('This is a Mediator.'));
+    }
+    if (enumeration && enumeration.value === true) {
+      banners.push(_('This is an Enumerated Type.'));
+    }
+    if (never_assert && never_assert.value === true) {
+      banners.push(_('This type is never asserted on a topic.'));
+    }
+  }
+  else if (obj_type === '/type/property') {
+    var deprecated = get_first_value(
+        obj, '/freebase/property_hints/deprecated');
+    var requires_permission = get_first_value(
+        obj, '/type/property/requires_permission');
+    var hidden = get_first_value(
+        obj, '/freebase/property_hints/display_none');
+    var disambiguator = get_first_value(
+        obj, '/freebase/property_hints/disambiguator');
+    var delegated = get_first_value(
+        obj, '/type/property/delegated');
+    if (deprecated && deprecated.value === true) {
+      banners.push(_('This property is Deprecated.'));
+    }
+    if (requires_permission && requires_permission.value === true) {
+      banners.push(_('This property requires permission.'));
+    }
+    if (hidden && hidden.value === true) {
+      banners.push(_('This property is hidden by default'));
+    }
+    if (disambiguator && disambiguator.value === true) {
+      banners.push(_('This property is a disambiguator.'));
+    }
+    if (delegated && delegated.id) {
+      banners.push(h.sprintf(
+          _('This property is delegated to %s'), delegated.id));
+    }
+    var types = get_values(obj, '/type/object/type') || [];
+    types.every(function(t) {
+      if (t.id === '/type/extension') {
+        banners.push(_('This property is a mql extension.'));
+        return false;
+      }
+      return true;
+    });
+  }
+  return deferred.resolved(banners);
+};

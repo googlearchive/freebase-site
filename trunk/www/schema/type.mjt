@@ -48,38 +48,6 @@
   <script src="type.mf.js"></script>
 </acre:block>
 
-<acre:block def="page_flag()">
-  <acre:block if="c.type['/freebase/type_hints/deprecated'] || c.type['/freebase/type_hints/mediator'] || c.type['/freebase/type_hints/enumeration'] || c.type['/freebase/type_hints/never_assert']">   
-    <div class="page-flag">
-      <acre:script>
-        var flags = [];
-        var sprintf_args = {};
-        if (c.type['/freebase/type_hints/deprecated']) {
-          sprintf_args.deprecated = a_tag(_('Deprecated'), 'http://wiki.freebase.com/');
-          flags.push(_('This type is %(deprecated)s.'));
-        }
-        if (c.type['/freebase/type_hints/mediator']) {
-          sprintf_args.mediator = a_tag(_('Mediator'), 'http://wiki.freebase.com/wiki/Compound_Value_Type');
-          flags.push(_('This is a %(mediator)s.'));
-        }
-        if (c.type['/freebase/type_hints/enumeration']) {
-          sprintf_args.enumerated = a_tag(_('Enumerated Type'), 'http://wiki.freebase.com/wiki/Enumerated_type');
-          flags.push(_('This is an %(enumerated)s.'));
-        }
-        if (c.type['/freebase/type_hints/never_assert']) {
-          sprintf_args.never_assert = a_tag(_('never asserted'), 'http://wiki.freebase.com/');
-          flags.push(_('This type is %(never_assert)s on a topic.'));
-        }
-      </acre:script>
-      <acre:block for="flag in flags">
-        <div class="page-flag-kind">
-          <span class="page-flag-msg">${h.template_sprintf(flag, sprintf_args)}</span>
-        </div>        
-      </acre:block>
-    </div>
-  </acre:block>
-</acre:block>
-
 <acre:block def="a_tag(text, url)">
   <a href="${url}">${text}</a>
 </acre:block>

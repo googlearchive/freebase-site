@@ -297,7 +297,7 @@ test("get_disambiguators", function() {
       },{
         id: "/prop/7",
         "/freebase/property_hints/disambiguator": true,
-        "/freebase/property_hints/deprecated": true          
+        "/freebase/property_hints/deprecated": true
       }]
     }
   };
@@ -326,11 +326,14 @@ test("is_commons_domain", function() {
       }]
   }, {
       id: "/hello/world"   // commons since it's not /user or /base
-  }, 
+  },
   "/common", "/foo", "/bar", "/hello/world"];
   commons.forEach(function(domain) {
-      ok(h.is_commons_domain(domain));
+      ok(h.is_commons_domain(domain), JSON.stringify(domain));
   });
+  ok(h.is_commons_domain(commons[2]["/freebase/domain_profile/category"]),
+     commons[2].id);
+
 
   var not_commons = [{
       id: "/user/daepark"
@@ -352,6 +355,6 @@ test("is_commons_domain", function() {
   not_commons.forEach(function(domain) {
       ok(!h.is_commons_domain(domain));
   });
+  ok(!h.is_commons_domain(not_commons[3]["/freebase/domain_profile/category"]),
+     not_commons[3].id);
 });
-
-

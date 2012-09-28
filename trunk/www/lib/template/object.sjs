@@ -106,13 +106,14 @@ function main(rule, object) {
     more_tabs: more_tabs,
     nav_keys: rule.nav_keys || [],
     gear: rule.gear || [],
+    banners: rule.banners || [],
     show_image: rule.show_image,
     filters: fh.global_filters(acre.request.params)
   };
 
   // extend object type (global) promises
   rule.promises && rule.promises.forEach(function(p) {
-    var d = acre.require(p.app + "/" + p.script)[p.promise](object);
+    var d = acre.require(p.app + "/" + p.script)[p.promise](object, object_type);
     template_base_args[p.key] = d;
   });
 
@@ -122,7 +123,7 @@ function main(rule, object) {
     script = acre.require(current_tab.app + "/" + current_tab.script);
     params = current_tab.params;
     current_tab.promises && current_tab.promises.forEach(function(p) {
-      var d = acre.require(p.app + "/" + p.script)[p.promise](object);
+      var d = acre.require(p.app + "/" + p.script)[p.promise](object, object_type);
       template_base_args[p.key] = d;
     });
   }
@@ -139,4 +140,3 @@ function main(rule, object) {
 
   return controller.run_spec(spec, script);
 };
-

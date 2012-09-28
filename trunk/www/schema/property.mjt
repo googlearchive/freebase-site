@@ -41,33 +41,6 @@
   <link rel="stylesheet" type="text/css" href="schema.mf.css" />
 </acre:block>
 
-<acre:block def="page_flag()">
-  <acre:script>
-    var flag = c.property['/freebase/property_hints/deprecated'] ||
-      c.property['emql:type'] ||
-      c.property.delegated;
-  </acre:script> 
-  <acre:block if="flag">
-    <div class="page-flag">
-      <acre:block if="c.property['/freebase/property_hints/deprecated']">
-        <div class="page-flag-kind">
-          <span class="page-flag-msg">${_('This property is deprecated.')}</span>
-        </div>        
-      </acre:block>
-      <acre:block if="c.property.delegated">
-        <div class="page-flag-kind">
-          <span class="page-flag-msg">${h.template_sprintf(_('This property is delegated to %s.'), tag_a(h.fb_url(c.property.delegated.id)))}</span>
-        </div>        
-      </acre:block>      
-      <acre:block if="c.property['emql:type']">
-        <div class="page-flag-kind">
-          <span class="page-flag-msg">${_('This property is a mql extension.')}</span>
-        </div>        
-      </acre:block>    
-    </div>
-  </acre:block>
-</acre:block>
-
 <acre:block def="tag_a(href, text)">
   <a href="${href}">${text || href}</a>
 </acre:block>

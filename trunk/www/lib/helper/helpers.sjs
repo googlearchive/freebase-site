@@ -1793,7 +1793,7 @@ function has_value(topic_result, prop) {
 }
 function link_count(topic_result) {
     var linkcount = 0;
-    var links = h.get_values(topic_result, '/freebase/object_profile/linkcount');
+    var links = get_values(topic_result, '/freebase/object_profile/linkcount');
     if (!links) {
         return -1;
     }

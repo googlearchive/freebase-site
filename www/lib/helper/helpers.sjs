@@ -555,6 +555,7 @@ unique_ish.map = (function() {
  * 
  * @param domain:String or Object - If String, does simple domain id regex.
  *     If Object, inspect domain["/freebase/domain_profile/category"];
+ *     If an Array, assume that is the "/freebase/domain_profile/category" list.
  */
 function is_commons_domain(domain) {
     function is_commons_id(id) {
@@ -571,11 +572,19 @@ function is_commons_domain(domain) {
         return true;
     }
     else {
-        var category = domain["/freebase/domain_profile/category"];
+        var category = null;
+        if (isArray(domain)) {// Did we get passed the domain category list?
+          category = domain;
+        }
+        else {
+          category = domain["/freebase/domain_profile/category"];
+        }
         if (category) {
             if (isArray(category)) {
                 for (var i=0,l=category.length; i<l; i++) {
-                    if (category[i].id === "/category/commons") {
+                    if (category[i].id === "/category/commons" ||
+                        //Topic API returns mids
+                        category[i].id === '/m/0hmw4b') {
                         return true;
                     }
                 }

@@ -53,7 +53,7 @@
             v.$app.acre.version
           </span>
         </h3>
-        <p class="applist-details" acre:if="app.description">
+        <p class="applist-details truncate" acre:if="app.description">
         $app.description
         </p>
       </th>

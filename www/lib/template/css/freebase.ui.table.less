@@ -153,6 +153,24 @@ for all *non-propbox* tables
   margin: 0 10px 10px 0;
 }
 
+/* generic class for truncated text */
+.truncate {
+  display: block;
+  overflow:hidden;
+  text-overflow: ellipsis;
+  max-width: 20em;
+}
+
+th:hover .truncate,
+td:hover .truncate {
+  position: absolute;
+  max-width: 1000px;
+  z-index: 10;
+  background: #f8f8f8;
+  .rounded_corners();
+  -webkit-box-shadow: 0 0 4px #999;
+}
+
 /* generic class for columns with numeric values */
 .numeric {
   min-width: 9em;

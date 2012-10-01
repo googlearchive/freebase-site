@@ -547,8 +547,9 @@ var ui = {};
             file._current_editor.query_run();
             return;
         }
-        
-        var preview_url = ui.get_file().get_acre_url(preview);
+
+        // Default to HTTP for preview URLs (rather than protocol-relative)        
+        var preview_url = "http:" + ui.get_file().get_acre_url(preview);
         
         var PreviewWindow = window.open('about:blank', ui.get_app().get_path().replace(/[\/-]/g, '_'));
         if (!PreviewWindow) { 
@@ -1888,6 +1889,8 @@ $(document).ready(function(){
             ui.set_user(store.get_user());
             ui.init();
             
+            // Disable until all appspot SSL subdomains are supported
+            /*
             // warn if third-party cookies are disabled
             store.TestCookies(store)
                 .enqueue()
@@ -1897,6 +1900,7 @@ $(document).ready(function(){
                     "Hold down the <b>Shift</b> key when clicking the browser <b>Refresh</b> button to ensure " +
                     "you're seeing the latest.");                    
                 });
+            */
         })
         .onerror(function(code, message, info) {
             assert.critical(false, "Error connecting to Freebase<br/>" + message);

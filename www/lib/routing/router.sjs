@@ -1451,12 +1451,20 @@ function CustomRouter(rules) {
     var site_parts = site_host.split(".");
     var req_parts = req.server_name.split(".");
     if ((site_parts.length === 3) && (req_parts.length === 3) 
-        && (req_parts[0] !== site_parts[0]) && (req_parts[0].length >= 5)
-        && (req_parts[1] === site_parts[1]) && (req_parts[2] === site_parts[2])
-        && req_parts[0] !== "devel") {
-      acre.response.status = 301;
-      acre.response.set_header("location", "//" + site_host + "/base/" + req_parts[0]);
-      acre.exit();
+        && (req_parts[1] === site_parts[1]) && (req_parts[2] === site_parts[2])) {
+      // don't route site host
+      if ((req_parts[0] === site_parts[0]) || (req_parts[0] === "devel")) {
+        // no op
+      }
+      // special-case RDF service
+      else if (req_parts[0] === "rdf") {
+        var id = acre.request.path_info.replace(/^\/(ns|rdf)/, "").replace(".", "/");
+        h.redirect(scope, acre.freebase.googleapis_url + "/rdf" + id);
+      }
+      // otherwise, assume it's a custom base hostname
+      else if (req_parts[0].length >= 5) {
+        h.redirect(scope, "//" + site_host + "/base/" + req_parts[0]);
+      }
     }
 
     // handle homepage and "/browse"

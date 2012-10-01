@@ -38,7 +38,11 @@ var SPEC = {
 
   validate: function(params) {
     var cookie_code = acre.request.cookies['claim_code'] || '';
-    return [validators.String(params, 'code', {if_empty: cookie_code})];
+    // TODO (JD) : Remove 'code' once API change is pushed
+    return [
+      validators.String(params, 'claimcode', {if_empty: cookie_code}) ||
+      validators.String(params, 'code', {if_empty: cookie_code})
+    ];
   },
   
   run: function(token) {

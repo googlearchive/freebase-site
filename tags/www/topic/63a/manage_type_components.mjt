@@ -1,0 +1,123 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var h = acre.require("lib/helper/helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var _ = i18n.gettext;
+  var form = acre.require("lib/propbox/form.mjt");
+  var propbox = acre.require("lib/propbox/propbox.mjt");
+</acre:script>
+
+<acre:block def="type_li(type)">
+  <li>
+    <a class="close-msg" href="javascript:void(0);"
+       onclick="return window.freebase.topic.remove_type(this, '${type.id}');">${_("x")}</a>
+    <a href="${h.fb_url(type.id)}" title="${type.id}">${type.text || type.id}</a>
+  </li>
+</acre:block>
+
+<acre:block def="add_type_result(id, topic_types, lang)">
+  <acre:script>
+    var topic = topic_types.topic;
+    var types = topic_types.types;   
+  </acre:script>
+  <div class="section domain add-type-result">
+    <acre:block if="types && types.length && topic">
+      <div class="add-type-result-msg">
+        ${form.row_msg(_("Type added successfully!"), ".add-type-result-msg")}
+      </div>
+      <div class="add-type-result-msg-note">
+        ${form.row_msg(_("Note: You must update your filters to see the newly added Type on page refresh."), ".add-type-result-msg-note")}
+      </div>
+      <acre:block for="type in types">
+        <acre:script>
+          var type_structure = topic.structure.types[type.id];
+        </acre:script>
+        <acre:block if="type_structure">
+          <acre:script>
+            type_structure.id = type.id;
+          </acre:script>
+          ${propbox.typebox(topic, type_structure, lang)}
+        </acre:block>  
+      </acre:block>
+    </acre:block>
+    <acre:block else="">
+      <div class="add-type-result">
+        ${form.row_msg(_("Type already present."), ".add-type-result")}
+      </div>
+    </acre:block>
+  </div>
+</acre:block>
+
+<acre:block def="add_type_result_list(id, types)" if="types">
+  <ul>
+    <acre:block for="type in types">
+      ${type_li(type)}
+    </acre:block>
+  </ul>
+</acre:block>
+
+<acre:block def="remove_type_result(id, type, lang)">
+  <acre:script>
+    var msg = h.template_sprintf(_("%s. %s."), remove_type_msg(type), remove_type_undo(type));
+  </acre:script>
+  <li class="remove-type-result">
+    ${form.row_msg(msg, ".remove-type-result")}
+  </li>
+</acre:block>
+
+<!!-- template_sprintf helpers !!-->
+
+<acre:block def="type_link(type_id)">
+  <a href="${h.fb_url(type_id)}">${type_id}</a>
+</acre:block>
+
+<acre:block def="type_links(types)">
+  <acre:block for="(var i=0,l=types.length; i<l; i++)" trim="1">
+    <acre:block if="i > 0" trim="1">, </acre:block>
+    <acre:block trim="1">${type_link(types[i].id)}</acre:block>
+  </acre:block>
+</acre:block>
+
+<acre:block def="included_types_msg(types)">
+  ${h.template_sprintf("Along with included type(s): %s.", type_links(types))}
+</acre:block>
+
+<acre:block def="remove_type_msg(type)">
+  <span title="${type}">${_("Type removed")}</span>
+</acre:block>
+
+<acre:block def="remove_type_undo(type)">
+  <a href="javascript:void(0);" 
+     onclick="return window.freebase.topic.manage_type.undo_remove_type(this, '${type}')">${_("Undo")}</a>
+</acre:block>
+

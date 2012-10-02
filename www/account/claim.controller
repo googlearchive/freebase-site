@@ -55,7 +55,9 @@ var SPEC = {
     }
     
     // Must be logged in to Google to claim an account.
-    acre.oauth.get_authorization(h.account_provider());
+    // Force re-login to make sure it's the *right* account.
+    var provider = h.account_provider(null, {prompt: true});
+    acre.oauth.get_authorization(provider);
 
     return {token: token};
   }

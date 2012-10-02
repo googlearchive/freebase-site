@@ -1,0 +1,91 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var h = acre.require("helper/helpers.sjs");
+</acre:script>
+
+<acre:block def="render_flyout(id, lang, summary)">
+  <acre:script>
+    var image_class = summary.image ? "fbs-flyout-image-true" : "";
+  </acre:script>
+  <div class="fbs-flyout-content">
+    <acre:block if="summary.image">
+      <acre:script>
+        var image_params = {maxwidth:75};
+      </acre:script>
+      <img id="fbs-topic-image" class="${image_class}"
+               src="${h.image_url(id, image_params)}"/>
+    </acre:block>
+    <h1 id="fbs-flyout-title"
+        class="${image_class}">
+      ${summary.name}
+      <acre:block if="summary.label">
+        <span class="fbs-flyout-template-label">${summary.label}</span>
+      </acre:block>
+    </h1>
+
+    <acre:block for="prop in summary.notable_props.slice(0, 3)">
+      <acre:block if="prop.length === 1">
+        <h3 class="fbs-topic-properties ${image_class}">
+          <strong>${h.id_key(prop[0])}</strong>
+        </h3>
+      </acre:block>
+      <acre:block elif="prop.length === 2">
+        <h3 class="fbs-topic-properties ${image_class}">
+          <strong>${h.id_key(prop[0])}:</strong> ${prop[1]}
+        </h3>
+      </acre:block>
+    </acre:block>
+
+    <acre:block if="summary.article">
+      <acre:script>
+        var a = summary.article.substring(0, 250);
+        var i = a.lastIndexOf(" ");
+        if (i > 0) {
+          a = a.substring(0, i);
+        }
+      </acre:script>
+      <p class="fbs-topic-article ${image_class}">
+        ${a}&hellip;
+      </p>
+    </acre:block>
+      
+  </div>
+
+  <div class="fbs-attribution">
+    <acre:block if="summary.notability">
+      <span class="fbs-flyout-types">
+        ${summary.notability.slice(0,3).join(", ")}
+      </span>
+    </acre:block>
+  </div>
+</acre:block>

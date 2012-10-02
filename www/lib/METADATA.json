@@ -80,15 +80,15 @@
     },
     "markdown": {
       "handler": "markdown",
-      "media_type": "text/html",
+      "media_type": "text/html"
     },
     "md": {
       "handler": "markdown",
-      "media_type": "text/html",
+      "media_type": "text/html"
     },
     "mjtmd": {
       "handler": "mjt_markdown",
-      "media_type": "text/html",
+      "media_type": "text/html"
     },
     "gif": {
       "media_type": "image/gif", 

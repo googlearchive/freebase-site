@@ -967,7 +967,7 @@ class App:
       during a deployment with local files.
       """
       for f in os.listdir(os.path.join(target_dir, directory)):
-        if f.startswith('.') or f in ["js", "css", "mjt"]:
+        if f.startswith('.') or (self.context.action == "deploy_acre" and f in ["js", "css", "mjt"]):
           shutil.rmtree(os.path.join(target_dir, directory, f))
           continue
 

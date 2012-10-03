@@ -52,6 +52,9 @@
        $(".infinitescroll > tbody").each(function() {
           sameas.init_infinitescroll($(this));
       });
+
+      // To avoid flickering for truncate css
+      $(".infinitescroll").fixedcolumn();
     },
 
     infid: 0,

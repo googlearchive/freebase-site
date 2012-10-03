@@ -28,40 +28,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+(function($, fb) {
 
-/*
----------------------
-App List
----------------------
-*/
+  $(function() {
 
-.table {
-  .applist-version {
-    padding: 0 .5em;
-    font-size: 0.8em;
-    font-weight: bold;
-    color: #999;
-  }
+      // To avoid flickering for truncate css
+      $(".applist").fixedcolumn();
 
-  .applist-details {
-    font-size: 0.9em;
-  }
+  });
 
-  .app-title {
-    font-weight: bold;
-  }
-
-  .applist-userimage {
-    white-space: nowrap;
-    padding: 2px 50px 2px 2px;
-
-    .user-image {
-      padding: 0 5px 0 0 !important;
-      float: left;
-    }
-  }
-
-  .authors {
-    min-height: 3em;
-  }
-}
+})(jQuery, window.freebase);

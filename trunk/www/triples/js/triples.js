@@ -119,7 +119,11 @@
             .parents("form:first").submit();
         });
 
+      // Initialize infinite scroll
       triples.init_infinitescroll();
+
+      // To avoid flickering for truncate css
+      $("#infinitescroll").fixedcolumn();
     }
   };
 

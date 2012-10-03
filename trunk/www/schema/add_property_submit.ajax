@@ -68,7 +68,6 @@ var SPEC = {
       validators.StringBool(params, "unique", {if_empty:false}),        // unique?
       validators.StringBool(params, "hidden", {if_empty:false}),        // hidden?
       validators.MqlId(params, "master_property", {if_empty:null}),
-      validators.MqlId(params, "delegated", {if_empty:null}),
 
       validators.LangId(params, "lang", {if_empty:"/lang/en"}),    // name,description lang
       ect_new,                                                     // new ect name
@@ -78,7 +77,7 @@ var SPEC = {
 
   run: function(type, name, key, expected_type, description,
                 unit, disambiguator, unique, hidden,
-                master_property, delegated, lang,
+                master_property, lang,
                 expected_type_new, enumeration) {
     var promise;
     if (!expected_type && expected_type_new) {
@@ -117,7 +116,6 @@ var SPEC = {
           unique: unique,
           hidden: hidden,
           master_property: master_property,
-          delegated: delegated,
           lang: lang,
           enumeration: enumeration
         })

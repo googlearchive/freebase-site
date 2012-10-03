@@ -29,213 +29,179 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-(function($, fb) {
-
-  var se = fb.schema.edit;   // required;
+(function($, fb, formlib) {
 
   var de = fb.schema.domain.edit = {
 
     /**
      * retrieve add_type form (ajax).
      */
-    add_type_begin: function(trigger, domain_id, mediator) {
-      $.ajax({
+    add_type_begin: function(table, domain_id, mediator) {
+      $.ajax($.extend(formlib.default_begin_ajax_options(), {
         url: fb.h.ajax_url("add_type_begin.ajax"),
         data: {id: domain_id, mediator: mediator, lang: fb.lang},
-        dataType: "json",
-        success: function(data, status, xhr) {
-          if (data.code === "/api/status/error") {
-            return se.ajax_error_handler(xhr, row);
-          }
-          // add edit-form after the edit button
+        onsuccess: function(data) {
           var html = $(data.result.html);
-          var form = {
+          var edit_row = $(".edit-row", html);
+          var submit_row = $(".edit-row-submit", html);
+          var event_prefix = "fb.schema.domain.add.type.";
+          var options = {
             mode: "add",
-            event_prefix: "fb.schema.domain.add.type.",
+            event_prefix: event_prefix,
+            // callbacks
+            init: de.init_type_form,
+            validate: de.validate_type_form,
+            submit: de.submit_type_form,
+            reset: de.init_type_form,
+            // submit ajax options
             ajax: {
               url: fb.h.ajax_url("add_type_submit.ajax")
             },
-
-            init_form: de.init_type_form,
-            validate_form: de.validate_type_form,
-            submit_form: de.submit_type_form,
-
-            table: trigger.parents("table:first"),
-            trigger: trigger,
-            trigger_row: trigger.parents("tr:first"),
-            row: $(".edit-row", html).hide(),
-            submit_row: $(".edit-row-submit", html).hide()
+            // jQuery objects
+            body: $(">tbody:first", table),
+            edit_row: edit_row,
+            submit_row: submit_row
           };
-
-          se.init_edit_form(form);
-
-          /**
-           * after submit success, re-init form for additional adds
-           */
-          form.row.bind("fb.schema.domain.add.type.success", function() {
-            // show headers if showing the empty message
-            var empty_msg = $("thead:first .table-empty-column", form.table);
-            if (empty_msg.length) {
-              empty_msg.parents("tr:first").hide().prev("tr").show();
-            }
-            $(".button.cancel", form.submit_row).text("Done");
-            de.init_type_form(form);
+          var tfoot = $("tfoot", table).hide();
+          formlib.init_inline_add_form(options);
+          edit_row.bind(event_prefix + "cancel", function() {
+            tfoot.show();
           });
-        },
-        error: function(xhr) {
-          se.ajax_error_handler(xhr, row);
         }
-      });
+      }));
     },
 
     /**
      * edit type
      */
-    edit_type_begin: function(trigger, type_id) {
-      $.ajax({
+    edit_type_begin: function(row, type_id) {
+      $.ajax($.extend(formlib.default_begin_ajax_options(), {
         url: fb.h.ajax_url("edit_type_begin.ajax"),
-        data: {id: type_id, lang: fb.lang},
-        dataType: "json",
-        success: function(data, status, xhr) {
-          if (data.code === "/api/status/error") {
-            return se.ajax_error_handler(xhr, row);
-          }
-          // add edit-form after the edit button
+        data: {id:type_id, lang:fb.lang},
+        onsuccess: function(data) {
           var html = $(data.result.html);
-          var form = {
-            mode: "edit",
-            event_prefix: "fb.schema.domain.edit.type.",
+          var edit_row = $(".edit-row", html);
+          var submit_row = $(".edit-row-submit", html);
+          var event_prefix = "fb.schema.domain.edit.type.";
+          var options = {
+            event_prefix: event_prefix,
+            // callbacks
+            init: de.init_type_form,
+            validate: de.validate_type_form,
+            submit: de.submit_type_form,
+            // submit ajax_options,
             ajax: {
-              url: fb.h.ajax_url("edit_type_submit.ajax"),
-              data: {id: type_id}
+              url: fb.h.ajax_url("edit_type_submit.ajax")
             },
-
-            init_form: de.init_type_form,
-            validate_form: de.validate_type_form,
-            submit_form: de.submit_type_form,
-
-
-            table: trigger.parents("table:first"),
-            trigger: trigger,
-            trigger_row: trigger.parents("tr:first"),
-            row: $(".edit-row", html).hide(),
-            submit_row: $(".edit-row-submit", html).hide()
+            // jQuery objects
+            row: row,
+            edit_row: edit_row,
+            submit_row: submit_row
           };
-
-          se.init_edit_form(form);
-
-          /**
-           * after submit success, we're done editing, remove form and old row
-           */
-          form.row.bind("fb.schema.domain.edit.type.success", function() {
-            form.trigger_row.remove(); // old row
-            form.row.remove();
-            form.submit_row.remove();
-          });
-        },
-        error: function(xhr) {
-          se.ajax_error_handler(xhr, row);
+          formlib.init_inline_edit_form(options);
         }
-      });
+      }));
     },
 
     /**
-     * init add_type row
+     * init add_type/edit_type row
      */
-    init_type_form: function(form) {
-      var name = $("input[name=name]", form.row);
-      var key =  $("input[name=key]", form.row);
+    init_type_form: function(options) {
+      var name = $("input[name=name]", options.edit_row);
+      var key =  $("input[name=key]", options.edit_row);
 
-      if (form.mode === "add") {
+      if (options.mode === "add") {
         name.val("");
         key.val("");
-        $("textarea[name=description]", form.row).val("");
-        $("input[name=enumeration]", form.row).removeAttr("checked");
+        $("textarea[name=description]", options.edit_row).val("");
+        $("input[name=enumeration]", options.edit_row).removeAttr("checked");
       }
 
-      if (!form.row.data("initialized")) {
-        var domain = $("input[name=domain]", form.row).val();
-        se.init_mqlkey(key, {
+      if (!options.edit_row.data("initialized")) {
+        var domain = $("input[name=domain]", options.edit_row).val();
+        formlib.init_mqlkey(key, {
+          mqlread: fb.mqlread,
           source: name,
           namespace: domain,
-          mqlread: fb.mqlread,
           schema: true
         });
 
         // enter/escape key handler
-        $(":input:not(textarea)", form.row).keypress(function(e) {
+        $(":input:not(textarea)", options.edit_row).keypress(function(e) {
           if (e.keyCode === 13) { // enter
-            form.row.trigger(form.event_prefix + "submit");
+            options.edit_row.trigger(options.event_prefix + "submit");
           }
           else if (e.keyCode === 27) { // escape
-            form.row.trigger(form.event_prefix + "cancel");
+            options.edit_row.trigger(options.event_prefix + "cancel");
           }
         });
-        form.row.data("initialized", true);
+
+        options.edit_row.bind("input, change", function() {
+            de.validate_type_form(options);
+        });
+
+        options.edit_row.data("initialized", true);
       }
+
       name.focus();
     },
 
     /**
      * validate rows, if no errors submit
      */
-    submit_type_form: function(form) {
-      var key = $("input[name=key]", form.row);
-      if (!se.validate_mqlkey(form, key)) {
-        form.row.removeClass("loading");
-        return;
-      }
-
+    submit_type_form: function(options, ajax_options) {
+      var key = $("input[name=key]", options.edit_row);
       var data = {
-        domain:  $("input[name=domain]", form.row).val(),
-        name: $.trim($("input[name=name]:visible", form.row).val()),
+        domain:  $("input[name=domain]", options.edit_row).val(),
+        name: $.trim($("input[name=name]:visible", options.edit_row).val()),
         key: key.val(),
-        description: $.trim($("textarea[name=description]:visible", form.row).val()),
-        mediator: $("input[name=mediator]", form.row).is(":checked") ? 1 : 0,
-        enumeration: $("input[name=enumeration]", form.row).is(":checked") ? 1 : 0,
-        deprecated: $("input[name=deprecated]", form.row).is(":checked") ? 1 : 0,
-        never_assert: $("input[name=never_assert]", form.row).is(":checked") ? 1 : 0,
+        description: $.trim($("textarea[name=description]:visible", options.edit_row).val()),
+        mediator: $("input[name=mediator]", options.edit_row).is(":checked") ? 1 : 0,
+        enumeration: $("input[name=enumeration]", options.edit_row).is(":checked") ? 1 : 0,
+        deprecated: $("input[name=deprecated]", options.edit_row).is(":checked") ? 1 : 0,
+        never_assert: $("input[name=never_assert]", options.edit_row).is(":checked") ? 1 : 0,
         lang: fb.lang
       };
 
-      $.ajax({
-        url: form.ajax.url,
-        type: "POST",
-        dataType: "json",
-        data: $.extend(data, form.ajax.data),
-        success: function(data, status, xhr) {
-          if (data.code === "/api/status/error") {
-            return se.ajax_error_handler(xhr, form.row);
+      $.extend(ajax_options.data, data);
+
+      $.ajax($.extend(ajax_options, {
+          onsuccess: function(data) {
+            var new_row = $(data.result.html);
+            if (options.mode === "add") {
+              formlib.success_inline_add_form(options, new_row);
+            }
+            else {
+              formlib.success_inline_edit_form(options, new_row);
+            }
+            propbox.init_menus(new_row, true);
+            $(".nicemenu .edit", new_row).show();
           }
-          var new_row = $(data.result.html).addClass("new-row");
-          form.row.before(new_row);
-          new_row.hide();
-          new_row.showRow(function() {
-            // init row menu
-            fb.schema.init_row_menu(new_row);
-            // show edit controls in tooltip
-            $(".edit", new_row).show();
-          }, null, "slow");
-          form.row.trigger(form.event_prefix + "success");
-        },
-        error: function(xhr) {
-          se.ajax_error_handler(xhr, form.row);
-        }
-      });
+      }));
     },
 
     /**
      * validate row
      */
-    validate_type_form: function(form) {
-      var name = $.trim($("input[name=name]:visible", form.row).val());
+    validate_type_form: function(options) {
+      var name = $.trim($("input[name=name]:visible", options.edit_row).val());
       if (name === "") {
-        form.row.trigger(form.event_prefix + "error", "Name is required");
+        formlib.disable_submit(options);
+        return false;
       }
-      var key = $("input[name=key]", form.row);
-      se.validate_mqlkey(form, key);
+      var key = $("input[name=key]", options.edit_row);
+      if (key.is(".loading")) {
+        formlib.disable_submit(options);
+        return false;
+      }
+      else if (key.is(".invalid")) {
+        formlib.disable_submit(options);
+        return false;
+      }
+      formlib.enable_submit(options);
+      return true;
     }
 
   };
 
-})(jQuery, window.freebase);
+})(jQuery, window.freebase, window.formlib);

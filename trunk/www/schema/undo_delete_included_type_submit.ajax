@@ -1,4 +1,4 @@
-h./*
+/*
  * Copyright 2012, Google Inc.
  * All rights reserved.
  *
@@ -51,17 +51,9 @@ var SPEC = {
   },
 
   run: function(id, included_type) {
-    var promises = [];
-    promises.push(queries.add_included_types(id, [included_type]));
-    promises.push(freebase.mqlread({id:included_type, name:null})
-      .then(function(env) {
-        return env.result;
-      }));
-    return deferred.all(promises)
-      .then(function(result) {
-        return {
-          html: acre.markup.stringify(components.included_type_thead(id, result[1]))
-        };
+    return queries.add_included_types(id, [included_type])
+      .then(function(r) {
+        return r;
       });
   }
 };

@@ -263,22 +263,12 @@ test("update_type description", function() {
   var check_result;
   freebase.mqlread({
     mid: type.mid,
-    "/common/topic/article": {
-      id: null
-    }
+    "/common/topic/description": null
   })
   .then(function(env) {
     check_result = env.result;
   });
   acre.async.wait_on_results();
   ok(check_result, "got check result");
-  ok(check_result["/common/topic/article"], "got check result article: " + check_result["/common/topic/article"].id);
-
-  var blurb;
-  freebase.get_blob(check_result["/common/topic/article"].id, "plain")
-    .then(function(blob) {
-      blurb = blob.body;
-    });
-  acre.async.wait_on_results();
-  equal(blurb, type.name + "updated");
+  equal(check_result["/common/topic/description"], type.name + "updated");
 });

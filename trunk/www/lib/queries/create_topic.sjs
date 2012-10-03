@@ -31,7 +31,6 @@
 
 var h = acre.require("helper/helpers.sjs");
 var i18n = acre.require("i18n/i18n.sjs");
-var create_article = acre.require("queries/create_article.sjs").create_article;
 var deferred = acre.require("promise/deferred.sjs");
 var freebase = acre.require("promise/apis.sjs").freebase;
 var validators = acre.require("validator/validators.sjs");
@@ -72,6 +71,12 @@ function create_topic(options) {
   if (o.type) {
     q.type = o.type;
   }
+  if (o.description) {
+    q["/common/topic/description"] = {
+      value: o.name,
+      lang: o.lang
+    };
+  }
 
   return freebase.mqlwrite(q)
     .then(function(env) {
@@ -96,20 +101,6 @@ function create_topic(options) {
             else {
               return created;
             }
-          });
-      }
-      else {
-        return created;
-      }
-    })
-    .then(function(created) {
-      if (o.description) {
-        return create_article(created.id, o.description, "text/plain", {
-              lang: o.lang,
-              use_permission_of: created.id
-          })
-          .then(function() {
-              return created;
           });
       }
       else {

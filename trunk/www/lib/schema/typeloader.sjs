@@ -234,9 +234,14 @@ function do_mql(type_ids, lang) {
         id: null,
         "id|=": type_ids,
         name: i18n.mql.text_clause(lang),
+        "/common/topic/description": i18n.mql.text_clause(lang),
         type: "/type/type",
         guid: null,
         mid: null,
+        key: [{
+          value: null,
+          namespace: null
+        }],
         domain: {
             id: null,
             name: i18n.mql.text_clause(lang),
@@ -255,7 +260,12 @@ function do_mql(type_ids, lang) {
         properties: [{
             optional: true,
             id: null,
+            key: [{
+              value: null,
+              namespace: null
+            }],
             name: i18n.mql.text_clause(lang),
+            "/common/topic/description": i18n.mql.text_clause(lang),
             type: "/type/property",
             "emql:type": {
                 optional: true,
@@ -272,6 +282,7 @@ function do_mql(type_ids, lang) {
                 "/freebase/unit_profile/abbreviation": null
             },
             requires_permission: null,
+            authorities: null,
             "/freebase/property_hints/disambiguator": null,
             "/freebase/property_hints/display_none": null,
             "/freebase/property_hints/deprecated": null,

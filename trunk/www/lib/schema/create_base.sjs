@@ -32,7 +32,6 @@ var h = acre.require("helper/helpers.sjs");
 var apis = acre.require("promise/apis.sjs");
 var freebase = apis.freebase;
 var deferred = apis.deferred;
-var create_article = acre.require("queries/create_article.sjs").create_article;
 var validators = acre.require("validator/validators.sjs");
 
 /**
@@ -50,7 +49,8 @@ function create_base(options) {
     o = {
       name: validators.String(options, "name", {required:true}),
       key: validators.DomainKey(options, "key", {required:true}),
-      description: validators.String(options, "description", {if_empty:""}),
+      description: h.trim(
+          validators.String(options, "description", {if_empty:""})),
       lang: validators.LangId(options, "lang", {if_empty:"/lang/en"})
     };
   }
@@ -102,6 +102,12 @@ function create_base(options) {
         },
         create: "unconditional"
       };
+      if (o.description !== '') {
+          q['/common/topic/description'] = {
+            value: o.description,
+            lang: o.lang
+          };
+      }
       return freebase.mqlwrite(q, {use_permission_of: group.mid})
         .then(function(env) {
           return env.result;
@@ -138,20 +144,5 @@ function create_base(options) {
           }
           return created;
         });
-    })
-    .then(function(created) {
-      if (o.description !== "") {
-        return create_article(created.mid, o.description, "text/plain", {
-            use_permission_of: created.mid,
-            lang: o.lang
-        })
-        .then(function(article) {
-            return created;
-        });
-      }
-      else {
-        return created;
-      }
     });
 };
-

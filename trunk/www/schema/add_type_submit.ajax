@@ -57,7 +57,7 @@ var SPEC = {
     ];
   },
 
-  run: function(domain, name, key, description, 
+  run: function(domain, name, key, description,
                 mediator, enumeration, deprecated, never_assert, lang) {
     return create_type({
       domain: domain,
@@ -72,7 +72,6 @@ var SPEC = {
     })
     .then(function(result) {
         return queries.load_type(result.id, lang, {
-            article: true,
             instance_count: true
         });
     })

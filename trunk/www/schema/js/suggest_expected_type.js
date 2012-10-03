@@ -227,9 +227,6 @@
         $(":text", this.ect_enumeration)
           .focus(function() {
             $(this).prev("label").find(":radio").attr("checked", "checked");
-          })
-          .change(function(e) {
-            fb.schema.edit.clear_form_message(self.ect_enumeration);
           });
         // Capture user input into text field and append to namespace path
         // NOTE: no error checking is currently being performed, there should be
@@ -265,7 +262,6 @@
           e.stopPropagation();
         });
         $(".button.primary", this.ect_enumeration).click(function(e) {
-          fb.schema.edit.clear_form_message(self.ect_enumeration);
           var data = {
             name: "Enumeration",
             id: "/type/enumeration"
@@ -284,7 +280,7 @@
               namespace = self.options.domain + "/" + key;
             }
             catch(ex) {
-              fb.schema.edit.form_error(self.ect_enumeration, ex);
+              fb.status.error(ex);
               return;
             }
           }
@@ -296,7 +292,7 @@
             data.enumeration = namespace;
           }
           else {
-            fb.schema.edit.form_error(self.ect_enumeration, "Please select a namespace.");
+            fb.status.warning("Please select a namespace.");
             return;
           }
           self.input.val(data.name)

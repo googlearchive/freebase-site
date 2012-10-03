@@ -31,6 +31,7 @@
 
 var h = acre.require("lib/helper/helpers.sjs");
 var freebase = acre.require("lib/promise/apis").freebase;
+var validators = acre.require("lib/validator/validators.sjs");
 
 function random() {
   var r = [];

@@ -33,7 +33,6 @@ var h = acre.require("lib/helper/helpers.sjs");
 var i18n = acre.require("lib/i18n/i18n.sjs");
 var schema_helpers = acre.require("helpers.sjs");
 var mql = acre.require("mql.sjs");
-var article = acre.require("lib/queries/article.sjs");
 var apis = acre.require("lib/promise/apis");
 var freebase = apis.freebase;
 var deferred = apis.deferred;
@@ -151,8 +150,7 @@ function modified_domains(days, changes) {
 };
 
 /**
- * domain query and optionally get article, types and their
- * activity and articles.
+ * domain query and optionally get types and their activity
  */
 function load_domain(id, lang, options) {
     options = options || {};
@@ -161,6 +159,7 @@ function load_domain(id, lang, options) {
         id: id,
         guid: null, // activity bdb uses guids
         name: i18n.mql.text_clause(lang),
+        "/common/topic/description": i18n.mql.text_clause(lang),
         type: "/type/domain"
     };
     if (options.types) {
@@ -171,29 +170,17 @@ function load_domain(id, lang, options) {
             type: "/type/type"
         }];
     }
-    promises.domain = freebase.mqlread(q)
+    return freebase.mqlread(q)
         .then(function(env) {
             return env.result;
-        });
-    if (options.article) {
-        // get domain article
-        promises.article = article.get_article(id, null, null, lang)
-            .then(function(r) {
-                return r[id];
-            });
-    }
-    return deferred.all(promises)
-        .then(function(r) {
-            var domain = r.domain;
+        })
+        .then(function(domain) {
             // domain key/namespace generated from the domain id
             var ns_key = h.id_key(id, true);
             domain.key = {
                 namespace: ns_key[0],
                 value: ns_key[1]
             };
-            if (options.article) {
-                domain["/common/topic/article"] = r.article;
-            }
             if (options.types) {
                 var type_ids = domain.types.map(function(t) {
                     return t.id;
@@ -215,16 +202,10 @@ function load_domain(id, lang, options) {
                                     }
                                 });
                     }
-                    if (options.types_article) {
-                        promises.types_article = article.get_article(type_ids, null, null, lang);
-                    }
                     return deferred.all(promises)
                         .then(function(r) {
                             domain.types.forEach(function(t) {
                                 t = h.extend(t, r.types[t.id]);
-                                if (r.types_article) {
-                                    t["/common/topic/article"] = r.types_article[t.id] || [];
-                                }
                             });
                             return domain;
                         });
@@ -236,102 +217,77 @@ function load_domain(id, lang, options) {
 
 /**
  * Use typeloader to load the type and optionally
- * it's article, instance_count, properties' articles.
+ * it's instance_count.
  */
 function load_type(type_id, lang, options) {
     options = options || {};
-    var promises = {
-        type: typeloader.load(type_id, lang)
-    };
-    if (options.article) {
-        promises.article = article.get_article(type_id, null, null, lang)
-            .then(function(r) {
-                return r[type_id];
+    return typeloader.load(type_id, lang)
+        .then(function(type) {
+            // get the key that is in the same domain
+            var key = null;
+            type.key.every(function(k) {
+              if (k.namespace === type.domain.id) {
+                key = k;
+                return false;
+              }
+              return true;
             });
-    }
-    return deferred.all(promises)
-        .then(function(r) {
-            var type = r.type;
-            // type key/namespace generated from the type id
-            var ns_key = h.id_key(type_id, true);
-            type.key = {
-                namespace: ns_key[0],
-                value: ns_key[1]
-            };
-            if (options.article) {
-                type["/common/topic/article"] = r.article;
+            if (key) {
+              type.key = key;
             }
-            var promises = {};                  
+            else {
+              throw new Error(
+                  h.sprintf(
+                      "Invalid type: Can't find a key for %s in domain %s",
+                      type_id, type.domain.id));
+            }
+
             if (options.instance_count) {
-                promises.instance_count = 
-                    freebase
-                        .get_static("activity", "summary_/guid/" + type.guid.slice(1))
-                        .then(function(activity) {
-                            if (activity) {
-                                type.instance_count = activity.properties["/type/object/type"] || 0;
-                            }
-                            else {
-                                type.instance_count = 0;
-                            }
-                        });           
+              return freebase                       
+                  .get_static("activity", "summary_/guid/" + type.guid.slice(1))
+                      .then(function(activity) {
+                          if (activity) {
+                            type.instance_count = activity.properties["/type/object/type"] || 0;
+                          }
+                          else {
+                            type.instance_count = 0;
+                          }
+                          return type;
+                      }, function(e) {
+                        type.instance_count = 0;
+                        return type;
+                      });  
             }
-            if (options.properties_article) {
-                var pids = type.properties.map(function(p) {
-                    return p.id;
-                });
-                if (pids.length) {
-                    promises.properties_article = freebase.mqlread([{
-                        id: null,
-                        "id|=": pids,
-                        "/freebase/documented_object/tip": i18n.mql.text_clause(lang)
-                    }])
-                    .then(function(env) {
-                        var tips = {};
-                        env.result.forEach(function(p) {
-                            tips[p.id] = p["/freebase/documented_object/tip"];
-                        });
-                        type.properties.forEach(function(p) {
-                            p["/freebase/documented_object/tip"] = tips[p.id];
-                        });
-                    });
-                }
+            else {
+              return type;
             }
-            return deferred.all(promises) 
-                .then(function() {
-                    return type;
-                });
         });
 };
 
 
-function load_property(prop_id, lang, options) {
-    options = options || {};
-    var promises = {
-        prop: proploader.load(prop_id, lang)
-    };
-    if (options.article) {
-        var q = {id: prop_id,
-            "/freebase/documented_object/tip": i18n.mql.text_clause(lang)
-        };
-        promises.article = freebase.mqlread(q)
-        .then(function(env) {
-            return env.result["/freebase/documented_object/tip"];
+function load_property(prop_id, lang) {
+  return proploader.load(prop_id, lang)
+    .then(function(prop) {
+        // get the key that is in the same schema
+        var key = null;
+        prop.key && prop.key.every(function(k) {
+          if (k.namespace === prop.schema.id) {
+            key = k;
+            return false;
+          }
+          return true;
         });
-    }
-    return deferred.all(promises) 
-        .then(function(r) {
-            var prop = r.prop;
-            // property key/namespace generated from the prop id
-            var ns_key = h.id_key(prop_id, true);
-            prop.key = {
-                namespace: ns_key[0],
-                value: ns_key[1]
-            };
-            if (options.article) {
-                prop["/freebase/documented_object/tip"] = r.article;
-            }
-            return prop;
-        });
+        if (key) {
+          prop.key = key;
+        }
+        else {
+          throw new Error(
+              h.sprintf(
+                  "Invalid property: Can't find a key for %s in schema %s",
+                  prop_id, prop.schema.id));
+        }
+        return prop;
+    });
 };
 
 
@@ -341,42 +297,37 @@ function load_property(prop_id, lang, options) {
 function minimal_topic(id, lang) {
     return minimal_topic_multi([id], lang)
         .then(function(r) {
-            return r[id];
+          if (r && r.length) {
+            return r[0];
+          }
+          return null;
         });
 };
 
 function minimal_topic_multi(ids, lang) {
+
+    var topics = [];
+
     // TODO: assert ids is an Array.length > 0
     return freebase.get_topic_multi(ids, {
         lang: h.lang_code(i18n.get_lang(true, lang || "/lang/en")),
-        filter: ["/type/object/name", "/common/topic/article"]
+        filter: ["/type/object/name", "/common/topic/description"]
     })
     .then(function(r) {
-        var topics = {};
         if (r) {
             r.forEach(function(env) {
+                var result = env.result;
                 var topic = {
-                    id: env.id
+                    id: result.id
                 };
-                if (env.result && env.result.property) {
-                    if (env.result.property["/type/object/name"]) {
-                        topic.name = env.result.property["/type/object/name"].values.map(function(v) {
-                            return {
-                                value: v.value,
-                                lang: h.lang_id(v.lang)
-                            };
-                        });
-                    }
-                    if (env.result.property["/common/topic/article"]) {
-                        topic["/common/topic/article"] = 
-                            env.result.property["/common/topic/article"].values.map(function(v) {
-                                return article.article_value(v);
-                            });
-                    }
-                }
-                topics[env.id] = topic;
+                topic.name = h.get_first_value(result, "/type/object/name");
+                topic.description = h.get_first_value(
+                    result, "/common/topic/description");
+                topics.push(topic);
             });
         };
+        return topics;
+    }, function(error) {
         return topics;
     });
 };

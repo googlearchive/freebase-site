@@ -309,3 +309,16 @@ test("splice_with_key", function() {
 
   same(h.splice_with_key([], "a", {a:"b", foo:"bar"}), [{a:"b", foo:"bar"}]);
 });
+
+
+test("ellipsify", function() {
+  same(h.ellipsify(null), '');
+  same(h.ellipsify(''), '');
+  same(h.ellipsify(null, 10, 'foo'), 'foo');
+  same(h.ellipsify('', null, 'bar'), 'bar');
+  same(h.ellipsify(' ', 1), ' ');
+  same(h.ellipsify(' foo bar ', 1), '...');
+  same(h.ellipsify(' foo bar ', 2), '...');
+  same(h.ellipsify(' foo bar ', 8), ' foo bar...');
+  same(h.ellipsify(' foo bar ', 4), ' foo...');
+});

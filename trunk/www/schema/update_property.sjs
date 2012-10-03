@@ -117,6 +117,12 @@ function update_property(options) {
         type: "/type/property",
         key: {namespace:o.type, value:null, optional:true},
         name: {value:null, lang:o.lang, optional:true},
+        "/common/topic/description": {
+          value: null,
+          lang: o.lang,
+          optional: true,
+          limit: 1
+        },
         expected_type: null,
         unit: null,
         unique: null,
@@ -186,12 +192,33 @@ function update_property(options) {
       else if (o.unique != null) {
         update.unique = {value:o.unique, connect:"update"};
       }
-
-      if (remove.description && old["/freebase/documented_object/tip"]) {
-        update["/freebase/documented_object/tip"] = {value:old["/freebase/documented_object/tip"].value, lang:o.lang, connect:"delete"};
+            
+      var desc = [];
+      if (remove.description && old["/common/topic/description"]) {
+        desc.push({
+          value: old["/common/topic/description"].value,
+          lang: old["/common/topic/description"].lang,
+          connect: "delete"
+        });
       }
       else if (o.description != null) {
-        update["/freebase/documented_object/tip"] = {value:o.description, lang:o.lang, connect:"update"};
+        if (old["/common/topic/description"]) {
+          // /common/topic/description is not unique
+          // we need to delete the old one first.
+          desc.push({
+            value: old["/common/topic/description"].value,
+            lang: old["/common/topic/description"].lang,
+            connect: "delete"
+          });
+        }
+        desc.push({
+          value: o.description,
+          lang: o.lang,
+          connect: "insert"
+        });
+      }
+      if (desc.length) {
+        update["/common/topic/description"] = desc;
       }
 
       if (remove.disambiguator && old["/freebase/property_hints/disambiguator"] != null) {
@@ -215,16 +242,16 @@ function update_property(options) {
         update["/freebase/property_hints/deprecated"] = {value:o.deprecated, connect:"update"};
       }
 
-      if (remove.enumeration && old.enumeration != null) {
-        update.enumeration = {id:old.enumeration, connect:"delete"};
-      }
-      else if (o.expected_type === "/type/enumeration" && o.enumeration) {
+      if (o.expected_type === "/type/enumeration" && o.enumeration) {
         update.enumeration = {id:o.enumeration, connect:"update"};
+      }
+      else if (old.enumeration) {
+        update.enumeration = {id:old.enumeration, connect:"delete"};
       }
 
       var d = old.id;
       var keys = ["name", "expected_type", "unit", "unique",
-                  "/freebase/documented_object/tip", 
+                  "/common/topic/description", 
                   "/freebase/property_hints/disambiguator",
                   "/freebase/property_hints/display_none",
                   "/freebase/property_hints/deprecated"];

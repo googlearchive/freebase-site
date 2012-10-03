@@ -254,4 +254,3 @@ test("apply_property filter", function() {
     "filter:master_property": "/my/property"
   });
 });
-

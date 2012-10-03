@@ -32,7 +32,6 @@
 <acre:script>
   var h = acre.require("lib/helper/helpers.sjs");
   var sh = acre.require("helpers");
-  var article = acre.require("lib/queries/article.sjs");
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
@@ -40,31 +39,21 @@
 
 <!-- Domain Regular Types markup pattern -->
 <acre:block def="domain_type_row(type)">
-  <tr class="hoverable">
+  <tr class="data-row">
     <th class="odd row-header" scope="row">
-      <a href="${h.fb_url(type.id, [['schema']])}">${i18n.display_name(type, "")}</a>
-      <a href="javascript:void(0);" class="row-menu-trigger">+</a>
-      <ul class="row-menu tooltip">
-        <li class="row-menu-item edit">
-          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.edit_type, ['${type.id}'], this);"><span class="edit-icon">${_('Edit type')}</span></a>
-        </li>
-        <li class="row-menu-item edit">
-          <a href="${h.static_url('lib/schema/schema.mf.js')}" class="icon-link" onclick="return freebase.nav_get_script(this, 'schema.delete_type_begin', ['${type.id}']);"><span class="delete-icon">${_('Delete type')}</span></a>
-        </li>
-        <li class="row-menu-item"><a href="${h.fb_url(type.id, [['links']])}">${_('Inspect Type')}</a></li>
-        <li class="row-menu-item">
-          <a href="${h.build_query_url(null, type.id)}">${h.template_sprintf(_('Browse %s instances'), i18n_c.number(type.instance_count))}</a>
-        </li>
-      </ul>
+      <span class="wrapper">
+        <a href="${h.fb_url(type.id, [['schema']])}">${i18n.display_name(type, "")}</a>
+        ${type_menu(type)}
+      </span>
     </th>
     <td class="even">$type.id</td>
     <td class="odd numeric">${i18n_c.number(type.properties && type.properties.length || 0)}</td>
     <td class="even numeric"><a href="${h.build_query_url(null, type.id)}">${i18n_c.number(type.instance_count)}</a></td>
     <td class="odd description">
       <acre:script>
-        var blurb = article.get_text(type);
+        var desc = i18n.display_text(type, "", "/common/topic/description");
       </acre:script>
-      <p acre:if="blurb" title="${blurb}" style="white-space: nowrap; overflow:hidden">${blurb}</p>
+      <p acre:if="desc" style="white-space: nowrap; overflow:hidden">${h.ellipsify(desc, 80)}</p>
       <acre:script>
         var meta = [];
         if (type['/freebase/type_hints/enumeration']) {
@@ -88,4 +77,27 @@
   <span class="property-meta ect-role" acre:trim="">
     <abbr title="${title}">${label}</abbr>
   </span>
+</acre:block>
+
+
+<acre:block def="type_menu(type)">
+  <ul class="combo-menu nicemenu">
+    <li class="nicemenu-item">
+      <span class="headmenu">
+        <a href="javascript:void(0);" class="more-action">menu</a>
+      </span>
+      <ul class="submenu row-menu">
+        <li class="row-menu-item edit">
+          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.edit_type, ['${type.id}'], this);"><span class="edit-icon">${_('Edit type')}</span></a>
+        </li>
+        <li class="row-menu-item edit">
+          <a href="${h.static_url('lib/schema/schema.mf.js')}" class="icon-link" onclick="return freebase.nav_get_script(this, 'schema.delete_type_begin', ['${type.id}']);"><span class="delete-icon">${_('Delete type')}</span></a>
+        </li>
+        <li class="row-menu-item"><a href="${h.fb_url(type.id, [['links']])}">${_('Inspect Type')}</a></li>
+        <li class="row-menu-item">
+          <a href="${h.build_query_url(null, type.id)}">${h.template_sprintf(_('Browse %s instances'), i18n_c.number(type.instance_count))}</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
 </acre:block>

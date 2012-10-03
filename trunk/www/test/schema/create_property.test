@@ -94,7 +94,7 @@ test("create_property", function() {
     unit: null,
     unique: null,
     expected_type: null,
-    "/freebase/documented_object/tip": null,
+    "/common/topic/description": null,
     "/freebase/property_hints/disambiguator": null,
     "/freebase/property_hints/display_none": null
   })
@@ -109,7 +109,7 @@ test("create_property", function() {
   ok(!check_result.unit);
   ok(!check_result.unique);
   equal(check_result.expected_type, type.id);
-  ok(!check_result["/freebase/documented_object/tip"]);
+  ok(!check_result["/common/topic/description"]);
   ok(!check_result["/freebase/property_hints/disambiguator"]);
   ok(!check_result["/freebase/property_hints/display_none"]);
 });
@@ -157,7 +157,7 @@ test("create_property options", function() {
     unit: null,
     unique: null,
     expected_type: null,
-    "/freebase/documented_object/tip": null,
+    "/common/topic/description": null,
     "/freebase/property_hints/disambiguator": null,
     "/freebase/property_hints/display_none": null
   })
@@ -172,7 +172,7 @@ test("create_property options", function() {
   equal(check_result.unit, "/en/meter");
   ok(check_result.unique);
   equal(check_result.expected_type, type.id);
-  equal(check_result["/freebase/documented_object/tip"], name);
+  equal(check_result["/common/topic/description"], name);
   ok(check_result["/freebase/property_hints/disambiguator"]);
   ok(check_result["/freebase/property_hints/display_none"]);
 });
@@ -240,7 +240,7 @@ test("create_property enumeration in namespace", function() {
     unique: null,
     expected_type: null,
     enumeration: null,
-    "/freebase/documented_object/tip": null,
+    "/common/topic/description": null,
     "/freebase/property_hints/disambiguator": null,
     "/freebase/property_hints/display_none": null
   })
@@ -255,7 +255,7 @@ test("create_property enumeration in namespace", function() {
   ok(!check_result.unit);
   ok(!check_result.unique);
   equal(check_result.expected_type, "/type/enumeration");
-  equal(check_result["/freebase/documented_object/tip"], name);
+  equal(check_result["/common/topic/description"], name);
   ok(check_result["/freebase/property_hints/disambiguator"]);
   ok(check_result["/freebase/property_hints/display_none"]);
 });

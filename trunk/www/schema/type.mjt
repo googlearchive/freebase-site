@@ -133,7 +133,7 @@
         </thead>
         <tfoot class="table-edit edit">
           <tr>
-            <td colspan="5">
+            <td colspan="4">
               <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.add_included_type, ['${c.type.id}'], this);">
                 <span class="add-icon">${_('Include another type')}</span>
               </a>

@@ -35,7 +35,6 @@ var i18n = acre.require("lib/i18n/i18n.sjs");
 var apis = acre.require("lib/promise/apis");
 var freebase = apis.freebase;
 var deferred = apis.deferred;
-var article = acre.require("lib/queries/article.sjs");
 
 var SPEC = {
 
@@ -50,8 +49,7 @@ var SPEC = {
     run: function(object) {
         var id = object.id;
         return queries.load_type(id, i18n.lang, {
-                instance_count: true,
-                properties_article: true
+                instance_count: true
             })
             .then(function(type) {
                 var promises = {
@@ -81,12 +79,8 @@ var SPEC = {
                                 return n.id;
                             });
                             if (ids.length) {
-                                return queries.minimal_topic_multi(ids, i18n.lang)
-                                    .then(function(r) {
-                                        return ids.map(function(id) {
-                                            return r[id];
-                                        });
-                                    });
+                                return queries.minimal_topic_multi(
+                                    ids, i18n.lang);
                             }
                         }
                         return [];

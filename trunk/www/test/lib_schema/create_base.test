@@ -116,7 +116,7 @@ function delete_base(key) {
   });
 };
 
-test("create_base", {bug: "Skip create/delete domain test until create_group API on googleapis"}, function() {
+test("create_base", function() {
   var name = get_name();
   var key = test_helpers.generate_key(name);
   var base;
@@ -186,7 +186,7 @@ test("create_base", {bug: "Skip create/delete domain test until create_group API
   ok(permits_schema_group, base.id + " permits /boot/schema_group");
 });
 
-test("create base with existing key", {bug: "Skip create/delete domain test until create_group API on googleapis"}, function() {
+test("create base with existing key", function() {
   var base, error;
   try {
     var name = get_name();
@@ -210,7 +210,7 @@ test("create base with existing key", {bug: "Skip create/delete domain test unti
   }
 });
 
-test("create base with description", {bug: "Skip create/delete domain test until create_group API on googleapis"}, function() {
+test("create base with description", function() {
   var name = get_name();
   var key = test_helpers.generate_key(name);
   var base;
@@ -231,28 +231,12 @@ test("create base with description", {bug: "Skip create/delete domain test until
   var check_result;
   freebase.mqlread({
    id: base.mid,
-   "/common/topic/article": {
-      id: null,
-      permission: {
-        id: null,
-        "!/type/object/permission": {
-          mid: base.mid
-        }
-      }
-    }
+   "/common/topic/description": null
   })
   .then(function(env) {
     check_result = env.result;
   });
   acre.async.wait_on_results();
   ok(check_result, "got check result");
-  ok(check_result["/common/topic/article"], "got check result article: " + check_result["/common/topic/article"].id);
-
-  var blurb;
-  freebase.get_blob(check_result["/common/topic/article"].id, "plain")
-    .then(function(blob) {
-      blurb = blob.body;
-    });
-  acre.async.wait_on_results();
-  equal(blurb, name);
+  equal(check_result["/common/topic/description"], name);
 });

@@ -44,18 +44,16 @@ var SPEC = {
   validate: function(params) {
     return [
       validators.MqlId(params, "id", {required:true}),  // type to edit
-      validators.LangId(params, "lang", {if_empty:"/lang/en"})    
+      validators.LangId(params, "lang", {if_empty:"/lang/en"})
     ];
   },
 
   run: function(id, lang) {
-    return queries.load_type(id, lang, {
-        article: true
-    })
-    .then(function(type) {
-      return {
-        html: acre.markup.stringify(editcomponents.edit_type_form(type))
-      };
-    });
+    return queries.load_type(id, lang)
+      .then(function(type) {
+        return {
+          html: acre.markup.stringify(editcomponents.edit_type_form(type))
+        };
+      });
   }
 };

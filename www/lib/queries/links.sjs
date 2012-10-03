@@ -57,7 +57,7 @@ var links_filters = {
   },
   historical: {
     validator: validators.StringBool,
-    options: {if_empty:null}
+    options: {if_empty:true}
   },
   sort: {
     validator: validators.OneOf,

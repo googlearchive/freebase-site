@@ -48,6 +48,7 @@ var exports = {
   "startsWith": startsWith,
   "intersect": intersect,
   "splice_with_key": splice_with_key,
+  "ellipsify": ellipsify,
 
   // MQL
   "is_literal_type": is_literal_type,
@@ -357,6 +358,35 @@ function splice_with_key(list, key, item) {
   }
   list.push(item);
   return list;
+};
+
+/**
+ * Ellipsify text at the given opt_max_length if text is longer
+ * than opt_max_length;
+ * If text is EMPTY, return opt_default_text if defined.
+ * Otherwise, return text.
+ * @param {string} text The text to ellipsify.
+ * @param {number} opt_max_length Ellipsify to the last index of a whitespace
+ *     before opt_max_length. 
+ * @param {string} opt_default_text If text is EMPTY return this instead.
+ * @return {string?}
+ */
+function ellipsify(text, opt_max_length, opt_default_text) {
+  if (text == null) {
+    text = '';
+  }
+  if (opt_max_length != null && text.length > opt_max_length) {
+    text = text.substring(0, opt_max_length+1);
+    var i = text.lastIndexOf(' ');
+    if (i !== -1) {
+      text = text.substring(0, i);
+    }
+    text += '...';
+  }
+  else if (opt_default_text != null) {
+    return opt_default_text;
+  }
+  return text;
 };
 
 

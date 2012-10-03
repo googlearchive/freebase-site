@@ -84,37 +84,23 @@
     },
 
     add_type: function(e, domain_id, mediator) {
-      var trigger = $(this);
-      if (trigger.is(".editing")) { // are we already editing?
-        return false;
-      }
-      trigger.addClass("editing");
+      var table = $(this).parents("table:first");
       fb.get_script(fb.h.static_url("domain-edit.mf.js"), function() {
-        d.edit.add_type_begin(trigger, domain_id, mediator);
+        d.edit.add_type_begin(table, domain_id, mediator);
       });
       return false;
     },
 
     edit_type: function(e, type_id) {
-      var trigger = $(this);
-      if (trigger.is(".editing")) { // are we already editing?
-        return false;
-      }
-      trigger.addClass("editing");
-      // hide tooltip
-      trigger.parents(".tooltip:first").siblings(".row-menu-trigger:first").data("tooltip").hide();
+      var row = $(this)
+          .parents(".submenu").data("headmenu").parents(".data-row:first");
       fb.get_script(fb.h.static_url("domain-edit.mf.js"), function() {
-        d.edit.edit_type_begin(trigger, type_id);
+        d.edit.edit_type_begin(row, type_id);
       });
       return false;
     }
   };
 
-  $(window).bind("fb.permission.has_permission", function(e, has_permission) {
-    if (has_permission) {
-      d.init_edit();
-    }
-  });
 
   $(d.init);
 

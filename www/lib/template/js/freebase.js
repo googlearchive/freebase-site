@@ -114,9 +114,9 @@
             callback();
           });
         },
-        error: function() {
-          // TODO: handle error
+        error: function(xhr, status, error) {
           cached.state = -1;
+          console.error("fb.get_script error", arguments);
         }
       });
     }

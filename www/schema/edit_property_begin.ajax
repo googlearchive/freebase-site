@@ -51,7 +51,7 @@ var SPEC = {
 
   run: function(id, lang) {
     var promises = [];
-    promises.push(queries.load_property(id, lang, {article:true}));
+    promises.push(queries.load_property(id, lang));
     promises.push(queries.property_used(id));
     return deferred.all(promises)
       .then(function(results) {

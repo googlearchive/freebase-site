@@ -238,4 +238,3 @@ test("ensure_namespace", function() {
     }
   }
 });
-

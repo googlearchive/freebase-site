@@ -52,7 +52,6 @@ function create_property(options) {
       unique: validators.StringBool(options, "unique", {if_empty:false}),
       hidden: validators.StringBool(options, "hidden", {if_empty:false}),
       master_property: validators.MqlId(options, "master_property", {if_empty:""}),
-      delegated: validators.MqlId(options, "delegated", {if_empty:""}),
 
       lang: validators.LangId(options, "lang", {if_empty:"/lang/en"})
     };
@@ -151,19 +150,14 @@ function create_property(options) {
         };
       }
       if (o.description) {
-        q["/freebase/documented_object/tip"] = {
-          value: o.description,
-          lang: o.lang
+        q["/common/topic/description"] = {
+            value: o.description,
+            lang: o.lang
         };
       }
       if (o.master_property) {
         q["/type/property/master_property"] = {
           id: o.master_property
-        };
-      }
-      if (o.delegated) {
-        q["/type/property/delegated"] = {
-          id: o.delegated
         };
       }
       if (o.expected_type === "/type/enumeration" && o.enumeration) {
@@ -186,11 +180,9 @@ function create_property(options) {
           created.expected_type = created["/type/property/expected_type"];
           created.unique = created["/type/property/unique"];
           created.unit = created["/type/property/unit"];
-          created.delegated = created["/type/property/delegated"];
           created.enumeration = created["/type/property/enumeration"];
           return created;
         });
     });
 
 };
-

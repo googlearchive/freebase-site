@@ -36,18 +36,14 @@ var _ = i18n.gettext;
 
 /* default filters we need for any object */
 var OBJECT_FILTERS = [ 
-    "/type/object", 
+    "/type/object",
     "/dataworld/gardening_hint/replaced_by",
     "/freebase/object_profile/linkcount",
     "!/freebase/review_flag/item",
-    "/common/topic/notable_types", 
-    "/common/topic/notable_for", 
+    "/common/topic/notable_types",
+    "/common/topic/notable_for",
     "/common/topic/image",
-    "/common/topic/description",
-
-    /* TODO: remove these once transition to /common/topic/description is complete */
-    "/common/topic/article",
-    "/freebase/documented_object/documented_object_tip"
+    "/common/topic/description"
 ];
 
 /**
@@ -103,19 +99,8 @@ function get_first_value(topic_result, prop) {
 }
 
 function get_description(topic) {
-  var description = null;
-  ["/common/topic/description", 
-   "/freebase/documented_object/documented_object_tip"].every(function(prop) {
-    description = get_first_value(topic, prop);
-    return description === null;
-  });
-  if (!description) {
-    var doc = get_first_value(topic, "/common/topic/article");
-    if (doc) {
-      description = get_first_value(doc, "/common/document/text");
-    }
-  }
-  return description;
+  var desc = get_first_value(topic, "/common/topic/description");  
+  return desc;
 };
 
 function get_permission(topic) {

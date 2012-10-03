@@ -30,7 +30,6 @@
  */
 var deferred = acre.require("lib/promise/deferred");
 var freebase = acre.require("lib/promise/apis").freebase;
-var create_article = acre.require("lib/queries/create_article").create_article;
 var validators = acre.require("lib/validator/validators");
 
 /**
@@ -126,25 +125,15 @@ function create_type(options) {
               value: true
           };
       }
-
+      if (o.description) {
+        q["/common/topic/description"] = {
+            value: o.description,
+            lang: o.lang
+        };
+      }
       return freebase.mqlwrite(q, {use_permission_of: o.domain})
         .then(function(env) {
           return env.result;
         });
-    })
-    .then(function(created) {
-      // cleanup result
-      created.domain = created["/type/type/domain"];
-      if (o.description !== "") {
-        return create_article(created.mid, o.description, "text/plain", {
-            use_permission_of: created.mid,
-            lang: o.lang
-        })
-        .then(function(article) {
-            return created;
-        });
-      }
-      return created;
     });
 };
-

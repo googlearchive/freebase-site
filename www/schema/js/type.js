@@ -46,25 +46,12 @@
           }
           row.click(t.toggle);
         });
-
-      t.init_tooltips();
-    },
-
-    init_tooltips: function(context) {
-      // Return Link Tooltips
-      $(".return-link-trigger", context).tooltip({
-          events: {def: "click,mouseout"},
-          position: "top center",
-          effect: "fade",
-          delay: 300,
-          offset: [-8, 0]
-      });
     },
 
     toggle: function(e) {
       var row = $(this);
       // see if we need to fetch content/tbody from server
-      if (row.data("ajax")) {
+      if (row.data("ajax") && row.attr("data-url")) {
         if (row.is(".loading")) {  // already loading
           return;
         }
@@ -75,8 +62,7 @@
           success: function(data) {
             var tbody = $(data.result.html).hide();
             row.parents("thead:first").after(tbody);
-            fb.schema.init_row_menu(tbody);  // init row menus
-            t.init_tooltips(tbody); // init tooltips
+            propbox.init_menus(tbody, true);
             t._toggle(row);
           },
           complete: function() {
@@ -107,10 +93,6 @@
 
     reorder_property: function(e, type_id) {
       var trigger = $(this);
-      if (trigger.is(".editing")) { // are we already editing?
-        return false;
-      }
-      trigger.addClass("editing");
       fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
         t.edit.reorder_property_begin(trigger, type_id);
       });
@@ -118,76 +100,41 @@
     },
 
     add_property: function(e, type_id) {
-      var trigger = $(this);
-      if (trigger.is(".editing")) { // are we already editing?
-        return false;
-      }
-      trigger.addClass("editing");
+      var table = $(this).parents("table:first");
       fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
-        t.edit.add_property_begin(trigger, type_id);
+        t.edit.add_property_begin(table, type_id);
       });
       return false;
     },
 
     edit_property: function(e, prop_id) {
-      var trigger = $(this);
-      if (trigger.is(".editing")) { // are we already editing?
-        return false;
-      }
-      trigger.addClass("editing");
-      // hide tooltip
-      trigger.parents(".tooltip:first").siblings(".row-menu-trigger:first").data("tooltip").hide();
+      var row = $(this)
+          .parents(".submenu").data("headmenu").parents(".data-row:first");
       fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
-        t.edit.edit_property_begin(trigger, prop_id);
+        t.edit.edit_property_begin(row, prop_id);
       });
       return false;
     },
 
     add_included_type: function(e, type_id) {
-      var trigger = $(this);
-      if (trigger.is(".editing")) { // are we already editing?
-        return false;
-      }
-      trigger.addClass("editing");
+      var table = $(this).parents("table:first");
       fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
-        t.edit.add_included_type_begin(trigger, type_id);
+        t.edit.add_included_type_begin(table, type_id);
       });
       return false;
     },
 
     delete_included_type: function(e, type_id, included_type_id) {
-      e.stopPropagation();
-      var trigger = $(this);
-      if (trigger.is(".editing")) { // are we already editing?
-        return false;
-      }
-      trigger.addClass("editing");
-      fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
-        t.edit.delete_included_type_begin(trigger, type_id, included_type_id);
-      });
-      return false;
-    },
-
-    undo_delete_included_type: function(e, type_id, included_type_id) {
-      var trigger = $(this);
-      if (trigger.is(".editing")) { // are we already editing?
-        return false;
-      }
-      trigger.addClass("editing");
-      fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
-        t.edit.undo_delete_included_type_begin(trigger, type_id, included_type_id);
+     e.stopPropagation();
+     var row = $(this).parents("tr:first");
+     fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
+        t.edit.delete_included_type_begin(row, type_id, included_type_id);
       });
       return false;
     },
 
     reverse_property: function(e, type_id, master_id) {
       var trigger = $(this);
-      if (trigger.is(".editing")) { // are we already editing?
-        return false;
-      }
-      trigger.addClass("editing");
-      // hide tooltip
-      trigger.parents(".tooltip:first").siblings(".row-menu-trigger:first").data("tooltip").hide();
       fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
         t.edit.reverse_property_begin(trigger, type_id, master_id);
       });
@@ -195,39 +142,18 @@
     },
 
     add_instance: function(e, type_id) {
-      var trigger = $(this);
-      if (trigger.is(".editing")) { // are we already editing?
-        return false;
-      }
-      trigger.addClass("editing");
+      var table = $(this).parents("table:first");
       fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
-        t.edit.add_instance_begin(trigger, type_id);
+        t.edit.add_instance_begin(table, type_id);
       });
       return false;
     },
 
     delete_instance: function(e, topic_id, type_id) {
-      var trigger = $(this);
-      if (trigger.is(".editing")) { // are we already editing?
-        return false;
-      }
-      trigger.addClass("editing");
-      // hide tooltip
-      trigger.parents(".tooltip:first").siblings(".row-menu-trigger:first").data("tooltip").hide();
+      var row = $(this)
+          .parents(".submenu").data("headmenu").parents(".data-row:first");
       fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
-        t.edit.delete_instance_begin(trigger, topic_id, type_id);
-      });
-      return false;
-    },
-
-    undo_delete_instance: function(e, topic_id, type_id) {
-      var trigger = $(this);
-      if (trigger.is(".editing")) { // are we already editing?
-        return false;
-      }
-      trigger.addClass("editing");
-      fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
-        t.edit.undo_delete_instance_begin(trigger, topic_id, type_id);
+        t.edit.delete_instance_begin(row, topic_id, type_id);
       });
       return false;
     }

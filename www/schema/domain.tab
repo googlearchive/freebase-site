@@ -47,12 +47,9 @@ var SPEC = {
       object: object,
       id: object.id,
       domain: queries.load_domain(object.id, i18n.lang, {
-          types:true, 
-          types_article:true,
+          types:true,
           types_instance_count:true
       })
     };
   }
 };
-
-

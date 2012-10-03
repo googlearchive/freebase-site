@@ -33,7 +33,7 @@
   var h = acre.require("lib/helper/helpers.sjs");
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var _ = i18n.gettext;
-  var article = acre.require("lib/queries/article.sjs");
+  var form = acre.require("lib/propbox/form.mjt");
 </acre:script>
 
 <acre:block def="add_type_form(domain_id, mediator, type)">
@@ -72,7 +72,7 @@
                 var desc = "";
                 var attrs = {"name":"description", "class":"textarea", rows:3};
                 if (type) {
-                   desc = article.get_text(type, null, i18n.lang);
+                   desc = i18n.display_text(type, "", "/common/topic/description");
                 }
               </acre:script>
               <textarea acre:attrs="attrs">${desc}</textarea>
@@ -103,14 +103,16 @@
                 <a class="help" href="http://wiki.freebase.com/wiki/Never_assert_type">${_("What's this?")}</a>        
             </div>
           </div>
-          <input name="domain" type="hidden" value="${domain_id}"/>
         </td>
       </tr>
 
       <tr class="edit-row-submit">
         <td colspan="5">
-          <button class="button save" type="submit">${_('Save')}</button>
-          <button class="button cancel">${_('Cancel')}</button>
+          <input name="domain" type="hidden" value="${domain_id}"/>
+          <acre:block if="type">
+            <input type="hidden" name="id" value="${type.id}"/>
+          </acre:block>
+          ${form.submit_buttons()}
         </td>
       </tr>
     <tbody>
@@ -118,7 +120,7 @@
 </acre:block>
 
 <acre:block def="edit_type_form(type)">
-  ${add_type_form(type.domain.id, type.mediator, type)}
+  ${add_type_form(type.domain.id, type["/freebase/type_hints/mediator"], type)}
 </acre:block>
 
 

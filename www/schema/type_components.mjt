@@ -34,7 +34,6 @@
   var sh = acre.require("helpers.sjs");
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var _ = i18n.gettext;
-  var article = acre.require("lib/queries/article.sjs");
 
   var previous = null;
   var previous_global = null;
@@ -46,23 +45,12 @@
 </acre:script>
 
 <acre:block def="type_property_row(prop, type_id)">
-  <tr class="hoverable">
+  <tr class="data-row">
     <th scope="row" class="row-header odd">
-      <a href="${h.fb_url(prop.id, [['schema']])}">${i18n.display_name(prop)}</a>
-      <a href="javascript:void(0);" class="row-menu-trigger">+</a>
-      <ul class="row-menu tooltip">
-        <li class="row-menu-item edit">
-          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.edit_property, ['${prop.id}'], this);"><span class="edit-icon">${EDIT_PROPERTY}</span></a>
-        </li>
-        <li class="row-menu-item edit">
-          <a href="${h.static_url('lib/schema/schema.mf.js')}" class="icon-link" onclick="return freebase.nav_get_script(this, 'schema.delete_property_begin', ['${prop.id}']);"><span class="delete-icon">${DELETE_PROPERTY}</span></a>
-        </li>
-
-        <li class="row-menu-item"><a href="${h.fb_url(prop.id, [['instances']])}">${INSPECT_PROPERTY}</a></li>
-        <li class="row-menu-item last">
-          <a href="${h.build_query_url(null, type_id, prop.id)}">${BUILD_QUERY}</a>
-        </li>
-      </ul>
+      <span class="wrapper">
+        <a href="${h.fb_url(prop.id, [['schema']])}">${i18n.display_name(prop)}</a>
+        ${prop_menu(prop)}
+      </span>
     </th>
     <td class="even">$prop.id</td>
     <td class="odd">
@@ -97,9 +85,9 @@
     </td>
     <td class="even description">
       <acre:script>
-        var blurb = i18n.display_name(prop, "", '/freebase/documented_object/tip');
+        var desc = i18n.display_text(prop, "", "/common/topic/description");
       </acre:script>
-      <p acre:if="blurb" title="${blurb}" style="white-space: nowrap; overflow:hidden">${blurb}</p>
+      <p acre:if="desc" style="white-space: nowrap; overflow:hidden">${h.ellipsify(desc, 80)}</p>
       <acre:script>
         var meta = [];
         if (prop['/freebase/property_hints/deprecated']) {
@@ -142,16 +130,18 @@
 
 <acre:block def="other_prop(prop)">        
   <acre:block if="prop.master_property || prop.reverse_property">
-    <span class="return-link-trigger"></span>
-    <span class="return-link-description">
-      <acre:block if="prop.master_property">
-        ${h.template_sprintf(_("%s is the master property of %s"), tag_strong(prop.master_property.id), tag_strong(prop.id))}
-      </acre:block>
-      <acre:block else="">
-        ${h.template_sprintf(_("%s is the master property of %s"), tag_strong(prop.id), tag_strong(prop.reverse_property.id))}
-      </acre:block>
-      <span class="return-link-pointer"></span>
-    </span>
+    <acre:script>
+      var title = "";
+      if (prop.master_property) {
+        title = h.sprintf(
+          _("%s is the REVERSE PROPERY of %s"), prop.id, prop.master_property.id);
+      }
+      else {
+        title = h.sprintf(
+          _("%s is the MASTER PROPERTY of %s"), prop.id, prop.reverse_property.id);
+      }
+    </acre:script>
+    <span class="return-link-trigger" title="${title}"></span>
   </acre:block>
 </acre:block>
 
@@ -169,7 +159,7 @@
         <h3 class="table-empty-title">${_("This type doesn't have any properties")}</h3>
       </th>
     </tr>
-    <acre:block for="prop in properties" class="hoverable">
+    <acre:block for="prop in properties" class="data-row">
       ${type_property_row(prop, type_id)}
     </acre:block>
   </tbody>
@@ -177,19 +167,20 @@
 
 <!-- enumerated topics -->
 <acre:block def="enumerated_topic_row(topic, type_id)">
-  <tr>
+  <tr class="data-row">
     <th class="row-header first odd">
-      <a href="${h.fb_url(topic.id)}" title="${topic.id}">${i18n.display_name(topic)}</a>
-      <a href="javascript:void(0);" class="row-menu-trigger">+</a>
-      <ul class="row-menu tooltip">
-        <li class="row-menu-item edit">
-          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.delete_instance, ['${topic.id}','${type_id}'], this);"><span class="delete-icon">${_('Remove topic')}</span></a>
-        </li>
-       <li class="row-menu-item"><a href="${h.fb_url(topic.id)}" title="${topic.id}">${_('View topic')}</a></li>
-     </ul>
+      <span class="wrapper">
+        <a href="${h.fb_url(topic.id)}" title="${topic.id}">
+          ${topic.name ? topic.name.text : topic.id}
+        </a>
+        ${enum_topic_menu(topic, type_id)}
+      </span>
     </th>
     <td class="even">
-      <p>${article.get_text(topic, null, null, 100)}</p>
+      <acre:script>
+        var desc = topic.description ? topic.description.text : null;
+      </acre:script>
+      <p>${h.ellipsify(desc, 80, '')}</p>
     </td>
   </tr>
 </acre:block>
@@ -225,38 +216,29 @@
       <th class="column-header first" scope="col">${_('Originating Type')}</th>
       <th class="column-header" scope="col">${_('Property')}</th>
     </tr>
-    <tr acre:for="prop in props" class="hoverable">
+    <tr acre:for="prop in props" class="data-row">
       <td class="odd">
-        <div>
-          <a href="${h.fb_url(prop.schema.id, [['schema']])}">${i18n.display_name(prop.schema)}</a>
+        <span class="wrapper">
+          <a href="${h.fb_url(prop.schema.id, [['schema']])}">
+            ${i18n.display_name(prop.schema)}
+          </a>
           ${other_prop(prop)}
           <acre:script>
             var other_property = prop.master_property || prop.reverse_property;
           </acre:script>
-          <a href="javascript:void(0);" class="row-menu-trigger">+</a>
-          <ul class="row-menu tooltip">
-            <li acre:if="!other_property" class="row-menu-item edit">
-              <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.reverse_property, ['${prop.expected_type}','${prop.id}'], this);"><span class="create-return-link-icon">${_('Create return link')}</span></a>
-            </li>
-            <li class="row-menu-item"><a href="${h.fb_url(prop.schema.id, [['schema']])}">${_('View type schema')}</a></li>
-            <li class="row-menu-item last"><a href="#">${_('Build query')}</a></li>
-          </ul>
-        </div>
-        <span class="key">$prop.schema.id</span>
+          ${incoming_prop_menu1(prop, other_property)}
+        </span>
+        <div class="key">$prop.schema.id</div>
       </td>
       <td class="even">
-        <div>
+        <span class="wrapper">
           <a href="${h.fb_url(prop.id, [['schema']])}">${i18n.display_name(prop)}</a>
           <acre:script>
             var other_property = prop.master_property || prop.reverse_property;
           </acre:script>
-          <a href="javascript:void(0);" class="row-menu-trigger">+</a>
-          <ul class="row-menu tooltip">
-            <li class="row-menu-item"><a href="${h.fb_url(prop.id, [['schema']])}">${_('View property details')}</a></li>
-            <li class="row-menu-item last"><a href="#">${_('Build query')}</a></li>
-          </ul>
-        </div>
-        <span class="key">$prop.id</span>
+          ${incoming_prop_menu2(prop, other_property)}
+        </span>
+        <div class="key">$prop.id</div>
       </td>
     </tr>
   </tbody>
@@ -264,4 +246,73 @@
 
 <acre:block def="tag_strong(value)">
   <strong>${value}</strong>
+</acre:block>
+
+<acre:block def="prop_menu(prop)">
+  <ul class="combo-menu nicemenu">
+    <li class="nicemenu-item">
+      <span class="headmenu">
+        <a href="javascript:void(0);" class="more-action">menu</a>
+      </span>
+      <ul class="submenu row-menu">
+        <li class="row-menu-item edit">
+          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.edit_property, ['${prop.id}'], this);"><span class="edit-icon">${EDIT_PROPERTY}</span></a>
+        </li>
+        <li class="row-menu-item edit">
+          <a href="${h.static_url('lib/schema/schema.mf.js')}" class="icon-link" onclick="return freebase.nav_get_script(this, 'schema.delete_property_begin', ['${prop.id}']);"><span class="delete-icon">${DELETE_PROPERTY}</span></a>
+        </li>
+        <li class="row-menu-item"><a href="${h.fb_url(prop.id, [['instances']])}">${INSPECT_PROPERTY}</a></li>
+        <li class="row-menu-item last">
+          <a href="${h.build_query_url(null, prop.schema.id, prop.id)}">${BUILD_QUERY}</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="enum_topic_menu(topic, type_id)">
+  <ul class="combo-menu nicemenu">
+    <li class="nicemenu-item">
+      <span class="headmenu">
+        <a href="javascript:void(0);" class="more-action">menu</a>
+      </span>
+      <ul class="submenu row-menu">      
+        <li class="row-menu-item edit">
+          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.delete_instance, ['${topic.id}','${type_id}'], this);"><span class="delete-icon">${_('Remove topic')}</span></a>
+        </li>
+        <li class="row-menu-item"><a href="${h.fb_url(topic.id)}" title="${topic.id}">${_('View topic')}</a></li>
+     </ul>
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="incoming_prop_menu1(prop, other_property)">
+  <ul class="combo-menu nicemenu">
+    <li class="nicemenu-item">
+      <span class="headmenu">
+        <a href="javascript:void(0);" class="more-action">menu</a>
+      </span>
+      <ul class="submenu row-menu">
+        <li acre:if="!other_property" class="row-menu-item edit">
+          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.reverse_property, ['${prop.expected_type}','${prop.id}'], this);"><span class="create-return-link-icon">${_('Create return link')}</span></a>
+        </li>
+        <li class="row-menu-item"><a href="${h.fb_url(prop.schema.id, [['schema']])}">${_('View type schema')}</a></li>
+        <li class="row-menu-item last"><a href="${h.build_query_url(null, prop.schema.id, prop.id)}">${_('Build query')}</a></li>
+      </ul>
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="incoming_prop_menu2(prop, other_property)">
+  <ul class="combo-menu nicemenu">
+    <li class="nicemenu-item">
+      <span class="headmenu">
+        <a href="javascript:void(0);" class="more-action">menu</a>
+      </span>
+      <ul class="submenu row-menu">
+        <li class="row-menu-item"><a href="${h.fb_url(prop.id, [['schema']])}">${_('View property details')}</a></li>
+        <li class="row-menu-item last"><a href="#">${_('Build query')}</a></li>
+      </ul>
+    </li>
+  </ul>
 </acre:block>

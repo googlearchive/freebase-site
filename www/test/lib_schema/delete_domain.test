@@ -42,7 +42,9 @@
 
 acre.require("mock").playback(this, "./playback_delete_domain.json");
 
-var freebase = acre.require("lib/promise/apis").freebase;
+var apis = acre.require("lib/promise/apis.sjs");
+var freebase = apis.freebase;
+var deferred = apis.deferred;
 var test_helpers = acre.require("helpers");
 var delete_domain = acre.require("lib/schema/delete_domain").delete_domain;
 
@@ -63,7 +65,7 @@ if (!user) {
 
 var user_domain = user.id + "/default_domain";
 
-test("delete_domain no permission", {bug: "Skip create/delete domain test until ccreate_group API on googleapis"}, function() {
+test("delete_domain no permission", function() {
   var result, error;
   delete_domain("/base/slamdunk", "/user/tfmorris", true)
     .then(function(info) {
@@ -76,7 +78,7 @@ test("delete_domain no permission", {bug: "Skip create/delete domain test until 
   ok(error, "expected error: " + error);
 });
 
-test("delete_domain user default_domain", {bug: "Skip create/delete domain test until create_group API on googleapis"}, function() {
+test("delete_domain user default_domain", function() {
   var result, error;
   delete_domain(user_domain, user.id, true)
     .then(function(info) {
@@ -89,7 +91,7 @@ test("delete_domain user default_domain", {bug: "Skip create/delete domain test 
   ok(error, "expected error: " + error);
 });
 
-test("delete_domain commons domain", {bug: "Skip create/delete domain test until create_group API on googleapis"}, function() {
+test("delete_domain commons domain", function() {
   var result, error;
   delete_domain("/freebase", user.id, true)
     .then(function(info) {
@@ -103,35 +105,26 @@ test("delete_domain commons domain", {bug: "Skip create/delete domain test until
 });
 
 function assert_deleted_result(result, domain) {
-  ok(result && result.length === 3);
-  var domain_info = result[0];
-  var deleted_base_key = result[1];
-  var deleted_domain = result[2];
+  [
+    'types',
+    'has_permission',
+    'permitted:key',
+    'not_permitted:key',
+    'base:key'
+  ].forEach(function(k) {
+    ok(k in result, "Got delete_domain result: " + k);
+  });
 
-  ok(domain_info && deleted_base_key && deleted_domain);
+  var check_domain =
+      acre.freebase.mqlread({guid:domain.guid, key:null, type:null}).result;
 
-  equal(deleted_domain.type.connect, "deleted", "/type/domain deleted");
-  var is_type_domain = acre.freebase.mqlread({guid:domain.guid, type:"/type/domain"}).result;
-  ok(!is_type_domain, "/type/domain delete confirmed");
-
-  if (deleted_domain.key) {
-    equal(deleted_domain.key.length, 1);
-    equal(deleted_domain.key[0].value, domain.key.value);
-    equal(deleted_domain.key[0].namespace, domain.key.namespace);
-    equal(deleted_domain.key[0].connect, "deleted", "key deleted");
-    var has_key = acre.freebase.mqlread({id:domain.guid, key:{value:domain.key.value, namespace:user.id}}).result;
-    ok(!has_key, "key delete confirmed");
-  }
-
-  // check "/dataworld/gardening_task/async_delete"
-  ok(deleted_domain["/dataworld/gardening_task/async_delete"].value === true &&
-     deleted_domain["/dataworld/gardening_task/async_delete"].connect === "inserted",
-     "/dataworld/gardening_task/async_delete set");
+  equal(result.key, null, "key deleted");
+  equal(result.type, null, "/type/domain deleted");
 
   return result;
 };
 
-test("delete_domain user domain", {bug: "Skip create/delete domain test until create_group API on googleapis"}, function() {
+test("delete_domain user domain", function() {
   var domain;
   test_helpers.create_domain2(user.id)
     .then(function(created) {
@@ -147,13 +140,10 @@ test("delete_domain user domain", {bug: "Skip create/delete domain test until cr
     });
   acre.async.wait_on_results();
   ok(result, "got delete_domain_result");
-  var [domain_info, deleted_base_key, deleted_domain] = assert_deleted_result(result, domain);
+  assert_deleted_result(result, domain);
+ });
 
-  // no base keys
-  ok(!deleted_base_key.length);
-});
-
-test("delete domain base domain", {bug: "Skip create/delete domain test until create_group API on googleapis"}, function() {
+test("delete domain base domain", function() {
   var name = test_helpers.gen_test_name("test_base_");
   var key = name.toLowerCase();
   // create test base
@@ -170,8 +160,12 @@ test("delete domain base domain", {bug: "Skip create/delete domain test until cr
         type: {id: "/type/domain", connect:"delete"}
       }, null, {http_sign: "keystore"});
     }
+    else {
+      return deferred.resolved({});
+    }
   })
-  .then(function() {
+  .then(function(r) {
+    h.enable_writeuser();
     return freebase.mqlwrite({
       id: null,
       guid: null,
@@ -195,13 +189,5 @@ test("delete domain base domain", {bug: "Skip create/delete domain test until cr
     });
   acre.async.wait_on_results();
   ok(result, "got delete_domain_result");
-  var [domain_info, deleted_base_key, deleted_domain] = assert_deleted_result(result, domain);
-
-  // assert /base key is deleted
-  equal(deleted_base_key.key.length, 1);
-  equal(deleted_base_key.key[0].value, domain.key.value);
-  equal(deleted_base_key.key[0].namespace, "/base");
-  equal(deleted_base_key.key[0].connect, "deleted", "key deleted");
-  var has_key = acre.freebase.mqlread({id:domain.guid, key:{value:domain.key.value, namespace:"/base"}}).result;
-  ok(!has_key, "key delete confirmed");
+  assert_deleted_result(result, domain);
 });

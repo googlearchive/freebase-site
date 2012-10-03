@@ -90,30 +90,22 @@ test("load_domain", function() {
         });
     acre.async.wait_on_results();
     ok(result && result.id === "/film", "Got domain");
-    ok(!result.types && !result["/common/topic/article"]);
 });
 
-test("load_domain types and articles", function() {
-    expect(4);
+test("load_domain types", function() {
     var result;
-    q.load_domain("/film", "/lang/en", {types:true, article:true, types_article:true})
+    q.load_domain("/film", "/lang/en", {types:true})
         .then(function(r) {
             result = r;
         });
     acre.async.wait_on_results();
     ok(result && result.id === "/film", "Got domain");
-    ok(result["/common/topic/article"]);
     ok(result.types, "Got domain types");
-    result.types.every(function(t) {
-        if (t.id === "/film/film") {
-            ok(t["/common/topic/article"], "Got article for /film/film");
-            return false;
-        }
-        return true;
-    });
 });
 
-test("load_type", function() {
+test("load_type",
+    {bug: "Skip mock/record can't handle updates to schema loader results"},
+    function() {
     var result;
     q.load_type("/film/film", "/lang/en")
         .then(function(r) {
@@ -121,29 +113,31 @@ test("load_type", function() {
         });
     acre.async.wait_on_results();
     ok(result && result.id === "/film/film", "Got type");
-    ok(!result["/common/topic/article"]);
 });
 
-test("load_type properties and articles", function() {
-    expect(3);
+test("load_type properties and articles",
+    {bug: "Skip mock/record can't handle updates to schema loader results"},
+    function() {
     var result;
-    q.load_type("/film/film", "/lang/en", {article:true, properties_article:true})
+    q.load_type("/film/film", "/lang/en")
         .then(function(r) {
             result = r;
         });
     acre.async.wait_on_results();
     ok(result && result.id === "/film/film", "Got type");
-    ok(result["/common/topic/article"]);
+    ok(result["/common/topic/description"]);
     result.properties.every(function(p) {
         if (p.id === "/film/film/initial_release_date") {
-            ok(p["/freebase/documented_object/tip"], "Got property tip for /film/film/initial_release_date");
+            ok(p["/common/topic/description"], "Got property tip for /film/film/initial_release_date");
             return false;
         }
         return true;
     });
 });
 
-test("load_property", function() {
+test("load_property",
+     {bug: "Skip mock/record can't handle updates to schema loader results"},
+     function() {
     var result;
     q.load_property("/film/film/initial_release_date", "/lang/en")
         .then(function(r) {
@@ -154,41 +148,41 @@ test("load_property", function() {
     ok(!result["/freebase/documented_object/tip"]);
 });
 
-test("load_property article", function() {
+test("load_property article",
+     {bug: "Skip mock/record can't handle updates to schema loader results"},
+     function() {
     var result;
-    q.load_property("/film/film/initial_release_date", "/lang/en", {article:true})
+    q.load_property("/film/film/initial_release_date", "/lang/en")
         .then(function(r) {
             result = r;
         });
     acre.async.wait_on_results();
     ok(result && result.id === "/film/film/initial_release_date", "Got type");
-    ok(result["/freebase/documented_object/tip"]);
+    ok(result["/common/topic/description"]);
 });
 
 test("minimal_topic", function() {
     var result;
-    q.minimal_topic("/en/google", "/lang/en")
+    q.minimal_topic("/m/045c7b", "/lang/en")
         .then(function(r) {
             result = r;
         });
     acre.async.wait_on_results();
-    ok(result && result.id === "/en/google", "Got topic");
+    ok(result && result.id === "/m/045c7b", "Got topic");
     ok(result.name);
-    ok(result["/common/topic/article"]);
 });
 
 test("minimal_topic_multi", function() {
-    expect(6);
     var result;
-    q.minimal_topic_multi(["/en/google", "/en/apple_inc"], "/lang/en")
+    q.minimal_topic_multi(["/m/045c7b", "/m/0k8z"], "/lang/en")
         .then(function(r) {
             result = r;
         });
     acre.async.wait_on_results();
 
-    ["/en/google", "/en/apple_inc"].forEach(function(id) {
-        ok(result[id] && result[id].id === id, "Got topic " + id);
-        ok(result[id].name);
-        ok(result[id]["/common/topic/article"]);
-    });
+
+    ok(result, "Got mutli topic result");
+    equal(result.length, 2);
+    equal(result[0].id, "/m/045c7b");
+    equal(result[1].id, "/m/0k8z");
 });

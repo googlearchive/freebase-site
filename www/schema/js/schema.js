@@ -29,54 +29,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-(function($, fb) {
+(function($, fb, propbox) {
 
   var schema = fb.schema = {
-    // trigger for row menus
-    init_row_menu: function(context) {
-      $(".row-menu-trigger", context).each(function(){
-        var trigger = $(this);
-
-        trigger.tooltip({
-          events: {def: "click,mouseout"},
-          position: "bottom right",
-          offset: [-10, -10],
-          effect: "fade",
-          delay: 300
-        });
-        //var $menu = $(this).closest(".row-menu");
-        //$menu.children().last().hide();
-
-        trigger.parents("tr:first").hover(schema.row_menu_hoverover, schema.row_menu_hoverout);
-      });
-    },
-
-    row_menu_hoverover: function(e) {
-      var row = $(this);
-      row.addClass("row-hover");
-      $(".row-menu-trigger", row).css('visibility','visible');
-    },
-
-    row_menu_hoverout: function(e) {
-      var row = $(this);
-      $(".row-menu-trigger", row).css('visibility','hidden');
-      row.removeClass("row-hover");
-    },
-
-    close_message: function(e, selector) {
-      var msg = $(this).parents(selector);
-      if (msg.is("tr")) {
-        msg.hideRow(function() {
-          msg.remove();
-        });
-      }
-      else {
-        msg.slideUp(function() {
-          msg.remove();
-        });
-      }
-      return false;
-    },
 
     init_modal_help: function(context) {
       // Show/Hide help menu in domain creation dialog
@@ -97,33 +52,10 @@
 
   function init() {
 
-    schema.init_row_menu();
-
-
-    /*
-        Breadcrumbs
-    */
-
-    // Offset the breadcrumb menu equivalent to the width of the trigger
-    var h_width = $(".breadcrumb-sibling-trigger").outerWidth();
-    var h_offset = (h_width);
-
-    $(".breadcrumb-sibling-trigger").tooltip({
-      events: {def: "click,mouseout"},
-      position: "bottom right",
-      offset: [-5, -h_offset],
-      effect: "fade",
-      delay: 300,
-      onBeforeShow: function(){
-        this.getTrigger().addClass("active");
-      },
-      onHide: function() {
-        this.getTrigger().removeClass("active");
-      }
-    });
+    propbox.init_menus();
 
   };
 
   $(init);
 
-})(jQuery, window.freebase);
+})(jQuery, window.freebase, window.propbox);

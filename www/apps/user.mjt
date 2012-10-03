@@ -53,3 +53,7 @@
   </div>
   ${ac.render_app_list(c.apps)}
 </acre:block>
+
+<acre:block def="footer_script()">
+  <script src="apps.mf.js"></script>
+</acre:block>

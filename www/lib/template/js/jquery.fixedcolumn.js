@@ -28,40 +28,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+;(function ($) {
 
-/*
----------------------
-App List
----------------------
-*/
+  /**
+   * A simple utility to set the column width of a <table>.
+   * By default, this will get the original rendered width
+   * of the first (top, left) cell of the table and literally set it's
+   * width with it.
+   * This is useful for tables that are dynamically updated
+   * (ie. infinitescroll), and you don't want your columns to change.
+   */
 
-.table {
-  .applist-version {
-    padding: 0 .5em;
-    font-size: 0.8em;
-    font-weight: bold;
-    color: #999;
-  }
+  $.fn.fixedcolumn = function() {
+    return this.each(function() {
+      var first = $(this).find("tr:first").find("> :first-child");
+      if (first.length) {
+        var name = first[0].nodeName.toUpperCase();
+        if (name === "TD" || name === "TH") {
+          var w = first.width();
+          if (w > 0) {
+            first.width(w);
+          }
+        }
+      }
+    });
+  };
 
-  .applist-details {
-    font-size: 0.9em;
-  }
-
-  .app-title {
-    font-weight: bold;
-  }
-
-  .applist-userimage {
-    white-space: nowrap;
-    padding: 2px 50px 2px 2px;
-
-    .user-image {
-      padding: 0 5px 0 0 !important;
-      float: left;
-    }
-  }
-
-  .authors {
-    min-height: 3em;
-  }
-}
+})(jQuery);

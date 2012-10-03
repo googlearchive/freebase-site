@@ -53,7 +53,7 @@
 <acre:block def="page_content()">
   <div class="section wrapper">
     <h2 class="table-title clear">${_('Names')}</h2>
-    <table class="table table-sortable">
+    <table class="table table-sortable" id="i18n-table">
       <thead>
         <tr>
           <th class="column-header first {sorter: 'string'}" scope="col">

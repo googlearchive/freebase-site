@@ -36,11 +36,10 @@ var ph = acre.require("lib/propbox/helpers.sjs");
 var apis = acre.require("lib/promise/apis.sjs");
 var schema = acre.require("lib/schema/typeloader.sjs");
 var collection = acre.require("lib/collection/queries.sjs");
-
 var freebase = apis.freebase;
 var urlfetch = apis.urlfetch;
 var deferred = apis.deferred;
-
+var validators = acre.require("lib/validator/validators.sjs");
 
 function types_mql(id) {
   return {
@@ -76,7 +75,7 @@ function domain(id) {
       var base_common_topic_id = domain.id + "/topic";
 
       var domain_types = [];
-      for(i=0; i<domain.types.length; i++) {
+      for(var i=0; i<domain.types.length; i++) {
 
         if(domain.types[i].id !== base_common_topic_id) {
          domain_types.push(domain.types[i]);
@@ -136,10 +135,12 @@ function domain(id) {
 
           var users = [];
           activity.week.users.forEach(function(user) {
-            if (user.id.indexOf("_bot") === -1) {
-              user.display_name = user.id.split("/").pop();
-              user.percentage = (user.v / domain.facts_last_week);
-              users.push(user);
+            if (valid_activity_user(user)) {
+              if (user.id.indexOf("_bot") === -1) {
+                user.display_name = user.id.split("/").pop();
+                user.percentage = (user.v / domain.facts_last_week);
+                users.push(user);
+              }
             }
           });
 
@@ -183,6 +184,19 @@ function domain(id) {
           return domain;
         });
     });
+};
+
+/**
+ * Activity is returning invalid users where user.id == "null"
+ * (a string "null")???
+ */
+function valid_activity_user(user) {
+  if (user) {
+    return validators.MqlId(user.id, {
+      if_valid:true, if_invalid:false, if_empty:false
+    });
+  }
+  return false;
 };
 
 
@@ -387,4 +401,3 @@ function property_detail(topic, property) {
       });
   });
 };
-

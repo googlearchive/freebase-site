@@ -1,0 +1,159 @@
+/*
+* Copyright 2012, Google Inc.
+* All rights reserved.
+*
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions are
+* met:
+*
+*     * Redistributions of source code must retain the above copyright
+* notice, this list of conditions and the following disclaimer.
+*     * Redistributions in binary form must reproduce the above
+* copyright notice, this list of conditions and the following disclaimer
+* in the documentation and/or other materials provided with the
+* distribution.
+*     * Neither the name of Google Inc. nor the names of its
+* contributors may be used to endorse or promote products derived from
+* this software without specific prior written permission.
+*
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+* A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+* LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+* DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+* THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+* OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+<acre:script>
+    var c = this.exports.c = {};
+    var helper = acre.require("lib/helper/helpers.sjs");
+    var i18n = acre.require("lib/i18n/i18n.sjs");
+    var i18n_c = acre.require("lib/i18n/components.mjt");
+    var _ = i18n.gettext;
+    var propboxForm = acre.require("lib/propbox/form.mjt");
+
+    var BACK = _("Back");
+    var CLOSE = _("Close");
+    var FORWARD = _("Forward");
+    var LOADING = _("Loading...");    
+    var PROBLEMS = _("Well, this is embarrassing! We're having some problems and working to resolve them.");
+    var COMPLETE = _("You have completed voting on all flags in this category!");
+    var LINK_TO = _("Link to this flag in review.");
+    var COPY_SHARE = _("Copy and share this url");
+    var SHORTCUTS = _("Keyboard shortcuts");
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="queue.mf.css" />
+</acre:block>
+
+<acre:block def="content()">
+
+  <div class="queue-header">
+    <div class="queue-back-button">${propboxForm.cancel_button(BACK)}</div>          
+    <span class="queue-header-message" id="queue-header-message">${_("Review Queue")}</span>        
+    <div class="queue-forward-button">${propboxForm.cancel_button(FORWARD)}</div>                   
+  </div>
+  <div id="storage">
+  </div>
+  <div id="complete" class="queue-message" style="visibility: hidden;">
+    ${COMPLETE}
+  </div>
+  <div id="errormsg" class="queue-message" style="visibility: hidden;">
+    ${PROBLEMS}
+  </div>
+  <div id="parameters" style="visibility: hidden;">
+    ${JSON.stringify(c.params)}
+  </div>
+
+  <div id="linking" style="visibility: hidden;">    
+    <div id="queue-link-to-flag" class="modal">
+      <div class="modal-inner">
+        <h1 class="modal-title">
+          <span>${LINK_TO}
+        </h1>
+        <div class="modal-content">
+          <div class="form-group clear">
+            <div class="form-row form-row-inline">
+              <label class="form-label">${COPY_SHARE}</label>
+              <input class="text-input" type="text" id="link-text" value=""/>                        
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-buttons">            
+        ${propboxForm.cancel_button(CLOSE)}
+      </div>
+    </div>
+  </div>
+
+  <div id="shortcuts" style="visibility: hidden;">
+    <div id="show-shortcuts" class="modal">
+      <div class="modal-inner">
+        <h1 class="modal-title">
+          <span>${SHORTCUTS}
+        </h1>
+        <div class="modal-content">
+          <div class="form-group clear">
+            <div class="form-row form-row-inline">
+              <dl class="key-map">
+                <dt class="key-symbol">${_("a")}</dt>
+                <dd class="key-desc">${_("First voting option.")}</dd>
+              </dl>
+              <dl class="key-map">
+                <dt class="key-symbol">${_("s")}</dt>
+                <dd class="key-desc">${_("Second voting option.")}</dd>
+              </dl>
+              <dl class="key-map">
+                <dt class="key-symbol">${_("d")}</dt>
+                <dd class="key-desc">${_("Third voting option.")}</dd>
+              </dl>
+              <dl class="key-map">
+                <dt class="key-symbol">${_("f")}</dt>
+                <dd class="key-desc">${_("Fourth voting option.")}</dd>
+              </dl>
+              <dl class="key-map">
+                <dt class="key-symbol">${_("h")}</dt>
+                <dd class="key-desc">${_("Hot list current flag.")}</dd>
+              </dl>
+              <dl class="key-map">
+                <dt class="key-symbol">${_("j")}</dt>
+                <dd class="key-desc">${_("Go to previous flag.")}</dd>
+              </dl>
+              <dl class="key-map">
+                <dt class="key-symbol">${_("k")}</dt>
+                <dd class="key-desc">${_("Go to next flag.")}</dd>
+              </dl>
+              <dl class="key-map">
+                <dt class="key-symbol">${_("l")}</dt>
+                <dd class="key-desc">${_("Get link to hot list.")}</dd>
+              </dl>                        
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-buttons">            
+        ${propboxForm.cancel_button(CLOSE)}
+      </div>
+    </div>
+  </div>
+   
+</acre:block>
+
+<acre:block def="footer_script()">    
+  <script type="text/javascript" src="queue.mf.js" />    
+</acre:block>
+
+<acre:block def="acre_javascript_vars()">
+  <script>
+    SERVER.c.params = ${JSON.stringify(c.params)};
+  </script>  
+</acre:block>
+
+
+

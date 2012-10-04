@@ -1,0 +1,116 @@
+{
+  "project": "freebase-site.googlecode.dev",
+  "error_page" : "error/error.mjt",
+  "not_found_page" : "error/not_found.template",
+  "csrf_protection": "strong",
+  "ttl": 0,
+  "handlers": {
+    "mjt": "handlers/mjt_handler.sjs",
+    "css": "handlers/css_handler.sjs",
+    "css_manifest": "handlers/css_manifest_handler.sjs",
+    "js_manifest": "handlers/js_manifest_handler.sjs",
+    "tagged_static": "handlers/tagged_static_handler.sjs",
+    "tagged_binary": "handlers/tagged_binary_handler.sjs", 
+    "freebase_template": "handlers/template_handler.sjs",
+    "controller": "handlers/controller_handler.sjs",
+    "ajax": "handlers/ajax_handler.sjs",
+    "test": "handlers/test_handler.sjs",
+    "coffee_script": "handlers/coffee_script_handler.sjs",
+    "js_to_sjs": "handlers/js_to_sjs_handler.sjs",
+    "markdown": "handlers/markdown_handler.sjs",
+    "mjt_markdown": "handlers/mjt_markdown_handler.sjs"
+  },
+  "extensions": {
+    "ico" : { 
+      "handler": "tagged_binary",
+      "media_type" : "image/x-icon"
+    },
+    "css": {
+      "handler": "css",
+      "media_type": "text/css"
+    },
+    "less": {
+      "handler": "css",
+      "media_type": "text/css"
+    },
+    "js": {
+      "handler": "tagged_static"
+    },
+    "json": {
+      "handler": "binary",
+      "media_type": "text/plain"
+    },
+    "mf.css": {
+      "handler": "css_manifest",
+      "media_type": "text/css"
+    },
+    "mf.js": {
+      "handler": "js_manifest",
+      "media_type": "text/javascript"
+    },
+    "template": {
+      "handler": "freebase_template"
+    },
+    "controller": {
+      "handler": "controller"
+    },
+    "ajax": {
+      "handler": "ajax"
+    },
+    "omf.js": {
+      "handler": "js_manifest",
+      "media_type": "text/javascript"
+    }, 
+    "omf.css": {
+      "handler": "css_manifest",
+      "media_type": "text/css"
+    },
+    "properties": {
+      "handler": "acre_script"
+    },
+    "cs": {
+      "handler": "coffee_script"
+    },
+    "tab": {
+      "handler": "acre_script"
+    },
+    "test": {
+      "handler": "test",
+      "media_type": "text/html"
+    },
+    "markdown": {
+      "handler": "markdown",
+      "media_type": "text/html"
+    },
+    "md": {
+      "handler": "markdown",
+      "media_type": "text/html"
+    },
+    "mjtmd": {
+      "handler": "mjt_markdown",
+      "media_type": "text/html"
+    },
+    "gif": {
+      "media_type": "image/gif", 
+      "handler": "tagged_binary"
+    }, 
+    "jpg": {
+      "media_type": "image/jpg", 
+      "handler": "tagged_binary"
+    }, 
+    "png": {
+      "media_type": "image/png", 
+      "handler": "tagged_binary"
+    }
+  },
+  "libs" : {
+    "jquery" : {
+      "base_url": "//ajax.googleapis.com/ajax/libs/jquery/",
+      "version": "1.7.1"
+    },
+    "googlefonts" : {
+      "base_url": "//fonts.googleapis.com/css",
+      "version": ""
+    }
+  }
+}

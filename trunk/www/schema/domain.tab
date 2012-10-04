@@ -31,6 +31,7 @@
 
 var queries = acre.require("queries");
 var i18n = acre.require("lib/i18n/i18n.sjs");
+var sh = acre.require("helpers.sjs");
 
 var SPEC = {
 
@@ -43,13 +44,16 @@ var SPEC = {
   },
 
   run: function(object) {
-    return {
-      object: object,
-      id: object.id,
-      domain: queries.load_domain(object.id, i18n.lang, {
-          types:true,
-          types_instance_count:true
-      })
-    };
+    return sh.invalidate_schema_cache_maybe(object.id)
+      .then(function(invalidated) {
+        return {
+          object: object,
+          id: object.id,
+          domain: queries.load_domain(object.id, i18n.lang, {
+            types:true,
+            types_instance_count:true
+          })
+        };
+      });
   }
 };

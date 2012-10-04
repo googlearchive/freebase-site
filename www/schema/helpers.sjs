@@ -31,6 +31,10 @@
 var h = acre.require("lib/helper/helpers.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
 var i18n = acre.require("lib/i18n/i18n.sjs");
+var apis = acre.require("lib/promise/apis");
+var freebase = apis.freebase;
+var deferred = apis.deferred;
+var typeloader = acre.require("lib/schema/typeloader.sjs");
 
 function isTypeType(id) {
   return id.indexOf('/type/') == 0;
@@ -76,4 +80,64 @@ function generate_type_key(name) {
 
 function generate_property_key(name) {
   return generate_key(name);
+};
+
+
+/**
+ * When user Shift+Reload a domain, type or property schema page,
+ * we want to flush or invalidate our schema cache of the type(s)
+ * associated with the domain, type or property.
+ * For domain, we want to invalidate all types (and their properties)
+ * in that domain.
+ * For type, we want to invalidate the type (and its properties).
+ * For property, we are essentially invalidating its type
+ * (and its sibling properties).
+ * @param {string} id The domain, type or property id.
+ * @return {lib.promise.deferred.Deferred} A promise that resolves to
+ *   TRUE if we invalidated, otherwise FALSE.
+ * @see lib.schema.typeloader.invalidate
+ */
+function invalidate_schema_cache_maybe(id) {
+  if (acre.request.headers['cache-control'] &&
+      acre.request.headers['cache-control'].indexOf('no-cache') !== -1) {
+    // what is id?
+    var q = {
+      id: id,
+      type: {
+        'id|=': ['/type/domain', '/type/type', '/type/property'],
+        id: null,
+        limit: 1
+      },
+      // for domain
+      '/type/domain/types': [],
+      // for property
+      '/type/property/schema': null
+    };
+    return freebase.mqlread(q)
+      .then(function(env) {
+        var result = env.result;
+        if (result.type.id === '/type/domain') {
+          if (result['/type/domain/types'].length > 0) {
+            typeloader.invalidate(result['/type/domain/types']);
+            return true;
+          }
+        }
+        else if (result.type.id === '/type/type') {
+          typeloader.invalidate(id);
+          return true;
+        }
+        else if (result.type.id === '/type/property') {
+          if (result['/type/property/schema']) {
+            typeloader.invalidate(result['/type/property/schema']);
+            return true;
+          }
+        }
+        return false;
+      }, function(err) {
+        return false;
+      });
+  }
+  else {
+    return deferred.resolved(false);
+  }
 };

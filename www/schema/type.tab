@@ -35,6 +35,7 @@ var i18n = acre.require("lib/i18n/i18n.sjs");
 var apis = acre.require("lib/promise/apis");
 var freebase = apis.freebase;
 var deferred = apis.deferred;
+var sh = acre.require("helpers.sjs");
 
 var SPEC = {
 
@@ -48,64 +49,70 @@ var SPEC = {
 
     run: function(object) {
         var id = object.id;
-        return queries.load_type(id, i18n.lang, {
-                instance_count: true
-            })
-            .then(function(type) {
-                var promises = {
-                    domain: queries.incoming_from_domain(id, type.domain.id)
-                        .then(function(props) {
-                            return props || [];
-                        }),
-                    commons: queries.incoming_from_commons(id, type.domain.id, true)
-                        .then(function(props) {
-                            return props || 0;
-                        }),
-                    bases: queries.incoming_from_bases(id, type.domain.id, true)
-                        .then(function(props) {
-                            return props || 0;
-                        })
-                };
-                if (type["/freebase/type_hints/enumeration"]) {
-                    promises.instance = freebase.mqlread([{
-                        id: null,
-                        type: id,
-                        optional: true,
-                        limit: 11
-                    }])
-                    .then(function(env) {
-                        if (env.result) {
-                            var ids = env.result.map(function(n) {
-                                return n.id;
-                            });
-                            if (ids.length) {
-                                return queries.minimal_topic_multi(
-                                    ids, i18n.lang);
+
+        return sh.invalidate_schema_cache_maybe(id)
+          .then(function(invalidated) {
+
+            return queries.load_type(id, i18n.lang, {
+                    instance_count: true
+                })
+                .then(function(type) {
+                    var promises = {
+                        domain: queries.incoming_from_domain(id, type.domain.id)
+                            .then(function(props) {
+                                return props || [];
+                            }),
+                        commons: queries.incoming_from_commons(id, type.domain.id, true)
+                            .then(function(props) {
+                                return props || 0;
+                            }),
+                        bases: queries.incoming_from_bases(id, type.domain.id, true)
+                            .then(function(props) {
+                                return props || 0;
+                            })
+                    };
+                    if (type["/freebase/type_hints/enumeration"]) {
+                        promises.instance = freebase.mqlread([{
+                            id: null,
+                            type: id,
+                            optional: true,
+                            limit: 11
+                        }])
+                        .then(function(env) {
+                            if (env.result) {
+                                var ids = env.result.map(function(n) {
+                                    return n.id;
+                                });
+                                if (ids.length) {
+                                    return queries.minimal_topic_multi(
+                                        ids, i18n.lang);
+                                }
                             }
-                        }
-                        return [];
-                    });
-                }
-                return deferred.all(promises)
-                    .then(function(r) {
-                        h.extend(type, {
-                            incoming: {
-                                domain: r.domain,
-                                commons: r.commons,
-                                bases: r.bases
-                            }
-                        }, {
-                            instance: r.instance
+                            return [];
                         });
-                        return type;
-                    });
-            })
-            .then(function(type) {
-                return {
-                    object: object,
-                    id: id,
-                    type: type
-                };
-            });
+                    }
+                    return deferred.all(promises)
+                        .then(function(r) {
+                            h.extend(type, {
+                                incoming: {
+                                    domain: r.domain,
+                                    commons: r.commons,
+                                    bases: r.bases
+                                }
+                            }, {
+                                instance: r.instance
+                            });
+                            return type;
+                        });
+                })
+                .then(function(type) {
+                    return {
+                        object: object,
+                        id: id,
+                        type: type
+                    };
+                });
+
+              });
     }
 };

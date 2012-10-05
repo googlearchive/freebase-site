@@ -107,9 +107,15 @@
  * They are always used together.
 */
 
-.data-table .loading,
-.data-list .loading {
-  opacity: 0.4;
+
+.data-table tr.edit-row-submitting > :first-child,
+.data-list li.edit-row-submitting {
+  background: #F1F2F3 url(template/img/horizontal-loader.gif) no-repeat left top;
+}
+
+li.new-row,
+tr.new-row * {
+  background-color: #ABF1AB !important;
 }
 
 .data-table {

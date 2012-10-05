@@ -187,9 +187,51 @@
        options.submit(options, formlib.default_submit_ajax_options(options));
      },
 
-     success_inline_add_form: function(options, new_row) {
-       options.edit_row.before(new_row);
-       options.reset(options);
+     /**
+      * Use this when you don't want to wait for a response for your
+      * inline_add_form submit and quickly want to reset the form
+      * for successive add operations.
+      * @param {object} options The init options to init_inline_add_form.
+      * @param {object} ajax_options $.ajax options.
+      */
+     submit_and_continue_inline_add_form: function(options, ajax_options) {
+       var old_beforeSend = ajax_options.beforeSend;
+       var old_complete = ajax_options.complete;
+       var o = $.extend({}, ajax_options, {
+         beforeSend: function(xhr, settings) {
+           if (old_beforeSend) {
+             old_beforeSend.apply(this, arguments);
+           }
+           // clone the edit and submit row
+           var cloned_edit_row = options.edit_row
+               .clone().addClass('edit-row-submitting');
+           fb.disable($(":input", cloned_edit_row));
+           // keep track so we can remove/replace with the 'new-row'
+           xhr._cloned_edit_row = cloned_edit_row;
+           options.edit_row.before(cloned_edit_row);
+           // continue to add without waiting for response
+           options.reset(options);
+         },
+         complete: function(xhr) {
+           if (old_complete) {
+             old_complete.apply(this, arguments);
+           }
+           // clean up cloned elements from the xhr
+           delete xhr._cloned_edit_row;
+         }
+       });
+       $.ajax(o);
+     },
+
+     success_inline_add_form: function(options, new_row, xhr) {
+       if (xhr && xhr._cloned_edit_row) {
+         xhr._cloned_edit_row.replaceWith(new_row);
+       }
+       else {
+         options.edit_row.before(new_row);
+         options.reset(options);
+       }
+       formlib.animate_new_row(new_row);
        options.edit_row.trigger(options.event_prefix + "success");
      },
 
@@ -199,6 +241,12 @@
        if (options.trigger) {
          options.trigger.parents(".trigger-row:first").show();
        }
+     },
+
+     animate_new_row: function(new_row) {
+       new_row.addClass('new-row', 1000, function() {
+         new_row.removeClass('new-row', 1000);
+       });
      },
 
 
@@ -284,6 +332,7 @@
      success_inline_edit_form: function(options, new_row) {
        options.row.replaceWith(new_row);
        options.row = new_row;
+       formlib.animate_new_row(new_row);
        options.edit_row.trigger(options.event_prefix + "cancel");
      },
 
@@ -300,6 +349,7 @@
        old_row.hide().addClass("old-row");
        old_row.after(msg_row);
        msg_row.append(old_row);
+       formlib.animate_new_row(msg_row);
        if (undo_callback) {
          var a = $('<a href="#">Undo</a>');
          $(".msg-default", msg_row).next().append(a);
@@ -318,6 +368,7 @@
        msg_row.before(old_row);
        old_row.show().removeClass("old-row");
        msg_row.remove();
+       formlib.animate_new_row(old_row);
      },
 
 
@@ -361,9 +412,9 @@
          fixed: false,
          mask: {
            color: '#000',
-	   loadSpeed: 200,
-	   opacity: 0.5
-	 },
+           loadSpeed: 200,
+           opacity: 0.5
+         },
          onLoad: function() {
            // init form
            options.overlay = this;

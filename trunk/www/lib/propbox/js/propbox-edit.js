@@ -157,15 +157,17 @@
           return;
       }
 
-      $.ajax($.extend(ajax_options, {
-        onsuccess: function(data) {
-          var new_row = $(data.result.html);
-          formlib.success_inline_add_form(options, new_row);
-          propbox.init_menus(new_row, true);
-          $(".nicemenu-item.edit").show();
-          propbox.kbs.set_next(null, new_row, true);
-        }
-      }));
+      formlib.submit_and_continue_inline_add_form(
+        options, 
+        $.extend(ajax_options, {
+          onsuccess: function(data, status, xhr) {
+            var new_row = $(data.result.html);
+            formlib.success_inline_add_form(options, new_row, xhr);
+            propbox.init_menus(new_row, true);
+            $(".nicemenu-item.edit").show();
+            propbox.kbs.set_next(null, new_row, true);
+          }
+        }));
     },
 
     /**

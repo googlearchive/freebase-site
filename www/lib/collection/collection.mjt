@@ -75,7 +75,9 @@
             cell.attrs["class"] = cell.attrs["class"].join(" ");
           </acre:script>
           <th acre:attrs="cell.attrs">
-            ${cell.structure.text}
+            <span class="property-header">
+              ${cell.structure.text}
+            </span>
           </th>
         </acre:block>
       </tr>
@@ -85,7 +87,7 @@
 
 <acre:block def="collection_body(body)">
   <acre:block for="tbody in body">
-    <tbody class="data-row" data-id="${tbody.value.id}">    
+    <tbody class="data-row" data-id="${tbody.value.id}">
       <acre:block for="x,row in tbody">
         <tr>
           <acre:block for="y, cell in row">
@@ -98,10 +100,10 @@
             <td acre:attrs="cell.attrs">
               <acre:block if="cell.structure.id === '/type/object/id'">
                 <span class="wrapper">
+                  <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
                   <a title="${tbody.value.id}" class="property-value"
                      href="${h.fb_url(true, tbody.value.id)}"
                      data-id="${tbody.value.id}">${tbody.value.id}</a>
-                  <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
                </span>
               </acre:block>
               <acre:block if="cell.value">
@@ -109,11 +111,11 @@
                   <ul class="data-list">
                     <li>
                       <span class="wrapper">
+                        <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
                         <a title="${cell.value.id}" class="property-value"
                            href="${h.fb_url(true, cell.value.id)}"
                            data-id="${cell.value.id}">${cell.value.text}</a>
                         ${i18n_c.lang_code(cell.value.lang, i18n.lang)}
-                        <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
                       </span>
                     </li>
                   </ul>
@@ -122,8 +124,8 @@
                   <ul class="data-list">
                     <li>
                       <span class="wrapper">
-                        ${pb.value(tbody.value, cell.structure, cell.value, i18n.lang)}
                         <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
+                        ${pb.value(tbody.value, cell.structure, cell.value, i18n.lang)}
                       </span>
                     </li>
                   </ul>
@@ -133,8 +135,8 @@
                 <ul class="data-list">
                   <li>
                     <span class="wrapper">
-                      ${pb.value(tbody.value, cell.structure, tbody.value, i18n.lang)}
                       <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
+                      ${pb.value(tbody.value, cell.structure, tbody.value, i18n.lang)}
                     </span>
                   </li>
                 </ul>
@@ -143,8 +145,8 @@
                 <ul class="data-list">
                   <li>
                     <span class="wrapper">
-                      <p acre:if="cell.docs.length" class="load-blurb" data-id="${cell.docs[0].id}"></p>
                       <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
+                      <p acre:if="cell.docs.length" class="load-blurb" data-id="${cell.docs[0].id}"></p>
                     </span>
                   </li>
                 </ul>
@@ -153,8 +155,8 @@
                 <ul class="data-list">
                   <li>
                     <span class="wrapper">
-                      <span class="property-value">&nbsp;</span>
                       <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
+                      <span class="property-value">&nbsp;</span>
                     </span>
                   </li>
                 </ul>
@@ -225,7 +227,7 @@
                   <a href="${h.fb_url(topic.id, [['i18n']])}">${_("Edit localized...")}</a>
                 </li>
               </ul>
-            </li>          
+            </li>
           </ul>
         </acre:block>
       </span>

@@ -2,7 +2,7 @@ tr .combo-menu,
 li .combo-menu {
   list-style: none;
   position: absolute;
-  right: 0;
+/**  right: 0;**/
   top: 0;
   display: inline-block;
   visibility: hidden;
@@ -15,7 +15,8 @@ li .combo-menu {
   visibility: visible;
 }
 
-tr:hover .combo-menu:hover, 
+
+tr:hover .combo-menu:hover,
 li:hover .combo-menu:hover {
   border: 1px solid #d4d6d7;
   .linear_gradient(#e4e6e7, #d4d6d7);
@@ -23,17 +24,14 @@ li:hover .combo-menu:hover {
 }
 
 .combo-menu .default-action {
+  color: #C4C4C4;
   display: inline-block;
-  background: #fff;
-  width: 17px;
-  height: 17px;
-  text-indent: -9999px;
-  line-height: 1;
+  width: 20px;
 }
 
 ul.combo-menu li,
 .data-table tbody tr ul.combo-menu li {
-  padding: 0; 
+  padding: 0;
 }
 
 .combo-menu .more-action {
@@ -53,6 +51,11 @@ ul.combo-menu li,
 }
 
 .default-action.edit-action {
+  width: 17px;
+  height: 17px;
+  line-height: 1;
+  background: #fff;
+  text-indent: -9999px;
   background: url(template/img/ui-icons.png) no-repeat 2px -855px;
 }
 
@@ -73,5 +76,3 @@ ul.combo-menu li,
 .combo-menu:hover .default-action.loading:hover {
   background: url(template/img/loader-snake-small-grey.gif) no-repeat;
 }
-
-

@@ -55,6 +55,9 @@
       // Initialize prop counts filter suggest input
       fb.filters.init_domain_type_property_filter(".column.nav");
 
+      // Initialize fixed column for truncating columns
+      $(".data-table").fixedcolumn();
+
       // Toggle for Add Types dialog
       $(".toolbar-trigger").click(function(){
 
@@ -120,9 +123,9 @@
           fixed: false,
           mask: {
             color: '#000',
-	    loadSpeed: 200,
-	    opacity: 0.5
-	  }
+            loadSpeed: 200,
+            opacity: 0.5
+          }
       });
 
 
@@ -152,7 +155,7 @@
         });
       };
       function cancel_callback() {
-        // try again        
+        // try again
         trigger.focus();
       }
       function onload_callback() {

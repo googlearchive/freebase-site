@@ -52,6 +52,8 @@
   var VIEW_SCHEMA = _("View schema");
   var EDIT = _("Edit");
   var DELETE = _("Delete");
+  var EDIT_PROPERTY = _("edit");
+  var ADD_PROPERTY = _("add");
   var NAMESPACE = _("Namespace");
   var OBJECT = _("Object");
   var VALUE = _("Value");
@@ -59,7 +61,7 @@
 
 <acre:block def="topicbox(topic, lang)">
   <acre:script>
-    var topic_structure = topic.structure 
+    var topic_structure = topic.structure;
   </acre:script>
   <acre:block if="topic_structure && topic_structure.order">
     <acre:script>
@@ -75,7 +77,7 @@
         </acre:script>
         ${domainbox(topic, domain_structure, lang)}
       </acre:block>
-    </acre:block>  
+    </acre:block>
   </acre:block>
 </acre:block>
 
@@ -93,7 +95,7 @@
           <a href="${h.fb_url(topic.id, [['domain', domain_structure.id]])}" title="${domain_structure.id}">${domain_structure.text}</a>
         </span>
       </h1>
-    </div>    
+    </div>
     <acre:block for="type_id in domain_structure.types">
       <acre:script>
         var type_structure = topic.structure.types[type_id];
@@ -103,7 +105,7 @@
           type_structure.id = type_id;
         </acre:script>
         ${typebox(topic, type_structure, lang)}
-      </acre:block>   
+      </acre:block>
     </acre:block>
   </div>
 </acre:block>
@@ -142,14 +144,14 @@
       <span class="header-label">
         ${prop_menu(topic, prop_structure, prop_values, lang)}
       </span>
-    </div>  
+    </div>
     ${databox(topic, prop_structure, prop_values, lang)}
   </div>
 </acre:block>
 
 <acre:block def="databox(topic, prop_structure, prop_values, lang)">
   <div class="data-section">
-    <acre:block if="prop_structure.expected_type.mediator && prop_structure.properties">      
+    <acre:block if="prop_structure.expected_type.mediator && prop_structure.properties">
       ${datatable(topic, prop_structure, prop_values, lang)}
     </acre:block>
     <acre:block else="">
@@ -164,10 +166,12 @@
     var ect = prop_structure.expected_type.id;
   </acre:script>
   <table class="data-table">
-    <thead acre:attrs="empty ? {style:'display:none;'} : {}">
+    <thead>
       <tr>
         <th acre:for="i,subprop_structure in prop_structure.properties" scope="col" acre:attrs="i === 0 ? {'class':'first'} : {}">
-          ${subprop_structure.text}
+          <span class="property-header">
+            ${subprop_structure.text}
+          </span>
         </th>
       </tr>
     </thead>
@@ -185,7 +189,7 @@
 </acre:block>
 
 <acre:block def="datatable_row(topic, prop_structure, prop_value, lang)">
-  <tr class="kbs data-row" 
+  <tr class="kbs data-row"
       data-id="${prop_value.id}">
     <acre:block for="i, subprop_structure in prop_structure.properties">
       <acre:script>
@@ -200,7 +204,7 @@
 </acre:block>
 
 <acre:block def="image_row(topic, prop_structure, prop_value, lang)">
-  <tr class="kbs data-row" 
+  <tr class="kbs data-row"
       data-id="${prop_value.id}">
     <td class="first">
       <ul class="data-list">
@@ -229,7 +233,7 @@
 </acre:block>
 
 <acre:block def="article_row(topic, prop_structure, prop_value, lang)">
-  <tr class="kbs data-row" 
+  <tr class="kbs data-row"
       data-id="${prop_value.id}">
     <td class="first">
       <ul class="data-list">
@@ -266,12 +270,12 @@
       <acre:block else="">
         <acre:block for="i, subprop_value in subprop_values">
           <li>
-            <span class="wrapper">
-              ${value(prop_value.id, subprop_structure, subprop_value, lang)}
+            <span class="wrapper truncate">
               <acre:block if="i === 0 && primary">
                 ${value_menu(prop_value, subprop_structure, subprop_value, lang)}
               </acre:block>
-            </span>      
+              ${value(prop_value.id, subprop_structure, subprop_value, lang)}
+            </span>
           </li>
         </acre:block>
       </acre:block>
@@ -298,20 +302,11 @@
 
 <acre:block def="datalist_row(topic, prop_structure, prop_value, lang)">
   <li class="kbs data-row">
-    <span class="wrapper">
+    <span class="wrapper first truncate">
+      ${value_menu(topic, prop_structure, prop_value, lang)}
       ${value(topic.id, prop_structure, prop_value, lang)}
-      <acre:script>
-        var show_menu = true;
-        if (prop_value != null && prop_structure.expected_type.id === "/type/text" &&
-            !(prop_value.lang && h.lang_id(prop_value.lang) === lang)) {
-          show_menu = false;
-        }
-      </acre:script>
-      <acre:block if="show_menu">
-        ${value_menu(topic, prop_structure, prop_value, lang)}
-      </acre:block>
     </span>
-  </li>  
+  </li>
 </acre:block>
 
 <acre:block def="value(id, prop_structure, prop_value, lang)">
@@ -404,49 +399,47 @@
 </acre:block>
 
 <acre:block def="type_menu(topic, type_structure)">
-  <span class="wrapper">
-    <span class="type-label mark">
-      <a href="${h.fb_url(topic.id, [['type', type_structure.id]])}">${type_structure.text}</a>
-    </span>
+  <span class="wrapper mark">
     <ul class="inline-menu combo-menu nicemenu">
       <li class="inline-menu-item nicemenu-item">
         <span class="headmenu">
+          <span class="default-action">&nbsp;</span>
           <a href="javascript:void(0)" class="more-action">menu</a>
         </span>
-        <ul class="row-menu submenu">  
+        <ul class="row-menu submenu">
           <li class="row-menu-item"><a href="${h.fb_url(type_structure.id, [['schema']])}">${VIEW_SCHEMA}</a></li>
         </ul>
       </li>
     </ul>
+    <span class="type-label">
+      <a href="${h.fb_url(topic.id, [['type', type_structure.id]])}">${type_structure.text}</a>
+    </span>
   </span>
 </acre:block>
 
 <acre:block def="prop_menu(topic, prop_structure, prop_values, lang)">
   <acre:script>
     var ect = prop_structure.expected_type.id;
+    var unique_edit = (prop_structure.unique && prop_values.length) ? true : false;
   </acre:script>
-  <span class="wrapper">
-    <span class="property-label mark">
-      <a href="${h.fb_url(topic.id, [['property', prop_structure.id]])}">${prop_structure.text}</a>
-    </span>
+  <span class="wrapper mark">
     <ul class="inline-menu combo-menu nicemenu">
       <li class="inline-menu-item nicemenu-item">
         <span class="headmenu">
+          <a href="#" onclick="return false;" class="default-action">${unique_edit ? EDIT_PROPERTY : ADD_PROPERTY}</a>
           <a href="javascript:void(0)" class="more-action">menu</a>
         </span>
         <ul class="row-menu submenu">
-          <acre:block if="ph.is_property_editable(prop_structure)">
-            <li acre:if="prop_structure.unique && prop_values.length" class="row-menu-item">
-              <a href="#" onclick="return propbox.prop_edit(this, ${prop_structure.unique});">${EDIT_VALUE}</a>
-            </li>
-            <li acre:else="" class="row-menu-item">
-              <a href="#" onclick="return propbox.prop_add(this, ${prop_structure.unique});">${ADD_NEW_VALUE}</a>
-            </li>
-          </acre:block>
+          <li acre:if="unique_edit" class="row-menu-item">
+            <a href="#" onclick="return propbox.prop_edit(this, ${prop_structure.unique});">${EDIT_VALUE}</a>
+          </li>
+          <li acre:else="" class="row-menu-item">
+            <a href="#" onclick="return propbox.prop_add(this, ${prop_structure.unique});">${ADD_NEW_VALUE}</a>
+          </li>
           <li class="row-menu-item fb-site-only">
             <a href="${h.build_query_url(topic.id, null, prop_structure.id)}">${QUERY_PROPERTY}</a>
           </li>
-	  <li class="row-menu-item fb-site-only">
+          <li class="row-menu-item fb-site-only">
             <acre:script>
               var master_prop = prop_structure.master_property ? prop_structure.master_property.id : prop_structure.id;
             </acre:script>
@@ -458,6 +451,9 @@
         </ul>
       </li>
     </ul>
+    <span class="property-label">
+      <a href="${h.fb_url(topic.id, [['property', prop_structure.id]])}">${prop_structure.text}</a>
+    </span>
   </span>
 </acre:block>
 
@@ -469,25 +465,23 @@
       is_blob = true;
     }
   </acre:script>
-  <acre:block if="ph.is_property_editable(prop_structure)">
-    <ul class="combo-menu nicemenu">
-      <li class="nicemenu-item">
-        <span class="headmenu">
-          <a href="#" onclick="return false;" class="default-action edit-action">edit</a>
-          <a href="javascript:void(0)" class="more-action">menu</a>
-        </span>
-        <ul class="submenu row-menu">
-          <li class="row-menu-item"><a href="#" onclick="return propbox.value_edit(this);">${EDIT}</a></li>
-          <li class="row-menu-item"><a href="#" onclick="return propbox.value_delete(this);">${DELETE}</a></li>
-          <acre:block if="!is_blob && topic && prop_structure && prop_value && lang">
-            <li acre:if="!h.is_literal_type(prop_structure.expected_type.id)" class="row-menu-item fb-site-only">
-              <a href="${h.fb_url(prop_value.id, [['i18n']])}">${EDIT_LOCALIZED_TEXT}</a>
-            </li>
-          </acre:block>
-        </ul>
-      </li>
-    </ul>
-  </acre:block>
+  <ul class="combo-menu nicemenu">
+    <li class="nicemenu-item">
+      <span class="headmenu">
+        <a href="#" onclick="return false;" class="default-action edit-action">edit</a>
+        <a href="javascript:void(0)" class="more-action">menu</a>
+      </span>
+      <ul class="submenu row-menu">
+        <li class="row-menu-item"><a href="#" onclick="return propbox.value_edit(this);">${EDIT}</a></li>
+        <li class="row-menu-item"><a href="#" onclick="return propbox.value_delete(this);">${DELETE}</a></li>
+        <acre:block if="!is_blob && topic && prop_structure && prop_value && lang">
+          <li acre:if="!h.is_literal_type(prop_structure.expected_type.id)" class="row-menu-item fb-site-only">
+            <a href="${h.fb_url(prop_value.id, [['i18n']])}">${EDIT_LOCALIZED_TEXT}</a>
+          </li>
+        </acre:block>
+      </ul>
+    </li>
+  </ul>
 </acre:block>
 
 <acre:block def="empty_row_tr(cols)">
@@ -502,7 +496,7 @@
 
 <acre:block def="empty_row_li(menu, topic, prop_structure, prop_value, lang)">
   <li class="empty-row">
-    <span class="wrapper">
+    <span class="wrapper first">
       <span class="property-value empty-property">-</span>
       <acre:block if="menu">
         ${value_menu(topic, prop_structure, prop_value, lang)}
@@ -562,7 +556,7 @@ propbox edit forms
           <input type="hidden" name="lang" value="${h.lang_code(lang)}"/>
           ${form.submit_buttons()}
        </td>
-      </tr>      
+      </tr>
     </tbody>
   </table>
 </acre:block>
@@ -640,7 +634,7 @@ propbox edit forms
     <span class="data-input boolean ${JSON.stringify(data)}">
       <label>
         <input type="radio" name="${name}" class="fb-boolean-input" value="true"
-               acre:attrs="prop_value.value === true ? {checked:'checked'} : {}"/> 
+               acre:attrs="prop_value.value === true ? {checked:'checked'} : {}"/>
         Yes
       </label>
       <label>
@@ -667,7 +661,7 @@ propbox edit forms
         <acre:script>
           var ns = prop_value ? prop_value.namespace || prop_value.id : null;
         </acre:script>
-        <input class="fb-input topic key-namespace" type="text" name="namespace" 
+        <input class="fb-input topic key-namespace" type="text" name="namespace"
                acre:attrs="prop_value && ns ? {value:ns} : {}">
       </label>
       <label>
@@ -677,26 +671,26 @@ propbox edit forms
     </span>
   </acre:block>
   <acre:block elif="type === 'int'">
-    <span class="data-input ${type} ${JSON.stringify(data)}">      
-      <input class="fb-input" type="text" name="${name}" 
+    <span class="data-input ${type} ${JSON.stringify(data)}">
+      <input class="fb-input" type="text" name="${name}"
              acre:attrs="prop_value ? {value:i18n.format_number(prop_value.value)} : {}"/>
-    </span>    
+    </span>
   </acre:block>
   <acre:block elif="type === 'float'">
-    <span class="data-input ${type} ${JSON.stringify(data)}">      
-      <input class="fb-input" type="text" name="${name}" 
+    <span class="data-input ${type} ${JSON.stringify(data)}">
+      <input class="fb-input" type="text" name="${name}"
              acre:attrs="prop_value ? {value:i18n.format_number(prop_value.value, true)} : {}"/>
-    </span>    
+    </span>
   </acre:block>
   <acre:block elif="type === 'datetime'">
-    <span class="data-input ${type} ${JSON.stringify(data)}">      
-      <input class="fb-input" type="text" name="${name}" 
+    <span class="data-input ${type} ${JSON.stringify(data)}">
+      <input class="fb-input" type="text" name="${name}"
              acre:attrs="prop_value ? {value:i18n.format_datetime(prop_value.value)} : {}"/>
-    </span>   
+    </span>
   </acre:block>
   <acre:block else="">
-    <span class="data-input ${type} ${JSON.stringify(data)}">      
-      <input class="fb-input" type="text" name="${name}" 
+    <span class="data-input ${type} ${JSON.stringify(data)}">
+      <input class="fb-input" type="text" name="${name}"
              acre:attrs="prop_value ? {value:prop_value.value} : {}"/>
     </span>
   </acre:block>
@@ -708,7 +702,7 @@ propbox edit forms
   </acre:block>
   <acre:block else="">
     ${value_edit_form_simple(topic_id, prop_structure, prop_value, lang)}
-  </acre:block>  
+  </acre:block>
 </acre:block>
 
 <acre:block def="value_edit_form_cvt(topic_id, prop_structure, prop_value, lang)">
@@ -751,7 +745,7 @@ propbox edit forms
           ${form.submit_buttons()}
           <button class="button delete">${_('Delete')}</button>
         </td>
-      </tr>          
+      </tr>
     </tbody>
   </table>
 </acre:block>
@@ -809,7 +803,7 @@ propbox edit forms
         <acre:block if="replace_document">
           <span>${h.sprintf(_("Edit article for %s"), topic_id)}</span>
         </acre:block>
-        <acre:block else="">            
+        <acre:block else="">
           <span>${h.sprintf(_("Add new article to %s"), topic_id)}</span>
         </acre:block>
       </h1>
@@ -830,9 +824,9 @@ propbox edit forms
           </label>
         </div>
         <div class="form-group form-row">
-          <textarea name="content" 
+          <textarea name="content"
                     class="textarea"
-                    maxlength="4096" 
+                    maxlength="4096"
                     rows="10"
                     placeholder="${_('Enter article')}&hellip;">${replace_document ? replace_document.body : ""}</textarea>
         </div>
@@ -880,7 +874,7 @@ propbox edit forms
         <acre:block if="replace_image">
           <span>${h.sprintf(_("Edit image for %s"), topic_id)}</span>
         </acre:block>
-        <acre:block else="">            
+        <acre:block else="">
           <span>${h.sprintf(_("Add new image to %s"), topic_id)}</span>
         </acre:block>
       </h1>

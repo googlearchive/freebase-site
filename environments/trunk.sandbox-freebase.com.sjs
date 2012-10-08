@@ -6,13 +6,13 @@ var environment_rules = {
     "labels" : {
         "lib": "//lib.www.trunk.svn.freebase-site.googlecode.dev",
         "default" : "//default.dev",
-
-        "site": "//site" + codebase,
         "account": "//account" + codebase,
         "appeditor": "//appeditor" + codebase,
         "apps": "//apps" + codebase,
         "create": "//create" + codebase,
         "data": "//data" + codebase,
+        "formbuilder": "//formbuilder" + codebase,
+        "i18n": "//4a.i18n" + tags_codebase,
         "mdo": "//mdo" + codebase,
         "policies": "//policies" + codebase,
         "query": "//query" + codebase,
@@ -30,5 +30,5 @@ var environment_rules = {
 
 };
 
-acre.require(environment_rules.labels.site + "/router.sjs").route(environment_rules);
+acre.require(environment_rules.labels.lib + "/routing/router.sjs").route(environment_rules, this);
 

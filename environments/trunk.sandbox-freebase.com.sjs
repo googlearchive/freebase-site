@@ -12,7 +12,7 @@ var environment_rules = {
         "create": "//create" + codebase,
         "data": "//data" + codebase,
         "formbuilder": "//formbuilder" + codebase,
-        "i18n": "//4a.i18n" + tags_codebase,
+        "i18n": "//i18n" + tags_codebase,
         "mdo": "//mdo" + codebase,
         "policies": "//policies" + codebase,
         "query": "//query" + codebase,

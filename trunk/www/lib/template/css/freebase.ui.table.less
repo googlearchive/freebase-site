@@ -162,10 +162,10 @@ for all *non-propbox* tables
   white-space: nowrap;
 }
 
-li:hover .truncate,
-th:hover .truncate,
-td:hover .truncate {
-  position: absolute;
+li:hover > .truncate,
+th:hover > .truncate,
+td:hover > .truncate {
+  position: absolute !important;
   max-width: 1000px;
   z-index: 10;
   background: #f8f8f8;

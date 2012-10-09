@@ -31,26 +31,51 @@
 ;(function ($) {
 
   /**
-   * A simple utility to set the column width of a <table>.
-   * By default, this will get the original rendered width
-   * of the first (top, left) cell of the table and literally set it's
-   * width with it.
-   * This is useful for tables that are dynamically updated
-   * (ie. infinitescroll), and you don't want your columns to change.
+   * A simple utility to fix the width of all or specific column(s)
+   * of a <table>.
+   * You should use this with a proper TABLE structure with a THEAD.
+   * It will find the first row (TR) of the table, preferably in the THEAD
+   * section and calculate and set the width of the column(s) specified
+   * in options.
+   * Please make sure your table cell content within TD or TH,
+   * is wrapped by an inline-block element, since we cannot set the width of
+   * TD or TH elements. For example:
+   *
+   * <table>
+   *   <thead>
+   *     <tr>
+   *       <th>
+   *         <span class="wrapper" style="display:inline-block">
+   *         ...
+   *         </span>
+   *       </th>
+   *       ...
+   *
+   * USAGE:
+   *   $("#mytable").fixedcolumn();           // fix width for 1st column
+   *   $("#mytable").fixedcolumn({all:true}); // fix width for all columns
    */
+  $.fn.fixedcolumn = function(options) {
+    var o = $.extend(true, {}, options);
 
-  $.fn.fixedcolumn = function() {
     return this.each(function() {
-      var first = $(this).find("tr:first").find("> :first-child");
-      if (first.length) {
-        var name = first[0].nodeName.toUpperCase();
+      var children;
+      if (o.all) {
+        children = $(this).find("tr:first").children();
+      }
+      else {
+        children = $(this).find("tr:first").find("> :first-child");
+      }
+      children.each(function() {
+        var child = $(this);
+        var name = child[0].nodeName.toUpperCase();
         if (name === "TD" || name === "TH") {
-          var w = first.width();
+          var w = child.width();
           if (w > 0) {
-            first.width(w);
+            $(":first-child", child).width(w).css("display","inline-block");
           }
         }
-      }
+      });
     });
   };
 

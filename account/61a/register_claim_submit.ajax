@@ -1,0 +1,107 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+var validators = acre.require('lib/validator/validators.sjs');
+var urlfetch = acre.require('lib/promise/apis').urlfetch;
+var templates = acre.require('templates');
+var h = acre.require('helpers.sjs');
+var ServiceError = acre.require('lib/handlers/service_lib.sjs').ServiceError;
+
+function simple_error_response() {
+  return {html: 'Freebase registration is currently down. Please try again later.'};
+}
+
+function unauthenticated_response() {
+  return {html: 'Must be logged in to use this service.'};
+}
+
+/**
+ * Send an email to verify ownership of this account.
+ */
+var SPEC = {
+  method: 'POST',
+
+  validate: function(params) {
+    return [validators.String(params, 'username')];
+  },
+
+  run: function(username) {
+    if (!acre.oauth.has_credentials(h.account_provider())) {
+      return unauthenticated_response();
+    }
+    
+    // Send claim email to owner of email account to verify ownership.
+    var user_claim_url = acre.freebase.googleapis_url+'/user/claim/'+username;
+    var claim_params = acre.form.encode({
+      claim_url: acre.request.app_url+'/account/claim'
+    });
+    
+    return urlfetch(user_claim_url, {
+      method: 'POST', content: claim_params, sign: true})
+      .then(function(response) {
+        var result = JSON.parse(response.body);
+        if (result.claiming) {
+          return {
+            html: acre.markup.stringify(templates.claiming_account(result.claiming))
+          };
+        } else if (result.claimed) {
+          return {
+            html: acre.markup.stringify(templates.claimed_account(result.claimed))
+          };
+        } else {
+          console.warn('Unexpected response from user claim: '+response);
+          return simple_error_response();
+        }
+      }, function(failure) {
+        try {
+          var result = JSON.parse(failure.response.body).error;
+        } catch (e) {
+          console.error('Received unparseable response from user claim.', e);
+          return simple_error_response();
+        }
+        
+        var error = h.extract_first_error(result);       
+        if (error.code === 400) {
+          throw new ServiceError('400 Bad Request', '/api/status/error/claim', {
+            message: error.message ||
+              'There was an unknown error trying to claim this username.',
+            code: '/api/status/error/invalid/username'
+          });
+        }
+
+        console.error('Received unknown error from user claim.', failure);
+        return {
+          'html': JSON.stringify(failure)
+        };
+        return simple_error_response();
+      });
+  }
+};

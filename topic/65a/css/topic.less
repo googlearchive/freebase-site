@@ -1,0 +1,395 @@
+/*
+ ### Page Structure
+*/
+#page-content {
+  position: relative;
+}
+
+.nav.column {
+  position: absolute;
+  width: 230px;
+  margin-right: 20px;
+  margin-top: -7px;
+}
+
+.section.domain {
+  margin: 20px 0;
+  margin-left: 250px;
+  background: #fff;
+  padding: 15px;
+  .box_shadow(1px, 2px, 3px, #bbb);
+}
+
+/*
+ ### Domain Box Styling
+*/
+
+/* The Domain Name */
+.section h1 {
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+/* Domain status: Commons, Base, Unpublished, etc.*/
+.header .status {
+  float: right;
+  margin-top: 7px;
+  margin-right: 15px;
+  font-size: 11px;
+  color: #aaa;
+  padding-left: 20px;
+}
+
+/*
+ * Styling for Commons vs User Domain
+ */
+
+.status.commons,
+.status.user {
+  background: url(lib/template/img/ui-icons.png) no-repeat;
+}
+
+.status.commons {
+  background-position: 0 -1389px;
+}
+
+.status.user {
+  background-position: 0 -1417px;
+}
+
+
+/*
+  The .toolbar class is meant to contain utility links that act upon
+  the data directly below.
+*/
+
+.toolbar {
+  margin-left: 250px;
+  line-height: 1;
+  padding-left: 15px;
+  background: #c0c8cf;
+}
+body.embed .toolbar {
+  display: none;
+}
+
+.toolbar.active {
+  position: relative;
+  z-index: 1;
+  .box_shadow(0, 2px, 2px, #c1c2c3);
+}
+
+.toolbar ul {
+  float: left;
+  list-style: none;
+  font-size: 12px;
+  border-right: 1px solid #e3e5e6;
+}
+
+.toolbar li {
+  float: left;
+  border-left: 1px solid #999ea3;
+}
+
+.toolbar li:last-child {
+  border-right: 1px solid #999ea3;
+}
+
+.toolbar li a {
+  display: block;
+  color: #3f3f3f;
+  padding: 5px 15px;
+  border-left: 1px solid #d3d9dd;
+  .transition(all);
+}
+
+.toolbar li a:hover {
+  background: rgba(100,100,100,0.1);
+}
+
+.toolbar li a.active {
+  opacity: 1;
+  background-color: rgba(0,0,0,0.15);
+}
+
+.toolbar-pane {
+  display: none;
+  margin: 0 0 20px 250px;
+  padding: 15px;
+  background: #fff;
+  border: 1px solid #d6d8d9;
+}
+
+.toolbar-pane-title {
+  font-size: 12px;
+  color: #333;
+  font-weight: bold;
+}
+
+.multi-column li {
+  display: inline;
+}
+
+.no-js li:after {
+  content: ",";
+}
+
+.csscolumns .multi-column li {
+  display: list-item;
+  font-size: 12px;
+}
+
+.add-type .fb-input {
+  width: 200px;
+}
+
+.manage-types {
+  position: relative;
+  min-height: 150px;
+}
+
+.topic-type-list {
+  font-size: 11px;
+  list-style: none;
+
+  li {
+    padding: 2px 5px 2px 0;
+  }
+
+  li .close-msg {
+    float: right;
+    visibility: hidden;
+  }
+
+  li:hover {
+    background: rgba(0,0,0,0.1);
+  }
+
+  li:hover .close-msg,
+  li.remove-type-result .close-msg{
+    visibility: visible; 
+  }
+
+  .remove-type-result {
+    background: rgba(0,0,0,0.2);
+  }
+
+  .remove-type-result .close-msg {
+    display: none;
+  }
+}
+
+
+@media only screen 
+and (min-width: 1024px) {
+
+  .topic-types {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 40%;
+    overflow: hidden;
+    padding: 15px 10px;
+    background: #efefef;
+    font-size: 11px;
+    -moz-box-shadow: inset 1px -2px 4px #ccc;
+    -webkit-box-shadow: inset 1px -2px 4px #ccc;
+    box-shadow: inset 1px -2px 4px #ccc;
+  }
+
+  .js .topic-types {
+    opacity: 0;
+  }
+
+  .topic-type-list::-webkit-scrollbar {
+    width: 14px;
+    height: 16px;
+    background: #efefef;
+  }  
+  .topic-type-list::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+  .topic-type-list::-webkit-scrollbar-thumb:vertical {
+    border-left: 4px solid #efefef;
+    border-right: 4px solid #efefef;
+    background: rgba(0, 0, 0, .1);
+  }
+
+  .topic-type-list:hover::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, .1);
+  } 
+  .topic-type-list::-webkit-scrollbar-thumb:vertical:hover {
+    background: rgba(0, 0, 0, .2);
+  }
+  .topic-type-list::-webkit-scrollbar-track-piece:vertical:start {
+    margin-top: 4px;
+  }
+  .topic-type-list::-webkit-scrollbar-track-piece:horizontal:start {
+    margin-left: 4px;
+  }
+  .csscolumns .topic-type-list {
+    overflow-y: scroll;
+  }
+  .csscolumns .topic-type-list.multicolumn ul {
+    .column_count(2);
+    margin: 5px 0;
+  }
+}
+
+
+/* menu styling for property value triggers */
+
+.data-table tr.current li {
+  list-style: none !important;
+}
+
+.kbs.row-hover .combo-menu {
+  visibility: visible;
+}
+
+#page-content .combo-menu li,
+#page-content .combo-menu li {
+  background-image: none;
+}
+
+.row-menu {
+  .rounded_corners(0);
+}
+
+
+/*
+Keyboard Shortcuts cheatsheet
+*/
+
+.keyboard-shortcuts {
+  text-align: center;
+  font-size: 12px;
+  background: transparent;
+  border: 0;
+  .box_shadow(0,0,0);
+}
+
+.keyboard-shortcuts a {
+  display: inline-block;
+  padding-bottom: 3px;
+  color: #666;
+  padding-left: 40px;
+  background: url(lib/template/img/keyboard.png) no-repeat left top;
+}
+
+.key-map {
+  font-size: 12px;
+  margin: 10px 0;
+}
+
+.key-symbol {
+  display: inline-block;
+  line-height: 1;
+  text-align: center;
+  width: 14px;
+  padding: 5px;
+  border: 1px solid #d1d2d3;
+  margin-right: 5px;
+  .linear_gradient;
+}
+
+.key-desc {
+  display: inline;
+}
+
+
+
+
+/*
+/*
+ * Flag > Merge dialog 
+ */
+
+.merge-topic {
+  width: 100%;
+}
+
+.merge-topic tr:first-child td {
+  border-bottom: 1px solid #d1d2d3;
+}
+
+.merge-topic td {
+  padding: 20px 10px;
+  font-size: 11px;
+}
+
+.merge-topic td.label {
+  width: 60px;
+  text-align: right;
+  color: #ccc;
+  padding-right: 15px;
+  vertical-align: middle;
+}
+
+.label .form-label {
+  margin: 0;
+  font-size: 18px;
+  font-weight: lighter;
+}
+
+.flag img {
+  float: left;
+  margin: 0 10px 5px 0;
+  border: 3px solid #e1e2e3;
+  .rounded_corners;
+}
+
+.merge-topic p,
+.merge-topic .topic-title {
+  font-weight: bold;
+}
+
+.merge-topic .topic-title {
+  margin-top: 5px;
+}
+
+.merge-topic p strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+
+/*
+ * Add Type Results 
+ */
+
+.add-type-result-msg,
+.add-type-result-msg-note {
+  margin: -15px;
+  margin-bottom: 15px;
+  font-size: 12px;
+  padding: 5px 30px;
+}
+
+.add-type-result-msg .close-msg,
+.add-type-result-msg-note .close-msg {
+  display: none;
+}
+
+.add-type-result-msg {
+  font-weight: bold;
+  color: #252525;
+  background-color: #a4ce9a;
+  background-image: -webkit-repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2) 2px, rgba(255,255,255,0) 2px, rgba(255,255,255,0) 4px);
+  background-image: -moz-repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2) 2px, rgba(255,255,255,0) 2px, rgba(255,255,255,0) 4px);
+}
+
+.add-type-result-msg-note {
+  background: #e8f0db; 
+  padding: 10px 30px;
+}
+
+
+/**
+ * For now, don't show /type/object/key and /type/object/type
+ */
+.property-section[data-id="/type/object/type"],
+.property-section[data-id="/type/object/key"] {
+  display: none;
+}
+

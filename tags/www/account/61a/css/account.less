@@ -1,0 +1,146 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+----------------------------
+GENERAL
+----------------------------
+*/
+h1 {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+h2 {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.form-field {
+    padding: 7px 2px;
+}
+
+label {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+body {
+    min-width: 0px;
+}
+
+input.error {
+    border: 1px solid red;
+}
+
+.input-error {
+    color: red;
+    display: none;
+}
+
+p {
+    font-size: 1.2em;
+    padding: 5px 0px;
+}
+
+.inner-content {
+    padding: 5px;
+}
+
+li {
+    margin-left: 15px;
+}
+
+.input-standard {
+    border: 1px solid #cccccc;
+    .rounded_corners(4px);
+    padding: 0.6em 0.4em;
+    margin: 0;
+}
+
+#reconnect,
+#registration {
+	width: 550px;
+}
+
+/*
+----------------------------
+ACCORDION
+----------------------------
+*/
+
+/* accordion header */
+#reconnect-section h2,
+#register-accordion h2 {
+    /* background: #ccc;*/
+    margin: 0;
+    padding: 5px 15px;
+    font-size: 14px;
+    font-weight: normal;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;	
+		color: #1170A3;
+		background: #F8F8F8;
+}
+
+/* currently active header */
+#register-accordion h2.current {
+    cursor: default;
+		color: #666;
+		font-weight: bold;
+
+}
+
+/* accordion pane */
+#reconnect-section .pane,
+#register-accordion .pane {
+    padding: 15px;
+		background: #fff;
+		border-bottom: 1px solid #ddd;
+}
+
+.input-help {
+	font-size: 1.1em;
+	margin-left: 0.5em;
+}
+
+/*
+----------------------------
+CLAIM
+----------------------------
+*/
+#claim-token {
+    width: 38em;
+}
+
+#claim-content {
+    height: 500px;
+}

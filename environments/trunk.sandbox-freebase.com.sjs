@@ -1,5 +1,6 @@
 
 var codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
+var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
 
 var environment_rules = {
 
@@ -12,7 +13,7 @@ var environment_rules = {
         "create": "//create" + codebase,
         "data": "//data" + codebase,
         "formbuilder": "//formbuilder" + codebase,
-        "i18n": "//i18n" + tags_codebase,
+        "i18n": "//i18n" + codebase,
         "mdo": "//mdo" + codebase,
         "policies": "//policies" + codebase,
         "query": "//query" + codebase,

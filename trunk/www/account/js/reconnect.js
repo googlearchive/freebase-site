@@ -28,119 +28,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+(function($) {
 
-/*
-----------------------------
-GENERAL
-----------------------------
-*/
-h1 {
-    font-size: 16px;
-    font-weight: bold;
-}
+  $(function() {
+    /**
+     * We want to modify the main "Sign In or Sign Up" url in the header
+     * so that we don't get redirected to this /account/reconnect page
+     * after signin.
+     */
+    $('#fb-signin-link').attr('href', $('#reconnect-signin').attr('href'));
+  });
 
-h2 {
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.form-field {
-    padding: 7px 2px;
-}
-
-label {
-    font-size: 12px;
-    font-weight: bold;
-}
-
-body {
-    min-width: 0px;
-}
-
-input.error {
-    border: 1px solid red;
-}
-
-.input-error {
-    color: red;
-    display: none;
-}
-
-p {
-    font-size: 1.2em;
-    padding: 5px 0px;
-}
-
-.inner-content {
-    padding: 5px;
-}
-
-li {
-    margin-left: 15px;
-}
-
-.input-standard {
-    border: 1px solid #cccccc;
-    .rounded_corners(4px);
-    padding: 0.6em 0.4em;
-    margin: 0;
-}
-
-#reconnect,
-#registration {
-	width: 550px;
-}
-
-/*
-----------------------------
-ACCORDION
-----------------------------
-*/
-
-/* accordion header */
-#reconnect-section h2,
-#register-accordion h2 {
-    /* background: #ccc;*/
-    margin: 0;
-    padding: 5px 15px;
-    font-size: 14px;
-    font-weight: normal;
-    border-bottom: 1px solid #ddd;
-    cursor: pointer;	
-		color: #1170A3;
-		background: #F8F8F8;
-}
-
-/* currently active header */
-#register-accordion h2.current {
-    cursor: default;
-		color: #666;
-		font-weight: bold;
-
-}
-
-/* accordion pane */
-#reconnect-section .pane,
-#register-accordion .pane {
-    padding: 15px;
-		background: #fff;
-		border-bottom: 1px solid #ddd;
-}
-
-.input-help {
-	font-size: 1.1em;
-	margin-left: 0.5em;
-}
-
-/*
-----------------------------
-CLAIM
-----------------------------
-*/
-#claim-token {
-    width: 38em;
-}
-
-#claim-content {
-    height: 500px;
-}
+})(jQuery);

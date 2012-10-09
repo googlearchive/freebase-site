@@ -1,0 +1,505 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var h = acre.require("lib/helper/helpers.sjs");
+  var schema_h = acre.require("helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var _ = i18n.gettext;
+  var form = acre.require("lib/propbox/form.mjt");
+</acre:script>
+
+<acre:block def="add_property_form(type_id)">
+  <table class="edit-form clear">
+    <tbody>
+      <tr class="edit-row">
+        <td colspan="4">
+          <div class="form-field fb-property-name">
+            <label>
+              <span class="form-label">${_('Name')}</span>
+              <input name="name" type="text" class="text-input"/>
+            </label>
+          </div>
+          <div class="form-field fb-property-key">
+            <label>
+              <span class="form-label">
+                ${_('Key')}
+                <span class="key">${type_id}/</span>
+              </span>
+              <input name="key" type="text" class="text-input"/>
+              <span class="key-status"></span>
+            </label>
+          </div>
+          <div class="form-field fb-property-expected-type">
+            <label>
+              <span class="form-label">${_('Expected Type')}</span>
+              <input name="expected_type_input" type="text" class="text-input suggest-input"/>
+            </label>
+          </div>
+          <div class="form-field fb-property-description">
+            <label>
+              <span class="form-label">${_('Description')}</span>
+              <textarea name="description" class="textarea" rows="3"></textarea>
+            </label>
+            <div class="fb-property-display">
+              <label for="disambiguator" class="boolean-field">
+                <input type="checkbox" name="disambiguator"/>
+                ${_('Disambiguating')}
+              </label>
+              <label for="unique" class="boolean-field">
+                <input type="checkbox" name="unique"/>
+                ${_('Unique')}
+              </label>
+              <label for="hidden" class="boolean-field">
+                <input type="checkbox" name="hidden"/>
+                ${_('Hidden')}
+              </label>
+              <label for="master" class="boolean-field">
+                <input type="checkbox" name="master" disabled="disabled" checked="checked"/>
+               <span>${_('Master')}</span>
+              </label>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr class="edit-row-submit">
+        <td colspan="4">
+          <input name="type" type="hidden" value="${type_id}"/>
+          <input name="expected_type" type="hidden"/>
+          <input name="expected_type_new" type="hidden"/>
+          <input name="unit" type="hidden"/>
+          <input name="enumeration" type="hidden"/>
+
+          ${form.submit_buttons()}
+        </td>
+      </tr>
+    <tbody>
+  </table>
+</acre:block>
+
+<acre:block def="edit_property_form(prop)">
+  <acre:script>
+    var type_id = prop.schema.id;
+
+    // acre:attrs
+    var ect_input = {};
+    var ect = {};
+    var unit = {};
+    if (prop.expected_type) {
+      ect_input.value = ect.value = prop.expected_type.id;
+      if (prop.unit) {
+        unit.value = prop.unit.id;
+        ect_input.value = ect_input.value + 
+          " (" + prop.unit["/freebase/unit_profile/abbreviation"] + ")";
+      }
+      if (prop.used || prop.delegated) {
+        ect_input.disabled = 'disabled';
+      }
+    }
+    var enumeration = {};
+    if (prop.enumeration && prop.expected_type.id === '/type/enumeration') {
+      enumeration.value = prop.enumeration.id;
+      ect_input.value = ect_input.value + " (" + prop.enumeration.id + ")";
+    }
+  </acre:script>
+  <table class="edit-form clear">
+    <tbody>
+      <tr class="edit-row">
+        <td colspan="4">
+          <div acre:if="prop.delegated" class="form-msg">
+            <acre:script>
+              var sprintf_args = {
+                delegated: tag_a(prop.delegated.id, h.fb_url(prop.delegated.id, [['schema']])),
+                expected_type: tag_strong(_("Expected Type")),
+                uniqueness: tag_strong(_("Uniqueness"))
+              };
+            </acre:script>
+            ${h.template_sprintf(_("This property is being delegated to %(delegated)s. You cannot change the %(expected_type)s or %(uniqueness)s."), sprintf_args)}
+          <a href="${h.build_query_url(null, type_id, prop.id)}">
+            ${_('View instances')} &raquo;
+          </a>
+          </div>
+          <div acre:elif="prop.used" class="form-msg" acre:trim="">
+            <acre:block if="prop.unique">
+              ${h.template_sprintf(_("This property is being used. You cannot change the %s."), tag_strong(_("Expected Type")))}
+            </acre:block>
+            <acre:block else="">
+              <acre:script>
+                var sprintf_args = {
+                  expected_type: tag_strong(_("Expected Type")),
+                  uniqueness: tag_strong(_("Uniqueness"))
+                };
+              </acre:script>
+              ${h.template_sprintf(_("This property is being used. You cannot change the %(expected_type)s or %(uniqueness)s."), sprintf_args)}
+            </acre:block>
+            <a href="${h.build_query_url(null, type_id, prop.id)}">
+              ${_('View instances')} &raquo;
+            </a>
+          </div>
+          <acre:block if="prop.master_property">
+            <div class="form-msg">
+              ${h.template_sprintf(_("This is the reverse_property of %s."), tag_a(prop.master_property.id, h.fb_url(prop.master_property.id, [['schema']])))}
+            </div>
+          </acre:block>
+          <acre:block elif="prop.reverse_property">
+            <div class="form-msg">
+              ${h.template_sprintf(_("This is the master_property of %s."),  tag_a(prop.reverse_property.id, h.fb_url(prop.reverse_property.id, [['schema']])))} 
+            </div>
+          </acre:block>
+          <div class="form-field fb-property-name">
+            <label>
+              <span class="form-label">${_('Name')}</span>
+              <acre:script>
+                var attrs = {
+                  name: "name",
+                  type: "text", 
+                  "class": "text-input",
+                  value: i18n.display_name(prop, "", null, i18n.lang) 
+                };
+              </acre:script>
+              <input acre:attrs="attrs"/>
+            </label>
+          </div>
+          <div class="form-field fb-property-key">
+            <label>
+              <span class="form-label">
+                ${_('Key')}
+                <span class="key">${type_id}/</span>                
+              </span>
+              <input name="key" type="text" class="text-input" value="${prop.key.value}"/>
+              <span class="key-status"></span>
+            </label>
+          </div>
+          <div class="form-field fb-property-expected-type">
+            <acre:script>
+
+           </acre:script>
+            <label>
+              <span class="form-label">${_('Expected Type')}</span>
+              <input name="expected_type_input" type="text" 
+                     class="text-input suggest-input" acre:attrs="ect_input"/>
+           </label>
+          </div>
+          <div class="form-field fb-property-description">
+            <label>
+              <span class="form-label">${_('Description')}</span>
+              <acre:script>
+                var desc = i18n.display_text(
+                  prop, "", "/common/topic/description", i18n.lang);
+                var attrs = {"name":"description", "class":"textarea", rows:3};
+              </acre:script>
+              <textarea acre:attrs="attrs">${desc}</textarea>
+            </label>
+            <div class="fb-property-display">
+              <label for="disambiguator" class="boolean-field">
+                <input type="checkbox" name="disambiguator" 
+                       acre:attrs="prop['/freebase/property_hints/disambiguator']?{checked:'checked'}:{}"/>
+                ${_('Disambiguating')}
+              </label>
+              <label for="unique" class="boolean-field">
+                <acre:script>
+                  var unique = {};
+                  if (prop.unique) {
+                    unique.checked = 'checked';
+                  }
+                  if ((prop.used && !prop.unique) || prop.delegated) {
+                    unique.disabled = 'disabled';
+                  }
+                </acre:script>
+                <input type="checkbox" name="unique" acre:attrs="unique"/>
+                ${_('Unique')}
+              </label>
+              <label for="hidden" class="boolean-field">
+                <input type="checkbox" name="hidden" 
+                       acre:attrs="prop['/freebase/property_hints/display_none']?{checked:'checked'}:{}"/>
+                ${_('Hidden')}
+              </label>
+              <label for="deprecated" class="boolean-field">
+                <input type="checkbox" name="deprecated" 
+                       acre:attrs="prop['/freebase/property_hints/deprecated']?{checked:'checked'}:{}"/>
+                ${_('Deprecated')}
+              </label>
+              <acre:block if="prop.delegated">
+                <label for="delegated" class="boolean-field">
+                  <input type="checkbox" name="delegated" disabled="disabled" checked="checked"/>
+                  ${_('Delegated')}
+                </label>
+              </acre:block>
+              <acre:block elif="prop.master_property">
+                <label for="reverse" class="boolean-field">
+                  <input type="checkbox" name="reverse" disabled="disabled" checked="checked"/>
+                  ${_('Reverse')}
+                </label>
+              </acre:block>
+              <acre:block else="">
+                <label for="master" class="boolean-field">
+                  <input type="checkbox" name="master" disabled="disabled" checked="checked"/>
+                  ${_('Master')}
+                </label>
+              </acre:block>
+            </div>          
+          </div>        
+        </td>
+      </tr>
+      <tr class="edit-row-submit">
+        <td colspan="4">
+          <input name="type" type="hidden" value="${type_id}"/>
+          <input name="id" type="hidden" value="${prop.id}" />
+          <input name="expected_type" type="hidden" acre:attrs="ect"/>
+          <input name="expected_type_new" type="hidden"/>
+          <input name="unit" type="hidden" acre:attrs="unit"/>
+          <input name="enumeration" type="hidden" acre:attrs="enumeration"/>
+
+          ${form.submit_buttons()}
+        </td>
+      </tr>
+    <tbody>
+  </table>
+</acre:block>
+
+<acre:block def="reverse_property_form(type_id, master_prop)">
+  <table class="edit-form clear">
+    <tbody>
+      <tr class="edit-row">
+        <td colspan="2">
+          <div class="form-field fb-property-name">
+            <label>
+              <span class="form-label">${_('Name')}</span>
+              <input name="name" type="text" class="text-input"/>
+           </label>
+          </div>
+          <div class="form-field fb-property-key">
+            <label>
+              <span class="form-label">
+                ${_('Key')}
+                <span class="key">${type_id}/</span>                
+              </span>
+              <input name="key" type="text" class="text-input"/>
+              <span class="key-status"></span>
+            </label>
+          </div>
+          <div class="form-field fb-property-expected-type">
+            <label>
+              <span class="form-label">${_('Expected Type')}</span>
+              <input name="expected_type_input" type="text" class="text-input suggest-input" 
+                     value="${master_prop.schema.id}" disabled="disabled"/>              
+            </label>
+          </div>
+          <div class="form-field fb-property-description">
+            <label>
+              <span class="form-label">${_('Description')}</span>
+              <textarea name="description" class="textarea" rows="3"></textarea>
+            </label>
+            <div class="fb-property-display">
+              <label for="disambiguator" class="boolean-field">
+                <input type="checkbox" name="disambiguator"/>
+                ${_('Disambiguating')}
+              </label>
+              <label for="unique" class="boolean-field">
+                <acre:script>
+                  var unique = {disabled:'disabled'};
+                  if (master_prop.unique) {
+                    unique.checked = 'checked';
+                 }
+                </acre:script>
+                <input type="checkbox" name="unique" acre:attrs="unique"/>
+                ${_('Unique')}
+              </label>
+              <label for="hidden" class="boolean-field">
+                <input type="checkbox" name="hidden"/>
+                ${_('Hidden')}
+              </label>
+              <label for="reverse" class="boolean-field">
+                <input type="checkbox" name="reverse" disabled="disabled" checked="checked"/>
+                ${_('Reverse')}
+              </label>
+            </div>          
+          </div>        
+        </td>
+      </tr>
+
+      <tr class="edit-row-submit">
+        <td colspan="2">
+          <input name="type" type="hidden" value="${type_id}"/>
+          <input name="expected_type" type="hidden" value="${master_prop.schema.id}"/>
+          <input name="unit" type="hidden"/>
+          <input name="master_property" type="hidden" value="${master_prop.id}"/>
+          ${form.submit_buttons()}
+        </td>
+      </tr>
+    <tbody>
+  </table>
+</acre:block>
+
+<acre:block def="add_included_type_form(type_id)">
+  <table class="edit-form clear">
+    <tbody>
+      <tr class="edit-row">
+        <td colspan="4">
+          <div class="form-field fb-included-type">
+            <label>
+              <span class="form-label">${_("Choose a type to include")}</span>
+              <input name="included_type_input" type="text" class="text-input suggest-input"/>
+            </label>
+          </div>
+        </td>
+      </tr>
+      <tr class="edit-row-submit">
+        <td colspan="4">
+          <input name="included_type" type="hidden" />
+          <input name="included_type_new" type="hidden" />
+          <input name="id" type="hidden" value="${type_id}"/>
+          ${form.submit_buttons()}
+        </td>
+      </tr>
+    <tbody>
+  </table>  
+</acre:block>
+
+<acre:block def="delete_included_type_result(type_id, included_type_id)">
+  <acre:script>
+    var msg = h.template_sprintf(_("%s has been removed and will no longer be included."), tag_strong(included_type_id));
+  </acre:script>
+  <tr class="row-msg row-msg-info">
+    <td colspan="4">
+      ${form.row_msg(msg, ".row-msg")}
+    </td>
+  </tr>
+</acre:block>
+
+<acre:block def="delegated_property_message(prop)">
+  <div class="form-msg" acre:trim="">
+    <acre:block if="prop.expected_type">
+      <acre:block if="prop.unit">
+        <acre:script>
+          var sprintf_args = {
+            prop: tag_a(prop.id, h.fb_url(prop.id, [['schema']])),
+            expected_type: tag_a(prop.expected_type, h.fb_url(prop.expected_type, [['schema']])),
+            unit: i18n.display_name(prop.unit)
+          };
+        </acre:script>
+        ${h.template_sprintf(_("This property will be delegated to %(prop)s with expected type %(expected_type)s (%(unit)s)."), sprintf_args)}
+      </acre:block>
+      <acre:block else="">
+        <acre:script>
+          var sprintf_args = {
+            prop: tag_a(prop.id, h.fb_url(prop.id, [['schema']])),
+            expected_type: tag_a(prop.expected_type, h.fb_url(prop.expected_type, [['schema']]))
+          };
+        </acre:script>
+        ${h.template_sprintf(_("This property will be delegated to %(prop)s with expected type %(expected_type)s."), sprintf_args)}
+      </acre:block>
+    </acre:block>
+    <acre:block else="">
+      ${h.template_sprintf(_("This property will be delegated to %s."), tag_a(prop.id, h.fb_url(prop.id, [['schema']])))}
+    </acre:block>
+    <acre:script>
+      var sprintf_args = {
+        expected_type: tag_strong(_("Expected Type")),
+        uniqueness: tag_strong(_("Uniqueness"))
+      };
+      </acre:script>
+    ${h.template_sprintf(_("You cannot change the %(expected_type)s or %(uniqueness)s."), sprintf_args)}
+  </div>
+</acre:block>
+
+
+<acre:block def="add_instance_form(type_id)">
+  <table class="edit-form clear">
+    <tbody>
+      <tr class="edit-row">
+        <td colspan="2">
+          <div class="edit-row-loader"></div>  
+          <div class="form-field">
+            <label>
+              <span class="form-label">${_("Topic")}</span>
+              <input name="name" type="text" class="text-input suggest-input"/>              
+           </label>
+          </div>
+       </td>
+      </tr>
+      <tr class="edit-row-submit">
+        <td colspan="2">
+          <input name="id" type="hidden"/>
+          <input name="type" type="hidden" value="${type_id}"/>
+          ${form.submit_buttons()}
+        </td>
+      </tr>
+    <tbody>
+  </table>
+</acre:block>
+
+<acre:block def="delete_instance_result(topic, type_id)">
+  <acre:script>
+    var msg = h.template_sprintf(_("The topic %s has been removed from this type."), tag_strong(i18n.display_name(topic)));
+  </acre:script>
+  <tr class="row-msg row-msg-info">
+    <td colspan="2">
+      ${form.row_msg(msg, ".row-msg")}
+    </td>
+  </tr>
+</acre:block>
+
+
+<acre:block def="reorder_property_form(type)">
+<div class="modal">
+  <div class="modal-inner">
+    <h1 class="modal-title"><span>${_("Reorder Properties")}</span></h1>
+    <div class="modal-content">
+      <div class="message">${_("Drag and drop the properties below to change their order")}</div>
+      <ul class="reorderable">
+        <acre:block for="prop in type.properties">
+          <li class="reorderable-item">
+            <a href="javascript:void(0);" class="btn-mv-top"></a>
+            <span class="reorderable-item-name">${i18n.display_name(prop)}</span> 
+            <span class="key">${prop.id}</span>
+            <input type="hidden" name="properties" value="${prop.id}"/>
+          </li>
+        </acre:block>
+      </ul>
+    </div>
+  </div>
+  <div class="modal-buttons">
+    <input type="hidden" name="id" value="${type.id}"/>
+    ${form.submit_buttons()}
+  </div>
+</div>
+</acre:block>
+
+
+
+<acre:block def="tag_strong(value)">
+  <strong>${value}</strong>
+</acre:block>
+
+<acre:block def="tag_a(value, href)">
+  <a href="${href}">${value}</a>
+</acre:block>

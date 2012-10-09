@@ -184,7 +184,9 @@
           ${exports.nav_user_signedout()}
         </acre:block>
         <acre:block else="">
-          <a href="${h.account_url('signin')}" title="Sign in to your Freebase account" rel="nofollow">Sign In or Sign Up</a>
+          <a href="${h.account_url('signin')}" title="Sign in to your Freebase account" 
+             id="fb-signin-link"
+             rel="nofollow">Sign In or Sign Up</a>
         </acre:block>
       </div>
       ${i18n_c.lang_select()}

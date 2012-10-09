@@ -88,10 +88,11 @@ var SPEC = {
           return simple_error_response();
         }
         
-        var error = h.extract_first_error(result);
+        var error = h.extract_first_error(result);       
         if (error.code === 400) {
           throw new ServiceError('400 Bad Request', '/api/status/error/claim', {
-            message: 'Pick an existing username that you own.',
+            message: error.message ||
+              'There was an unknown error trying to claim this username.',
             code: '/api/status/error/invalid/username'
           });
         }

@@ -835,6 +835,8 @@ function init_rules(lib) {
                                    script:"formbuilder.controller"},
 
     {prefix:"/account/claim",      app:"account", script:"claim.controller"},
+    {prefix:"/account/reconnect",  app:"account", script:"reconnect.controller"},
+
 
     //
     // Redirects for legacy urls

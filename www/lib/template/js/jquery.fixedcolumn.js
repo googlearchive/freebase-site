@@ -59,23 +59,24 @@
     var o = $.extend(true, {}, options);
 
     return this.each(function() {
-      var children;
-      if (o.all) {
-        children = $(this).find("tr:first").children();
-      }
-      else {
-        children = $(this).find("tr:first").find("> :first-child");
-      }
-      children.each(function() {
-        var child = $(this);
-        var name = child[0].nodeName.toUpperCase();
-        if (name === "TD" || name === "TH") {
-          var w = child.width();
-          if (w > 0) {
-            $(":first-child", child).width(w).css("display","inline-block");
-          }
+      var children = $(this).find("tr:first").children();
+      if (children.length > 1) {
+        // We only want to set the width of columns
+        // the table has more than one column.
+        if (!o.all) {
+          children = $(children.get(0));
         }
-      });
+        children.each(function() {
+          var child = $(this);
+          var name = child[0].nodeName.toUpperCase();
+          if (name === "TD" || name === "TH") {
+            var w = child.width();
+            if (w > 0) {
+              $(":first-child", child).width(w).css("display","inline-block");
+            }
+          }
+        });
+      }
     });
   };
 

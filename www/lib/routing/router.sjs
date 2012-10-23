@@ -1566,10 +1566,6 @@ function ObjectRouter(rules) {
       if (req_id.indexOf("/guid/") === 0) {
         o.id = req_id;
       }
-      // Redirect topics that have been merged
-      else if (o.replaced_by) {
-        return h.redirect(scope, o.replaced_by.id);
-      }
       // For topics and some other types, we always to force mids
       else if (rule.use_mid) {
         o.id = o.mid;

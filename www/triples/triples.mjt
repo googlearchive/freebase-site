@@ -224,11 +224,6 @@
 </acre:block>
 
 <acre:block def="source(o)">
-  <acre:script>
-    if (o.master_property.id === "/dataworld/gardening_hint/replaced_by") {
-      o.source.id = "/guid/" + o.source.guid.substring(1);
-    }
-  </acre:script>
   ${topic(o.source)}
 </acre:block>
 

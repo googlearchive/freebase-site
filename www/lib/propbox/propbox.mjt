@@ -57,6 +57,7 @@
   var NAMESPACE = _("Namespace");
   var OBJECT = _("Object");
   var VALUE = _("Value");
+  var DEPRECATED_PROPERTY = _("deprecated");
  </acre:script>
 
 <acre:block def="topicbox(topic, lang)">
@@ -144,6 +145,9 @@
       <span class="header-label">
         ${prop_menu(topic, prop_structure, prop_values, lang)}
       </span>
+      <acre:block if="prop_structure.deprecated">
+        <span class="property-state">(${DEPRECATED_PROPERTY})</span>
+      </acre:block>
     </div>
     ${databox(topic, prop_structure, prop_values, lang)}
   </div>

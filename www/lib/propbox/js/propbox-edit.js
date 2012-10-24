@@ -328,16 +328,31 @@
         url: propbox.options.base_ajax_url + "/value_delete_submit.ajax",
         data: submit_data,
         onsuccess: function(data) {
-          var msg_row = $(data.result.html);
-          formlib.success_inline_delete(prop_row, msg_row, function() {
-            $.ajax($.extend(formlib.default_submit_ajax_options(),  {
-              url: propbox.options.base_ajax_url + "/value_delete_undo.ajax",
-              data: submit_data,
-              onsuccess: function(data) {
-                formlib.success_inline_delete_undo(msg_row);
-              }
-            }));
-          });
+          if (data.result.invalid) {
+            status.clear();
+            setTimeout(function() {
+                status.sprintf(
+                  'warning',
+                  'The value you are trying remove is no longer valid. ' +
+                  'Please %s to continue editing.',
+                  "reload", function() {
+                    window.location.reload(true);
+                    return false;
+                  });
+            });
+          }
+          else {
+            var msg_row = $(data.result.html);
+            formlib.success_inline_delete(prop_row, msg_row, function() {
+              $.ajax($.extend(formlib.default_submit_ajax_options(),  {
+                url: propbox.options.base_ajax_url + "/value_delete_undo.ajax",
+                data: submit_data,
+                onsuccess: function(data) {
+                  formlib.success_inline_delete_undo(msg_row);
+                }
+              }));
+            });
+          }
         }
       }));
     },

@@ -41,6 +41,7 @@ test("load", function() {
         .then(function(r) {
             schema = r;
         });
+    acre.async.wait_on_results();
     ok(schema, "Got property schema");
 });
 
@@ -51,6 +52,8 @@ test("loads", function() {
         .then(function(r) {
             schema = r[pid];
         });
+
+    acre.async.wait_on_results();
     ok(schema, "Got property schema");
     ok(schema.expected_type && schema.expected_type.properties && schema.expected_type.properties.length,
       "Got disambiguating properties of mediator expected type");
@@ -65,6 +68,7 @@ test("loads empty", function() {
         .then(function(r) {
             result = r;
         });
+    acre.async.wait_on_results();
     ok(result, "Got result");
     ok(h.isEmptyObject(result), "Empty result");
 });
@@ -76,15 +80,42 @@ test("load SITE-1023: multiple key/id property", function() {
         .then(function(r) {
             schema = r[pid];
         });
+    acre.async.wait_on_results();
     ok(schema, "Got property schema");
 });
 
 test("load SITE-1063: load emql", function() {
     var schema;
-    var pid = "/people/person/age"; // an emal extension
+    var pid = "/people/person/age"; // an emql extension
     proploader.loads([pid])
         .then(function(r) {
             schema = r[pid];
-        });
+        });acre.async.wait_on_results();
     ok(schema, "Got property schema");
+});
+
+
+test("load authorities", function() {
+  var result = null;
+  proploader.load('/dataworld/gardening_hint/replaced_by')
+    .then(function(r) {
+      result = r;
+    });
+  acre.async.wait_on_results();
+  ok(result && result.id === '/dataworld/gardening_hint/replaced_by');
+
+  ok(result.authorities, 'Got authorities');
+  // merge_bot should be in authorities
+  var found = false;
+  result.authorities.permits.every(function(p) {
+    return p.member.every(function(u) {
+      if (u.id === '/user/merge_bot') {
+        found = true;
+        return false;
+      }
+      return true;
+    });
+  });
+  ok(found, '/user/merge_bot as an authority on ' +
+    '/dataworld/gardening_hint/replaced_by');
 });

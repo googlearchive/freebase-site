@@ -385,6 +385,13 @@ tr.new-row * {
   .transition(all);
 }
 
+.header-label .lock {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url(template/img/ui-icons.png) no-repeat 0px -1585px;
+}
+
 .foobar:hover .header-label,
 .sub-foobar:hover .header-label {
   background: rgba(0,0,0,0.05);
@@ -535,4 +542,12 @@ div.kbs.current .mark {
 .data-table th.first .property-header,
 .empty-row .first .empty-property {
     margin-left: 40px;
+}
+
+.data-row-requires-permission {
+    background: #EDEEEF;
+}
+
+.data-row-requires-permission .nicemenu {
+    visibility: hidden !important;
 }

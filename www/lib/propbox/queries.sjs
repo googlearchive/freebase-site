@@ -30,8 +30,9 @@
  */
 
 var h = acre.require("helper/helpers.sjs");
-var deferred = acre.require("promise/deferred");
-var freebase = acre.require("promise/apis").freebase;
+var apis = acre.require("promise/apis.sjs");
+var freebase = apis.freebase;
+var deferred = apis.deferred;
 var i18n = acre.require("i18n/i18n.sjs");
 var ph = acre.require("propbox/helpers.sjs");
 var proploader = acre.require("schema/proploader.sjs");
@@ -205,4 +206,3 @@ function get_enumerated_types(prop, lang) {
         });
   });
 };
-

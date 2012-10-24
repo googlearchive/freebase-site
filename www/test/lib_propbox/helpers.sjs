@@ -42,7 +42,7 @@ function test_minimal_prop_structure(test, minimal, schema) {
     "lang", "string",
     "unique", "boolean",
     "requires_permission", "boolean",
-    "authorities", "array",
+    "authorities", "object",
     "master_property", "object",
     "reverse_property", "object",
     "delegated", "object",

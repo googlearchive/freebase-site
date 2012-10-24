@@ -96,6 +96,10 @@ function minimal_prop_value(prop_structure, prop_data, lang) {
     return null;
   }
   var value = {};
+  if (prop_data.link && prop_data.link.creator) {
+    value.creator = prop_data.link.creator;
+  }
+
   var ect = prop_structure.expected_type;
   if (h.is_literal_type(ect.id)) {
     value.value = prop_data.value;
@@ -161,19 +165,19 @@ function minimal_prop_structure(prop_schema, lang) {
     lang: name ? name.lang : null,
     unique: prop_schema.unique === true,
     requires_permission: prop_schema.requires_permission === true,
-    authorities: prop_schema.authorities || [],
+    authorities: prop_schema.authorities,
     master_property: prop_schema.master_property,
     reverse_property: prop_schema.reverse_property,
     delegated: prop_schema.delegated,
     enumeration: prop_schema.enumeration,
     unit:
       prop_schema.unit ? {
-          id: prop_schema.unit.id, 
+          id: prop_schema.unit.id,
           abbreviation:prop_schema.unit["/freebase/unit_profile/abbreviation"]
       } : null,
-    disambiguator: 
+    disambiguator:
       prop_schema["/freebase/property_hints/disambiguator"] === true,
-    display_none: 
+    display_none:
       prop_schema["/freebase/property_hints/display_none"] === true,
     deprecated:
       prop_schema["/freebase/property_hints/deprecated"] === true,
@@ -195,10 +199,15 @@ function minimal_prop_structure(prop_schema, lang) {
       abbreviation: unit["/freebase/unit_profile/abbreviation"]
     };
   }
-  if (prop_schema['emql:type']) {
-      // emql properties are NOT edititable.
-      structure.requires_permission = true;
-      structure.authorities = [];
+  if (structure.authorities) {
+    // flatten members for easy look up
+    var members = {};
+    structure.authorities.permits.forEach(function(usergroup) {
+      usergroup.member.forEach(function(member) {
+        members[member.id] = h.id_key(member.id);
+      });
+    });
+    structure.authorities["members"] = members;
   }
   return structure;
 };
@@ -236,7 +245,7 @@ function to_prop_values(prop_structure, prop_data, lang) {
   if (prop_data != null && !h.isArray(prop_data)) {
     prop_data = [prop_data];
   };
-  if (prop_structure.unique && 
+  if (prop_structure.unique &&
       lang && prop_structure.expected_type.id === "/type/text") {
     var data = i18n.mql.get_text(lang, prop_data);
     if (data == null) {
@@ -257,7 +266,7 @@ function to_prop_values(prop_structure, prop_data, lang) {
         if (!value.property) {
           value.property = {};
         }
-        value.property[subprop_structure.id] = 
+        value.property[subprop_structure.id] =
               {values:to_prop_values(subprop_structure, subprop_data, lang)};
       }
     }
@@ -290,11 +299,18 @@ function mqlread_query(topic_id, prop_structure, prop_value, lang, namespace, op
 function mqlread_clause(prop_structure, prop_value, lang, namespace, options) {
   var ect = prop_structure.expected_type;
   var is_literal = h.is_literal_type(ect.id);
-  var clause = {optional:true};
+  var clause = {
+    optional:true
+  };
+  if (h.supports_link_property(prop_structure.id)) {
+    clause.link = {
+      creator: null
+    };
+  };
   if (is_literal) {
     if (ect.id == "/type/text") {
       if (lang) {
-        clause = i18n.mql.text_clause(lang)[0];
+        clause = h.extend(i18n.mql.text_clause(lang)[0], clause);
       }
       else {
         clause.lang = null;
@@ -319,21 +335,161 @@ function mqlread_clause(prop_structure, prop_value, lang, namespace, options) {
   return [h.extend(clause, options)];
 };
 
+/**
+ * A property requires permission/authorization
+ * if /type/property/requries_permission is
+ * TRUE or /type/property/authorities is not NULL.
+ * @param {object} prop_structure The property structure.
+ *   @see minimal_prop_structure.
+ * @return {boolean} TRUE if the property requires permission otherwise FALSE.
+ */
+function property_requires_permission_or_authorities(prop_structure) {
+  return prop_structure.requires_permission === true ||
+      !(prop_structure.authorities == null ||
+        h.isEmptyObject(prop_structure.authorities.members));
+};
+
 
 /**
- * Currently, properties with
- * 
- * 1. requires_permission == TRUE and 
- * 2. authorities == EMPTY
- * 
- * are NOT editable.
+ * A helper to return all the css classes for a propbox data-row.
+ * @param {object} prop_structure The property structure.
+ *   @see minimal_prop_structure.
+ * @param {object} prop_value The value object with a creator.
+ * @return {string} A string of all css classes of the data-row.
+ *   If the property requires permission, this will include
+ *   'data-row-requires-permission' as a css class. If the creator of the
+ *   prop_value is an authority, this will include
+ *   'data-row-creator-<username>' as a css class. This will always include
+ *  'kbs' and 'data-row' as css classes.
  */
-function is_property_editable(prop_structure) {
+function get_propbox_data_row_css_class(prop_structure, prop_value) {
+  var css = ['kbs data-row'];
+  if (property_requires_permission_or_authorities(prop_structure)) {
+    css.push('data-row-requires-permission');
+  }
+  if (is_authority(prop_structure, prop_value.creator)) {
+    css.push('data-row-creator-' + h.id_key(prop_value.creator));
+  }
+  return css.join(' ');
+};
+
+
+/**
+ * Can the specified user assert a new value to the property?
+ * @param {string} user_id The user id.
+ * @param {object} prop_structure The property structure with 
+ *   requires_permission and authorities.
+ * @return {boolean} TRUE if the user can add, otherwise return FALSE.
+ */
+function user_can_add(user_id, prop_structure) {
+  if (prop_structure.authorities == null) {
     if (prop_structure.requires_permission === true) {
-        if (prop_structure.authorities === null ||
-            prop_structure.authorities.length === 0) {
-            return false;
-        }
+      // authorities=null, requires_permission=true
+      // Unwritable by any user.
+      return false;      
     }
-    return true;
+    else {
+      // authorities=null, requires_permission=false|null
+      // Any triple can be added or deleted by any user,
+      // modulo object permissions (standard Freebase case).
+      return true;
+    }
+  }
+  else {
+    if (prop_structure.requires_permission === true) {
+      // authorities=foo, requires_permission=true
+      // Only a member of the foo permission can assert or
+      // delete triples for this property ("computed" property).
+      if (is_authority(prop_structure, user_id)) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+    else {
+      // authorities=foo, requires_permission=false|null
+      // Any user can assert triples for this property,
+      // but triples created by a member of the foo permission
+      // can can only be deleted by the same user who created it.
+      return true;
+    }
+  }
+};
+
+
+/**
+ * Can the specified user edit or delete an exiting property value?
+ * @param {string} user_id The user id.
+ * @param {object} prop_structure The property structure with 
+ *   requires_permission and authorities.
+ * @param {object} value The value object with a value['creator'].
+ * @return {boolean} TRUE if the user can edit the value, 
+ *   otherwise return FALSE.
+ */
+function user_can_edit(user_id, prop_structure, prop_value) {
+  if (prop_structure.authorities == null) {
+    if (prop_structure.requires_permission === true) {
+      // authorities=null, requires_permission=true
+      // Unwritable by any user.
+      return false;      
+    }
+    else {
+      // authorities=null, requires_permission=false|null
+      // Any triple can be added or deleted by any user,
+      // modulo object permissions (standard Freebase case).
+      return true;
+    }
+  }
+  else {
+    if (prop_structure.requires_permission === true) {
+      // authorities=foo, requires_permission=true
+      // Only a member of the foo permission can assert or
+      // delete triples for this property ("computed" property).
+      if (is_authority(prop_structure, user_id)) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+    else {
+      // authorities=foo, requires_permission=false|null
+      // Any user can assert triples for this property,
+      // but triples created by a member of the foo permission
+      // can can only be deleted by the same user who created it.
+      if (prop_value.creator) {
+        if (is_authority(prop_structure, user_id)) {
+          return prop_value.creator === user_id;
+        }
+        else {
+          // (Dae) Is this true? Anyone should able to edit/delete the value
+          // they asserted?
+          return prop_value.creator === user_id;
+        }
+      }
+      else {
+        return false;
+      }
+    }
+  }
+};
+
+
+/**
+ * Is user an authority of the specified property?
+ * Check if the prop_value creator is an
+ * authority or member of the permission specified by its
+ * '/type/property/authorities'.
+ * @param {object} prop_structure The property structure.
+ *   @see minimal_prop_structure.
+ * @param {string} The user id.
+ * @return {boolean} If the user_id is an authority on the property.
+ */
+function is_authority(prop_structure, user_id) {
+  if (prop_structure.authorities &&
+      prop_structure.authorities.members) {
+    return user_id in prop_structure.authorities.members;
+  }
+  return false;
 };

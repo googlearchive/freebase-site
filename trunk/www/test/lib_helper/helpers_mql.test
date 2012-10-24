@@ -31,37 +31,6 @@
 
 var h = acre.require("lib/helper/helpers.sjs");
 
-
-function role(mediator, enumeration) {
-  return {
-    mediator: mediator === true,
-    enumeration: enumeration === true
-  };
-}
-
-var role_tests = [
-  {},
-  role(false, false),
-
-  {"/freebase/type_hints/mediator": true},
-  role(true, false),
-
-  {"/freebase/type_hints/mediator": false, "/freebase/type_hints/enumeration": true},
-  role(false, true),
-
-  {"/freebase/type_hints/mediator": true, "/freebase/type_hints/enumeration": true},
-  role(true, true)
-
-];
-
-test("get_type_role", role_tests, function() {
-
-  for (var i=0,l=role_tests.length; i<l; i+=2) {
-    deepEqual(h.get_type_role(role_tests[i]), role_tests[i+1]);
-  }
-
-});
-
 test("id_key", function() {
   same(h.id_key("/"), "");
   same(h.id_key("/", true), ["/", ""]);
@@ -357,4 +326,27 @@ test("is_commons_domain", function() {
   });
   ok(!h.is_commons_domain(not_commons[3]["/freebase/domain_profile/category"]),
      not_commons[3].id);
+});
+
+test("supports_link_property", function() {
+  [
+    '/type/object/id',
+    '/type/object/guid',
+    '/type/object/timestamp',
+    '/type/object/creator',
+    '/type/object/attribution',
+    '/type/object/mid'
+  ].forEach(function(p) {
+    same(h.supports_link_property(p), false);
+  });
+
+  [
+    '/type/object/search',
+    '/type/object/type',
+    '/type/object/key',
+    '/type/object/name',
+    '/people/person/age'
+  ].forEach(function(p) {
+    same(h.supports_link_property(p), true);
+  });
 });

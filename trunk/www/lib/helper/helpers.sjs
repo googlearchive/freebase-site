@@ -54,7 +54,7 @@ var exports = {
   "is_literal_type": is_literal_type,
   "to_literal_value": to_literal_value,
   "is_metaweb_system_type": is_metaweb_system_type,
-  "get_type_role": get_type_role,
+  "supports_link_property": supports_link_property,
   "is_reciprocal": is_reciprocal,
   "get_visible_subprops": get_visible_subprops,
   "get_disambiguators": get_disambiguators,
@@ -430,6 +430,29 @@ function to_literal_value(type_id, value /** string **/) {
   }
 };
 
+/**
+ * Whether or not a property supports "link" when querying for its values.
+ * Most /type/object/* properties do not support the "link".
+ * For example you CANNOT do:
+ * {
+ *   id: null,
+ *   "/type/object/timestamp": {
+ *     "link": {...}
+ *   }
+ * }
+ * Because you can't ask for 'link' on /type/object/timestamp.
+ */
+var _INVALID_LINK_PROPERTIES = {
+  '/type/object/id': 1,
+  '/type/object/guid': 1,
+  '/type/object/timestamp': 1,
+  '/type/object/creator': 1,
+  '/type/object/attribution': 1,
+  '/type/object/mid': 1
+};
+function supports_link_property(prop_id) {
+  return _INVALID_LINK_PROPERTIES[prop_id] !== 1;
+};
 
 function is_metaweb_system_type(type_id) {
   return (type_id.indexOf("/type/") === 0 ||
@@ -437,26 +460,6 @@ function is_metaweb_system_type(type_id) {
           (type_id.indexOf("/freebase/") === 0 && type_id.indexOf("_profile") === (type_id.length - 8)));
 };
 
-
-/**
- * Get the type role looking at type hints,
- * /freebase/type_hints/mediator,
- * /freebase/type_hints/enumeration.
- *
- * @param type:Object (required)
- * @param set:Boolean (optional) - Set type[mediator|enumeration] if TRUE
- */
-function get_type_role(type, set) {
-  var role = {
-    mediator: type["/freebase/type_hints/mediator"] === true,
-    enumeration: type["/freebase/type_hints/enumeration"] === true
-  };
-  if (set) {
-    type.mediator = role.mediator;
-    type.enumeration = role.enumeration;
-  }
-  return role;
-};
 
 /**
  * Determine if two properties are reciprocal to one another.

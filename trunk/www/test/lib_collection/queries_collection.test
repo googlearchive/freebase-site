@@ -83,4 +83,3 @@ test("collection property paths", function() {
   same(values[0].id, "/en/sakuragi_hanamichi");
   same(values[1].id, "/en/kaede_rukawa");
 });
-

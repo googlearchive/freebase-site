@@ -49,7 +49,7 @@ test("to_prop_structure", function() {
         equal(structure.properties.length, properties.length);
         for (var i=0,l=properties.length; i<l; i++) {
             test_structure(structure.properties[i], properties[i]);
-        }        
+        }
     }
   };
   [

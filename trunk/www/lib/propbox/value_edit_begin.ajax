@@ -32,6 +32,7 @@ var h = acre.require("helper/helpers.sjs");
 var validators = acre.require("validator/validators.sjs");
 var propbox = acre.require("propbox/propbox.mjt");
 var queries = acre.require("propbox/queries.sjs");
+var ph = acre.require("propbox/helpers.sjs");
 var apis = acre.require("promise/apis.sjs");
 var freebase = apis.freebase;
 var deferred = apis.deferred;
@@ -56,11 +57,12 @@ var SPEC = {
       validators.MqlId(params, "p", {required:true}),           // property id
       validators.String(params, "replace", {required:true}),    // object value/id (being edited)
       validators.LangId(params, "lang", {if_empty:"/lang/en"}), // lang id
-      namespace
+      namespace,
+      params.auth_user.id
     ];
   },
 
-  run: function(s, p, replace, lang, namespace) {
+  run: function(s, p, replace, lang, namespace, user_id) {
     // we want to make sure we are looking at the latest
     return freebase.touch()
       .then(function() {
@@ -74,9 +76,10 @@ var SPEC = {
               return SPEC.run_image(s, prop_structure, replace, lang);
             }
             else {
-              return SPEC.run_default(s, prop_structure, replace, lang, namespace);
+              return SPEC.run_default(
+                s, prop_structure, replace, lang, namespace, user_id);
             }
-          }); 
+          });
         });
   },
 
@@ -130,24 +133,30 @@ var SPEC = {
   run_image: function(s, prop_structure, replace, lang) {
     // modal image edit form
     return {
-      html: acre.markup.stringify(propbox.prop_add_image_form(s, 
+      html: acre.markup.stringify(propbox.prop_add_image_form(s,
         prop_structure, lang, replace))
     };
   },
 
-  run_default: function(s, prop_structure, replace, lang, namespace) {
+  run_default: function(s, prop_structure, replace, lang, namespace, user_id) {
     // default inline form
     var promises = [];
     promises.push(queries.prop_values(s, prop_structure, replace, lang, namespace));
     promises.push(queries.get_enumerated_types(prop_structure, lang));
     return deferred.all(promises)
-      .then(function([prop_values, enum_types]) {       
+      .then(function([prop_values, enum_types]) {
         if (prop_values.length) {
           var prop_value = h.first_element(prop_values);
-          return {
-            html: acre.markup.stringify(propbox.value_edit_form(s, 
-                prop_structure, prop_value, lang))
-          };            
+          if (ph.user_can_edit(user_id, prop_structure, prop_value)) {
+            return {
+              html: acre.markup.stringify(propbox.value_edit_form(
+                  s, prop_structure, prop_value, lang))
+            };
+          }
+          else {
+            throw new Error(
+              'User does not have permission to edit this link.');
+          }
         }
         else {
           // The "replace" value is no longer valid.

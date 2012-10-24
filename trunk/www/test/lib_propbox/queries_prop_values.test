@@ -52,14 +52,14 @@ test("prop_values", function() {
   ok(values && values.length, "Got prop values");console.log(values);
   var south_park;
   values.every(function(d) {
-    var program = d.property && 
+    var program = d.property &&
       d.property["/tv/tv_program_writer_relationship/tv_program"];
     if (program) {
         program = h.first_element(program.values);
         if (program.id === "/en/south_park") {
             south_park = program;
             return false;
-        }        
+        }
     }
     return true;
   });

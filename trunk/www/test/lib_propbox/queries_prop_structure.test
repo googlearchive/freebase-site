@@ -78,3 +78,19 @@ test("prop_structures", function() {
     ok(ids[pids[i]], pids[i]);
   }
 });
+
+
+test('prop_structure authorities', function() {
+  var result = null;
+  queries.prop_structure('/dataworld/gardening_hint/replaced_by', '/lang/en')
+    .then(function(r) {
+      result = r;
+    });
+  acre.async.wait_on_results();
+  ok(result && result.id === '/dataworld/gardening_hint/replaced_by',
+     'Got /dataworld/gardening_hint/replaced_by');
+  ok(result.authorities &&
+     result.authorities.members &&
+     result.authorities.members['/user/merge_bot'],
+     'Got /user/merge_bot as an authority');
+});

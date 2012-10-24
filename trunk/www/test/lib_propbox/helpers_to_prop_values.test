@@ -38,7 +38,7 @@ var queries = acre.require("lib/propbox/queries.sjs");
 var topic_api = acre.require("lib/queries/topic.sjs");
 
 function decorate_value(value, from_value) {
-  ["text", "uri", "lang", "creator"].forEach(function(k) {
+  ["text", "uri", "lang"].forEach(function(k) {
     if (k in from_value) {
       value[k] = from_value[k];
     }
@@ -116,4 +116,3 @@ test("to_prop_values", function() {
     })();
   });
 });
-

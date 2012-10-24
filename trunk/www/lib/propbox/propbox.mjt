@@ -58,6 +58,10 @@
   var OBJECT = _("Object");
   var VALUE = _("Value");
   var DEPRECATED_PROPERTY = _("deprecated");
+  var PROPERTY_LOCKED = _("This property is only editable by " +
+    "specified users (members of the /type/property/authorities permission).");
+  var PROPERTY_REQUIRES_AUTHORITY = _("Some values for this " +
+    "property may not be editable.");
  </acre:script>
 
 <acre:block def="topicbox(topic, lang)">
@@ -139,11 +143,18 @@
 </acre:block>
 
 <acre:block def="propbox(topic, prop_structure, prop_values, lang)">
-  <div class="property-section" data-id="${prop_structure.id}">
+  <div class="property-section"
+       data-id="${prop_structure.id}">
     <div class="sub-foobar kbs">
       <a href="${h.fb_url(topic.id, [['property', prop_structure.id]])}" class="more fb-site-only"><span>${VIEW_ALL_PROPERTY_VALUES}</span></a>
       <span class="header-label">
         ${prop_menu(topic, prop_structure, prop_values, lang)}
+        <acre:block if="prop_structure.authorities == null && prop_structure.requires_permission === true">
+          <span class="lock" title="${PROPERTY_LOCKED}"></span>
+        </acre:block>
+        <acre:block elif="prop_structure.authorities != null">
+          <span class="lock" title="${PROPERTY_REQUIRES_AUTHORITY}"></span>
+        </acre:block>
       </span>
       <acre:block if="prop_structure.deprecated">
         <span class="property-state">(${DEPRECATED_PROPERTY})</span>
@@ -193,7 +204,7 @@
 </acre:block>
 
 <acre:block def="datatable_row(topic, prop_structure, prop_value, lang)">
-  <tr class="kbs data-row"
+  <tr class="${ph.get_propbox_data_row_css_class(prop_structure, prop_value)}"
       data-id="${prop_value.id}">
     <acre:block for="i, subprop_structure in prop_structure.properties">
       <acre:script>
@@ -208,7 +219,7 @@
 </acre:block>
 
 <acre:block def="image_row(topic, prop_structure, prop_value, lang)">
-  <tr class="kbs data-row"
+  <tr class="${ph.get_propbox_data_row_css_class(prop_structure, prop_value)}"
       data-id="${prop_value.id}">
     <td class="first">
       <ul class="data-list">
@@ -237,7 +248,7 @@
 </acre:block>
 
 <acre:block def="article_row(topic, prop_structure, prop_value, lang)">
-  <tr class="kbs data-row"
+  <tr class="${ph.get_propbox_data_row_css_class(prop_structure, prop_value)}"
       data-id="${prop_value.id}">
     <td class="first">
       <ul class="data-list">
@@ -305,7 +316,7 @@
 </acre:block>
 
 <acre:block def="datalist_row(topic, prop_structure, prop_value, lang)">
-  <li class="kbs data-row">
+  <li class="${ph.get_propbox_data_row_css_class(prop_structure, prop_value)}">
     <span class="wrapper first truncate">
       ${value_menu(topic, prop_structure, prop_value, lang)}
       ${value(topic.id, prop_structure, prop_value, lang)}
@@ -902,3 +913,6 @@ propbox edit forms
 <acre:block def="tag_strong(value)">
   <strong>${value}</strong>
 </acre:block>
+
+
+

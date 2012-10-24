@@ -39,7 +39,7 @@ var SCHEMA_KEY_PREFIX = "schema:";
 var cache_impl = acre.cache.request;
 
 /**
- * Invalidate a single type and 
+ * Invalidate a single type and
  * all of its lang enumerations from the schema cache.
  *
  * @param type_ids:String or Array - A single type id or a list of type ids.
@@ -53,23 +53,23 @@ function invalidate(type_ids) {
     for (var i=0,l=i18n.LANGS.length; i<l; i++) {
         keys = keys.concat(cache_keys(type_ids, i18n.LANGS[i].id));
     }
-    cache_impl.removeAll(keys);    
+    cache_impl.removeAll(keys);
 };
 
 
 /**
  * Load a single type schema in the specified lang.
- * A type schema is consisted of all of it's metadata and 
+ * A type schema is consisted of all of it's metadata and
  * all of it's properties and its metadata.
  * Typeloader will decend into the types' properties' expected_type properties
  * (deep) only if the expected_type is a "mediator".
  * All expected_types at the leaf nodes will contain all of it's metadata
- * (i.e., /freebase/type_hints/*, name, domain, etc.) 
+ * (i.e., /freebase/type_hints/*, name, domain, etc.)
  * but never the properties list.
- * 
+ *
  * type -> properties -> expected_type[mediator=false]
  * type -> properties -> expected_type[mediator=true] -> properties[disambiguator=true] -> expected_type
- * 
+ *
  * @param type_id:String - A mql id
  * @param lang:String - A mql lang id. Defaults to /lang/en.
  * @return a Promise that resolves to a type schema object in the specified lang.
@@ -83,7 +83,7 @@ function load(type_id, lang) {
 
 /**
  * @see load() but loads multiple types.
- * 
+ *
  * @param type_ids:Array - A list of mql ids.
  * @param lang:String - A mql lang id. Defaults to /lang/en
  * @return a Promise the resolves to a map of type schema objects
@@ -152,7 +152,7 @@ function loads(type_ids, lang) {
                                 .then(function(deep_expected_types) {
                                     for (var deep_ect_id in deep_expected_types) {
                                         var deep_ect = deep_expected_types[deep_ect_id];
-                                        // Don't recurse into deep-deep properties. 
+                                        // Don't recurse into deep-deep properties.
                                         // It ends here.
                                         delete deep_ect.properties;
                                         var deep_props = deep_ect_props[deep_ect_id];
@@ -225,7 +225,7 @@ function assert(truthy, msg) {
 };
 
 /**
- * This is the canonical schema query and is what get's stored in the cache 
+ * This is the canonical schema query and is what get's stored in the cache
  * per type/lang pair.
  */
 function do_mql(type_ids, lang) {
@@ -282,7 +282,17 @@ function do_mql(type_ids, lang) {
                 "/freebase/unit_profile/abbreviation": null
             },
             requires_permission: null,
-            authorities: null,
+            authorities: {
+              optional: true,
+              id: null,
+              "id!=": "/boot/all_permission",
+              permits: [{
+                id: null,
+                member: [{
+                  id: null
+                }]
+              }]
+            },
             "/freebase/property_hints/disambiguator": null,
             "/freebase/property_hints/display_none": null,
             "/freebase/property_hints/deprecated": null,

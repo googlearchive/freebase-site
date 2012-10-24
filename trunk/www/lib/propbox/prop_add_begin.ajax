@@ -32,6 +32,7 @@
 var validators = acre.require("validator/validators.sjs");
 var propbox = acre.require("propbox/propbox.mjt");
 var queries = acre.require("propbox/queries.sjs");
+var ph = acre.require("propbox/helpers.sjs");
 
 /**
  * prop add form
@@ -46,37 +47,44 @@ var SPEC = {
     return [
       validators.MqlId(params, "s", {required:true}),            // subject id
       validators.MqlId(params, "p", {required:true}),            // property id
-      validators.LangId(params, "lang", {if_empty:"/lang/en"})   // lang id
+      validators.LangId(params, "lang", {if_empty:"/lang/en"}),  // lang id
+      params.auth_user.id
     ];
   },
 
-  run: function(s, p, lang) {
+  run: function(s, p, lang, user_id) {
     return queries.prop_structure(p, lang)
       .then(function(prop_structure) {
-        var ect = prop_structure.expected_type.id;
-        if (ect === "/common/document") {
-          // modal document add form
-          return {
-            html: acre.markup.stringify(propbox.prop_add_document_form(s, 
-              prop_structure, lang))
-          };
-        }
-        else if (ect === "/common/image") {
-          // modal image add form
-          return {
-            html: acre.markup.stringify(propbox.prop_add_image_form(s, 
-              prop_structure, lang))
-          };
+        if (ph.user_can_add(user_id, prop_structure)) {
+          var ect = prop_structure.expected_type.id;
+          if (ect === "/common/document") {
+            // modal document add form
+            return {
+              html: acre.markup.stringify(propbox.prop_add_document_form(s,
+                prop_structure, lang))
+            };
+          }
+          else if (ect === "/common/image") {
+            // modal image add form
+            return {
+              html: acre.markup.stringify(propbox.prop_add_image_form(s,
+                prop_structure, lang))
+            };
+          }
+          else {
+            // default inline form
+            return queries.get_enumerated_types(prop_structure, lang)
+              .then(function(enum_types) {
+                return {
+                  html: acre.markup.stringify(propbox.prop_add_form(s,
+                    prop_structure, lang))
+                };
+              });
+          }
         }
         else {
-          // default inline form
-          return queries.get_enumerated_types(prop_structure, lang)
-            .then(function(enum_types) {
-              return {
-                html: acre.markup.stringify(propbox.prop_add_form(s, 
-                  prop_structure, lang))
-              };
-            });
+          throw new Error(
+            h.sprintf('User does not have permission on %s.', p));
         }
       });
   }

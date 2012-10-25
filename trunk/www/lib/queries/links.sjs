@@ -62,6 +62,10 @@ var links_filters = {
   sort: {
     validator: validators.OneOf,
     options: {oneof: ['timestamp', '-timestamp'], if_empty:'-timestamp'}
+  },
+  slot: {
+    validator: validators.OneOf,
+    options: {oneof: ['source', 'target'], if_empty:null, if_invalid:null}
   }
 };
 
@@ -70,13 +74,24 @@ function links(id, filters, next) {
   return creator.by(filters.creator, "/type/user")
     .then(function(creator_clause) {
       var promises = {
-        incoming: links_incoming(id, filters, next, creator_clause),
-        outgoing: links_outgoing(id, filters, next, creator_clause),
-        objects: links_objects(id, filters, next, creator_clause)
+        objects:  links_objects(id, filters, next, creator_clause)
       };
+      if (filters.slot === 'source') {
+        promises.outgoing = links_outgoing(id, filters, next, creator_clause);
+      }
+      else if (filters.slot === 'target') {
+        promises.incoming = links_incoming(id, filters, next, creator_clause);
+      }
+      else {
+        promises.outgoing = links_outgoing(id, filters, next, creator_clause);
+        promises.incoming = links_incoming(id, filters, next, creator_clause);
+      }
       return deferred.all(promises)
         .then(function(result) {
-          return links_sort(result.incoming, result.outgoing, result.objects, filters);
+          return links_sort(result.incoming || [],
+                            result.outgoing || [],
+                            result.objects || [],
+                            filters);
         });
     });
 };

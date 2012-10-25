@@ -44,6 +44,21 @@
     var property = filters.property;
   </acre:script>
   <div class="filter-group filter-chart">
+    <div class="other-graph-value">
+      <div class="filter-form">
+        <acre:script>
+          var key = "domain";
+          if (type) {
+          key = "type";
+          }
+          else if (property) {
+          key = "property";
+          }
+        </acre:script>
+        ${filter_form(topic_id, filters, key, suggest_input, [key, _('by Domain, Type or Property')])}
+      </div>
+    </div>
+    <br/>
     <h2 class="module-section-title" acre:if="type">${_("By Type")}:</h2>
     <h2 class="module-section-title" acre:elif="property">${_("By Property")}:</h2>
     <h2 class="module-section-title" acre:else="">${_("By Domain")}:</h2>
@@ -118,23 +133,6 @@
         </table>
       </acre:block>
     </acre:block>
-    <div class="other-graph-value">
-      <a href="javascript:void(0);" class="filter-form-trigger">
-        ${domain || type || property ? _("change"): _("choose")}&hellip;
-      </a>
-      <div class="filter-form" style="display:none;">
-        <acre:script>
-          var key = "domain";
-          if (type) {
-            key = "type";
-          }
-          else if (property) {
-            key = "property";
-          }
-        </acre:script>
-        ${filter_form(topic_id, filters, key, suggest_input, [key, 'Start typing for suggestions'])}
-      </div>
-    </div>
     <acre:block if="!(domain || type || property)">
       ${domains_filter(topic_id, filters)}   
     </acre:block>
@@ -333,4 +331,29 @@
       Show earliest writes first
     </label>
   </h2>
+</acre:block>
+
+
+<acre:block def="link_slot_filter(base_url, filters)">
+  ${filter_form(base_url, filters, 'slot', link_slot_input, ['slot', filters.slot])}
+</acre:block>
+
+<acre:block def="link_slot_input(name, slot)">
+  <a href="javascript:void(0);" class="filter-help-trigger">?</a>
+  <div class="filter-help tooltip">
+    <div class="filter-help-content">
+      ${_("You can specify where the current object is in the link. It can be in the source, target or either slot.")}        
+    </div>
+  </div>
+  <h3 class="module-section-title"><label for="">${_("Slot")}:</label></h3>
+  <select name="slot" onchange="this.form.submit();">
+    <option value="">${_('source or target')}</option>
+    <option value="source"
+            acre:attrs="slot === 'source' ? {selected:'selected'} : {}">
+      ${_('source')}
+    </option>
+    <option value="target"
+            acre:attrs="slot === 'target' ? {selected:'selected'} : {}">
+      ${_('target')}</option>
+  </select>
 </acre:block>

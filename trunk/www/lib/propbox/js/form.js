@@ -351,7 +351,7 @@
        msg_row.append(old_row);
        formlib.animate_new_row(msg_row);
        if (undo_callback) {
-         var a = $('<a href="#">Undo</a>');
+         var a = $('<a href="#">undo</a><span class="divider">|</span>');
          $(".msg-default", msg_row).next().append(a);
          a.click(function() {
            undo_callback();
@@ -588,7 +588,7 @@
        var ajax_options = $.extend(formlib._default_ajax_options("GET"), {
            beforeSend: function() {
                status.doing("Loading...");
-           },           
+           },
            complete: function() {
                if (!this.formlib_error) {
                    status.clear();
@@ -661,7 +661,7 @@
              var form_content = null;
              if (this.formlib_options) {
                  if (this.formlib_options.form) {
-                     // This is a modal dialog. 
+                     // This is a modal dialog.
                      // Close on error
                      this.formlib_options.form.trigger(this.formlib_options.event_prefix + "cancel");
                      form_content = this.formlib_options.form;
@@ -669,7 +669,6 @@
                  else {
                      form_content = this.formlib_options.edit_row;
                  }
-                 
              }
              if (form_content) {
                  form_content.trigger(this.formlib_options.event_prefix + "error", errmsg);
@@ -720,10 +719,10 @@
                  if (data.error && data.error.message) {
                      errmsg = data.error.message;
                  }
-                 else if ($.isArray(data.messages) && 
+                 else if ($.isArray(data.messages) &&
                           data.messages.length) {
                      errmsg = data.messages[0].message;
-                 }             
+                 }
              }
          }
          catch (ex) {

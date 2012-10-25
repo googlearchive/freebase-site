@@ -69,19 +69,22 @@
     </div>
     <div class="module">
       <div class="module-section alt">
-        ${filter_components.timestamp_filter(c.id, c.filters)}
+        ${filter_components.link_slot_filter(c.id, c.filters)}
+      </div>
+      <div class="module-section alt">
+        ${filter_components.historical_filter(c.id, c.filters)}
       </div>
       <div class="module-section alt">
         ${filter_components.sort_timestamp_filter(c.id, c.filters)}
+      </div>
+      <div class="module-section alt">
+        ${filter_components.timestamp_filter(c.id, c.filters)}
       </div>
       <div class="module-section alt">
         ${filter_components.as_of_time_filter(c.id, c.filters)}
       </div>
       <div class="module-section alt">
         ${filter_components.creator_filter(c.id, c.filters)}
-      </div>
-      <div class="module-section alt">
-        ${filter_components.historical_filter(c.id, c.filters)}
       </div>
     </div>
   </div>
@@ -109,7 +112,15 @@
             <span class="sort-icon">${_("property")}</span>
           </th>
           <th class="column-header" scope="col">
-            <span class="sort-icon">${_("source/target")}</span>
+            <acre:block if="filters.slot === 'source'">
+              <span class="sort-icon">${_("target")}</span>
+            </acre:block>
+            <acre:block elif="filters.slot === 'target'">
+              <span class="sort-icon">${_("source")}</span>
+            </acre:block>
+            <acre:block else="">
+              <span class="sort-icon">${_("source/target")}</span>
+            </acre:block>
           </th>
           <th class="column-header" scope="col">
             <span class="sort-icon">${_("user")}</span>

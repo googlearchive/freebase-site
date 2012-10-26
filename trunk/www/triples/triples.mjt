@@ -43,6 +43,7 @@
   var th = acre.require("helpers.sjs");
   var QUERY = _("View query");
   var LINKS = _("Property links");
+  var VIEW_SCHEMA = _("View schema");
   var MORE = _("+");
 </acre:script>
 
@@ -304,6 +305,9 @@
       <ul class="submenu row-menu">
         <li class="row-menu-item"><a href="${h.fb_url(o.master_property.id, [['instances']])}">${LINKS}</a></li>
         <li class="row-menu-item"><a href="${h.fb_url('/query', [['q',JSON.stringify(th.query(o))],['autorun',1]])}">${QUERY}</a></li>
+        <li class="row-menu-item">
+          <a href="${h.fb_url(o.master_property.id, [['schema']])}">${VIEW_SCHEMA}</a>
+        </li>        
       </ul>
     </li>
   </ul>

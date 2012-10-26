@@ -1413,10 +1413,7 @@ function build_query_url(topic_id, type_id, prop_id) {
   }
   if (prop_id) {
     var ext = {};
-    ext[prop_id] = [{
-      "id": null,
-      "name": null
-    }];
+    ext[prop_id] = [];
     acre.freebase.extend_query(q, ext);
   }
   return fb_url('/query', {q:JSON.stringify(q), autorun: 1});

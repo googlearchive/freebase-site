@@ -1,0 +1,3 @@
+[
+  "codemirror/js/codemirror.js"
+]

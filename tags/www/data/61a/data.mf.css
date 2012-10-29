@@ -1,7 +1,36 @@
-[
-  "lib/template/css/mixins.less",
-  "lib/template/css/freebase.ui.stats.less",
-  "lib/template/css/freebase.ui.datatable.less",
-  "lib/template/css/freebase.ui.combomenu.less",
-  "css/data.less"
-]
+
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Additional Licenses for Third Party components can be found here:
+ * http://wiki.freebase.com/wiki/Freebase_Site_License
+ *
+ */
+.activity-chart-assertions,.activity-summary{float:left;width:113px;margin-right:7px;height:32px;overflow:hidden;background:url("/static/90a.lib.www.tags.svn.freebase-site.googlecode.dev/template/img/ui-sprite.png") no-repeat 9px -195px}.activity-stats{background:#fff;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;border:1px solid #dcdbdc;overflow:auto;margin-right:10px}.ie6 .activity-stats{height:33px;width:275px}.activity-stats-lastweek{margin-top:4px;color:#f71;width:50px;float:left;font-size:1.2em;line-height:1}.activity-stats-lastweek-label{font-size:10px;line-height:1}.domain-contributor{margin-right:10px}.ie7 .domain-contributor{width:38px}.ie6 .domain-contributor{width:35px;margin-right:5px}.activity-stats-block{width:48px;margin:3px 3px 3px 0;float:left;color:#fff;text-align:center}.activity-stats-facts{background:#f71;-webkit-border-bottom-left-radius:5px;-moz-border-radius-bottomleft:5px;border-bottom-left-radius:5px;-webkit-border-top-left-radius:5px;-moz-border-radius-topleft:5px;border-top-left-radius:5px}.activity-stats-topics{background:#78a;-webkit-border-bottom-right-radius:5px;-moz-border-radius-bottomright:5px;border-bottom-right-radius:5px;-webkit-border-top-right-radius:5px;-moz-border-radius-topright:5px;border-top-right-radius:5px}.activity-stats-number{font-size:1.2em;font-weight:bold;line-height:2.1;margin:0 auto;padding:0 2px;height:26px}.metric{display:inline-block;text-align:center;width:3.5em;font-size:14px;font-weight:bold;color:#fff;padding:5px;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px}.metric.primary{background:#f71}.metric.secondary{background:#78a}.activity-summary{display:inline-block}#infinitescroll tbody th,#infinitescroll tbody td{border:0}#infinitescroll tbody{-webkit-transition:all .3s linear 0s;-moz-transition:all .3s linear 0s;-o-transition:all .3s linear 0s;transition:all .3s linear 0s}#infinitescroll tbody tr:hover,#infinitescroll tbody th:hover,#infinitescroll tbody td:hover{background:transparent}#infinitescroll tbody tr:first-child th,#infinitescroll tbody tr:first-child td{border-top:1px solid #d5d7d8}#infinitescroll tbody:hover tr,#infinitescroll tbody:hover td{background:#f1f2f3}tr .combo-menu,li .combo-menu{list-style:none;position:absolute;top:0;display:inline-block;visibility:hidden;padding:2px;border:1px solid transparent;-webkit-transition:all .3s linear 0s;-moz-transition:all .3s linear 0s;-o-transition:all .3s linear 0s;transition:all .3s linear 0s}.row-hover .combo-menu{visibility:visible}tr:hover .combo-menu:hover,li:hover .combo-menu:hover{border:1px solid #d4d6d7;background-image:-webkit-gradient(linear,0% 0,0% 100%,from(#e4e6e7),to(#d4d6d7));background-image:-webkit-linear-gradient(#e4e6e7,#d4d6d7);background-image:-moz-linear-gradient(0% 55% 90deg,#d4d6d7,#e4e6e7);background-repeat:repeat;-webkit-box-shadow:0 2px 2px #a1a2a3 3px #aaa;-moz-box-shadow:0 2px 2px #a1a2a3 3px #aaa;box-shadow:0 2px 2px #a1a2a3 3px #aaa}.combo-menu .default-action{color:#C4C4C4;display:inline-block;width:20px}ul.combo-menu li,.data-table tbody tr ul.combo-menu li{padding:0}.combo-menu .more-action{display:inline-block;width:11px;height:17px;text-indent:-9999px;background:url("/static/90a.lib.www.tags.svn.freebase-site.googlecode.dev/template/img/ui-icons.png") no-repeat 2px -686px}.combo-menu:hover .more-action{background-position:2px -720px}.combo-menu:hover .more-action:hover{background-position:2px -753px}.default-action.edit-action{width:17px;height:17px;line-height:1;background:#fff;text-indent:-9999px;background:url("/static/90a.lib.www.tags.svn.freebase-site.googlecode.dev/template/img/ui-icons.png") no-repeat 2px -855px}.combo-menu:hover .default-action.edit-action{background-color:#fff}.combo-menu:hover .edit-action{background-position:2px -875px}.combo-menu:hover .edit-action:hover{background-position:2px -895px}.combo-menu:hover .default-action.loading,.combo-menu:hover .default-action.loading:hover{background:url("/static/90a.lib.www.tags.svn.freebase-site.googlecode.dev/template/img/loader-snake-small-grey.gif") no-repeat}.column-header .primary{color:#f71}.column-header .secondary{color:#78a}.table .secondary-header .row-header{padding:7px 7px 7px 16px}.table .user-list li{list-style:none;float:left;font-size:11px;margin:10px 10px 0 0;color:#666;width:12em}.user-list li .user-image{float:left;margin-right:5px}.table-title{float:left;margin-top:2px}.section.wrapper{float:left;width:100%}.column.object-activity{float:left;width:450px;margin-left:-450px}.section.instances{background:#fff;padding:15px;-webkit-box-shadow:1px 2px 3px #bbb;-moz-box-shadow:1px 2px 3px #bbb;box-shadow:1px 2px 3px #bbb}.views{margin-right:470px}table .data-statistics th,table .data-statistics td{background:#fff;line-height:1;padding:0 7px}.data-statistics .metric,.data-statistics .activity-summary,.data-statistics .metric-byline{float:left}.data-statistics .metric{margin-top:4px}.metric-byline{margin-top:5px;font-size:11px}.metric-byline .primary{color:#f71}.metric-byline .secondary{color:#78a}.object-activity table .column-header{font-weight:normal}.object-activity .column-header span{font-weight:normal;padding-left:10px}.info-box{background:white;border-top:2px solid #D5D7D8;clear:both;font-size:1.3em;padding:10px}.info-box-title{padding-top:10px}

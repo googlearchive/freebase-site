@@ -1297,7 +1297,7 @@ function parse_params(params) {
  * (i.e, host/path?params)
  */
 function build_url(host /**, path1, path2, ..., params **/) {
-  if (host && host.indexOf('://') === -1) {
+  if (host && (host.indexOf('//') !== 0) && (host.indexOf("://") === -1)) {
     throw "Host must contain scheme: " + host;
   }
   var url = (host || "");

@@ -1,0 +1,359 @@
+Acre Templates - *Attribute Tags*
+=================================
+
+<acre:script>
+  q = acre.require("./example_query").query;
+</acre:script>
+
+## `attrs`
+
+Usually `$$`-substitution is sufficient for dynamically setting the value of an HTML/XML attribute.  However there are some attributes like `checked=""` that imply true no matter what their value is.  That's where the `attrs` attribute comes in.  The value of `attrs` is a JavaScript expression which should evaluate to an object. Each property in the object is turned into an attribute on the element:
+
+#### code
+>     <acre:script>
+>       var item_is_checked = true;
+>     </acre:script>
+> 
+>     <input type="checkbox" acre:attrs="item_is_checked?{checked:''}:{}" /> checked
+>     <input type="checkbox" acre:attrs="item_is_checked?{}:{checked:''}" /> not checked
+
+#### output
+<blockquote>
+    <acre:script>
+      var item_is_checked = true;
+    </acre:script>
+
+    <input type="checkbox" acre:attrs="item_is_checked?{checked:''}:{}" /> checked
+    <input type="checkbox" acre:attrs="item_is_checked?{}:{checked:''}" /> not checked
+</blockquote>
+
+
+## `if/elif/else`
+
+`if="expr"` evaluates the JavaScript `expr`. If `expr` evaluates to false, Acre removes the current element and all its sub-elements from the output.
+
+#### code
+>     <acre:block if="false">
+>        if=false
+>     </acre:block>
+> 
+>     <acre:block if="true">
+>       if=true
+>     </acre:block>
+
+#### output    
+<blockquote>
+    <acre:block if="false">
+       if=false
+    </acre:block>
+
+    <acre:block if="true">
+      if=true
+    </acre:block>
+</blockquote>
+
+`else=""` is only valid if the preceding element contained an `if=""` or `elif=""` attribute. If any of the preceding `if` or `elif` expressions evaluated to true, Acre will generate no output. Otherwise the current element will be expanded into the output:
+
+#### code
+>     <acre:block if="false">
+>       if=false
+>     </acre:block>
+>     <acre:block else="">
+>       else
+>     </acre:block>
+> 
+>     <acre:block if="true">
+>       if=true
+>     </acre:block>
+>     <acre:block else="">
+>       else
+>     </acre:block>
+
+#### output
+<blockquote>
+    <acre:block if="false">
+      if=false
+    </acre:block>
+    <acre:block else="">
+      else
+    </acre:block>
+
+    <acre:block if="true">
+      if=true
+    </acre:block>
+    <acre:block else="">
+      else
+    </acre:block>
+</blockquote>
+
+
+`elif="expr"` combines the functionality of acre:else and acre:if. It is only valid if the preceding HTML element contained an `if=` or `elif=""` attribute:
+
+#### code 
+>     <acre:block if="false">
+>        if=false
+>     </acre:block>
+>     <acre:block elif="false">
+>         elif=false
+>     </acre:block>
+>     <acre:block elif="true">
+>         elif=true
+>     </acre:block>
+>     <acre:block else="">
+>         else
+>     </acre:block>
+
+#### output
+<blockquote>
+    <acre:block if="false">
+       if=false
+    </acre:block>
+    <acre:block elif="false">
+        elif=false
+    </acre:block>
+    <acre:block elif="true">
+        elif=true
+    </acre:block>
+    <acre:block else="">
+        else
+    </acre:block>
+</blockquote>
+
+
+## `for`
+
+`for` repeats its body once for each item in a list or object.  Note that `for="v in expr"` is expanded with `v` bound to the value of each item (like iterating through a python list) not to the key (as in JavaScript):
+
+#### code
+>     <h4>filmography:</h4>
+>     <ul>
+>       <li acre:for="role in q.result.film">
+>         $$role.film.name
+>       </li>
+>     </ul>
+
+#### output
+<blockquote>
+    <h4>filmography:</h4>
+    <ul>
+      <li acre:for="role in q.result.film">
+        $role.film.name
+      </li>
+    </ul>
+</blockquote>
+
+
+It can be used for any element that can be repeated:
+
+#### code
+>     <h4>filmography:</h4>
+>     <table><tbody>
+>     <tr acre:for="role in q.result.film">
+>       <td>$$role.film.name</td>
+>       <td>$$role.film.initial_release_date</td>
+>     </tr>
+>     </tbody></table>
+
+#### output
+<blockquote>
+    <h4>filmography:</h4>
+    <table><tbody>
+    <tr acre:for="role in q.result.film">
+      <td>$role.film.name</td>
+      <td>$role.film.initial_release_date</td>
+    </tr>
+    </tbody></table>
+</blockquote>
+
+`for="k,v in expr"` is expanded with `k` bound to the key and `v` bound to the value (like python's for k,v in dict.items()):
+
+#### code
+>     <h4>film properties:</h4>
+>     <table>
+>       <thead><tr>
+>         <th acre:for="k,v in q.result.film[0].film"
+>             acre:if="k!='id'">
+>           $$k
+>         </th>
+>       </tr></thead>
+>       <tbody>
+>         <tr acre:for="role in q.result.film">
+>           <td acre:for="k,v in role.film"
+>              acre:if="k!='id'">
+>              $$v
+>           </td>
+>         </tr>
+>       </tbody>
+>     </table>
+
+#### output
+<blockquote>
+    <h4>film properties:</h4>
+    <table>
+      <thead><tr>
+        <th acre:for="k,v in q.result.film[0].film"
+            acre:if="k!='id'">
+          $k
+        </th>
+      </tr></thead>
+      <tbody>
+        <tr acre:for="role in q.result.film">
+          <td acre:for="k,v in role.film"
+             acre:if="k!='id'">
+             $v
+          </td>
+        </tr>
+      </tbody>
+    </table>
+</blockquote>
+
+As shown in the example above, `for=` and `if=` can be combined. The `if=` is logically "inside" the `for=` and is applied to each item rather than to the loop as a whole.
+
+If you need to use a JavaScript expression, enclose it in parentheses:
+
+#### code
+>     <ul>
+>       <li acre:for="(var i = 2; i &lt; 6; i++)">
+>         $$i
+>       </li>
+>     </ul>
+
+#### output
+<blockquote>
+    <ul>
+      <li acre:for="(var i = 2; i &lt; 6; i++)">
+        $i
+      </li>
+    </ul>
+</blockquote>
+
+Unlike JavaScript's native `for` loops, the body of an `for=""` element creates a new variable scope. Variables declared inside the body are not shared across iterations of the loop: this works out very nicely when you want to create an event handler for each item in a list.
+
+## `choose/when/otherwise`
+
+`choose` selects at most one of its sub-elements to expand into the output and elides the rest, functioning in a very similar fashion to a switch statement.
+
+`choose="expr"` initiates a case dispatch. The sub-elements must each have an `when="value"` attribute, except the last sub-element, which can have an `otherwise=""` instead. The `expr` in the `choose` attribute is evaluated and converted to a string. If there is a sub-element with an `when` attribute that has the same string value, its element will be expanded and output. Otherwise, if a sub-element with an `otherwise=""` attribute is present, it will be expanded instead:
+
+#### code
+>     <acre:block choose="'bottle'">
+>       <div acre:when="apple">apple</div>
+>       <div acre:when="bottle">bottle</div>
+>       <div acre:when="cat">cat</div>
+>       <div acre:otherwise="">other</div>
+>     </acre:block>
+> 
+>     <acre:block choose="'banana'">
+>       <div acre:when="apple">apple</div>
+>       <div acre:when="bottle">bottle</div>
+>       <div acre:when="cat">cat</div>
+>       <div acre:otherwise="">other</div>
+>     </acre:block>
+
+#### output
+<blockquote>
+    <acre:block choose="'bottle'">
+      <div acre:when="apple">apple</div>
+      <div acre:when="bottle">bottle</div>
+      <div acre:when="cat">cat</div>
+      <div acre:otherwise="">other</div>
+    </acre:block>
+
+    <acre:block choose="'banana'">
+      <div acre:when="apple">apple</div>
+      <div acre:when="bottle">bottle</div>
+      <div acre:when="cat">cat</div>
+      <div acre:otherwise="">other</div>
+    </acre:block>
+</blockquote>
+
+
+## `def`
+
+`def="name(args...)"` declares a sub-template. The sub-template is a JavaScript function that returns markup. You can invoke it elsewhere using `$${}` just like any other JavaScript function. No output is generated from the definition itself.
+
+#### code
+>     <acre:block def="mklink(o)">
+>         <a href="http://freebase.com/view$$o.id">
+>             $$o.name
+>         </a>
+>     </acre:block>
+> 
+>     <h4>filmography:</h4>
+> 
+>     <ul>
+>         <li acre:for="role in q.result.film">
+>             $${mklink(role.film)}
+>         </li>
+>     </ul>
+
+#### output
+<blockquote>
+    <acre:block def="mklink(o)">
+        <a href="http://freebase.com/view$$o.id">
+            $o.name
+        </a>
+    </acre:block>
+
+    <h4>filmography:</h4>
+
+    <ul>
+        <li acre:for="role in q.result.film">
+            ${mklink(role.film)}
+        </li>
+    </ul>
+</blockquote>
+
+## `trim`
+
+`trim` on a tag will strip out leading and trailing
+whitespace inside the tag. This allows you to use indentation
+to make your template clearer, without introducing undesirable
+whitespace in the output. Here's an example template without
+`trim`: notice that there is extra space before the commas:
+
+#### code
+>     <acre:block for="i,v in [1,2,3,4]">
+>         <acre:block if="i">,</acre:block>
+>         $$v
+>     </acre:block>
+
+#### output
+<blockquote>
+    <acre:block for="i,v in [1,2,3,4]">
+        <acre:block if="i">,</acre:block>
+        $v
+    </acre:block>
+</blockquote>
+
+Here's the same template fragment using acre:trim to remove
+the extra whitespace:
+
+#### code
+>     <acre:block for="i,v in [1,2,3,4]" trim="">
+>         <acre:block if="i">,</acre:block>
+>         $$v
+>     </acre:block>
+
+#### output
+<blockquote>
+    <acre:block for="i,v in [1,2,3,4]" trim="">
+        <acre:block if="i">,</acre:block>
+        $v
+    </acre:block>
+</blockquote>
+
+
+## Combining attributes
+
+
+Most attributes may be combined on a single element, in which case they are applied in the following order (copied from genshi):
+
+1. def
+1. when
+1. otherwise
+1. for
+1. if
+1. choose
+
+

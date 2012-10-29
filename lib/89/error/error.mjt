@@ -1,0 +1,142 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+
+<acre:block def="title()">
+  Error
+</acre:block>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="error/error.mf.css" />
+</acre:block>
+
+<acre:block def="content_body()">
+
+  <acre:script>
+    acre.response.status = 500;
+    acre.response.headers['vary'] = 'Accept';
+    var acre_server = acre.host.protocol + "://" + acre.host.name +
+                      ((acre.host.port === "80") ? "" : ":" + acre.host.port);
+  </acre:script>
+
+  <div id="page-content">
+    ${page_content()}
+  </div>
+</acre:block>
+
+<acre:block def="page_content()"
+    <div class="module">
+      <acre:block if="!c.einfo">
+        <h3>This page is only intended to render an error caused by processing another script</h3>
+        <p><b>error info is UNDEFINED</b></p>
+      </acre:block>
+
+      <acre:block else="">
+        <acre:script>
+          var einfo = c.einfo;
+          console.error(einfo);
+
+          function is_user_script(e) {
+              var filename = e.filename || e.fileName;
+              return !!(/^\//).exec(filename);
+          }
+
+          function highlight(str) {
+              var s = str.split('"error_inside" : "."');
+              if (s.length === 2) {
+                  if (s[1].charAt(0) === ',') { s[1] = s[1].substring(1); }
+                  return s[0] + error_span() + s[1];
+              } else {
+                  return s;
+              }
+          }
+
+          var user_script = is_user_script(einfo);
+        </acre:script>
+
+        <span acre:def="error_span()" class="error">**** the error is here ****</span>
+
+        <acre:block def="sourcelink(e, user_script)">
+          <acre:script>
+            var filename = e.fileName || e.filename;
+            if (typeof filename === "string") {
+              filename = filename.split("$")[0]
+            }
+            var line = e.line || e.lineNumber;
+          </acre:script>
+          <acre:block if="!user_script">
+            $filename: $line
+          </acre:block>
+          <acre:block else="">
+            <acre:script>
+              var url = acre.freebase.site_host + '/appeditor/#!path=' + filename + '&line=' + acre.form.quote(line);
+            </acre:script>
+            <a target="_blank" href="$url">$filename</a>: $line
+          </acre:block>
+        </acre:block>
+
+        <h1 class="module-title">$einfo.message</h1>
+
+        <div class="module-section">
+          <p class="line" acre:if="user_script">
+            at ${sourcelink(einfo, user_script)}
+          </p>
+          <p class="line" acre:elif="einfo.stack">
+            <acre:script>
+              var line;
+              for (var l=0,len=einfo.stack.length; l < len; l++) {
+                if (is_user_script(einfo.stack[l])) {
+                  line = einfo.stack[l];
+                  break;
+                }
+              }
+            </acre:script>
+            <acre:block if="line">
+              at ${sourcelink(line, true)}
+            </acre:block>
+          </p>
+        </div>
+      </acre:block>
+    </div>
+</acre:block>
+
+<acre:script>
+  var c = this.exports.c = {};
+
+  // We're running as a traditional error page
+  if (acre.error) {
+    c.einfo = acre.error;
+    var template = acre.require("template/freebase.mjt");
+    acre.write(template["page"].apply(template, [this.exports]));
+  }
+</acre:script>
+
+

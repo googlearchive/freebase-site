@@ -1,0 +1,134 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+.nav.column {
+  position: absolute;
+  width: 230px;
+  margin-right: 20px;
+  margin-top: -7px;
+}
+
+.column.keys {
+  margin-top: 30px;
+}
+
+.column .section {
+  margin-left: 250px;
+}
+
+.data-row{
+  .wrapper {
+    position: relative;
+    display: inline-block;
+    padding-right: 45px;
+  }
+}
+
+.filter-title {
+  font-weight: bold;
+  font-size: 12px;
+  margin-bottom: 7px;
+}
+
+tr .combo-menu {
+  top: -5px;
+}
+
+
+/*
+ * These should be in global.
+ * Also, see schema.less for duplication
+ */
+.form-field .key-status {
+  position: absolute;
+  right: 0;
+  top: 57%;
+}
+
+.key-status {
+  display: inline-block;
+  width: 16px;
+  text-indent: -9999px;
+}
+
+.key-status.invalid,
+.key-status.valid {
+  background: url(lib/template/img/ui-icons.png) no-repeat;
+}
+
+.key-status.loading {
+  background: url(lib/template/img/loader-snake-small-grey.gif) no-repeat;
+}
+
+.key-status.invalid {
+  background-position: 0 -440px;
+}
+
+.key-status.valid {
+  background-position: 0 -420px;
+}
+
+.section .button-group {
+  float: right;
+  margin-top: -7px;
+}
+
+tr.invalid th,
+tr.invalid td {
+  opacity: 0.7;
+  text-decoration: line-through;
+}
+
+tr.invalid th:first-child,
+tr.invalid td:last-child {
+  text-decoration: none;
+}
+
+tr.invalid:hover th,
+tr.invalid:hover td {
+  opacity: 1;
+  text-decoration: none;
+}
+
+#keys.two-column {
+    display: inline-block;
+    white-space: nowrap;
+}
+#keys.two-column #type-object-key,
+#keys.two-column #type-namespace-keys {
+    float: left;
+    min-width: 600px;
+    display: inline-block;
+}
+
+#keys.two-column #type-object-key {
+    margin-left: 20px;
+}

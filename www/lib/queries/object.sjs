@@ -43,7 +43,8 @@ var OBJECT_FILTERS = [
     "/common/topic/notable_types",
     "/common/topic/notable_for",
     "/common/topic/image",
-    "/common/topic/description"
+    "/common/topic/description",
+    "/common/topic/article"
 ];
 
 /**
@@ -99,7 +100,10 @@ function get_first_value(topic_result, prop) {
 }
 
 function get_description(topic) {
-  var desc = get_first_value(topic, "/common/topic/description");  
+  var desc = get_first_value(topic, "/common/topic/description");
+  if (!desc) {
+    desc = get_first_value(topic, "/common/topic/article");
+  }
   return desc;
 };
 

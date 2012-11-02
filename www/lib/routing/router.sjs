@@ -291,6 +291,10 @@ function init_rules(lib) {
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS_WITHOUT_I18N)),
       "gear": [
         {
+          "name": _("Documentation"),
+          "url": (function() { return h.wiki_url("Commons"+this.object.id); })
+        },
+        {
           "name": _("<b>Delete</b> Domain"),
           "app": "lib",
           "script": "schema/schema.mf.js",
@@ -344,9 +348,9 @@ function init_rules(lib) {
           "key": (function() {
             return object_query.get_first_value(this.object, "/type/type/domain").id;
           }),
-          "url": (function() { 
+          "url": (function() {
             var id = object_query.get_first_value(this.object, "/type/type/domain").id;
-            return h.fb_url(id, [['schema']]); 
+            return h.fb_url(id, [['schema']]);
           })
         }
       ],
@@ -361,6 +365,10 @@ function init_rules(lib) {
           "app": "create",
           "script": "type.controller",
           "show": "can_create"
+        },
+        {
+          "name": _("Documentation"),
+          "url": (function() { return h.wiki_url("Commons"+this.object.id); })
         },
         {
           "name": _("<b>Delete</b> Type"),
@@ -407,12 +415,12 @@ function init_rules(lib) {
       "nav_keys": [
         {
           "label": _("type"),
-          "key": (function() { 
+          "key": (function() {
             return object_query.get_first_value(this.object, "/type/property/schema").id;
           }),
-          "url": (function() { 
+          "url": (function() {
             var id = object_query.get_first_value(this.object, "/type/property/schema").id;
-            return h.fb_url(id, [['schema']]); 
+            return h.fb_url(id, [['schema']]);
           })
         }
       ],
@@ -420,6 +428,10 @@ function init_rules(lib) {
         {
           "name": _("Build Query"),
           "url": (function() { return h.build_query_url(null, null, this.object.id); })
+        },
+        {
+          "name": _("Documentation"),
+          "url": (function() { return h.wiki_url("Commons"+this.object.id); })
         },
         {
           "name": _("<b>Delete</b> Property"),

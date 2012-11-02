@@ -1630,7 +1630,7 @@
 
       // flyout_service_url + flyout_service_path =
       // url to topic api with filter=suggest
-      flyout_service_path: "/topic${id}?filter=suggest&limit=3&key=${key}",
+      flyout_service_path: "/topic${id}?filter=suggest&filter=/common/topic/article&key=${key}",
 
       // default is service_url if NULL
       flyout_image_service_url: null,
@@ -1670,12 +1670,21 @@
     },
 
 
-    // utility methods to get property values from the topic api result
+    // utility methods to get property, values from the topic api result
+    get_property: function(topic_result, prop_id) {
+      var props = topic_result.property;
+      if (props) {
+        return props[prop_id];
+      }
+      else {
+        return null;
+      }
+    },
 
     get_values: function(topic_result, prop_id) {
-      var props = topic_result.property;
-      if (props && props[prop_id] && props[prop_id].values) {
-          return props[prop_id].values;
+      var prop = $.suggest.suggest.get_property(topic_result, prop_id);
+      if (prop && prop.values) {
+        return prop.values;
       }
       else {
           return null;
@@ -1702,14 +1711,12 @@
      *   already encoded into the url template.
      */
     create_flyout: function(data, flyout_image_url) {
+        var get_property = $.suggest.suggest.get_property;
         var get_values =  $.suggest.suggest.get_values;
         var get_first_value = $.suggest.suggest.get_first_value;
         var name = get_first_value(data, "/type/object/name");
         if (name) {
             name = name.text;
-        }
-        else {
-            name = data.id;
         }
         // prefer /common/topic/description over /common/topic/article
         var article =
@@ -1729,12 +1736,15 @@
         var values = get_values(data, "/common/topic/notable_properties");
         if (values) {
             $.each(values, function(i, prop) {
-                var prop_values = get_values(data, prop.id);
-                if (prop_values && prop_values.length) {
+                var p = get_property(data, prop.id);
+                if (p && p.valuetype !== 'compound') {
+                  var prop_values = get_values(data, prop.id);
+                  if (prop_values && prop_values.length) {
                     prop_values = $.map(prop_values, function(v) {
-                        return v.text;
+                      return v.text;
                     }).join(", ");
                     notable_props.push([prop.text || prop.id, prop_values]);
+                  }
                 }
             });
         }
@@ -1760,7 +1770,10 @@
         notability = notability.join(", ");
 
         var content = $('<div class="fbs-flyout-content">');
-        content.append($('<h1 id="fbs-flyout-title">').text(name));
+        if (name) {
+          content.append($('<h1 id="fbs-flyout-title">').text(name));
+        }
+        content.append($('<h3 class="fbs-topic-properties fbs-flyout-id">').text(data.id));
         $.each(notable_props, function(i, prop) {
             content.append($('<h3 class="fbs-topic-properties">')
                 .append($('<strong>').text(prop[0] + ': '))

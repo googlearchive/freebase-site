@@ -426,6 +426,10 @@ Freebase Suggest Flyout Elements
 -------------------------------------------------------
 */
 
+.fbs-flyout-id {
+    color: #999 !important;
+}
+
 /* the object title */
 h1#fbs-flyout-title {
     font-size: 1.2em;

@@ -62,6 +62,7 @@
     "specified users (members of the /type/property/authorities permission).");
   var PROPERTY_REQUIRES_AUTHORITY = _("Some values for this " +
     "property may not be editable.");
+  var SHOW_MORE = _("More &raquo;");
  </acre:script>
 
 <acre:block def="topicbox(topic, lang)">
@@ -146,7 +147,6 @@
   <div class="property-section"
        data-id="${prop_structure.id}">
     <div class="sub-foobar kbs">
-      <a href="${h.fb_url(topic.id, [['property', prop_structure.id]])}" class="more fb-site-only"><span>${VIEW_ALL_PROPERTY_VALUES}</span></a>
       <span class="header-label">
         ${prop_menu(topic, prop_structure, prop_values, lang)}
         <acre:block if="prop_structure.authorities == null && prop_structure.requires_permission === true">
@@ -179,6 +179,8 @@
   <acre:script>
     var empty = !prop_values || !prop_values.length;
     var ect = prop_structure.expected_type.id;
+    var count = topic.property[prop_structure.id] && topic.property[prop_structure.id].count;
+    count = count || 0;
   </acre:script>
   <table class="data-table">
     <thead>
@@ -200,6 +202,17 @@
         </acre:block>
       </acre:block>
     </tbody>
+    <acre:block if="count > prop_values.length">
+      <tfoot>
+        <tr>
+          <th>
+            <div class="more">
+              <a href="${h.fb_url(topic.id, [['property', prop_structure.id]])}"><span>${SHOW_MORE}</span></a>
+            </div>
+          </th>
+        </tr>
+      </tfoot>
+    </acre:block>
   </table>
 </acre:block>
 
@@ -302,6 +315,8 @@
   <acre:script>
     var empty = !prop_values || !prop_values.length;
     var ect = prop_structure.expected_type.id;
+    var count = topic.property[prop_structure.id] && topic.property[prop_structure.id].count;
+    count = count || 0;
   </acre:script>
   <ul class="data-list">
     <acre:block if="empty">
@@ -313,6 +328,11 @@
       </acre:block>
     </acre:block>
   </ul>
+  <acre:block if="count > prop_values.length">
+    <div class="more">
+      <a href="${h.fb_url(topic.id, [['property', prop_structure.id]])}"><span>${SHOW_MORE}</span></a>
+    </div>
+  </acre:block>
 </acre:block>
 
 <acre:block def="datalist_row(topic, prop_structure, prop_value, lang)">

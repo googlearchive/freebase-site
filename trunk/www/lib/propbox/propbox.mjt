@@ -63,6 +63,7 @@
   var PROPERTY_REQUIRES_AUTHORITY = _("Some values for this " +
     "property may not be editable.");
   var SHOW_MORE = _("More &raquo;");
+  var VIEW_CVT = _("View CVT");
  </acre:script>
 
 <acre:block def="topicbox(topic, lang)">
@@ -300,7 +301,7 @@
           <li>
             <span class="wrapper truncate">
               <acre:block if="i === 0 && primary">
-                ${value_menu(prop_value, subprop_structure, subprop_value, lang)}
+                ${value_menu(prop_value, subprop_structure, subprop_value, lang, prop_structure, prop_value)}
               </acre:block>
               ${value(prop_value.id, subprop_structure, subprop_value, lang)}
             </span>
@@ -492,7 +493,7 @@
   </span>
 </acre:block>
 
-<acre:block def="value_menu(topic, prop_structure, prop_value, lang)">
+<acre:block def="value_menu(topic, prop_structure, prop_value, lang, parent_prop_structure, parent_prop_value)">
   <acre:script>
     var ect = prop_structure.expected_type.id;
     var is_blob = false;
@@ -512,6 +513,11 @@
         <acre:block if="!is_blob && topic && prop_structure && prop_value && lang">
           <li acre:if="!h.is_literal_type(prop_structure.expected_type.id)" class="row-menu-item fb-site-only">
             <a href="${h.fb_url(prop_value.id, [['i18n']])}">${EDIT_LOCALIZED_TEXT}</a>
+          </li>
+        </acre:block>
+        <acre:block if="parent_prop_structure && parent_prop_value && parent_prop_structure.expected_type.mediator">
+          <li class="row-menu-item fb-site-only">
+            <a href="${h.fb_url(parent_prop_value.id, [['props']])}">${VIEW_CVT}</a>
           </li>
         </acre:block>
       </ul>

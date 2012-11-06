@@ -543,7 +543,8 @@
         var o = $.extend({}, fb.suggest_options.service_defaults, {
           status: null,
           parent: "#site-search-box",
-          align: "right"
+          align: "right",
+          filter: '(not type:/common/document)'
         });
         return o;
       },
@@ -577,7 +578,7 @@
           o = fb.suggest_options.any.apply(null, filters);
         }
         else {
-          var o = fb.suggest_options.should.apply(null, filters);
+          o = fb.suggest_options.should.apply(null, filters);
           if (create_new) {
             // only "Create new" for non metaweb system types
             o.suggest_new = "Create new";

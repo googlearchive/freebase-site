@@ -193,7 +193,7 @@
     <input type="checkbox" name="${name}" value="all" 
            acre:attrs="checked ? {checked:'checked'} : {}"
            onchange="this.form.submit();"/>
-    ${_('Show all domains')}
+    ${_('Show all data')}
   </label>
 </acre:block>
 

@@ -58,7 +58,7 @@ var validators = acre.require("validator/validators.sjs");
  *           this property id.
  * The domain, type and property exclusive options where you can only specify
  * one of them. If multiple options are specified then, the domain option takes
- * precedence, then then the type and then the property.
+ * precedence, then the type and then the property.
  * 
  * The topic structure will be a union of all topic "bare properties" and 
  * their sibling properties along with all the topic's types's properties
@@ -95,46 +95,33 @@ function topic_structure(id, options) {
     }
     return freebase.get_topic(id, api_options)
         .then(function(topic_result) {
-            var domain_count = options.linkcount;
             var topic_props = topic_result && topic_result.property;
             if (topic_props) {
                 // Get all instanceof types and asserted props (bareprops)
                 // to determine what types to display
 
                 // These are actual instanceof types
-                var instanceof_types = topic_props && topic_props["/type/object/type"];
-                instanceof_types = instanceof_types && instanceof_types.values;
-
-                // Gather up all asserted properties' types
+                var instanceof_types = 
+                  h.get_values(topic_result, "/type/object/type") || [];
                 var types = [];
                 var types_seen = {};
-                var no_filters = !(options.domain || options.type || options.property);
+                instanceof_types.forEach(function(type) {
+                    types.push(type.id);
+                    types_seen[type.id] = true;
+                });
+
+                // Gather up "bare properties" if domains==all
                 for (var pid in topic_props) {
                     // skip reverse properties (!/.../.../...)
                     var t = h.id_key(pid, true)[0];
                     if (t[0] === "/") {
-                        // Don't show /type/object properties unless explicity asked
-                        if (no_filters && (t === "/type/object")) {
-                            continue;
-                        }
                         if (t && !types_seen[t]) {
                             types.push(t);
                             types_seen[t] = true;
                         }
                     }
                 }
-
-                // Now merge instanceof types and asserted properties' types
-                if (instanceof_types) {
-                    instanceof_types.forEach(function(t) {
-                        var id = t.id;
-                        if (id && !types_seen[id]) {
-                            types.push(id);
-                            types_seen[id] = true;
-                        }
-                    });
-                }
-
+                
                 if (types.length) {
                     // If domain, type, or prop filter, only get the type(s)
                     // corresponding to the filter
@@ -166,12 +153,25 @@ function topic_structure(id, options) {
                 if (types.length) {
                     return typeloader.loads(types, lang)
                         .then(function(typeloader_result) {
-                            var structure = get_structure(typeloader_result, domain_count, lang);
+                            // Don't show /type/object properties 
+                            // unless explicity asked.
+                            if (!(options.domain === 'all' ||
+                                  domain_filter === '/type' ||
+                                  type_filter === '/type/object' ||
+                                  (prop_filter && prop_filter.indexOf(
+                                     '/type/object/') === 0))) {
+                              delete typeloader_result['/type/object'];
+                            }
+
+                            var structure = get_structure(
+                                typeloader_result, types, lang);
                             if (prop_filter) {
-                                var show_prop = structure.properties[prop_filter];
+                                var show_prop = 
+                                    structure.properties[prop_filter];
                                 if (show_prop) {
                                     structure.properties = {};
-                                    structure.properties[prop_filter] = show_prop;
+                                    structure.properties[prop_filter] = 
+                                        show_prop;
                                 }
                             }
                             topic_result.structure = structure;
@@ -192,82 +192,54 @@ function is_mql_id(id) {
 /**
  * Get a structure that is easy to iterate from 
  * a list of domains -> types -> properties.
- * The domains and types will be sorted by
- * a topic's linkcount.
+ * The domains and types will be sorted by timestamp.
  *
  * @param types:Object - a dictionary of types returned by typeloader.load()
- * @param linkcount:Array - a list of types sorted by their notablility.
  * @param lang
- * @return a list of domains and their types sorted by linkcount
+ * @return a list of domains and their types sorted by type order
  */
-function get_structure(types_by_id, domain_count, lang) {
-  var domains_list = sort_domains_and_types_by_linkcount(types_by_id, domain_count);
+function get_structure(types_by_id, lang) {
+  var domains_list = sort_domains_and_types(types_by_id);
   return to_structure(domains_list, lang);
 };
 
 
 /**
  * Convert a map of types by their ids to a sorted list of domains 
- * and their types where the domains and types will be sorted by
- * their respective linkcounts.
+ * and their types where the domains will be sorted by timestamp.
  */
-function sort_domains_and_types_by_linkcount(types_by_id, domain_count) {
-    var linkcount_by_domain = {};
-    var linkcount_by_type = {};
-    var linkcount_by_prop = {};
-    if (domain_count) {
-        domain_count.forEach(function(domain) {
-            linkcount_by_domain[domain.id] = domain.count;
-            var types = domain.values || [];
-            types.forEach(function(type) {
-                linkcount_by_type[type.id] = type.count;
-                var props = type.values || [];
-                props.forEach(function(prop) {
-                    linkcount_by_prop[prop.id] = prop.count;
-                });
-            });
-        });
-    }
+function sort_domains_and_types(types_by_id) {
     // bucket all types into their respective domains
     var domains_list = [];
     var domains_by_id = {};
     for (var type_id in types_by_id) {
         var type = types_by_id[type_id];
-        var domain_id = type.domain.id;
-        var domain = domains_by_id[domain_id];
-        if (!domain) {
-            domain = domains_by_id[domain_id] = h.extend(true, {types:[]}, type.domain);
-            domains_list.push(domain);
+        if (type) {
+          var domain_id = type.domain.id;
+          var domain = domains_by_id[domain_id];
+          if (!domain) {
+              domain = domains_by_id[domain_id] = 
+                  h.extend(true, {
+                      'types':[]
+                  }, type.domain);
+              domains_list.push(domain);
+          }
+          domain['types'].push(type);
         }
-        domain.types.push(type);
-    }
-    // now sort all types by type linkcount
+    };
+
+    // now sort all types by timestamp
     domains_list.forEach(function(domain) {
-        domain.types.sort(function(a, b) {
-            return compare_linkcount(linkcount_by_type, a, b);
+        domain['types'].sort(function(a, b) {
+            return b['timestamp'] < a['timestamp'];
         });
     });
-    // now sort all domains by domain linkcount
-    return domains_list.sort(function(a, b) {
-        return compare_linkcount(linkcount_by_domain, a, b);
-    });
-};
 
-function compare_linkcount(linkcount_by_id, a, b) {
-  var a_count = linkcount_by_id[a.id];
-  var b_count = linkcount_by_id[b.id];
-  if (!(a_count == null || b_count == null)) {
-    return b_count - a_count;
-  }
-  else if (a_count == null && b_count === null) {
-    return 0;
-  }
-  else if (a_count == null) {
-    return 1;
-  }
-  else if (b_count == null) {
-    return -1;
-  }
+    // now sort all domains by timestamp
+    domains_list.sort(function(a, b) {
+      return b['timestamp'] < a['timestamp'];
+    });
+    return domains_list;
 };
 
 
@@ -276,9 +248,11 @@ function compare_linkcount(linkcount_by_id, a, b) {
  * Note that the result will be compatible to the old topic api:
  * http://api.freebase.com/api/experimental/topic/full?id=/en/google
  *
- * @param domains_list:Array - A sorted list of domains and their respective types
- * @return A structure outlining the order of domains, the order of their respective types and
- *  the order of the domains's types' disambiguating properties.
+ * @param domains_list:Array - A sorted list of domains and 
+ *   their respective types
+ * @return A structure outlining the order of domains,
+ *   the order of their respective types and
+ *   the order of the domains's types' disambiguating properties.
  */
 function to_structure(domains_list, lang) {
   var structure = {
@@ -305,7 +279,8 @@ function to_structure(domains_list, lang) {
       };
       type.properties.forEach(function(prop) {
         type_structure.properties.push(prop.id);
-        var prop_structure = structure.properties[prop.id] = ph.to_prop_structure(prop, lang);
+        var prop_structure = structure.properties[prop.id] =
+            ph.to_prop_structure(prop, lang);
       });
     });
   });

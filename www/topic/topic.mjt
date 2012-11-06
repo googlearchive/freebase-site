@@ -58,33 +58,17 @@
       ${manage_types()}  
       ${propbox.topicbox(c.topic, i18n.lang)}
 
-
-      <acre:block if="!(c.filters.domain || c.filters.type || c.filters.property)">
-
+      <acre:block if="!(c.filters.domain || c.filters.type || c.filters.property || c.filters.domains === 'all')">
         <div class="section domain domain-section">
           <div class="header">
-
-            <acre:block if="c.filters.domains === 'all'">
-              <span class="status commons">${_("Freebase Commons")}</span>
-              <h1 class="kbs">
-                <span class="mark">
-                  <a href="#" id="show-all-domains-link">${_("Show only Commons")}</a>
-                </span>
-              </h1>
-            </acre:block>
-            <acre:block else="">
-              <span class="status user">${_("User Domain")}</span>
-              <h1 class="kbs">
-                <span class="mark">
-                  <a href="#" id="show-all-domains-link">${_("Show all domains")}</a>
-                </span>
-              </h1>
-            </acre:block>
+            <h1 class="kbs">
+              <span class="mark">
+                <a href="#" id="show-all-domains-link">${_("Show all data")}</a>
+              </span>
+            </h1>
           </div>    
         </div>
       </acre:block>
-      </acre:block>
-     
     </acre:block>
 
     <acre:block else="">

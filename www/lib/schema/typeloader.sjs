@@ -238,6 +238,7 @@ function do_mql(type_ids, lang) {
         type: "/type/type",
         guid: null,
         mid: null,
+        timestamp: null,
         key: [{
           value: null,
           namespace: null
@@ -250,7 +251,8 @@ function do_mql(type_ids, lang) {
                 // is this "Commons" domain?
                 optional: true,
                 id: "/category/commons"
-            }
+            },
+            timestamp: null
         },
         "/freebase/type_hints/mediator": null,
         "/freebase/type_hints/included_types": [],

@@ -66,33 +66,31 @@ var SPEC = {
 
   run: function(s, p, o, lang, namespace, user_id) {
     // we want to make sure we are looking at the latest
-    return freebase.touch()
-      .then(function() {
-        return queries.prop_structure(p, lang)
-          .then(function(prop_structure) {
-            return queries.prop_values(s, prop_structure, o, lang, namespace)
-              .then(function(prop_values) {
-                if (prop_values.length) {
-                  var prop_value = h.first_element(prop_values);
-                  if (ph.user_can_edit(user_id, prop_structure, prop_value)) {
-                    return run_delete(s, prop_structure, o, lang, namespace);
-                  }
-                  else {
-                    throw new Error(
-                      'User does not have permission to remove this value.');
-                  }
-                }
-                else {
-                  // The thing we're trying to delete is no longer valie.
-                  // Alert user to reload (touch) and try again.
-                  return {
-                    invalid: true,
-                    reload: true
-                  };
-                }
-              });
+    acre.freebase.touch();
+    return queries.prop_structure(p, lang)
+      .then(function(prop_structure) {
+        return queries.prop_values(s, prop_structure, o, lang, namespace)
+          .then(function(prop_values) {
+            if (prop_values.length) {
+              var prop_value = h.first_element(prop_values);
+              if (ph.user_can_edit(user_id, prop_structure, prop_value)) {
+                return run_delete(s, prop_structure, o, lang, namespace);
+              }
+              else {
+                throw new Error(
+                  'User does not have permission to remove this value.');
+              }
+            }
+            else {
+              // The thing we're trying to delete is no longer valie.
+              // Alert user to reload (touch) and try again.
+              return {
+                invalid: true,
+                reload: true
+              };
+            }
           });
-        });
+      });
   }
 };
 

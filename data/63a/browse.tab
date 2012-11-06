@@ -1,0 +1,194 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+var h = acre.require("lib/helper/helpers.sjs");
+var i18n = acre.require("lib/i18n/i18n.sjs");
+var apis = acre.require("lib/promise/apis"),
+    freebase = apis.freebase,
+    urlfetch = apis.urlfetch,
+    deferred = apis.deferred;
+
+var SPEC = {
+  
+  cache_policy: "public",
+  
+  template: "browse.mjt",
+  
+  template_base: "lib/template/browse.mjt",
+
+  run: function() {
+    return {
+      domains: domains_topics_facts()
+    };
+  }
+
+};
+
+/**
+ * Get all "commons" domains, an corresponding
+ * topic fact counts
+ */
+function domains_topics_facts() {
+  var q = [{
+    id: null,
+    guid: null,
+    name: i18n.mql.query.name(),
+    type: "/type/domain",
+    "/freebase/domain_profile/category": {
+      id: "/category/commons"
+    },
+    types: {"id": null, type: "/type/type", "return": "count"}
+  }];
+
+  return freebase.mqlread(q)
+    .then(function(envelope) {
+      return envelope.result || [];
+    })
+    .then(function(domains) {
+      // attach topic/fact counts to domains
+      return _domain_topics_facts(domains);
+    })
+    .then(function(domains) {
+      // calculate percentage values for bar graph display
+      return _convert_totals_percentages(domains);
+    })
+    .then(function(domains) {
+      // sort by topic count
+      return domains.sort(sort_by_topic_count);
+    });
+};
+
+function sort_by_topic_count(a,b) {
+  return b.topics.value > a.topics.value;
+};
+
+function _domain_topics_facts(domains) {
+    var keys = domains.map(function(domain) {
+        return "summary_"+domain.guid.replace("#", "/guid/");
+    });
+    var promises = [];
+    // we request allotments of 30 summary guids since the url may be too long
+    for (var i=0,l=keys.length; i<l; i+=30) {
+        var slice = keys.slice(i, i+30);
+        promises.push(freebase.get_static("activity", slice));
+    }
+    return deferred.all(promises)
+        .then(function(results) {
+            var activities = {};
+            // flatten out the allotment of results into one activities map
+            // the activity key (domain id)
+            results.forEach(function(r) {
+                h.extend(activities, r);
+            });
+            domains.forEach(function(domain) {
+                var key = "summary_"+domain.guid.replace("#", "/guid/");
+                if (activities[key]) {
+                    domain.topics = {
+                        value: activities[key].total.t
+                    };
+                    domain.facts = {
+                        value: activities[key].total.e
+                    };
+                }
+            });
+            return domains;            
+        });
+};
+
+function logx(val, base) {
+  return Math.log(val) / Math.log(base);
+};
+
+function _convert_totals_percentages(domains) {
+
+  // figure out the largest value for each object
+  // I can't figure out how to do this without iterating
+  // through the domain object twice: once to find higest
+  // value for topics/facts, and the second to derive percent
+  // of all other values
+  var topics = [];
+  var facts = [];
+
+  domains.forEach(function(d) {
+    topics.push(d.topics.value);
+    facts.push(d.facts.value);
+
+    if(d.id === "/common") {
+      domains.total_topics = d.topics.value;
+    }
+  });
+
+
+  // get higest count of each group
+  var max_topic_count = logx(Math.max.apply(Math, topics), 1.1);
+  var max_fact_count = logx(Math.max.apply(Math, facts), 1.1);
+
+  // divide to get perentage and re-attach
+  // to the domain object
+
+  var max_topics = 0,
+      max_facts = 0;
+
+  domains.forEach(function(d) {
+    if (d.topics.value > max_topics) {
+      max_topics = d.topics.value;
+    }
+    if (d.facts.value > max_facts) {
+      max_facts = d.facts.value;
+    }
+  });
+
+  domains.forEach(function(d) {
+    d.topics.percent = (d.topics.value / max_topics) * 100;
+    d.facts.percent = (d.facts.value / max_facts) * 100;
+  });
+
+  max_topics = 0,
+  max_facts = 0;
+
+  domains.forEach(function(d) {
+    d.topics.log = Math.log(d.topics.percent + 1);
+    if (d.topics.log > max_topics) {
+      max_topics = d.topics.log;
+    }
+    d.facts.log = Math.log(d.facts.percent + 1);
+    if (d.facts.log > max_facts) {
+      max_facts = d.facts.log;
+    }
+  });
+
+  domains.forEach(function(d) {
+    d.topics.log = Math.max(Math.round(d.topics.log * 100/ max_topics), 1);
+    d.facts.log = Math.max(Math.round(d.facts.log * 100 / max_facts), 1);
+  });
+
+  return domains;
+};

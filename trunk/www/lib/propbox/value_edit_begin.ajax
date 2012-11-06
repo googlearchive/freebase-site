@@ -64,23 +64,21 @@ var SPEC = {
 
   run: function(s, p, replace, lang, namespace, user_id) {
     // we want to make sure we are looking at the latest
-    return freebase.touch()
-      .then(function() {
-        return queries.prop_structure(p, lang)
-          .then(function(prop_structure) {
-            var ect = prop_structure.expected_type.id;
-            if (ect === "/common/document") {
-              return SPEC.run_document(s, prop_structure, replace, lang);
-            }
-            else if (ect === "/common/image") {
-              return SPEC.run_image(s, prop_structure, replace, lang);
-            }
-            else {
-              return SPEC.run_default(
-                s, prop_structure, replace, lang, namespace, user_id);
-            }
-          });
-        });
+    acre.freebase.touch();
+    return queries.prop_structure(p, lang)
+      .then(function(prop_structure) {
+        var ect = prop_structure.expected_type.id;
+        if (ect === "/common/document") {
+          return SPEC.run_document(s, prop_structure, replace, lang);
+        }
+        else if (ect === "/common/image") {
+          return SPEC.run_image(s, prop_structure, replace, lang);
+        }
+        else {
+          return SPEC.run_default(
+            s, prop_structure, replace, lang, namespace, user_id);
+        }
+      });
   },
 
   run_document: function(s, prop_structure, replace, lang) {

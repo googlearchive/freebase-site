@@ -43,7 +43,7 @@
 </acre:block>
 
 <acre:block def="page_content()">
-  <div class="section instances">
+  <div class="section instances clear">
     <h1 class="table-title">
       <strong acre:if="c.activity">${i18n_c.number(c.activity.topic_count || 0)}</strong>
       ${i18n.display_name(c.object)}

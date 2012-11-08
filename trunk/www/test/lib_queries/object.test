@@ -34,13 +34,12 @@ acre.require("mock").playback(this, "./playback_object.json");
 var h = acre.require("lib/helper/helpers.sjs");
 var queries = acre.require("lib/queries/object.sjs");
 
-
 test("object", function() {
   var result;
   queries.object("/en/kaede_rukawa")
-  .then(function(object) {
+    .then(function(object) {
       result = object;
-  });
+    });
   acre.async.wait_on_results();
   ok(result, "Got object result");
   ok(result.mid, "Got object mid");
@@ -62,4 +61,26 @@ test("not found", function() {
     });
   acre.async.wait_on_results();
   ok(error, "Error expected for bad topic id");
+});
+
+test("get description for type", function() {
+  var result;
+  queries.object("/film/film")
+    .then(function(object) {
+      result = object;
+    });
+  acre.async.wait_on_results();
+  ok(result, "Got object result");
+  ok(result.description, "Got description values");
+
+  var article_values = result.property["/common/topic/article"].values;
+  var description_values = result.property["/common/topic/description"].values;
+  var all_values = description_values || article_values;
+  ok(all_values, "Got article or description values");
+
+  all_values.sort(function(a, b) {
+    return a.timestamp < b.timestamp;
+  });
+
+  equal(result.description.timestamp, all_values[0].timestamp, "Got latest description from result");
 });

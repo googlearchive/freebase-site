@@ -81,7 +81,7 @@ function object(id, props) {
           image: get_first_value(topic, "/common/topic/image"),
 
           permission: get_permission(topic),
-          description: get_description(topic),
+          description: get_description(topic, type_map),
           notability: get_notability(topic),
           linkcount: get_linkcount(topic),
           flag: get_first_value(topic, "!/freebase/review_flag/item")
@@ -99,13 +99,44 @@ function get_first_value(topic_result, prop) {
   return values ? h.first_element(values) : null;
 }
 
-function get_description(topic) {
-  var desc = get_first_value(topic, "/common/topic/description");
-  if (!desc) {
-    desc = get_first_value(topic, "/common/topic/article");
+function get_latest_value(topic_result, prop) {
+  var values = get_values(topic_result, prop);
+  if (!values) {
+    return null;
+  } else if (!h.isArray(values)) {
+    return values;
+  }
+  var latest_value = values[0];
+  var latest_date = latest_value.timestamp;
+
+  values.forEach(function(value){
+    var date = value.timestamp;
+    if (date > latest_date) {
+      latest_value = value;
+      latest_date = date;
+    }
+  });
+  return latest_value;
+}
+
+function get_description(topic, tm) {
+  var desc = null;
+  var is_schema_object = tm["/type/type"] || tm["/type/domain"] || tm["/type/property"];
+
+  // for schema objects return latest value (by timestamp)
+  if (is_schema_object) {
+    desc = get_latest_value(topic, "/common/topic/description");
+    if (!desc) {
+      desc = get_latest_value(topic, "/common/topic/article");
+    }
+  } else {
+    desc = get_first_value(topic, "/common/topic/description");
+    if (!desc) {
+      desc = get_first_value(topic, "/common/topic/article");
+    }
   }
   return desc;
-};
+}
 
 function get_permission(topic) {
   var permission = get_first_value(topic, "/type/object/permission");

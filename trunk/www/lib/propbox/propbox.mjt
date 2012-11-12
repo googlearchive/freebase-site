@@ -62,7 +62,7 @@
     "specified users (members of the /type/property/authorities permission).");
   var PROPERTY_REQUIRES_AUTHORITY = _("Some values for this " +
     "property may not be editable.");
-  var SHOW_MORE = _("More &raquo;");
+  var SHOW_MORE = _("%s values total &raquo;");
   var VIEW_CVT = _("View CVT");
  </acre:script>
 
@@ -208,7 +208,7 @@
         <tr>
           <th>
             <div class="more">
-              <a href="${h.fb_url(topic.id, [['property', prop_structure.id]])}"><span>${SHOW_MORE}</span></a>
+              <a href="${h.fb_url(topic.id, [['property', prop_structure.id]])}"><span>${h.sprintf(SHOW_MORE, count)}</span></a>
             </div>
           </th>
         </tr>
@@ -299,7 +299,7 @@
       <acre:block else="">
         <acre:block for="i, subprop_value in subprop_values">
           <li>
-            <span class="wrapper truncate">
+            <span class="wrapper">
               <acre:block if="i === 0 && primary">
                 ${value_menu(prop_value, subprop_structure, subprop_value, lang, prop_structure, prop_value)}
               </acre:block>
@@ -331,14 +331,14 @@
   </ul>
   <acre:block if="count > prop_values.length">
     <div class="more">
-      <a href="${h.fb_url(topic.id, [['property', prop_structure.id]])}"><span>${SHOW_MORE}</span></a>
+      <a href="${h.fb_url(topic.id, [['property', prop_structure.id]])}"><span>${h.sprintf(SHOW_MORE, count)}</span></a>
     </div>
   </acre:block>
 </acre:block>
 
 <acre:block def="datalist_row(topic, prop_structure, prop_value, lang)">
   <li class="${ph.get_propbox_data_row_css_class(prop_structure, prop_value)}">
-    <span class="wrapper first truncate">
+    <span class="wrapper first">
       ${value_menu(topic, prop_structure, prop_value, lang)}
       ${value(topic.id, prop_structure, prop_value, lang)}
     </span>

@@ -56,7 +56,7 @@
       fb.filters.init_domain_type_property_filter(".column.nav");
 
       // Initialize fixed column for truncating columns
-      $(".data-table").fixedcolumn({all:true});
+//      $(".data-table").fixedcolumn({all:true});
 
       // Toggle for Add Types dialog
       $(".toolbar-trigger").click(function(){

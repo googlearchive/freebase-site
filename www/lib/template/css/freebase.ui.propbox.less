@@ -64,7 +64,6 @@
     line-height: 1;
     padding: 0 @gutter-value;
     .transition(background-color, 0.3s);
-    height: 2em;
 
     .wrapper {
       position: relative;
@@ -328,7 +327,7 @@ tr.new-row * {
   font-weight: bold;
   line-height: 1;
   .box_shadow(0, 1px, 2px, #aaa);
-  .linear_gradient(#ccc, #c1c2c3);
+  .linear_gradient(#8EAABA, #80A0B2);
 
   .key {
     font-weight: normal;
@@ -473,6 +472,7 @@ table .edit-row .form-field {
     font-size: 12px;
     line-height: 1;
     padding: 5px 5px 5px 15px;
+    border-top: 1px solid #eee;
   }
 }
 
@@ -541,13 +541,21 @@ div.kbs.current .mark {
   opacity: 0;
 }
 
+.type-section {
+    padding-bottom: 20px;
+}
+
 .type-label,
 .property-label {
     display: inline-block;
     padding: 7px 7px 7px 1px;
 }
 
-.type-label a,
+.type-label a {
+  color: whitesmoke;
+  font-size: 1.2em;
+}
+
 .property-label a {
     color: #666;
 }

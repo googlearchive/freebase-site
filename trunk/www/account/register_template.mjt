@@ -95,35 +95,49 @@
 </acre:block>
 
 <acre:block def="claim_account_pane()">
+  <acre:script>
+    // allow account claim only on '.freebase.com'
+    var fb_site = h.endsWith(acre.request.server_name, ".freebase.com");
+  </acre:script>
   <h2 class="current">Connect to an existing Freebase account</h2>
   <div class="pane">
-    <form name="account-claim"
-          method="post"
-          action="${h.ajax_url('/register_claim_submit')}">
-      <fieldset>
-        <label for="username">
-          Enter Freebase username to connect to your Google account.
-        </label>
-        <div class="form-field clear">
-          <input name="username" id="username" class="input-standard"
-                 type="text" spellcheck="false">
-          <script type="text/javascript">
-            document.getElementById("username").select();
-          </script>
-          <span class="input-help"></span>
-          <span class="input-error"></span>
-        </div>
-      </fieldset>
+    <acre:block if="fb_site">
+      <form name="account-claim"
+            method="post"
+            action="${h.ajax_url('/register_claim_submit')}">
+        <fieldset>
+          <label for="username">
+            Enter Freebase username to connect to your Google account.
+          </label>
+          <div class="form-field clear">
+            <input name="username" id="username" class="input-standard"
+                   type="text" spellcheck="false">
+            <script type="text/javascript">
+              document.getElementById("username").select();
+            </script>
+            <span class="input-help"></span>
+            <span class="input-error"></span>
+          </div>
+        </fieldset>
 
-      <p>By clicking the "Connect my Account" button below, you are agreeing to
-        the <a target="_blank" href="/policies/tos">Freebase Terms of Service</a>
-        and to receive email announcements about changes to the Freebase service.
+        <p>By clicking the "Connect my Account" button below, you are agreeing to
+          the <a target="_blank" href="/policies/tos">Freebase Terms of Service</a>
+          and to receive email announcements about changes to the Freebase service.
+        </p>
+
+        <button class="submit button button-primary" name="claim" type="submit">
+          Connect my Account
+        </button>
+      </form>
+    </acre:block>
+    <acre:block else="">
+      <p>
+        <i>
+          You cannot register a new account or connect to a freebase account on this site.
+          Please visit <a href="http://dev.freebase.com">dev.freebase.com</a> to do so.
+        </i>
       </p>
-
-      <button class="submit button button-primary" name="claim" type="submit">
-        Connect my Account
-      </button>
-    </form>
+    </acre:block>
   </div>
 </acre:block>
 

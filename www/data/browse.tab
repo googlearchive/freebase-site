@@ -77,17 +77,15 @@ function domains_topics_facts() {
       return _domain_topics_facts(domains);
     })
     .then(function(domains) {
-      // calculate percentage values for bar graph display
-      return _convert_totals_percentages(domains);
-    })
-    .then(function(domains) {
       // sort by topic count
       return domains.sort(sort_by_topic_count);
     });
 };
 
 function sort_by_topic_count(a,b) {
-  return b.topics.value > a.topics.value;
+  var a_count = a.topics ? a.topics.count : 0;
+  var b_count = b.topics ? b.topics.count : 0;
+  return b_count > a_count;
 };
 
 function _domain_topics_facts(domains) {
@@ -98,7 +96,11 @@ function _domain_topics_facts(domains) {
     // we request allotments of 30 summary guids since the url may be too long
     for (var i=0,l=keys.length; i<l; i+=30) {
         var slice = keys.slice(i, i+30);
-        promises.push(freebase.get_static("activity", slice));
+        promises.push(
+          freebase.get_static("activity", slice, {timeout:3000})
+            .then(null, function(e) {
+                return null;
+            }));
     }
     return deferred.all(promises)
         .then(function(results) {
@@ -108,87 +110,65 @@ function _domain_topics_facts(domains) {
             results.forEach(function(r) {
                 h.extend(activities, r);
             });
+            var max_topic_count = null;
+            var min_topic_count = null;
+            var max_fact_count = null;
+            var min_fact_count = null;
             domains.forEach(function(domain) {
                 var key = "summary_"+domain.guid.replace("#", "/guid/");
                 if (activities[key]) {
                     domain.topics = {
-                        value: activities[key].total.t
+                      count: activities[key].total.t
                     };
                     domain.facts = {
-                        value: activities[key].total.e
+                      count: activities[key].total.e
                     };
+                    if (max_topic_count == null || 
+                        domain.topics.count > max_topic_count) {
+                      max_topic_count = domain.topics.count;
+                    }
+                    if (min_topic_count == null || 
+                        domain.topics.count < min_topic_count) {
+                      min_topic_count = domain.topics.count;
+                    }
+                    if (max_fact_count == null || 
+                        domain.facts.count > max_fact_count) {
+                      max_fact_count = domain.facts.count;
+                    }
+                    if (min_fact_count == null || 
+                        domain.facts.count < min_fact_count) {
+                      min_fact_count = domain.facts.count;
+                    }
                 }
             });
+
+            /**
+             * Calculate logarithmic scale of topic/fact counts from 0 to 100.
+             */
+            var topic_count_scale = null;
+            var fact_count_scale = null;
+            if (! (max_topic_count == null || min_topic_count == null)) {
+              topic_count_scale = 
+                (Math.log(max_topic_count) - Math.log(min_topic_count)) / 100;
+            }
+            if (! (max_fact_count == null || min_fact_count == null)) {
+              fact_count_scale = 
+                (Math.log(max_fact_count) - Math.log(min_fact_count)) / 100;
+            }
+
+            domains.forEach(function(domain) {
+                if (domain.topics) {
+                  domain.topics.log_percent = Math.round(
+                    ((Math.log(domain.topics.count) - 
+                     Math.log(min_topic_count)) / topic_count_scale));
+                }
+                if (domain.facts) {
+                  domain.facts.log_percent = Math.round(
+                    ((Math.log(domain.facts.count) - 
+                     Math.log(min_fact_count)) / fact_count_scale));
+                }
+            });
+
             return domains;            
         });
-};
-
-function logx(val, base) {
-  return Math.log(val) / Math.log(base);
-};
-
-function _convert_totals_percentages(domains) {
-
-  // figure out the largest value for each object
-  // I can't figure out how to do this without iterating
-  // through the domain object twice: once to find higest
-  // value for topics/facts, and the second to derive percent
-  // of all other values
-  var topics = [];
-  var facts = [];
-
-  domains.forEach(function(d) {
-    topics.push(d.topics.value);
-    facts.push(d.facts.value);
-
-    if(d.id === "/common") {
-      domains.total_topics = d.topics.value;
-    }
-  });
-
-
-  // get higest count of each group
-  var max_topic_count = logx(Math.max.apply(Math, topics), 1.1);
-  var max_fact_count = logx(Math.max.apply(Math, facts), 1.1);
-
-  // divide to get perentage and re-attach
-  // to the domain object
-
-  var max_topics = 0,
-      max_facts = 0;
-
-  domains.forEach(function(d) {
-    if (d.topics.value > max_topics) {
-      max_topics = d.topics.value;
-    }
-    if (d.facts.value > max_facts) {
-      max_facts = d.facts.value;
-    }
-  });
-
-  domains.forEach(function(d) {
-    d.topics.percent = (d.topics.value / max_topics) * 100;
-    d.facts.percent = (d.facts.value / max_facts) * 100;
-  });
-
-  max_topics = 0,
-  max_facts = 0;
-
-  domains.forEach(function(d) {
-    d.topics.log = Math.log(d.topics.percent + 1);
-    if (d.topics.log > max_topics) {
-      max_topics = d.topics.log;
-    }
-    d.facts.log = Math.log(d.facts.percent + 1);
-    if (d.facts.log > max_facts) {
-      max_facts = d.facts.log;
-    }
-  });
-
-  domains.forEach(function(d) {
-    d.topics.log = Math.max(Math.round(d.topics.log * 100/ max_topics), 1);
-    d.facts.log = Math.max(Math.round(d.facts.log * 100 / max_facts), 1);
-  });
-
-  return domains;
 };

@@ -1,11 +1,11 @@
 var METADATA = {
   "mounts": {
     "libraries": "//2.libraries.apps.freebase.dev", 
-    "service": "//service", 
-    "lib": "//93.lib.www.branches.svn.freebase-site.googlecode.dev"
+    "lib": "//93a.lib.www.tags.svn.freebase-site.googlecode.dev", 
+    "service": "//service"
   }, 
-  "app_tag": null, 
-  "app_version": 68, 
+  "app_version": "68", 
+  "app_tag": "68a", 
   "app_key": "apps"
 };
 

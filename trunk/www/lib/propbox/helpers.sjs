@@ -122,6 +122,9 @@ function minimal_prop_value(prop_structure, prop_data, lang) {
     else {
       value.text = prop_data.id;
     }
+    if (h.isArray(prop_data.type) && prop_data.type.length) {
+      value.type = prop_data.type.slice();
+    }
   }
   return value;
 };
@@ -330,6 +333,12 @@ function mqlread_clause(prop_structure, prop_value, lang, namespace, options) {
       else {
         clause.name = [{value:null, lang:null, optional:true}];
       }
+    }
+    if (prop_value != null) {
+      clause.type = [{
+        id: null,
+        optional: true
+      }];
     }
   }
   return [h.extend(clause, options)];

@@ -294,14 +294,14 @@
   <td acre:attrs="primary ? {'class':'first'}:null">
     <ul class="data-list">
       <acre:block if="empty">
-        ${empty_row_li(primary, prop_value, subprop_structure, null, lang)}
+        ${empty_row_li(primary, prop_value, subprop_structure, null, lang, prop_structure)}
       </acre:block>
       <acre:block else="">
         <acre:block for="i, subprop_value in subprop_values">
           <li>
             <span class="wrapper">
               <acre:block if="i === 0 && primary">
-                ${value_menu(prop_value, subprop_structure, subprop_value, lang, prop_structure, prop_value)}
+                ${value_menu(prop_value, subprop_structure, subprop_value, lang, prop_structure)}
               </acre:block>
               ${value(prop_value.id, subprop_structure, subprop_value, lang)}
             </span>
@@ -493,7 +493,7 @@
   </span>
 </acre:block>
 
-<acre:block def="value_menu(topic, prop_structure, prop_value, lang, parent_prop_structure, parent_prop_value)">
+<acre:block def="value_menu(topic, prop_structure, prop_value, lang, parent_prop_structure)">
   <acre:script>
     var ect = prop_structure.expected_type.id;
     var is_blob = false;
@@ -515,9 +515,9 @@
             <a href="${h.fb_url(prop_value.id, [['i18n']])}">${EDIT_LOCALIZED_TEXT}</a>
           </li>
         </acre:block>
-        <acre:block if="parent_prop_structure && parent_prop_value && parent_prop_structure.expected_type.mediator">
+        <acre:block if="topic && parent_prop_structure && parent_prop_structure.expected_type.mediator">
           <li class="row-menu-item fb-site-only">
-            <a href="${h.fb_url(parent_prop_value.id, [['props']])}">${VIEW_CVT}</a>
+            <a href="${h.fb_url(topic.id, [['props']])}">${VIEW_CVT}</a>
           </li>
         </acre:block>
       </ul>
@@ -535,12 +535,12 @@
   </tr>
 </acre:block>
 
-<acre:block def="empty_row_li(menu, topic, prop_structure, prop_value, lang)">
+<acre:block def="empty_row_li(menu, topic, prop_structure, prop_value, lang, parent_prop_structure)">
   <li class="empty-row">
     <span class="wrapper first">
       <span class="property-value empty-property">-</span>
       <acre:block if="menu">
-        ${value_menu(topic, prop_structure, prop_value, lang)}
+        ${value_menu(topic, prop_structure, prop_value, lang, parent_prop_structure)}
       </acre:block>
     </span>
   </li>
@@ -785,6 +785,24 @@ propbox edit forms
           <input type="hidden" name="lang" value="${h.lang_code(lang)}"/>
           ${form.submit_buttons()}
           <button class="button delete">${_('Delete')}</button>
+          <acre:script>
+            var cvt_cotypes = [];
+            if (prop_value.type) {
+              cvt_cotypes = prop_value.type.filter(function(t) {
+                return t.id != prop_structure.expected_type.id;
+              });
+            }
+          </acre:script>
+          <acre:block if="cvt_cotypes.length">
+            <acre:script>
+              function fn_url(o) {
+                return h.fb_url(prop_value.id, [['props'], ['type', o.id]]);
+              };
+            </acre:script>
+            <span class="cvt-cotypes">
+              ${h.template_sprintf("This CVT is also typed as %s", tag_anchors(cvt_cotypes, fn_url))}
+            </span>
+          </acre:block>
         </td>
       </tr>
     </tbody>
@@ -940,5 +958,16 @@ propbox edit forms
   <strong>${value}</strong>
 </acre:block>
 
+<acre:block def="tag_anchor(href, text, attrs)">
+  <a href="${href}" acre:attrs="attrs || {}">${text}</a>
+</acre:block>
 
-
+<acre:block def="tag_anchors(objects, fn_url)">
+  <acre:script>
+    var anchors = [];
+    objects.forEach(function(o) {
+      anchors.push(acre.markup.stringify(tag_anchor(fn_url(o), o.id)));
+    });
+  </acre:script>
+  ${acre.markup.bless(anchors.join(", "))}
+</acre:block>

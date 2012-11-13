@@ -84,7 +84,7 @@ var hasCharacter = /\D/;
   };
   urlfetch = _urlfetch;
 
-  freebase.get_static = function(bdb, ids) {
+  freebase.get_static = function(bdb, ids, options) {
     var retrieve_ids;
 
     if (!(ids instanceof Array)) {
@@ -99,7 +99,7 @@ var hasCharacter = /\D/;
       url += (i ? "&" : "") +  "id="+ id;
     });
 
-    return _urlfetch(url)
+    return _urlfetch(url, options)
       .then(function(response) {
         response = JSON.parse(response.body);
         var results = {};

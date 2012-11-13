@@ -90,9 +90,15 @@ function domain(id) {
       var activity_id = "/guid/" + domain.guid.slice(1);
 
       // get BDB summary for domain
-      promises.push(freebase.get_static("activity", activity_id)
+      promises.push(freebase.get_static("activity", activity_id, {timeout:3000})
         .then(function(activity) {
           return activity || {
+            edits: [],
+            total: {},
+            week: {}
+          };
+        }, function(e) {
+          return {
             edits: [],
             total: {},
             week: {}
@@ -155,9 +161,11 @@ function domain(id) {
       // this should be fixed in BDB updates.
 
       var summary_id = "summary_/guid/" + domain.guid.slice(1);
-      promises.push(freebase.get_static("activity", summary_id)
+      promises.push(freebase.get_static("activity", summary_id, {timeout:3000})
         .then(function(summary) {
           return summary || {};
+        }, function(e) {
+          return {};
         })
 
         .then(function(summary) {
@@ -215,8 +223,8 @@ function type(type_id, query) {
        *  Call Activity service to get Type metadata,
        *  including instance count, etc.
       */
-      promises.push(freebase.get_static("activity", this_type.id)
-        .then(function(activity) {
+      promises.push(freebase.get_static(
+        "activity", this_type.id, {timeout:3000}).then(function(activity) {
           if (!activity) {
             return {};
           }
@@ -226,6 +234,8 @@ function type(type_id, query) {
           summary.has_article = activity.has_article;
           summary.has_image = activity.has_image;
           return summary;
+        }, function(e) {
+          return {};
         }));
 
       // our basic collection query shape

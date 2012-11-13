@@ -72,7 +72,10 @@ function domains(q) {
       // we request allotments of 30 summary guids since the url may be too long
       for (var i=0,l=summary_guids.length; i<l; i+=30) {
         var slice = summary_guids.slice(i, i+30);
-        promises.push(freebase.get_static("activity", slice));
+        promises.push(freebase.get_static("activity", slice, {timeout:3000})
+          .then(null, function(e) {
+             return null;
+          }));
       }
       return deferred.all(promises)
         .then(function(results) {
@@ -85,7 +88,9 @@ function domains(q) {
         .then(function(activities) {
           domains.forEach(function(domain) {
             var activity = activities["summary_/guid/" + domain.guid.substring(1)];
-            domain.instance_count = activity && activity.total && activity.total.t || 0;
+            if (activity) {
+              domain.instance_count = activity.total.t;
+            }              
           });
           return domains;
         });
@@ -193,13 +198,19 @@ function load_domain(id, lang, options) {
                         // load activity for each type
                         promises.types_instance_count = 
                             freebase
-                                .get_static("activity", "summary_/guid/" + domain.guid.slice(1))
+                                .get_static(
+                                  "activity", 
+                                  "summary_/guid/" + domain.guid.slice(1), {
+                                    timeout: 3000
+                                  })
                                 .then(function(activity) {
                                     if (activity && activity.types) {
                                         domain.types.forEach(function(t) {
                                             t.instance_count = activity.types[t.id] || 0;
                                         });
                                     }
+                                }, function(e) {
+                                  // no instance_count
                                 });
                     }
                     return deferred.all(promises)
@@ -244,7 +255,10 @@ function load_type(type_id, lang, options) {
 
             if (options.instance_count) {
               return freebase                       
-                  .get_static("activity", "summary_/guid/" + type.guid.slice(1))
+                  .get_static("activity", 
+                              "summary_/guid/" + type.guid.slice(1), {
+                                  timeout: 3000
+                              })
                       .then(function(activity) {
                           if (activity) {
                             type.instance_count = activity.properties["/type/object/type"] || 0;
@@ -254,7 +268,6 @@ function load_type(type_id, lang, options) {
                           }
                           return type;
                       }, function(e) {
-                        type.instance_count = 0;
                         return type;
                       });  
             }

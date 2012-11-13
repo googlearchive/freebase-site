@@ -37,6 +37,7 @@
   var _ = i18n.gettext;
   var image_components = acre.require("lib/template/imagecomponents");
   var user_id = acre.request.params.user_id;
+  var UNAVAILABLE = "-";
 </acre:script>
 
 <acre:block def="head()">
@@ -91,14 +92,24 @@
             <td class="key">$d.id</td>
             <td class="topics" style="width:30%;text-align:right">
               <div class="wrapper">
-                <span style="width:${d.topics.log}%" class="bar"></span>
-                <span class="value">${h.format_stat(d.topics.value)}</span>
+                <acre:block if="d.topics != null">
+                  <span style="width:${d.topics.log_percent}%" class="bar"></span>
+                  <span class="value">${h.format_stat(d.topics.count)}</span>
+                </acre:block>
+                <acre:block else="">
+                  <span class="value">${UNAVAILABLE}</span>
+                </acre:block>
               </div>
             </td>
             <td class="facts" style="width:30%">
               <div class="wrapper">
-                <span style="width:${d.facts.log}%" class="bar"></span>
-                <span class="value">${h.format_stat(d.facts.value)}</span>
+                <acre:block if="d.facts != null">
+                  <span style="width:${d.facts.log_percent}%" class="bar"></span>
+                  <span class="value">${h.format_stat(d.facts.count)}</span>
+                </acre:block>
+                <acre:block else="">
+                  <span class="value">${UNAVAILABLE}</span>
+                </acre:block>
               </div>
             </td>
           </tr>

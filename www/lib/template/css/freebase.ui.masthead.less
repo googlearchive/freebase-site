@@ -210,35 +210,36 @@ a.label-trigger {
 
 .label {
 
-  .topic {
+  /* blue - basic data */
+  .topic, .image, .content, .article {
     background-color: #9dc9db;
     .linear_gradient(#9dc9db,#7ab9e1);
   }
 
-  .domain {
+  /* turquoise - "meta" data */
+  .dataset, .query {
+    background-color: #77d2d2;
+    .linear_gradient(#77d2d2,#67cccc);
+  }
+
+  /* yellow - schema */
+  .domain, .type, .property {
     background-color: #ffde64;
     .linear_gradient(#ffde64,#ffcd04);
   }
 
-  .type {
+  /* orange - users */
+  .user {
     background-color: #ffa51e;
     .linear_gradient(#ffa51e,#ff9901);
   }
 
-  .property {
+  /* red - administrative/locked types */
+  .usergroup, .permisson, .attribution, .namespace {
     background-color: #ca9683;
     .linear_gradient(#ca9683, #c88d6a);
   }
 
-  .user {
-    background-color: #d2d24a;
-    .linear_gradient(#d2d24a,#cccc34);
-  }
-
-  .app {
-    background-color: #77d2d2;
-    .linear_gradient(#77d2d2,#67cccc);
-  }
 }
 
 /*

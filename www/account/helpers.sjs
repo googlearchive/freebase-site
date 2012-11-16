@@ -42,6 +42,7 @@ var exports = {
 var h = acre.require("lib/helper/helpers.sjs");
 var deferred = acre.require("lib/promise/deferred");
 var urlfetch = acre.require("lib/promise/apis").urlfetch;
+var ServiceError = acre.require("lib/handlers/service_lib").ServiceError;
 
 var UnauthorizedError = function() {
   this.message = 'Unauthorized.';
@@ -148,7 +149,7 @@ function extract_first_error(error) {
   return e;
 }
 
-function temporary_redirect(url) {
+function temporary_redirect(url, can_exit) {
   // Don't let account redirect to other sites
   var host_domain = acre.request.server_name.split(".").slice(-2).join(".");
   var rd_parts = parse_uri(url);
@@ -156,17 +157,25 @@ function temporary_redirect(url) {
 
   if (host_domain != rd_domain) {
     console.warn("Didn't redirect because url was on a different domain.");
-    acre.exit();
+    return can_exit ? acre.exit() : null;
   }
   
   if (!/^https?$/.test(rd_parts.protocol)) {
     console.warn("Didn't redirect because url was not using http(s).");
+    return can_exit ? acre.exit() : null;
+  }
+
+
+  if (can_exit) {
+    acre.response.status = 302;
+    acre.response.set_header("Location", url);
     acre.exit();
   }
-  
-  acre.response.status = 302;
-  acre.response.set_header("Location", url);
-  acre.exit();
+  else {
+    var error = new ServiceError(302);
+    error.location = url;
+    throw error;
+  }
 }
 
 h.extend_helpers(this);

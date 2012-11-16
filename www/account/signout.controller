@@ -48,7 +48,7 @@ var SPEC = {
     var freebase_provider = h.account_provider(provider);
     h.clear_account_cookie();
     acre.oauth.remove_credentials(freebase_provider);
-    h.temporary_redirect(onsignout);
+    h.temporary_redirect(onsignout, false);
   }
 };
 

@@ -71,6 +71,7 @@ function run_spec(spec, scope) {
   }
 
   var result;
+  var acre_exit = false;
   var d = lib.handle_service(spec, scope)
     .then(null, function(service_error) {
       if (service_error.code === "/api/status/error/auth" &&
@@ -79,6 +80,13 @@ function run_spec(spec, scope) {
         h.clear_account_cookie();
         acre.response.status = 302;
         acre.response.set_header("Location", spec.auth_redirect);
+        acre_exit = true;
+        acre.exit();
+      }
+      else if (service_error.status === 302 && service_error.location) {
+        acre.response.status = 302;
+        acre.response.set_header("Location", service_error.location);
+        acre_exit = true;
         acre.exit();
       }
       return service_error;
@@ -90,6 +98,7 @@ function run_spec(spec, scope) {
       // propagate acre.route() and acre.exit()
       if (service_error instanceof acre.errors.AcreRouteException ||
           service_error instanceof acre.errors.AcreExitException) {
+        acre_exit = true;
         return service_error;
       }
       // otherwise, render the error
@@ -101,9 +110,14 @@ function run_spec(spec, scope) {
     });
 
   acre.async.wait_on_results();
-  d.cleanup();
+
+  if (!acre_exit) {
+    // We can't cleanup the Exception thrown by acre.exit()
+    d.cleanup();
+  }
+
   return result;
-};
+}
 
 function render(service_result, spec, scope) {
   // make a shallow copy of the result

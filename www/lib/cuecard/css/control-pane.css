@@ -40,6 +40,9 @@ div.cuecard-controlPane-tabBody.ui-tabs-panel {
 div.cuecard-controlPane-tabBody {
   overflow: auto;
   height: 208px;
+  -moz-box-sizing: border-boz;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 div.cuecard-controlPane-tabBody input {

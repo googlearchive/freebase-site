@@ -316,3 +316,11 @@ CueCard.ControlPane.prototype.getVariables = function() {
     }
     return r;
 };
+
+CueCard.ControlPane.prototype._removeRow = function(elm, sel, add_row) {
+    var table = elm.closest('table');
+    elm.closest(sel).remove();
+    if ($(sel).length < 1) {
+        table.append($.acre(add_row()));
+    }
+};

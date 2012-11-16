@@ -35,7 +35,7 @@
   <acre:script>
     var TABS = [
       { name: 'Tools', template: tools, key: "tools"},
-      { name: 'Query Envelope', template: envelope, key: "envelope"}, 
+      { name: 'Query Envelope', template: envelope, key: "envelope"},
       { name: 'Variables', template: variables, key: "variables"},
       { name: 'Settings', template: settings, key: "settings"}
     ];
@@ -55,12 +55,12 @@
       </div>
     </div>
   </div>
-  
+
   <acre:block script="ondomready">
     controlPane.layout = function(){
       var el = this._elmt;
       var height = el.find('.section-tabs').innerHeight() - el.find('.section-tabset').outerHeight();
-      el.find('.cuecard-controlPane-tabBody').css("height", height);      
+      el.find('.cuecard-controlPane-tabBody').css("height", height);
     }
     controlPane.layout();
   </acre:block>
@@ -83,7 +83,7 @@
       },
       {
         label: 'Remove linebreaks',
-        command: '_oneLiner', 
+        command: '_oneLiner',
         hint: 'Reformat query to a single line'
       },
       {
@@ -93,12 +93,12 @@
       }
     ];
   </acre:script>
-  
+
   <div acre:def="button(buttons)" acre:for="b in buttons" class="cuecard-controlPane-powerTool">
     <input type="submit" class="button" value="$b.label" acre:onclick="controlPane[b.command]()"/>
     <span class="cuecard-controlPane-powerTool-hint">$b.hint</span>
   </div>
-  
+
 
   <div class="cuecard-controlPane-section">
     <p><em>Transform query</em>, outputting to:
@@ -111,7 +111,7 @@
     <p><em>Acre Templates</em></p>
     ${button(BUTTONS.slice(3))}
   </div>
-  
+
 
 </acre:block>
 
@@ -130,13 +130,13 @@
         <button class="button small"
                 acre:onclick="controlPane._getTab('variables').find('.cuecard-controlPane-variables').append($.acre(add_row()))">+</button>
         <button class="button small"
-                acre:onclick="$(this).closest('.query-options-row').remove()">-</button>
+                acre:onclick="controlPane._removeRow($(this),'tr.query-options-row', add_row)">-</button>
       </td>
     </tr>
     ${add_row()}
   </table>
   <div>
-   
+
   </div>
 </acre:block>
 
@@ -155,10 +155,10 @@
       {name: 'use_permission_of', hint: 'Specify the id of an object (typically a user, domain or type) whose permission you want to copy (<a href="http://freebaseapps.com/docs/mql/ch06.html#id2972357" target="_blank">more details</a>).'},
       {name: 'Show Costs', hint: 'Inlcude backend costs of executing the query.'}
     ];
-    
+
     var def = controlPane._getDefaults();
   </acre:script>
-  
+
   <div class="cuecard-controlPane-explanation">
     <p>The query envelope contains directives to the query engine, specifying how to execute the query or how to return the results.</p>
   </div>
@@ -166,27 +166,27 @@
     <div class="query-options-row" acre:for="e in ENV">
       <p><em>$e.name</em></p>
         <acre:block choose="e.name">
-        
+
           <input acre:when="Show Costs" name="costs" class="query-options-input" type="checkbox" acre:attrs="def.costs ? {'checked':''} : {}" />
-          
+
           <input acre:when="Extended" name="extended" class="query-options-input" type="checkbox" acre:attrs="def.extended ? {'checked':''} : {}" />
-        
+
           <input acre:when="As_of_time" name="as_of_time" class="query-options-textbox text-input" value="${def.as_of_time||''}" />
-        
+
           <input acre:when="use_permission_of" name="use_permission_of" class="query-options-textbox text-input" value="${def.use_permission_of||''}" />
-        
+
           <div acre:when="page" class="cuecard-controlPane-configurations-page">
             <input name="page" type="text" class="query-options-textbox text-input" />
             <input type="submit" class="button" value="Previous" acre:onclick="controlPane._runPage(-1)"/>
             <input type="submit" class="button" value="Next" acre:onclick="controlPane._runPage(1)"/>
           </div>
-        
+
           <acre:block when="cursor">
             <div class="query-options-row">
               <input type="radio" name="cursor-opt" class="control-pane-radio" id="cursor-unspecified" checked value="">
               <label class="control-pane-label" for="cursor-unspecified">unspecified (return all results, possibly time-out)</label>
             </div>
-            <div class="query-options-row"> 
+            <div class="query-options-row">
               <input type="radio" name="cursor-opt" class="control-pane-radio" id="cursor-true" value="true">
               <label class="control-pane-label" for="cursor-true">true (start pagination with page size equal "limit" option in query)</label>
             </div>
@@ -196,27 +196,27 @@
               <div class="cuecard-controlPane-configurations-cursor">
                 <input type="text" name="cursor" class="query-options-textbox text-input" acre:onchange="controlPane._getTab('envelope').find('input[name=\'cursor\'][value=\'custom\']').attr('checked','checked')"/>
                 <div class="query-options-row">
-                  <input type="submit" class="button" value="Paste from Last Result" acre:onclick="controlPane._runCursor(false)"/> 
+                  <input type="submit" class="button" value="Paste from Last Result" acre:onclick="controlPane._runCursor(false)"/>
                   <input type="submit" class="button" value="Paste &amp; Run" acre:onclick="controlPane._runCursor(true)"/>
                 </div>
               </div>
             </div>
           </acre:block>
-        
+
           <select acre:when="Language" class="cuecard-controlPane-configurations-languages">
             <option value="">--</option>
-            <option acre:for="l in CueCard.Languages" value="$l.id" 
+            <option acre:for="l in CueCard.Languages" value="$l.id"
               acre:attrs="fb.lang === l.id ? {'selected':'selected'} : {}">
               $l.name ($l.id)
             </option>
           </select>
-        
+
           <select acre:when="Escape">
             <option value="">--</option>
             <option value="html">html</option>
             <option value="false">false</option>
           </select>
-          
+
           <select acre:when="uniqueness_failure">
             <option value="">--</option>
             <option value="soft">soft</option>
@@ -247,7 +247,7 @@
         <button class="button small"
                 acre:onclick="controlPane._getTab('envelope').find('table.cuecard-controlPane-customEnvelope').append($.acre(add_row()))">+</button>
         <button class="button small"
-                acre:onclick="$(this).closest('.cuecard-controlPane-customEnvelope-row').remove()">-</button>
+                acre:onclick="controlPane._removeRow($(this),'tr.cuecard-controlPane-customEnvelope-row', add_row)">-</button>
       </td>
       <acre:block if="!dontFocus" script="ondomready">
 
@@ -262,7 +262,7 @@
     </acre:block>
   </table>
 
-   
+
 </acre:block>
 
 <acre:block def="settings(controlPane)">

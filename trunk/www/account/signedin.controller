@@ -54,7 +54,7 @@ var SPEC = {
     if (!success) {
       h.clear_account_cookie();
       acre.oauth.remove_credentials(freebase_provider);
-      h.temporary_redirect(onfail);
+      h.temporary_redirect(onfail, false);
     }
 
     // Remove metaweb-user cookies
@@ -67,7 +67,7 @@ var SPEC = {
 
     // If we're using a custom provider, we're done
     if (freebase_provider.name !== h.account_provider().name) {
-      h.temporary_redirect(onsucceed);
+      h.temporary_redirect(onsucceed, false);
     }
 
     // Custom user_info function in account helpers
@@ -77,7 +77,7 @@ var SPEC = {
     return h.user_info()
       .then(function(user) {
         h.set_account_cookie(user);
-        h.temporary_redirect(onsucceed);
+        h.temporary_redirect(onsucceed, false);
       }, function(failure) {
         if (failure instanceof h.UnauthorizedError) {
           // The credentials must be incorrect, so remove them.
@@ -87,7 +87,7 @@ var SPEC = {
         } else if (failure instanceof h.UnregisteredError) {
           return {template: 'register_template.mjt'};
         }
-        h.temporary_redirect(onfail);
+        h.temporary_redirect(onfail, false);
       });
   }
 };

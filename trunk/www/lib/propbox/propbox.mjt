@@ -49,7 +49,6 @@
   var FILTER_TYPE = _("Filter by type");
   var QUERY_PROPERTY = _("Query by property");
   var HISTORY_PROPERTY = _("View history");
-  var VIEW_SCHEMA = _("View schema");
   var EDIT = _("Edit");
   var DELETE = _("Delete");
   var EDIT_PROPERTY = _("edit");
@@ -100,7 +99,12 @@
       </span>
       <h1 class="kbs">
         <span class="mark">
-          <a href="${h.fb_url(topic.id, [['domain', domain_structure.id]])}" title="${domain_structure.id}">${domain_structure.text}</a>
+          <a title="${domain_structure.id}" href="javascript:void(0);"
+             class="schema-name domain-name"
+             name="${domain_structure.id}">${domain_structure.text}</a>
+          <a class="schema-id domain-id"
+             href="${h.fb_url(domain_structure.id, [['schema']])}">
+            ${domain_structure.id}</a>
         </span>
       </h1>
     </div>
@@ -123,7 +127,15 @@
     <div class="header">
       <h2 class="foobar kbs">
         <span class="header-label">
-          ${type_menu(topic, type_structure)}
+          <span class="wrapper mark">
+            <span class="type-label">
+              <a name="${type_structure.id}" href="javascript:void(0);"
+                 class="schema-name type-name">${type_structure.text}</a>
+              <a class="schema-id type-id"
+                 href="${h.fb_url(type_structure.id, [['schema']])}">
+                ${type_structure.id}</a>
+            </span>
+          </span>
         </span>
       </h2>
     </div>
@@ -157,13 +169,16 @@
         <acre:block elif="prop_structure.authorities != null">
           <span class="lock" title="${PROPERTY_REQUIRES_AUTHORITY}"></span>
         </acre:block>
+        <acre:block if="prop_structure.deprecated">
+          <span class="property-state">(${DEPRECATED_PROPERTY})</span>
+        </acre:block>
+        <acre:block if="ph.is_bare_property(topic, prop_structure)">
+          <span class="property-state">(${BARE_PROPERTY})</span>
+        </acre:block>
+        <a class="schema-id prop-id"
+           href="${h.fb_url(prop_structure.id, [['schema']])}">
+          ${prop_structure.id}</a>
       </span>
-      <acre:block if="prop_structure.deprecated">
-        <span class="property-state">(${DEPRECATED_PROPERTY})</span>
-      </acre:block>
-      <acre:block if="ph.is_bare_property(topic, prop_structure)">
-        <span class="property-state">(${BARE_PROPERTY})</span>
-      </acre:block>
     </div>
     ${databox(topic, prop_structure, prop_values, lang)}
   </div>
@@ -438,25 +453,6 @@
   </acre:block>
 </acre:block>
 
-<acre:block def="type_menu(topic, type_structure)">
-  <span class="wrapper mark">
-    <ul class="inline-menu combo-menu nicemenu">
-      <li class="inline-menu-item nicemenu-item">
-        <span class="headmenu">
-          <span class="default-action">&nbsp;</span>
-          <a href="javascript:void(0)" class="more-action">menu</a>
-        </span>
-        <ul class="row-menu submenu">
-          <li class="row-menu-item"><a href="${h.fb_url(type_structure.id, [['schema']])}">${VIEW_SCHEMA}</a></li>
-        </ul>
-      </li>
-    </ul>
-    <span class="type-label">
-      <a href="${h.fb_url(topic.id, [['type', type_structure.id]])}">${type_structure.text}</a>
-    </span>
-  </span>
-</acre:block>
-
 <acre:block def="prop_menu(topic, prop_structure, prop_values, lang)">
   <acre:script>
     var ect = prop_structure.expected_type.id;
@@ -485,14 +481,12 @@
             </acre:script>
             <a href="${h.fb_url(topic.id, [['links'],['property', master_prop],['historical',1]])}">${HISTORY_PROPERTY}</a>
           </li>
-          <li class="row-menu-item fb-site-only">
-            <a href="${h.fb_url(prop_structure.id, [['schema']])}">${VIEW_SCHEMA}</a>
-          </li>
         </ul>
       </li>
     </ul>
     <span class="property-label">
-      <a href="${h.fb_url(topic.id, [['property', prop_structure.id]])}">${prop_structure.text}</a>
+      <a name="${prop_structure.id}" href="javascript:void(0);"
+         class="schema-name prop-name">${prop_structure.text}</a>
     </span>
   </span>
 </acre:block>

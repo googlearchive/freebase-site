@@ -32,14 +32,15 @@
 <acre:script>
   var c = this.exports.c = {};
   var h = acre.require("lib/helper/helpers.sjs");
+  var th = acre.require("helpers.sjs");
   var image = acre.require("lib/template/imagecomponents");  
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
-  var filter_components = acre.require("lib/filter/components.mjt");
-  var fh = acre.require("lib/filter/helpers.sjs");
   var propbox = acre.require("lib/propbox/propbox.mjt");
-  var mt = acre.require("manage_type_components.mjt");
+
+  var SHOW_ALL = _('Show all domains and properties');
+  var SHOW_LESS = _('Show only Commons domains and asserted types');
 </acre:script>
 
 <acre:block def="head()">
@@ -47,101 +48,115 @@
 </acre:block>
 
 <acre:block def="page_content()">
-  <div class="column nav">
-    ${filters()}
-    <p class="keyboard-shortcuts module">
-      <a href="javascript:void(0);" rel="#overlay">${_("Keyboard shortcuts available")}</a>
-    </p>
+
+  <acre:script>
+    var type_map = th.get_type_map(c.object);
+  </acre:script>
+
+  <div id="tabbar">
+    <div id="types-toggle">
+      <a href="javascript:void(0);" onclick="fb.topic.toggle_types(this);">${_('Types')}</a>
+    </div>
+    <div id="pill-filter-box">
+      <acre:block for="filter in c.filter">
+        ${pill(filter)}
+      </acre:block>
+      <input type="text" id="pill-filter-suggest"
+             placeholder="${_('Show topic data for domain, type or property...')}">
+      <span id="pill-template" style="display:none;">
+        ${pill()}
+      </span>
+    </div>
   </div>
-  <div class="column data" id="topic-data">
+
+  <div class="column nav">
+    <acre:script>
+      var domains = c.topic && c.topic.structure && c.topic.structure.order;
+    </acre:script>
+    <div class="module">
+      <div class="module-section ${JSON.stringify(type_map)}" id="toc">
+        <acre:block if="domains && domains.length">
+          <acre:block for="domain_id in domains">
+            <acre:script>
+              var domain = c.topic.structure.domains[domain_id];
+              var types = domain.types;
+              var commons = h.is_commons_domain(domain_id);
+            </acre:script>
+            <h2 class="toc-domain${commons ? ' commons' : ''}" data-id="${domain_id}">
+              <a href="#${domain_id}" class="toc-link" 
+                 title="${domain_id}">${domain.text}</a>
+            </h2>
+            <acre:block if="types && types.length">
+              <ul class="toc-types">
+                <acre:block for="type_id in types">
+                  <acre:script>
+                    var type = c.topic.structure.types[type_id];
+                  </acre:script>
+                  <li class="toc-type" data-id="${type_id}">
+                    <a href="#${type_id}"
+                       class="toc-link"
+                       title="${type_id}">${type.text}</a>
+                  </li>
+                </acre:block>
+              </ul>
+            </acre:block>
+          </acre:block>
+        </acre:block>
+      </div>
+      <div class="module-section">
+        <label>        
+          <input id="show-all" name="all"
+                 type="checkbox"
+                 acre:attrs="c.all ? {'checked':'checked'} : {}"
+                 onchange="fb.topic.show_all(this.checked);">
+            ${SHOW_ALL}
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div id="topic-data" class="column data" style="opacity:0;">
+
     <acre:block if="c.topic">
-      ${manage_types()}  
+
       ${propbox.topicbox(c.topic, i18n.lang)}
 
-      <acre:block if="!(c.filters.domain || c.filters.type || c.filters.property || c.filters.domains === 'all')">
-        <div class="section domain domain-section">
-          <div class="header">
-            <h1 class="kbs">
-              <span class="mark">
-                <a href="#" id="show-all-domains-link">${_("Show all data")}</a>
-              </span>
-            </h1>
-          </div>    
+      <div class="section domain domain-section show-all-section">
+        <div class="header">
+          <h1 class="kbs">
+            <span class="mark">
+              <a href="javascript:void(0);" id="show-all-link"
+                 onclick="$('#show-all').click();">
+                <span class="show-all-text"
+                      acre:attrs="c.all ? {style:'display:none;'} : {}">
+                  ${SHOW_ALL}
+                </span>
+                <span class="show-less-text"
+                      acre:attrs="c.all ? {} : {style:'display:none;'}">
+                  ${SHOW_LESS}
+                </span>
+              </a>
+            </span>
+          </h1>
         </div>
-      </acre:block>
+      </div>
+
     </acre:block>
 
     <acre:block else="">
       Error retrieving topic data
     </acre:block>
   </div>
-  ${keyboard_shortcuts()}
 </acre:block>
 
 <acre:block def="footer_script()">
   <script src="topic.mf.js"></script>
-</acre:block>
-
-<acre:block def="filters()">
-  <div class="module">
-    <h2 class="module-title">
-      <a href="javascript:void(0);" class="trigger">Collapse column</a>
-      <span>Filter this data</span>
-    </h2>
-    <div class="module-section">
-      ${filter_components.linkcount_filter(c.id, c.filters, c.object.linkcount)}
-    </div>
-  </div>
-</acre:block>
-
-<acre:block def="manage_types()">
-  <div class="toolbar clear">
-    <ul class="">
-      <li>
-        <a href="#" class="toolbar-trigger icon-link">
-          <span class="manage-type-icon">${_("Manage Types")}</span>
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div class="manage-types toolbar-pane clear">
-    <div class="topic-types">
-      <h3 class="toolbar-pane-title">${h.sprintf("%s is typed as:", i18n.display_name(c.object))}</h3>
-      <div class="topic-type-list">
-        <ul>
-          <acre:script>
-          var types = c.object.type.slice().sort(function(a,b) {
-            return b.text.toLowerCase() < a.text.toLowerCase();
-          });
-          var filters = c.filters;
-          ["domain", "type", "property"].forEach(function(k) {
-            filters = fh.remove_filter(filters, k);
-          });                                                        
-          </acre:script>
-          <acre:block for="type in types">
-            ${mt.type_li(type)}
-            <acre:block if="i18n.lang !== type.lang">
-              ${i18n_c.lang_code(type.lang, i18n.lang)}
-            </acre:block>
-          </acre:block>
-        </ul>
-      </div>
-    </div>
-    <h3 class="toolbar-pane-title">${_("Add a new Type")}</h3>
-    <div name="add-type-form" class="add-type">
-      <span class="data-input">
-        <input type="" id="add-type-input" class="fb-input" 
-               value="" placeholder="${_('Start typing for suggestions...')}" name="" />
-      </span>
-    </div>
-    <!!--
-    <h3 class="toolbar-pane-title">${_("Suggested Types")}</h3>
-    <ul class="suggested-types">
-      <li>lorem ipsum</li>
-      <li>lorem ipsum</li>
-    </ul>
-    !!-->
-  </div>
+  <script>
+    $(function() {
+      // Prevent flickering because filtering is done client-side
+      $('#topic-data').animate({opacity:1}, 'fast');
+    });
+  </script>
 </acre:block>
 
 <acre:block def="keyboard_shortcuts()">
@@ -201,4 +216,17 @@
       <button class="button cancel">Close</button>
     </div>
   </div>
+</acre:block>
+
+
+<acre:block def="pill(filter_id)">
+  <acre:script>
+    filter_id = filter_id || '';
+  </acre:script>
+  <span class="pill">
+    <a href="#${filter_id}" class="pill-text toc-link">${filter_id}</a>
+    <input class="pill-value" type="hidden" name="filter" value="${filter_id}" />
+    <a href="javascript:void(0);" class="pill-x"
+       onclick="fb.topic.remove_filter(this);">x</a>
+  </span>
 </acre:block>

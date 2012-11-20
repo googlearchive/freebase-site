@@ -28,45 +28,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-var h = acre.require("lib/helper/helpers.sjs");
-var i18n = acre.require("lib/i18n/i18n.sjs");
-var validators = acre.require("lib/validator/validators.sjs");
-var deferred = acre.require("lib/promise/deferred.sjs");
-var topic_api = acre.require("lib/queries/topic.sjs");
 
-var SPEC = {
-
-  template: "topic.mjt",
-
-  validate: function(params) {
-    return [
-      params.object,
-      validators.MultiValue(params, 'filter', {
-        validator: validators.MqlId,
-        if_empty: []
-      }),
-      validators.StringBool(params, 'all', {if_empty:false})
-    ];
-  },
-
-  run: function(object, filter, all) {
-    var id = object.id;
-
-    var topic_options = {
-        linkcount: object.linkcount,
-        lang: i18n.lang,
-        domain: 'all'
-    };
-
-    return topic_api.topic_structure(object.id, topic_options)
-      .then(function(result) {
-          return {
-            id: object.id,
-            filter: filter,
-            all: all,
-            object: object,
-            topic: result
-          };
-      });
+/**
+ * Get a simple dictionary of asserted types for the object returned
+ * by the object query (lib/queries/object.sjs).
+ * @param {object} object
+ * @see lib/queries/object.sjs
+ * @return a dictionary key'ed by the asserted type ids of the object.
+ */
+function get_type_map(object) {
+  var result = {};
+  if (object && object.type_map) {
+    for (var type_id in object.type_map) {
+      if (type_id !== '/type/object') {
+        result[type_id] = true;
+      }
+    }
   }
+  return result;
 };

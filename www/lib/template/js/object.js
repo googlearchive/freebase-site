@@ -217,8 +217,8 @@
           }
           else {
               // make sure we're not currently in an input box
-              if ( this !== event.target && (/textarea|select/i.test( event.target.nodeName ) ||
-                  event.target.type === "text") ) {
+              if ( this !== e.target && (/textarea|select/i.test( e.target.nodeName ) ||
+                  e.target.type === "text") ) {
                       return;
                   }
                   //focus module

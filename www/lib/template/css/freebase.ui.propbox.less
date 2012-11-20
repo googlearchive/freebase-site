@@ -465,7 +465,8 @@ table .edit-row .form-field {
  */
 
 .data-section {
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
 
   .more {
     margin-left:40px;
@@ -579,3 +580,22 @@ div.kbs.current .mark {
 .edit-row-submit .cvt-cotypes {
     padding-left: 12px;
 }
+
+a.schema-id {
+    font-size: .9em;
+    padding-left: .5em;
+}
+a.domain-id {
+    color: #ddd;
+}
+a.type-id {
+    color: #eee;
+}
+a.prop-id {
+    color: rgb(234, 234, 234);
+    padding-right: .5em;
+}
+a.prop-id:hover {
+    color: white;
+}
+

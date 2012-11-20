@@ -86,7 +86,8 @@
    */
   var SEARCH_PARAMS = {
       key:1, filter:1, spell:1, exact:1,
-      lang:1, scoring:1, prefixed:1, stemmed:1, format:1, mql_output:1
+      lang:1, scoring:1, prefixed:1, stemmed:1, format:1, mql_output:1,
+      output:1
   };
 
   $.suggest = function(name, prototype) {
@@ -1255,6 +1256,10 @@
       if (data.under) {
         $(":first", label).append($("<small>").text(" ("+data.under+")"));
       }
+      if (this.options.scoring != null  &&
+          this.options.scoring.toUpperCase() === 'SCHEMA') {
+        $(":first", label).append($("<small>").text(" ("+data.id+")"));
+      }
       var types = data.type;
       li.append(name);
       var nt = data.notable;
@@ -1787,7 +1792,7 @@
             content.prepend($('<img id="fbs-topic-image" class="fbs-flyout-image-true" src="' + image + '">'));
         }
 
-        var types = $('<span class="fbs-flyout-types">').append(notability);
+        var types = $('<span class="fbs-flyout-types">').text(notability);
         var footer = $('<div class="fbs-attribution">').append(types);
 
         return $('<div>')

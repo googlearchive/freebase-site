@@ -150,12 +150,12 @@ function minimal_prop_value(prop_structure, prop_data, lang) {
  * }
  *
  * (*) In addition, to the standard prop structure,
- * this adds additional schema hints 
+ * this adds additional schema hints
  * (unit, mediator, enumeration, included_types).
  *
- * This is NOT recursive; it does NOT iterate over sub properties 
+ * This is NOT recursive; it does NOT iterate over sub properties
  * (expected_type.properties).
- * 
+ *
  * @see schema/typeloader.sjs
  */
 function minimal_prop_structure(prop_schema, lang) {
@@ -166,6 +166,7 @@ function minimal_prop_structure(prop_schema, lang) {
     id: prop_schema.id,
     text: name ? name.value : prop_schema.id,
     lang: name ? name.lang : null,
+    schema: prop_schema.schema,
     unique: prop_schema.unique === true,
     requires_permission: prop_schema.requires_permission === true,
     authorities: prop_schema.authorities,
@@ -501,4 +502,28 @@ function is_authority(prop_structure, user_id) {
     return user_id in prop_structure.authorities.members;
   }
   return false;
-};
+}
+
+/**
+ * Is given property a bare property?
+ * @param {object} topic The Topic structure
+ * @param {object} prop_structure The property structure.
+ *   @see minimal_prop_structure.
+ * @return {Boolean} if the property is bare property
+ */
+function is_bare_property(topic, prop_structure) {
+  var is_bare = false;
+  var t = prop_structure.schema.id;
+  if (t !== "/type/object") {
+    var values = h.get_values(topic, "/type/object/type");
+    if (values == null) {
+      is_bare = true;
+    }
+    else {
+      is_bare = values.every(function(val){
+        return t !== val.id;
+      });
+    }
+  }
+  return is_bare;
+}

@@ -1,0 +1,75 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+acre.require("mock")
+    .playback(this, "./playback_helpers_is_bare_property.json");
+
+var h = acre.require("lib/helper/helpers.sjs");
+var ph = acre.require("lib/propbox/helpers.sjs");
+var queries = acre.require("lib/propbox/queries.sjs");
+var topic_api = acre.require("lib/queries/topic.sjs");
+
+var scope = this;
+
+test("is_bare_property", function() {
+
+  var expected;
+  var mid = "/en/decapod_10";
+
+  // Load Topic
+  var topic;  // topic data from topic api
+  topic_api.topic_structure(mid, {domain:"all"})
+    .then(function(t) {
+      topic = t;
+    });
+  acre.async.wait_on_results();
+
+  ok(topic, "Got topic");
+
+  [
+    ["/freebase/object_profile/object_generation_time", true],
+    ["/type/object/creator", false],
+    ["/common/topic/notable_for", false]
+  ].forEach(function (prop) {
+    var schema, res, prop_structure;
+    queries.prop_schema(prop[0], "/lang/en")
+      .then(function(s) {
+        schema = s;
+      });
+    acre.async.wait_on_results();
+
+    prop_structure = ph.minimal_prop_structure(schema, "/lang/en");
+    res = ph.is_bare_property(topic, prop_structure);
+
+    ok(prop_structure, "Got property structure for "+prop[0]);
+    equal(res,prop[1], "Got correct result for "+prop[0]);
+  });
+});

@@ -58,6 +58,7 @@
   var OBJECT = _("Object");
   var VALUE = _("Value");
   var DEPRECATED_PROPERTY = _("deprecated");
+  var BARE_PROPERTY = _("This type is not asserted");
   var PROPERTY_LOCKED = _("This property is only editable by " +
     "specified users (members of the /type/property/authorities permission).");
   var PROPERTY_REQUIRES_AUTHORITY = _("Some values for this " +
@@ -159,6 +160,9 @@
       </span>
       <acre:block if="prop_structure.deprecated">
         <span class="property-state">(${DEPRECATED_PROPERTY})</span>
+      </acre:block>
+      <acre:block if="ph.is_bare_property(topic, prop_structure)">
+        <span class="property-state">(${BARE_PROPERTY})</span>
       </acre:block>
     </div>
     ${databox(topic, prop_structure, prop_values, lang)}

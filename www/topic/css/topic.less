@@ -33,9 +33,19 @@
     background: url("/static/lib.www.trunk.svn.freebase-site.googlecode.dev/template/img/ui-icons.png") no-repeat 0 -530px;
 }
 
+
+.toc-domain {
+    border-top: 1.5px solid #D4DDE3;
+}
+
 .toc-domain a {
     font-size: 16px;
     color: #80A0B2;
+    position: relative;
+    top: -12px;
+    background: white;
+    padding: 0px 6px;
+    left: 14px;
 }
 .toc-domain a:hover {
     text-decoration: none;
@@ -45,8 +55,12 @@
     font-size: 14px;
 }
 ul.toc-types {
-    padding-bottom: 10px;
+    padding: 0px 20px 12px;
+    position: relative;
+    top: -12px;
 }
+
+
 
 #pill-filter-box {
     border: 1px solid rgb(225, 226, 227);
@@ -92,21 +106,52 @@ a.pill-x:hover {
 }
 
 .nav.column {
-  display: none;
-  float: right;
-  width: 230px;
+    display: none;
+    float: right;
+    width: 230px;
+}
+
+.nav-module {
+    background: white;
+    padding-top: 16px;
+}
+
+.nav-section ul,
+.nav-section li {
+  list-style: none;
 }
 
 .fixed-nav.column {
     position: absolute;
 }
 
-.section.domain {
+.domain-section {
+    padding-top: 16px;
+}
+
+.type-section {
   margin: 0 0 20px;
-  background: #fff;
   padding: 15px;
+  background: #fff;
   .box_shadow(1px, 2px, 3px, #bbb);
 }
+
+.domain-section .header {
+    font-weight: normal;
+    border-top: 1.5px solid #D4DDE3;
+}
+
+.domain-section h1 .mark {
+    position: relative;
+    top: -12px;
+    padding: 0px 6px 0 16px;
+    background: rgb(232, 235, 238);
+    left: 14px;
+}
+a.domain-name {
+    color: rgb(128, 160, 178) !important;
+}
+
 
 /*
  ### Domain Box Styling
@@ -115,7 +160,7 @@ a.pill-x:hover {
 /* The Domain Name */
 .section h1 {
   font-size: 16px;
-  margin-bottom: 15px;
+  margin-bottom: 8px;
 }
 
 /* Domain status: Commons, Base, Unpublished, etc.*/

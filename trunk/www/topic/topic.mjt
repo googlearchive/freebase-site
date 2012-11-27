@@ -73,8 +73,8 @@
     <acre:script>
       var domains = c.topic && c.topic.structure && c.topic.structure.order;
     </acre:script>
-    <div class="module">
-      <div class="module-section ${JSON.stringify(type_map)}" id="toc">
+    <div class="nav-module">
+      <div class="nav-section ${JSON.stringify(type_map)}" id="toc">
         <acre:block if="domains && domains.length">
           <acre:block for="domain_id in domains">
             <acre:script>
@@ -103,7 +103,7 @@
           </acre:block>
         </acre:block>
       </div>
-      <div class="module-section">
+      <div class="nav-section">
         <label>        
           <input id="show-all" name="all"
                  type="checkbox"

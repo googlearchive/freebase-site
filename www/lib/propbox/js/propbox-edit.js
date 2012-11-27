@@ -533,6 +533,29 @@
     },
 
 
+    /**
+     * AJAX and inline all the values of the topic property.
+     * @param {object} prop_section Jquery element of the property section.
+     * @param {string} topic_id The topic id.
+     * @param {string} prop_id The property id.
+     */
+    more: function(prop_section, topic_id, prop_id) {
+      $.ajax($.extend(formlib.default_begin_ajax_options(), {
+        url: propbox.options.base_ajax_url + "/more.ajax",
+        data: {
+          s: topic_id,
+          p: prop_id,
+          lang: propbox.options.lang
+        },
+        onsuccess: function(data) {
+          var html = $(data.result.html);
+          prop_section.replaceWith(html);
+          propbox.init_menus(html, true);
+          $(".nicemenu-item.edit", html).show();
+        }
+      }));
+    },
+
 
     /**
      * Generic propbox utiltiies

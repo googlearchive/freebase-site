@@ -195,9 +195,17 @@
       return false;
     },
 
-    close_message: function(trigger) {
-      $(trigger).parents(".row-msg:first").remove();
-      return false;
+    /**
+     * AJAX and inline all the values of the topic property.
+     * @param {string} topic_id The topic id.
+     * @param {string} prop_id The property id.
+     */
+    more: function(context, topic_id, prop_id) {
+      var prop_section = $(context).parents('.property-section');
+      // We need formlib
+      propbox.get_script('/propbox-edit.mf.js', function() {
+        propbox.edit.more(prop_section, topic_id, prop_id);
+      });
     }
 
   };

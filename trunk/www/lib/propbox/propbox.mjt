@@ -227,7 +227,10 @@
         <tr>
           <th>
             <div class="more">
-              <a href="${h.fb_url(topic.id, [['property', prop_structure.id]])}"><span>${h.sprintf(SHOW_MORE, count)}</span></a>
+              <a href="javascript:void(0);"
+                 onclick="return propbox.more(this, '${topic.id}', '${prop_structure.id}')">
+                <span>${h.sprintf(SHOW_MORE, count)}</span>
+              </a>
             </div>
           </th>
         </tr>
@@ -350,7 +353,10 @@
   </ul>
   <acre:block if="count > prop_values.length">
     <div class="more">
-      <a href="${h.fb_url(topic.id, [['property', prop_structure.id]])}"><span>${h.sprintf(SHOW_MORE, count)}</span></a>
+      <a href="javascript:void(0);"
+         onclick="return propbox.more(this, '${topic.id}', '${prop_structure.id}')">
+        <span>${h.sprintf(SHOW_MORE, count)}</span>
+      </a>
     </div>
   </acre:block>
 </acre:block>

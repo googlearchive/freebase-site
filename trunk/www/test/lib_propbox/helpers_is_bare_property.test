@@ -55,21 +55,17 @@ test("is_bare_property", function() {
   ok(topic, "Got topic");
 
   [
-    ["/freebase/object_profile/object_generation_time", true],
-    ["/type/object/creator", false],
-    ["/common/topic/notable_for", false]
+    ["/freebase/object_profile", false],
+    ["/type/object", true],
+    ["/common/topic", true]
   ].forEach(function (prop) {
-    var schema, res, prop_structure;
-    queries.prop_schema(prop[0], "/lang/en")
-      .then(function(s) {
-        schema = s;
-      });
-    acre.async.wait_on_results();
+    var res, type_structure;
 
-    prop_structure = ph.minimal_prop_structure(schema, "/lang/en");
-    res = ph.is_bare_property(topic, prop_structure);
+    type_structure = {id:prop[0]};
+    res = ph.is_asserted_type(topic, type_structure);
 
-    ok(prop_structure, "Got property structure for "+prop[0]);
-    equal(res,prop[1], "Got correct result for "+prop[0]);
+    ok(type_structure, "Got property structure for " + prop[0]);
+    equal(res, prop[1], "Got correct result for " + prop[0]);
+
   });
 });

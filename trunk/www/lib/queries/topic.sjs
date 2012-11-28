@@ -275,6 +275,7 @@ function to_structure(domains_list, lang) {
       var type_structure = structure.types[type.id] = {
         text: type_name ? type_name.value : type.id,
         lang: type_name ? type_name.lang : null,
+        never_assert: type["/freebase/type_hints/never_assert"] === true,
         properties: []
       };
       type.properties.forEach(function(prop) {

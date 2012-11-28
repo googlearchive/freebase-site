@@ -57,13 +57,20 @@
   var OBJECT = _("Object");
   var VALUE = _("Value");
   var DEPRECATED_PROPERTY = _("deprecated");
-  var BARE_PROPERTY = _("This type is not asserted");
+  var TYPE_NOT_ASSERTED = _("%s is not asserted on this topic.");
+  var ASSERT_TYPE = _("Assert type now.");
   var PROPERTY_LOCKED = _("This property is only editable by " +
     "specified users (members of the /type/property/authorities permission).");
   var PROPERTY_REQUIRES_AUTHORITY = _("Some values for this " +
     "property may not be editable.");
   var SHOW_MORE = _("%s values total &raquo;");
   var VIEW_CVT = _("View CVT");
+  var HAS_NO_VALUE = _("Flag as having no values");
+  var HAS_VALUE = _("Flag as having unknown values");
+  var FLAGGED_NO_VALUES = _("This property has been flagged as having no values.");
+  var REMOVE_NO_VALUES = _("Remove this flag to add new values.");
+  var FLAGGED_HAS_VALUE = _("This property has been flagged as having values, but those values are unknown.");
+  var REMOVE_HAS_VALUE = _("Remove this flag to add specific values.");
  </acre:script>
 
 <acre:block def="topicbox(topic, lang)">
@@ -139,6 +146,19 @@
         </span>
       </h2>
     </div>
+    <acre:script>
+      var is_asserted = ph.is_asserted_type(topic, type_structure);
+    </acre:script>
+    <acre:block if="!is_asserted">
+      <div class="message-section">
+        <span class="inline-message">
+          ${h.sprintf(TYPE_NOT_ASSERTED, type_structure.text)}
+          <acre:block if="!type_structure.never_assert">
+            <a href="#" onclick="return propbox.assert_type(this);">${ASSERT_TYPE}</a>
+          </acre:block>
+        </span>
+      </div>
+    </acre:block>
     <acre:block for="prop_id in type_structure.properties">
       <acre:script>
         var prop_structure = topic.structure.properties[prop_id];
@@ -171,9 +191,6 @@
         </acre:block>
         <acre:block if="prop_structure.deprecated">
           <span class="property-state">(${DEPRECATED_PROPERTY})</span>
-        </acre:block>
-        <acre:block if="ph.is_bare_property(topic, prop_structure)">
-          <span class="property-state">(${BARE_PROPERTY})</span>
         </acre:block>
         <a class="schema-id prop-id"
            href="${h.fb_url(prop_structure.id, [['schema']])}">
@@ -214,7 +231,7 @@
     </thead>
     <tbody>
       <acre:block if="empty">
-        ${empty_row_tr(prop_structure.properties.length)}
+        ${empty_row_tr(prop_structure.properties.length, topic, prop_structure)}
       </acre:block>
       <acre:block else="">
         <acre:block for="prop_value in prop_values">
@@ -343,7 +360,7 @@
   </acre:script>
   <ul class="data-list">
     <acre:block if="empty">
-      ${empty_row_li()}
+      ${empty_row_li(false, topic, prop_structure)}
     </acre:block>
     <acre:block else="">
       <acre:block for="prop_value in prop_values">
@@ -462,22 +479,30 @@
 <acre:block def="prop_menu(topic, prop_structure, prop_values, lang)">
   <acre:script>
     var ect = prop_structure.expected_type.id;
-    var unique_edit = (prop_structure.unique && prop_values.length) ? true : false;
+    var ps = ph.get_property_status(topic, prop_structure, prop_values);
   </acre:script>
   <span class="wrapper mark">
     <ul class="inline-menu combo-menu nicemenu">
       <li class="inline-menu-item nicemenu-item">
         <span class="headmenu">
-          <a href="#" onclick="return false;" class="default-action">${unique_edit ? EDIT_PROPERTY : ADD_PROPERTY}</a>
+          <a href="#" onclick="return false;" class="default-action">${ps.unique_edit ? EDIT_PROPERTY : ADD_PROPERTY}</a>
           <a href="javascript:void(0)" class="more-action">menu</a>
         </span>
         <ul class="row-menu submenu">
-          <li acre:if="unique_edit" class="row-menu-item">
+          <li acre:if="ps.unique_edit" class="row-menu-item">
             <a href="#" onclick="return propbox.prop_edit(this, ${prop_structure.unique});">${EDIT_VALUE}</a>
           </li>
           <li acre:else="" class="row-menu-item">
             <a href="#" onclick="return propbox.prop_add(this, ${prop_structure.unique});">${ADD_NEW_VALUE}</a>
           </li>
+          <acre:block if="ps.is_empty && !ps.has_status">
+            <li class="row-menu-item fb-site-only">
+              <a href="#" onclick="return propbox.flags_edit(this);">${HAS_NO_VALUE}</a>
+            </li>
+            <li class="row-menu-item fb-site-only">
+              <a href="#" onclick="return propbox.flags_edit(this);">${HAS_VALUE}</a>
+            </li>
+          </acre:block>
           <li class="row-menu-item fb-site-only">
             <a href="${h.build_query_url(topic.id, null, prop_structure.id)}">${QUERY_PROPERTY}</a>
           </li>
@@ -529,24 +554,41 @@
   </ul>
 </acre:block>
 
-<acre:block def="empty_row_tr(cols)">
+<acre:block def="empty_row_tr(cols, topic, prop_structure)">
   <tr class="empty-row">
     <td colspan="${cols || 1}" class="first">
       <ul class="data-list">
-        ${empty_row_li()}
+        ${empty_row_li(false, topic, prop_structure)}
       </ul>
     </td>
   </tr>
 </acre:block>
 
 <acre:block def="empty_row_li(menu, topic, prop_structure, prop_value, lang, parent_prop_structure)">
+  <acre:script>
+    var ps = ph.get_property_status(topic, prop_structure);
+  </acre:script>
   <li class="empty-row">
-    <span class="wrapper first">
-      <acre:block if="menu">
-        ${value_menu(topic, prop_structure, prop_value, lang, parent_prop_structure)}
-      </acre:block>
-      <span class="property-value empty-property">-</span>
-    </span>
+    <acre:block if="!ps.has_status">
+      <span class="wrapper first">
+        <acre:block if="menu">
+          ${value_menu(topic, prop_structure, prop_value, lang, parent_prop_structure)}
+        </acre:block>
+        <span class="property-value empty-property">-</span>
+      </span>
+    </acre:block>
+    <acre:block elif="ps.has_no_value">
+      <span class="property-value inline-message">
+        ${FLAGGED_NO_VALUES}
+        <a href="#" onclick="return propbox.flags_edit(this);">${REMOVE_NO_VALUES}</a>
+      </span>
+    </acre:block>
+    <acre:block elif="ps.has_value">
+      <span class="property-value inline-message">
+        ${FLAGGED_HAS_VALUE}
+        <a href="#" onclick="return propbox.flags_edit(this);">${REMOVE_HAS_VALUE}</a>
+      </span>
+    </acre:block>
   </li>
 </acre:block>
 

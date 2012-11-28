@@ -505,25 +505,46 @@ function is_authority(prop_structure, user_id) {
 }
 
 /**
- * Is given property a bare property?
+ * Is given type asserted?
  * @param {object} topic The Topic structure
- * @param {object} prop_structure The property structure.
- *   @see minimal_prop_structure.
+ * @param {object} type_structure The type structure.
  * @return {Boolean} if the property is bare property
  */
-function is_bare_property(topic, prop_structure) {
-  var is_bare = false;
-  var t = prop_structure.schema.id;
+function is_asserted_type(topic, type_structure) {
+  var asserted = true;
+  var t = type_structure.id;
   if (t !== "/type/object") {
     var values = h.get_values(topic, "/type/object/type");
     if (values == null) {
-      is_bare = true;
+      asserted = false;
     }
     else {
-      is_bare = values.every(function(val){
-        return t !== val.id;
+      asserted = values.some(function(val){
+        return t === val.id;
       });
     }
   }
-  return is_bare;
+  return asserted;
+}
+
+/**
+ * Get status object for given property
+ * @param  {object} topic          Topic structure
+ * @param  {object} prop_structure Property structure
+ * @param  {array} prop_values     Property values
+ * @return {object}                Object with fields is_empty, has_status,
+ *                                 has_value, has_no_value, unique_edit
+ */
+function get_property_status(topic, prop_structure, prop_values) {
+  var prop = h.get_property(topic, prop_structure.id);
+  var empty = !prop_values || !prop_values.length;
+  var status = prop && prop.status;
+  var unique_edit = (prop && prop.unique && !empty) ? true : false;
+  return {
+    is_empty: empty,
+    has_status: status != null,
+    has_value: status === "has_value" || false,
+    has_no_value: status === "has_no_value" || false,
+    unique_edit: unique_edit
+  };
 }

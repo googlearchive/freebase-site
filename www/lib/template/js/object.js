@@ -207,28 +207,14 @@
       var BLUR_KEY = 27;    // 'esc'
       var $fb_suggest = $("#header #fb-search-input");
 
-      $(document).keydown(function(e) {
+      fb.keyboard_shortcut.add('/', function() {
+        $fb_suggest.focus();
+      });
 
-          // if module already has focus, look for 'esc' key and blur
-          if ($fb_suggest.is(":focus")) {
-              if(e.keyCode === BLUR_KEY) {
-                  $fb_suggest.blur();
-              }
-          }
-          else {
-              // make sure we're not currently in an input box
-              if ( this !== e.target && (/textarea|select/i.test( e.target.nodeName ) ||
-                  e.target.type === "text") ) {
-                      return;
-                  }
-                  //focus module
-              else {
-                  if(e.keyCode === FOCUS_KEY) {
-                      $fb_suggest.focus();
-                      return false;
-                  }
-              }
-          }
+      $fb_suggest.keydown(function(e) {
+        if (e.keyCode === BLUR_KEY) {
+          $fb_suggest.blur();
+        }
       });
   };
 

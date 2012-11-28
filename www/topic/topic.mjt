@@ -103,7 +103,7 @@
           </acre:block>
         </acre:block>
       </div>
-      <div class="nav-section">
+      <div class="nav-section" id="show-all-section">
         <label>        
           <input id="show-all" name="all"
                  type="checkbox"
@@ -113,6 +113,13 @@
         </label>
       </div>
     </div>
+
+    <p class="keyboard-shortcuts nav-module">
+      <a href="javascript:void(0);" rel="#overlay">
+        ${_("Keyboard shortcuts available")}
+      </a>
+    </p>
+
   </div>
 
   <div id="topic-data" class="column data" style="opacity:0;">
@@ -147,6 +154,7 @@
       Error retrieving topic data
     </acre:block>
   </div>
+  ${keyboard_shortcuts()}
 </acre:block>
 
 <acre:block def="footer_script()">
@@ -169,6 +177,10 @@
           <dl class="key-map">
             <dt class="key-symbol">${_("/")}</dt>
             <dd class="key-desc">${_("search Freebase")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("f")}</dt>
+            <dd class="key-desc">${_("filter Data")}</dd>
           </dl>
           <dl class="key-map">
             <dt class="key-symbol">${_("j")}</dt>

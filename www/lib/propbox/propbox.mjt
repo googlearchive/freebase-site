@@ -542,10 +542,10 @@
 <acre:block def="empty_row_li(menu, topic, prop_structure, prop_value, lang, parent_prop_structure)">
   <li class="empty-row">
     <span class="wrapper first">
-      <span class="property-value empty-property">-</span>
       <acre:block if="menu">
         ${value_menu(topic, prop_structure, prop_value, lang, parent_prop_structure)}
       </acre:block>
+      <span class="property-value empty-property">-</span>
     </span>
   </li>
 </acre:block>

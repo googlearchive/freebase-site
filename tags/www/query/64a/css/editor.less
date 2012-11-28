@@ -1,0 +1,241 @@
+/*
+* Copyright 2012, Google Inc.
+* All rights reserved.
+*
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions are
+* met:
+*
+*     * Redistributions of source code must retain the above copyright
+* notice, this list of conditions and the following disclaimer.
+*     * Redistributions in binary form must reproduce the above
+* copyright notice, this list of conditions and the following disclaimer
+* in the documentation and/or other materials provided with the
+* distribution.
+*     * Neither the name of Google Inc. nor the names of its
+* contributors may be used to endorse or promote products derived from
+* this software without specific prior written permission.
+*
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+* A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+* LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+* DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+* THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+* OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+#page-content {
+  padding: 20px;
+}
+
+#page-title {
+  margin: 0 0 10px 10px;
+  
+  button {
+    float: right;
+  }
+  
+  .page-title {
+    font-size: 2em;
+    margin-left: 0;
+  }
+}
+
+#the-control-pane {
+  height: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+#links {
+  float: right;
+  margin-top: 7px;
+  margin-right: 15px;
+}
+
+#links a.icon-link {
+  font-size: 13px;
+  color: #333;
+}
+
+#links span.link-icon {
+  background-position: left -1618px;
+  padding-right: 10px;
+}
+
+#links span.link-icon:after {
+  content: "";
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 12px;
+  border-width: 3px;
+  border-color: #4d4d53 transparent transparent;
+  border-style: solid;
+  height: 0;
+  width: 0;
+}
+
+.cuecard-controlPane.section-tabs {
+  border: none;
+}
+
+.cuecard-outputPane-tabs, .cuecard-outputPane-content {
+  background: #f8f8f8;
+}
+
+.cuecard-outputPane-tabs {
+  border: 0;
+  height: 30px;
+}
+
+.cuecard-outputPane-tabs .current span {
+  z-index: 100; 
+}
+
+.tabbed-content em {
+  font-weight: bold;
+}
+
+
+.links-nav a {
+  font-size: 1.2em;
+  line-height: 1;
+  padding: 6px 0 6px 0.5em;
+}
+
+.cuecard-controlPane-tabBody {
+  clear: both;
+  padding: 12px 15px 0 15px;
+}
+
+
+.tabbed-content p {
+  font-size: 1.3em;
+  line-height: 1.4em;
+  margin: 6px 0 3px 0;
+}
+.cuecard-controlPane-powerTool {
+  margin: 0 0 3px 20px;
+  clear: both;
+  overflow: auto;
+}
+
+.cuecard-controlPane-powerTool .button, 
+.query-options-textbox {
+  width: 130px;
+  float: left;
+}
+
+.cuecard-controlPane-powerTool-hint,
+.cuecard-controlPane-hint {
+  font-size: 1.1em;
+  line-height: 2.7;
+  width: 300px;
+  float: left;
+  vertical-align: middle;
+  margin: 4px 0 0 13px;
+}
+
+.cuecard-controlPane-configurations .cuecard-controlPane-hint {
+  display: inline-block;
+  line-height: 1;
+  vertical-align: top;
+  margin: 0 0 0 5px;
+  width: auto;
+}
+
+.text-input {
+  font-size: 14px;
+  padding: 6px;
+}
+
+.query-options-row {
+  clear: both;
+  overflow: auto;
+}
+
+.module-section .variables-input {
+  width: 200px;
+  float: left;
+  padding: 4px 6px;
+}
+
+.query-options-textbox {
+  padding: 4px 6px;
+}
+
+.query-options-input {
+  float: left;
+}
+
+.cuecard-controlPane-customEnvelope td input.small-button,
+.cuecard-controlPane-variables td input.small-button {
+  width: 30px;
+  float: left;
+}
+
+.control-pane-label {
+  font-size: 1.2em;
+  float: left;
+}
+
+.control-pane-radio {
+  float: left;
+  margin-right: 5px;
+}
+
+.cuecard-controlPane-configurations-cursor {
+  margin-left: 10px;
+}
+
+.cuecard-controlPane-configurations-page .query-options-textbox{
+  width: 250px;
+  margin-right: 5px;
+}
+
+.cuecard-controlPane-configurations-cursor input {
+  width: auto;
+  float: left;
+  /* where is editor-bundle.mf.css and why does it have a cuecard-controlPane-configurations-cursor input style in it ??? */
+}
+
+.cuecard-outputPane-helpContent ul {
+  margin-bottom: 10px;
+}
+
+.cuecard-examples-list {
+  font-size: 1.2em;
+}
+
+.cuecard-controlPane-customEnvelope {
+  padding-bottom: 20px;
+}
+
+.links-menu {
+  list-style: none;
+  background: white;
+  width: 150px;
+  border: 1px solid #C4C6C7;
+  .rounded_corners;
+  .box_shadow(0,0,03px,rgba(0,0,0,0.3));
+}
+
+.cuecard-queryEditor-controls-options {
+  float: left; 
+  font-size: 1.3em;
+  line-height: 1;
+  font-weight: bold;
+  color: #555;
+  padding: 6px 5px;
+  
+  .switch {
+    margin-left: 5px;
+  }
+}
+

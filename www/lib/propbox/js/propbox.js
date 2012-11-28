@@ -195,6 +195,16 @@
       return false;
     },
 
+    assert_type: function(context) {
+      alert('Not yet implemented');
+      return false;
+    },
+
+    flags_edit: function(context) {
+      alert('Not yet implemented');
+      return false;
+    },
+
     /**
      * AJAX and inline all the values of the topic property.
      * @param {string} topic_id The topic id.

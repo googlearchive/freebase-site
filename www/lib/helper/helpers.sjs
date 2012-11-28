@@ -1810,16 +1810,16 @@ function extend_metadata(md, mount) {
 // ------------- TOPIC ---------------
 
 function get_values(topic_result, prop) {
-  var props = topic_result.property;
-  return (props && props[prop] && props[prop].values) ? props[prop].values : null;
+  var property = get_property(topic_result, prop);
+  return (property && property.values) ? property.values : null;
 }
 function get_first_value(topic_result, prop) {
-    var props = topic_result.property;
-    return (props && props[prop] && props[prop].values) ? props[prop].values[0] : null;
+  var property = get_property(topic_result, prop);
+  return (property && property.values) ? property.values[0] : null;
 }
 function has_value(topic_result, prop) {
-    var props = topic_result.property;
-    return (props && props[prop] && props[prop].values) ? true : false;
+  var property = get_property(topic_result, prop);
+  return (property && property.values) ? true : false;
 }
 function link_count(topic_result) {
     var linkcount = 0;
@@ -1834,6 +1834,10 @@ function link_count(topic_result) {
         linkcount += link.count;
     });
     return linkcount;
+}
+function get_property(topic_result, prop) {
+  var props = topic_result.property;
+  return (props && props[prop]) ? props[prop] : null;
 }
 
 // ---------- MARKDOWN --------------------

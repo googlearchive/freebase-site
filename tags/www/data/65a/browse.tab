@@ -1,0 +1,174 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+var h = acre.require("lib/helper/helpers.sjs");
+var i18n = acre.require("lib/i18n/i18n.sjs");
+var apis = acre.require("lib/promise/apis"),
+    freebase = apis.freebase,
+    urlfetch = apis.urlfetch,
+    deferred = apis.deferred;
+
+var SPEC = {
+  
+  cache_policy: "public",
+  
+  template: "browse.mjt",
+  
+  template_base: "lib/template/browse.mjt",
+
+  run: function() {
+    return {
+      domains: domains_topics_facts()
+    };
+  }
+
+};
+
+/**
+ * Get all "commons" domains, an corresponding
+ * topic fact counts
+ */
+function domains_topics_facts() {
+  var q = [{
+    id: null,
+    guid: null,
+    name: i18n.mql.query.name(),
+    type: "/type/domain",
+    "/freebase/domain_profile/category": {
+      id: "/category/commons"
+    },
+    types: {"id": null, type: "/type/type", "return": "count"}
+  }];
+
+  return freebase.mqlread(q)
+    .then(function(envelope) {
+      return envelope.result || [];
+    })
+    .then(function(domains) {
+      // attach topic/fact counts to domains
+      return _domain_topics_facts(domains);
+    })
+    .then(function(domains) {
+      // sort by topic count
+      return domains.sort(sort_by_topic_count);
+    });
+};
+
+function sort_by_topic_count(a,b) {
+  var a_count = a.topics ? a.topics.count : 0;
+  var b_count = b.topics ? b.topics.count : 0;
+  return b_count > a_count;
+};
+
+function _domain_topics_facts(domains) {
+    var keys = domains.map(function(domain) {
+        return "summary_"+domain.guid.replace("#", "/guid/");
+    });
+    var promises = [];
+    // we request allotments of 30 summary guids since the url may be too long
+    for (var i=0,l=keys.length; i<l; i+=30) {
+        var slice = keys.slice(i, i+30);
+        promises.push(
+          freebase.get_static("activity", slice, {timeout:3000})
+            .then(null, function(e) {
+                return null;
+            }));
+    }
+    return deferred.all(promises)
+        .then(function(results) {
+            var activities = {};
+            // flatten out the allotment of results into one activities map
+            // the activity key (domain id)
+            results.forEach(function(r) {
+                h.extend(activities, r);
+            });
+            var max_topic_count = null;
+            var min_topic_count = null;
+            var max_fact_count = null;
+            var min_fact_count = null;
+            domains.forEach(function(domain) {
+                var key = "summary_"+domain.guid.replace("#", "/guid/");
+                if (activities[key]) {
+                    domain.topics = {
+                      count: activities[key].total.t
+                    };
+                    domain.facts = {
+                      count: activities[key].total.e
+                    };
+                    if (max_topic_count == null || 
+                        domain.topics.count > max_topic_count) {
+                      max_topic_count = domain.topics.count;
+                    }
+                    if (min_topic_count == null || 
+                        domain.topics.count < min_topic_count) {
+                      min_topic_count = domain.topics.count;
+                    }
+                    if (max_fact_count == null || 
+                        domain.facts.count > max_fact_count) {
+                      max_fact_count = domain.facts.count;
+                    }
+                    if (min_fact_count == null || 
+                        domain.facts.count < min_fact_count) {
+                      min_fact_count = domain.facts.count;
+                    }
+                }
+            });
+
+            /**
+             * Calculate logarithmic scale of topic/fact counts from 0 to 100.
+             */
+            var topic_count_scale = null;
+            var fact_count_scale = null;
+            if (! (max_topic_count == null || min_topic_count == null)) {
+              topic_count_scale = 
+                (Math.log(max_topic_count) - Math.log(min_topic_count)) / 100;
+            }
+            if (! (max_fact_count == null || min_fact_count == null)) {
+              fact_count_scale = 
+                (Math.log(max_fact_count) - Math.log(min_fact_count)) / 100;
+            }
+
+            domains.forEach(function(domain) {
+                if (domain.topics) {
+                  domain.topics.log_percent = Math.round(
+                    ((Math.log(domain.topics.count) - 
+                     Math.log(min_topic_count)) / topic_count_scale));
+                }
+                if (domain.facts) {
+                  domain.facts.log_percent = Math.round(
+                    ((Math.log(domain.facts.count) - 
+                     Math.log(min_fact_count)) / fact_count_scale));
+                }
+            });
+
+            return domains;            
+        });
+};

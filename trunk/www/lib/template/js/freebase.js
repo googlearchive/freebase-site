@@ -929,6 +929,41 @@
 
     };
 
+    fb.keyboard_shortcut = {
+      cache_: { },
+
+      /**
+       * Add a keyboard shortcut to the current document
+       * @param {string} character The character for the shortcut. Please
+       *   be careful of existing native browser shortcut commands.
+       * @param {Function} callback The callback function when the keyboard
+       *   shortcut character is detected.
+       */
+      add: function(character, callback) {
+        var code = character.charCodeAt(0);
+        if (code in fb.keyboard_shortcut.cache_) {
+          console.warn('Overriding keyboard shortcut', character);
+        }
+        fb.keyboard_shortcut.cache_[code] = callback;
+      }
+    };
+
+    /**
+     * document keypress => keyboard shortcut handlers
+     */
+    $(document).keypress(function(e) {
+      var code = e.charCode;
+      var target = e.target;
+      if (fb.keyboard_shortcut.cache_[code] &&
+          (target == document.body ||
+           target == document ||
+           target == window ||
+           target == $("html")[0])) {
+        fb.keyboard_shortcut.cache_[code]();
+        return false;
+      }
+    });
+
     $("#page-content")
       .on("mouseover", "a.property-value", fb.hover.show)
       .on("mouseout", "a.property-value", fb.hover.hide);

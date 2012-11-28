@@ -85,7 +85,7 @@
       }
 
       // Initialize filter suggest input
-      $('#pill-filter-suggest')
+      var pill_suggest = $('#pill-filter-suggest')
           .suggest($.extend({
             scoring: 'schema'
           }, fb.suggest_options.any('type:/type/domain',
@@ -95,7 +95,18 @@
             var input = $(this);
             topic.add_filter(data.id);
             input.val('').trigger('textchange');
+          })
+          .focus(function() {
+            $('#pill-filter-box').addClass('focused');
+          })
+          .blur(function() {
+            $('#pill-filter-box').removeClass('focused');
           });
+
+      // Keyboard shorcut to filter 'f'
+      fb.keyboard_shortcut.add('f', function() {
+        pill_suggest.focus();
+      });
 
       // Keyboard shortcuts overlay
       $(".keyboard-shortcuts > a").overlay({

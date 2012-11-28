@@ -1,0 +1,804 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+
+/*
+ * #page-header holds:
+ *   - object flag
+ *   - object label
+ *   - object image
+ *   - object meta (mid, etc.)
+ *   - object blurb
+ *   - object timestamp
+ */
+#page-header {
+  padding-top: 10px;
+  font-size: 12px;
+  background: #404141;
+  color: #e7ebed;
+  background-repeat: repeat;
+  background-image: -webkit-linear-gradient(-45deg, rgba(255, 255, 255, .015) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .015) 50%, rgba(255, 255, 255, .015) 75%, transparent 75%, transparent);
+  background-image: -moz-repeating-linear-gradient(45deg, transparent, transparent 0.6%, rgba(255,255,255,0.015) 0.6%, rgba(255,255,255,0.015) 1.2%);
+  background-size: 6px 6px;
+  .box_shadow();
+}
+
+#page-header.sticky {
+  position: fixed;
+  top: 40px; // height of header
+  left: 0; right: 0;
+  z-index: 10;
+  margin: 0 auto;
+}
+
+#header.sticky {
+  position: fixed;
+  top: 0;
+  left: 0; right: 0;
+  z-index: 11;
+  margin: 0 auto;
+}
+
+.page-title {
+  margin-left: 100px;
+
+  /*
+    Object Title
+  */
+
+  h1 {
+    color: #f1f2f3;
+    font-size: 21px;
+  }
+
+  .inline-menu {
+    display: inline-block;
+    position: relative;
+    top: -12px;
+  }
+
+  .menu-trigger .lang-code {
+    position: static;
+    display: inline-block;
+    font-size: 11px;
+    line-height: 1;
+    background: url(template/img/ui-icons.png) no-repeat right -683px;
+    padding: 5px 20px 5px 5px;
+    margin-left: -3px;
+    color: #f1f2f3;
+    .transition;
+    .rounded_corners;
+  }
+
+  h1.lock {
+    background: url(template/img/ui-icons.png) no-repeat 0px -1577px;
+    padding-left: 18px;
+  }
+
+  h1 .row-menu {
+    z-index: 2;
+  }
+
+  h1:hover .lang-code {
+    color: #fff;
+    background-color: rgba(0,0,0,0.2);
+  }
+
+  h1:hover .lang-code:hover {
+    background-color: rgba(0,0,0,0.4);
+  }
+
+  h1 .menu-trigger {
+    display: inline-block;
+    position: relative;
+    font-size: 12px;
+    line-height: 1;
+  }
+
+  .menu-trigger:hover {
+    text-decoration: none;
+  }
+}
+
+#description,
+.meta {
+  a {
+    color: #e7ebed;
+    text-decoration: none;
+    border-bottom: 1px dotted;
+    .transition;
+  }
+  a:hover,
+  a:hover {
+    border-bottom: 1px solid;
+    text-decoration: none;
+  }
+}
+
+/*
+ * Object Labels
+ * Label used in the masthead to describe every kind
+ * of object (eg. 'Topic', 'Domain', etc.)
+ *
+ * The basic .object-label class is extended in two ways:
+ *
+ *   1. the kind of object label is appended to the base class
+ *      to create the color palette
+ *   2. the object label is slightly tweaked in appearance if we
+ *      know it's presented with a topic image
+*/
+
+.object-label {
+  float: left;
+  margin: 0 10px 0 30px;
+  padding: 3px;
+  background: #000;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid #111;
+  border: 1px solid rgba(0,0,0,0.5);
+  .rounded_corners(3px);
+}
+
+a.label-trigger {
+  display: block;
+  width: 53px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 10px;
+  color: #454545;
+  text-shadow: 0 1px 1px rgba(255,255,255,0.8);
+  padding: 3px 0 4px;
+  background-color: #a1a2a3;
+  .linear_gradient(#b1b2b3,#a1a2a3);
+}
+
+.object-label .label {
+  line-height: 1;
+  .transition(all, 0.1s, ease-in-out);
+}
+
+.label-trigger:hover {
+  text-decoration: none;
+}
+
+.object-label.no-img {
+  margin-top: 3px;
+  a.label-trigger {
+    border-top: 0;
+  }
+}
+
+.object-label.img {
+  position: relative;
+  .box_shadow(0,0,0,rgba(0,0,0,0.6));
+
+  .label {
+    border-top: 1px solid rgba(0,0,0,0.3);
+  }
+}
+
+
+/* Object Label Colors */
+
+.label {
+
+  /* blue - basic data */
+  .topic, .image, .content, .article {
+    background-color: #9dc9db;
+    .linear_gradient(#9dc9db,#7ab9e1);
+  }
+
+  /* turquoise - "meta" data */
+  .dataset, .query {
+    background-color: #77d2d2;
+    .linear_gradient(#77d2d2,#67cccc);
+  }
+
+  /* yellow - schema */
+  .domain, .type, .property {
+    background-color: #ffde64;
+    .linear_gradient(#ffde64,#ffcd04);
+  }
+
+  /* orange - users */
+  .user {
+    background-color: #ffa51e;
+    .linear_gradient(#ffa51e,#ff9901);
+  }
+
+  /* red - administrative/locked types */
+  .usergroup, .permisson, .attribution, .namespace {
+    background-color: #ca9683;
+    .linear_gradient(#ca9683, #c88d6a);
+  }
+
+}
+
+/*
+  Object Image
+
+  This is the primary image used to represent the object in
+  the masthead.
+*/
+
+#image {
+  width: 53px;
+  height: 53px;
+  .linear_gradient(#3f3f3f, #343434);
+}
+
+/*
+ * Only generate image reflection when .img is true
+ */
+.img #image:after {
+  content: "";
+  position: absolute;
+  top: 3px; left: 3px;
+  border-color: #fff transparent transparent #fff;
+  border-style: solid;
+  border-width: 26px;
+  width: 0;
+  height: 0;
+  opacity:0.2;
+}
+
+/*
+  Object Creator + Timestamp
+*/
+
+.creation-timestamp {
+  float: right;
+  margin: 0 30px 0;
+  color: #ccc;
+  line-height: 28px;
+  font-size: 12px;
+}
+
+.creation-timestamp a {
+  color: #ccc;
+  border-bottom: 1px dotted;
+}
+
+.creation-timestamp a:hover {
+  border-bottom: 1px solid;
+  text-decoration: none;
+}
+
+.creation-timestamp .user-image {
+  float: left;
+  margin-right: 10px;
+}
+
+.creation-timestamp .user-image a,
+.creation-timestamp .user-image a:hover {
+  border: 0;
+}
+
+.creation-timestamp .user-image img {
+  display: inline-block;
+  padding: 3px;
+  background: #373b40;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid #323232;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+
+/*
+User thumbnail list
+TODO: These should be moved once the full user thumbnail
+spec has been implemented, including complete vcards, tooltips, etc.
+*/
+
+.user-list-title {
+  margin: 0.8em 0;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.user-list .vcard {
+    list-style: none;
+    float: left;
+    margin-right: 7px;
+}
+
+.meta .key,
+.meta .included-types,
+.meta .display-type {
+    padding-right: 7px;
+}
+
+/*
+ * hide object description when javasscript is enabled
+ * we'll show it with javascript after truncating
+ */
+
+#description {
+  margin-right: 30px;
+}
+
+#page-header .nav {
+  clear: both;
+  margin-top: 10px;
+  background: #393939;
+  background: -moz-linear-gradient(top, #393939 0%, #414141 50%, #3c3c3c 51%, #303030 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#393939), color-stop(50%,#414141), color-stop(51%,#3c3c3c), color-stop(100%,#303030));
+  background: -webkit-linear-gradient(top, #393939 0%,#414141 50%,#3c3c3c 51%,#303030 100%);
+  background: -o-linear-gradient(top, #393939 0%,#414141 50%,#3c3c3c 51%,#303030 100%);
+  background: -ms-linear-gradient(top, #393939 0%,#414141 50%,#3c3c3c 51%,#303030 100%);
+  background: linear-gradient(top, #393939 0%,#414141 50%,#3c3c3c 51%,#303030 100%);
+  .box_shadow(-2px,0,2px,rgba(0,0,0,0.8));
+}
+
+.nav-utilities {
+  float: right;
+  margin-right: 30px;
+  border-right: 1px solid;
+}
+
+.nav-mode li,
+.nav-utilities li {
+  float: left;
+  list-style: none;
+  line-height: 1;
+}
+
+.nav-mode li {
+  border-right: 1px solid
+}
+
+.nav-utilities li {
+  border-left: 1px solid;
+}
+
+.nav-mode a,
+.nav-utilities a {
+  display: block;
+}
+
+.nav-mode a {
+  font-size: 14px;
+  line-height: 25px;
+  font-weight: bold;
+  padding: 0 1em;
+}
+
+.nav-mode a.current {
+  background: #fff;
+  .linear_gradient(#ececec, #fff);
+}
+
+.tab-nav {
+  float: left;
+  min-height: 35px;
+  margin-left: 30px;
+  border-left: 1px solid;
+
+  li {
+    float: left;
+    list-style: none;
+    line-height: 1;
+  }
+
+  li.more {
+    a {
+      font-size: 12px;
+      line-height: 3;
+    }
+
+    a:hover span {
+      background: transparent;
+    }
+
+    a span {
+      border: 0;
+      padding: 0 12px 0 15px;
+    }
+
+    /* Create down-facing triangle */
+    span:after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 16px;
+      border-width: 3px;
+      border-color: #fff transparent transparent;
+      border-style: solid;
+      height: 0;
+      width: 0;
+    }
+  }
+
+  a {
+    display: block;
+    font-size: 14px;
+    color: #e7ebed;
+
+    &:hover {
+      text-decoration: none;
+
+      span {
+        background: #222;
+        background: rgba(0,0,0,0.2);
+      }
+    }
+
+  }
+
+  span {
+    display: block;
+    height: 35px;
+    line-height: 35px;
+    border-right: 1px solid;
+    padding: 0 35px;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.7);
+    .transition();
+  }
+
+  a.current span {
+    border: 0;
+    font-weight: bold;
+    background: #FFD02F;
+    .linear_gradient(#FFD02F, #FEB22A);
+    color: #58575f;
+    position: relative;
+    text-shadow: none;
+    height: 36px;
+    .box_shadow(0,1px,3px,#000);
+  }
+
+  /* Create caret for active state */
+  a.current span:after {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0; right: 0;
+    margin: 0 auto;
+    bottom: -18px;
+    border-width: 10px;
+    border-color: #FEB22A transparent transparent;
+    border-style: solid;
+    height: 0;
+    width: 0;
+  }
+}
+
+
+.tab-nav,
+.nav-utilities li,
+.nav-mode li,
+.nav-utilities,
+.tab-nav a span {
+  border-color: #333;
+  border-color: rgba(0,0,0,0.8);
+}
+
+
+.nav-mode a.current {
+  position: relative;
+  margin-bottom: -20px;
+  color: #fff;
+}
+
+.nav-mode a span {
+  display: block;
+  background: purple;
+  height: 55px;
+}
+
+.nav-utilities li a {
+  font-size: 1.2em;
+  line-height: 1;
+  padding: 9px 15px 10px;
+  color: #63686D;
+}
+
+.nav-utilities li .menu-trigger:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.nav-utilities li .mark {
+  padding-left: 0;
+}
+
+.nav-utilities a.object-actions-toggle {
+  display: block;
+  position: relative;
+  height: 35px;
+  width: 140px;
+  padding: 0;
+  .transition();
+}
+
+
+.submenu.object-settings {
+  width: 200px;
+  border: 0;
+  background: #343434;
+  font-size: 12px;
+  color: #e8ebee;
+  padding: 5px 0;
+  .box_shadow(0,2px,2px,rgba(0,0,0,0.5));
+}
+
+.object-settings {
+
+  .submenu-title {
+    display: block;
+    font-weight: bold;
+    padding-left: 10px;
+  }
+
+  a {
+    display: block;
+    padding-left: 15px;
+    color: #e8ebee;
+  }
+
+  a:hover {
+    background: rgba(0,0,0,0.3);
+    text-decoration: none;
+  }
+
+  li {
+    list-style: none;
+    line-height: 2;
+  }
+
+  ul li a {
+    padding-left: 15px;
+  }
+
+  .no-settings {
+    display: none;
+    font-style: italic;
+  }
+
+  .current {
+    background: rgba(0,0,0,0.3);
+
+    span {
+      display: inline-block;
+      padding-right: 23px;
+      background: url(template/img/ui-icons.png) no-repeat right -1549px;
+    }
+
+  }
+
+  .subnavs {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(0,0,0,0.8);
+  }
+}
+
+.object-actions-toggle:hover {
+  background: #111;
+  background: rgba(0,0,0,0.2);
+}
+
+.outer-cog {
+  display: block;
+  position: absolute;
+  margin: 0 auto;
+  left: 0; right: 0;
+  top: 5px;
+  width: 22px;
+  height: 22px;
+  background: #cedce7;
+  .rounded_corners(11px);
+  .linear_gradient(#fff, #aeaeae);
+}
+
+.inner-cog {
+  display: block;
+  background: #404040;
+  position: absolute;
+  left: 7px;
+  top: 7px;
+  width: 8px;
+  height: 8px;
+  box-shadow: inset 1px 1px 1px #000;
+  .rounded_corners(4px);
+}
+
+.cog {
+  display: block;
+  height: 0;
+  margin: 0 auto;
+  position: absolute;
+  width: 2px;
+  border-top: 3px solid #404040;
+  border-left: 2px solid transparent;
+  border-right: 2px solid transparent;
+  .transition;
+}
+
+.outer-cog:after {
+  content: "";
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 4px;
+  right: -15px;
+  border-top: 5px solid #efefef;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  .scale(1,0.8);
+}
+
+.cog.one {
+  left: 0; right: 0;
+  top: -1px;
+}
+
+.cog.two {
+  .rotate(180deg);
+  bottom: -1px;
+  left: 0; right: 0;
+}
+
+.cog.three {
+  .rotate(-90deg);
+  left: -3px; top: 10px;
+}
+
+.cog.four {
+  .rotate(90deg);
+  right: -3px; top: 10px;
+}
+
+.cog.five {
+  .rotate(45deg);
+  right: 0; top: 2px;
+}
+
+.cog.six {
+  .rotate(-45deg);
+  left: 0; top: 2px;
+}
+
+.cog.seven {
+  .rotate(-140deg);
+  left: 0; bottom: 2px;
+}
+
+.cog.eight {
+  .rotate(140deg);
+  right: 0; bottom: 2px;
+}
+
+.cog.two,
+.cog.seven,
+.cog.eight {
+  border-top-color: #393939;
+}
+
+.object-actions-toggle:hover .cog {
+  border-top-color: #2f2f2f;
+}
+
+.object-actions-toggle:hover .cog.two,
+.object-actions-toggle:hover .cog.seven,
+.object-actions-toggle:hover .cog.eight {
+  border-top-color: #2c2c2c;
+}
+
+
+
+/*
+ * Flagging
+ */
+
+.page-flag {
+  margin-top: -10px;
+  margin-bottom: 10px;
+  padding: 5px 30px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #333;
+  text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
+  background-color: desaturate(darken(@msg_yellow, 30%), 5%);
+  .diagonal_stripes_left();
+
+  a {
+    color: #333;
+    border-bottom: 1px dotted;
+  }
+
+  a:hover {
+    text-decoration: none;
+    border-bottom: 1px solid;
+  }
+
+  &.success {
+    background-color: @msg_green;
+  }
+
+  &.notice {
+    background-color: @msg_blue;
+  }
+
+  &.error {
+    background-color: @msg_red;
+  }
+}
+
+
+/*
+ * Localization Menu
+ */
+
+.submenu.localization {
+  z-index: 10; /* this needs to be greater than the masthead when position:fixed */
+  background: #343434;
+  font-size: 12px;
+  color: #e8ebee;
+  .box_shadow(0,2px,2px,rgba(0,0,0,0.5));
+
+  li {
+    list-style: none;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  li a {
+    display: block;
+    padding: 0 15px;
+    line-height: 2;
+    color: #fff;
+    .transition();
+  }
+
+  li a.icon-link {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background: rgba(0,0,0,0.2);
+
+    span.edit-icon {
+      background-position: 0 -233px;
+      padding-left: 19px;
+    }
+
+    &:hover {
+      background: rgba(0,0,0,0.5);
+    }
+  }
+
+  a:hover {
+    text-decoration: none;
+    background: rgba(0,0,0,0.3);
+  }
+
+  sup.lang-code {
+    color: #fff;
+  }
+}
+

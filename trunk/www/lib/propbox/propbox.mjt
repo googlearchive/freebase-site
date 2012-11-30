@@ -67,9 +67,11 @@
   var VIEW_CVT = _("View CVT");
   var HAS_NO_VALUE = _("Flag as having no values");
   var HAS_VALUE = _("Flag as having unknown values");
-  var FLAGGED_NO_VALUES = _("This property has been flagged as having no values.");
+  var FLAGGED_NO_VALUES = _("This property has been flagged " +
+    "as having no values.");
   var REMOVE_NO_VALUES = _("Remove this flag to add new values.");
-  var FLAGGED_HAS_VALUE = _("This property has been flagged as having values, but those values are unknown.");
+  var FLAGGED_HAS_VALUE = _("This property has been flagged " +
+    "as having values, but those values are unknown.");
   var REMOVE_HAS_VALUE = _("Remove this flag to add specific values.");
  </acre:script>
 
@@ -167,8 +169,9 @@
         <acre:script>
           prop_structure.id = prop_id;
           var values = [];
-          if (topic.property && topic.property[prop_id]) {
-            values = topic.property[prop_id].values || [];
+          var prop = h.get_property(topic, prop_id);
+          if (prop) {
+            values = prop.values || [];
           }
         </acre:script>
         ${propbox(topic, prop_structure, values, lang)}
@@ -216,8 +219,8 @@
   <acre:script>
     var empty = !prop_values || !prop_values.length;
     var ect = prop_structure.expected_type.id;
-    var count = topic.property[prop_structure.id] && topic.property[prop_structure.id].count;
-    count = count || 0;
+    var prop = h.get_property(topic, prop_structure.id);
+    var count = prop && prop.count || 0;
   </acre:script>
   <table class="data-table">
     <thead>
@@ -355,8 +358,8 @@
   <acre:script>
     var empty = !prop_values || !prop_values.length;
     var ect = prop_structure.expected_type.id;
-    var count = topic.property[prop_structure.id] && topic.property[prop_structure.id].count;
-    count = count || 0;
+    var prop = h.get_property(topic, prop_structure.id);
+    var count = prop && prop.count || 0;
   </acre:script>
   <ul class="data-list">
     <acre:block if="empty">
@@ -485,22 +488,33 @@
     <ul class="inline-menu combo-menu nicemenu">
       <li class="inline-menu-item nicemenu-item">
         <span class="headmenu">
-          <a href="#" onclick="return false;" class="default-action">${ps.unique_edit ? EDIT_PROPERTY : ADD_PROPERTY}</a>
+          <acre:block if="ps.has_status">
+            <a href="#" onclick="return false;" class="default-action-hidden">
+              ${ps.unique_edit ? EDIT_PROPERTY : ADD_PROPERTY}
+            </a>
+          </acre:block>
+          <acre:block else="">
+            <a href="#" onclick="return false;" class="default-action">
+              ${ps.unique_edit ? EDIT_PROPERTY : ADD_PROPERTY}
+            </a>
+          </acre:block>
           <a href="javascript:void(0)" class="more-action">menu</a>
         </span>
         <ul class="row-menu submenu">
-          <li acre:if="ps.unique_edit" class="row-menu-item">
-            <a href="#" onclick="return propbox.prop_edit(this, ${prop_structure.unique});">${EDIT_VALUE}</a>
-          </li>
-          <li acre:else="" class="row-menu-item">
-            <a href="#" onclick="return propbox.prop_add(this, ${prop_structure.unique});">${ADD_NEW_VALUE}</a>
-          </li>
+          <acre:block if="!ps.has_status">
+            <li acre:if="ps.unique_edit" class="row-menu-item">
+              <a href="#" onclick="return propbox.prop_edit(this, ${prop_structure.unique});">${EDIT_VALUE}</a>
+            </li>
+            <li acre:else="" class="row-menu-item" >
+              <a href="#" onclick="return propbox.prop_add(this, ${prop_structure.unique});">${ADD_NEW_VALUE}</a>
+            </li>
+          </acre:block>
           <acre:block if="ps.is_empty && !ps.has_status">
             <li class="row-menu-item fb-site-only">
-              <a href="#" onclick="return propbox.flags_edit(this);">${HAS_NO_VALUE}</a>
+              <a href="#" onclick="return propbox.add_has_no_value(this);">${HAS_NO_VALUE}</a>
             </li>
             <li class="row-menu-item fb-site-only">
-              <a href="#" onclick="return propbox.flags_edit(this);">${HAS_VALUE}</a>
+              <a href="#" onclick="return propbox.add_has_value(this);">${HAS_VALUE}</a>
             </li>
           </acre:block>
           <li class="row-menu-item fb-site-only">
@@ -580,13 +594,17 @@
     <acre:block elif="ps.has_no_value">
       <span class="property-value inline-message">
         ${FLAGGED_NO_VALUES}
-        <a href="#" onclick="return propbox.flags_edit(this);">${REMOVE_NO_VALUES}</a>
+        <a href="#" onclick="return propbox.remove_has_no_value(this);">
+          ${REMOVE_NO_VALUES}
+        </a>
       </span>
     </acre:block>
     <acre:block elif="ps.has_value">
       <span class="property-value inline-message">
         ${FLAGGED_HAS_VALUE}
-        <a href="#" onclick="return propbox.flags_edit(this);">${REMOVE_HAS_VALUE}</a>
+        <a href="#" onclick="return propbox.remove_has_value(this);">
+          ${REMOVE_HAS_VALUE}
+        </a>
       </span>
     </acre:block>
   </li>

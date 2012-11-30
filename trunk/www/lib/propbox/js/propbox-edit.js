@@ -158,7 +158,7 @@
       }
 
       formlib.submit_and_continue_inline_add_form(
-        options, 
+        options,
         $.extend(ajax_options, {
           onsuccess: function(data, status, xhr) {
             var new_row = $(data.result.html);
@@ -199,9 +199,9 @@
           if (data.result.invalid) {
             status.clear();
             setTimeout(function() {
-                status.sprintf('warning', 
+                status.sprintf('warning',
                                'The value you are trying edit is no longer valid. ' +
-                               'Please %s to continue editing.', 
+                               'Please %s to continue editing.',
                                "reload", function() {
                                    window.location.reload(true);
                                    return false;
@@ -228,7 +228,7 @@
         }
       }));
     },
-      
+
     value_edit: function(prop_section, prop_row, html, structure) {
       var edit_row = $(".edit-row", html);
       var submit_row = $(".edit-row-submit", html);
@@ -361,7 +361,7 @@
     /**
      * add a /common/document
      */
-    prop_add_document: function(prop_section, html, structure) {  
+    prop_add_document: function(prop_section, html, structure) {
       var event_prefix = "propbox.edit.prop_add_document.";
       var options = {
         event_prefix: event_prefix,
@@ -371,7 +371,7 @@
         submit: edit.submit_prop_add_document_form,
         // submit ajax options
         ajax: {
-          url: propbox.options.base_ajax_url + 
+          url: propbox.options.base_ajax_url +
             "/prop_add_document_submit.ajax"
         },
         // jQuery object
@@ -387,7 +387,7 @@
         /**
          * If selecting a language other than the primary language
          * (propox.options.lang), display a message that they
-         * may see the article until the page is refreshed with the 
+         * may see the article until the page is refreshed with the
          * selected language.
          */
         lang_select
@@ -431,18 +431,18 @@
                 var new_row = $(data.result.html);
                 if (options.prop_row) {
                     // replace exisiting row
-                    options.prop_row.replaceWith(new_row);                    
+                    options.prop_row.replaceWith(new_row);
                 }
                 else {
                     // add new row to prop_section
                     var ls = $(">.data-section", options.prop_section);
                     var body = $("> .data-table > tbody, > .data-list", ls);
-                    body.append(new_row);                    
+                    body.append(new_row);
                 }
                 propbox.init_menus(new_row, true);
                 $(".nicemenu-item.edit").show();
-                propbox.kbs.set_next(null, new_row, true); 
-                options.form.trigger(options.event_prefix + "cancel"); 
+                propbox.kbs.set_next(null, new_row, true);
+                options.form.trigger(options.event_prefix + "cancel");
             }
         }));
     },
@@ -460,7 +460,7 @@
         submit: edit.submit_value_edit_document_form,
         // submit ajax options
         ajax: {
-          url: propbox.options.base_ajax_url + 
+          url: propbox.options.base_ajax_url +
             "/prop_add_document_submit.ajax"
         },
         // jQuery object
@@ -530,6 +530,58 @@
      */
     value_edit_image: function(prop_section) {
         alert("Edit image not yet implemented");
+    },
+
+    /**
+     * Add HAS_NO_VALUE flag to property
+     */
+    add_has_no_value: function (prop_section) {
+      edit.valuenotation_submit(prop_section,
+        '/freebase/valuenotation/has_no_value',
+        'insert');
+    },
+
+    add_has_value: function (prop_section) {
+      edit.valuenotation_submit(prop_section,
+        '/freebase/valuenotation/has_value',
+        'insert');
+    },
+
+    remove_has_no_value: function (prop_section) {
+      edit.valuenotation_submit(prop_section,
+        '/freebase/valuenotation/has_no_value',
+        'delete');
+    },
+
+    remove_has_value: function (prop_section) {
+      edit.valuenotation_submit(prop_section,
+        '/freebase/valuenotation/has_value',
+        'delete');
+    },
+
+    /**
+     * Submit valuenotation change
+     */
+    valuenotation_submit: function(prop_section, predicate, connect) {
+      var submit_data = {
+        s: propbox.options.id,
+        p: predicate,
+        o: prop_section.attr("data-id"),
+        connect: connect,
+        lang: propbox.options.lang
+      };
+
+      $.ajax($.extend(formlib.default_submit_ajax_options(), {
+        url: propbox.options.base_ajax_url + "/valuenotation_submit.ajax",
+        data: submit_data,
+        onsuccess: function(data) {
+          var html = $(data.result.html);
+          prop_section.replaceWith(html);
+          propbox.init_menus(html, true);
+          $(".nicemenu-item.edit", html).show();
+        }
+      }));
+
     },
 
 

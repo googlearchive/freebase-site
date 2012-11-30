@@ -51,7 +51,8 @@
       propbox.kbs = new kbs(context);
 
       // set current kbs element to the first visible kbs class
-      propbox.kbs.set_next(propbox.kbs.get_current(), $(".kbs:visible:first", context, true));
+      propbox.kbs.set_next(propbox.kbs.get_current(),
+        $(".kbs:visible:first", context, true));
 
       $(".kbs", context)
         .live("click", function() {
@@ -88,7 +89,8 @@
           if (propbox.kbs) {
             var current = propbox.kbs.get_current();
             if (current) {
-              propbox.kbs.set_next(current, $(this).parents(".kbs:first"), true);
+              propbox.kbs.set_next(current,
+                $(this).parents(".kbs:first"), true);
             }
           }
           return false;
@@ -158,8 +160,10 @@
     },
 
     prop_edit: function(context, unique) {
-      var prop = $(context).parents(".submenu").data("headmenu").parents(".property-section");
-      var value_menu = prop.find(".data-section .data-row:first:visible .nicemenu:first .headmenu:first a");
+      var prop = $(context).parents(".submenu")
+        .data("headmenu").parents(".property-section");
+      var value_menu = prop.find(".data-section .data-row:first:visible " +
+        ".nicemenu:first .headmenu:first a");
       if (value_menu.length) {
         value_menu.click();
       }
@@ -170,7 +174,8 @@
     },
 
     prop_add: function(context, unique) {
-      var prop_section = $(context).parents(".submenu").data("headmenu").parents(".property-section");
+      var prop_section = $(context).parents(".submenu")
+        .data("headmenu").parents(".property-section");
       propbox.get_script("/propbox-edit.mf.js", function() {
         propbox.edit.prop_add_begin(prop_section, unique);
       });
@@ -178,7 +183,8 @@
     },
 
     value_edit: function(context) {
-      var prop_row = $(context).parents(".submenu").data("headmenu").parents(".data-row:first");
+      var prop_row = $(context).parents(".submenu")
+        .data("headmenu").parents(".data-row:first");
       var prop_section = prop_row.parents(".property-section");
       propbox.get_script("/propbox-edit.mf.js", function() {
         propbox.edit.value_edit_begin(prop_section, prop_row);
@@ -187,7 +193,8 @@
     },
 
     value_delete: function(context) {
-      var prop_row = $(context).parents(".submenu").data("headmenu").parents(".data-row:first");
+      var prop_row = $(context).parents(".submenu")
+        .data("headmenu").parents(".data-row:first");
       var prop_section = prop_row.parents(".property-section");
       propbox.get_script("/propbox-edit.mf.js", function() {
         propbox.edit.value_delete_begin(prop_section, prop_row);
@@ -200,8 +207,49 @@
       return false;
     },
 
-    flags_edit: function(context) {
-      alert('Not yet implemented');
+    /**
+     * Add HAS_NO_VALUE flag on property
+     */
+    add_has_no_value : function (context) {
+      var prop_section = $(context).parents(".submenu")
+        .data("headmenu").parents(".property-section");
+      propbox.get_script("/propbox-edit.mf.js", function() {
+        propbox.edit.add_has_no_value(prop_section);
+      });
+      return false;
+    },
+
+    /**
+     * Add HAS_VALUE flag on property
+     */
+    add_has_value : function (context) {
+      var prop_section = $(context).parents(".submenu")
+        .data("headmenu").parents(".property-section");
+      propbox.get_script("/propbox-edit.mf.js", function() {
+        propbox.edit.add_has_value(prop_section);
+      });
+      return false;
+    },
+
+    /**
+     * Remove HAS_NO_VALUE flag from property
+     */
+    remove_has_no_value : function (context) {
+      var prop_section = $(context).parents(".property-section");
+      propbox.get_script("/propbox-edit.mf.js", function() {
+        propbox.edit.remove_has_no_value(prop_section);
+      });
+      return false;
+    },
+
+    /**
+     * Remove HAS_VALUE flag from property
+     */
+    remove_has_value : function (context) {
+       var prop_section = $(context).parents(".property-section");
+       propbox.get_script("/propbox-edit.mf.js", function() {
+        propbox.edit.remove_has_value(prop_section);
+      });
       return false;
     },
 

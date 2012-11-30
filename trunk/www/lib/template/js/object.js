@@ -63,7 +63,8 @@
 
     if (!$("body").is(".embed")) {
       // Initialize page scroll behavior for fixed positioning on scroll
-      fb.init_page_scroll();
+      // SITE-1218: comment out for now, until we re-implement in SITE-1219
+      // fb.init_page_scroll();
     }
 
     fb.init_search();

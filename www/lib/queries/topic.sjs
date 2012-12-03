@@ -37,7 +37,6 @@ var deferred = apis.deferred;
 var pq = acre.require("propbox/queries.sjs");
 var ph = acre.require("propbox/helpers.sjs");
 var typeloader = acre.require("schema/typeloader.sjs");
-var proploader = acre.require("schema/proploader.sjs");
 var validators = acre.require("validator/validators.sjs");
 
 /**
@@ -164,7 +163,7 @@ function topic_structure(id, options) {
                             }
 
                             var structure = get_structure(
-                                typeloader_result, types, lang);
+                                typeloader_result, lang);
                             if (prop_filter) {
                                 var show_prop = 
                                     structure.properties[prop_filter];

@@ -74,32 +74,10 @@
       var domains = c.topic && c.topic.structure && c.topic.structure.order;
     </acre:script>
     <div class="nav-module">
-      <div class="nav-section ${JSON.stringify(type_map)}" id="toc">
+      <div class="nav-section" id="toc">
         <acre:block if="domains && domains.length">
           <acre:block for="domain_id in domains">
-            <acre:script>
-              var domain = c.topic.structure.domains[domain_id];
-              var types = domain.types;
-              var commons = h.is_commons_domain(domain_id);
-            </acre:script>
-            <h2 class="toc-domain${commons ? ' commons' : ''}" data-id="${domain_id}">
-              <a href="#${domain_id}" class="toc-link" 
-                 title="${domain_id}">${domain.text}</a>
-            </h2>
-            <acre:block if="types && types.length">
-              <ul class="toc-types">
-                <acre:block for="type_id in types">
-                  <acre:script>
-                    var type = c.topic.structure.types[type_id];
-                  </acre:script>
-                  <li class="toc-type" data-id="${type_id}">
-                    <a href="#${type_id}"
-                       class="toc-link"
-                       title="${type_id}">${type.text}</a>
-                  </li>
-                </acre:block>
-              </ul>
-            </acre:block>
+            ${toc_domain(c.topic, domain_id, type_map)}
           </acre:block>
         </acre:block>
       </div>
@@ -230,7 +208,6 @@
   </div>
 </acre:block>
 
-
 <acre:block def="pill(filter_id)">
   <acre:script>
     filter_id = filter_id || '';
@@ -241,4 +218,32 @@
     <a href="javascript:void(0);" class="pill-x"
        onclick="fb.topic.remove_filter(this);">x</a>
   </span>
+</acre:block>
+
+<acre:block def="toc_domain(topic, domain_id, type_map)">
+  <acre:script>
+    type_map = type_map || {};
+    var domain = topic.structure.domains[domain_id];
+    var types = domain.types;
+    var commons = h.is_commons_domain(domain_id);
+  </acre:script>
+  <h2 class="toc-domain${commons ? ' commons' : ''}" data-id="${domain_id}">
+    <a href="#${domain_id}" class="toc-link" 
+       title="${domain_id}">${domain.text}</a>
+  </h2>
+  <acre:block if="types && types.length">
+    <ul class="toc-types">
+      <acre:block for="type_id in types">
+        <acre:script>
+          var type = topic.structure.types[type_id];
+          var bare = type_map[type_id] ? '' : ' bare';
+        </acre:script>
+        <li class="toc-type${bare}" data-id="${type_id}">
+          <a href="#${type_id}"
+             class="toc-link"
+             title="${type_id}">${type.text}</a>
+        </li>
+      </acre:block>
+    </ul>
+  </acre:block>
 </acre:block>

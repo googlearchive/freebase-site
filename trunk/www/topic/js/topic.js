@@ -87,13 +87,28 @@
       // Initialize filter suggest input
       var pill_suggest = $('#pill-filter-suggest')
           .suggest($.extend({
-            scoring: 'schema'
+            scoring: 'schema',
+            output: '(type)'
           }, fb.suggest_options.any('type:/type/domain',
                                     'type:/type/type',
                                     'type:/type/property')))
           .bind('fb-select', function(e, data) {
             var input = $(this);
-            topic.add_filter(data.id);
+            var type = null;
+            // Determine if it is a domain|type|property
+            if (data.output && data.output.type &&
+                data.output.type['/type/object/type']) {
+              $.each(data.output.type['/type/object/type'], function(i, t) {
+                if (t.id === '/type/domain' ||
+                    t.id === '/type/type' ||
+                    t.id === '/type/property') {
+                  type = t.id;
+                  return false;
+                }
+                return true;
+              });
+            }
+            topic.add_filter(data.id, type);
             input.val('').trigger('textchange');
           })
           .focus(function() {
@@ -219,17 +234,118 @@
 
     /**
      * Add a filter pill.
+     * @param {string} id The domain|type|property id
+     * @param {string} opt_type The type of id
+     *   (i.e., '/type/[domain|type|property]'). If specified, and it is a
+     *   '/type/[type|property]' and not currently 'loaded' for this topic,
+     *   This will dynamically load this section allowing the user to
+     *   assert a new type or a bare property.
      */
-    add_filter: function(id) {
+    add_filter: function(id, opt_type) {
       var escape_id = escape_attr_(id);
       if ($('#pill-filter-box')
         .find('input[value=' + escape_id + ']').length) {
         // already in the filter
         return;
       }
-      var pill = topic.pill(id);
-      $('#pill-filter-suggest').before(pill);
+      if (topic.facet.contains(id)) {
+        var pill = topic.pill(id);
+        $('#pill-filter-suggest').before(pill);
+        topic.update_facet(true);
+        // Goto filtered section
+        $('.toc-link', pill).click();
+      }
+      else {
+        if (opt_type === '/type/type') {
+          // Dynamically load the type-section
+          topic.load_filter(id);
+        }
+        else if (opt_type === '/type/property') {
+          // Dynamically load the property-section
+          topic.load_filter(null, id);
+        }
+        else {
+          fb.status.info('The filter does not apply to this topic: ' + id);
+        }
+      }
+    },
+
+    /**
+     * Load a new type-section for a type or property,
+     * but we first need formlib.
+     * @param {string} opt_type The type id.
+     * @param {string} opt_property The property id.
+     */
+    load_filter: function(opt_type, opt_property) {
+      var data = {
+        id: fb.c.id,
+        lang: fb.lang
+      };
+      if (opt_type) {
+        data.type = opt_type;
+      }
+      else if(opt_property) {
+        data.property = opt_property;
+      }
+      else {
+        // no-op
+        return;
+      }
+      // We need formlib
+      fb.get_script(
+          fb.h.static_url("lib/propbox") + '/propbox-edit.mf.js',
+          function() {
+            var formlib = window.formlib;
+            $.ajax($.extend(formlib.default_begin_ajax_options(), {
+              url: fb.h.ajax_url('type_section.ajax'),
+              data: data,
+              onsuccess: function(data) {
+                topic.load_filter_callback(opt_type || opt_property, data);
+              }
+            }));
+          });
+    },
+
+    /**
+     * Add the new type-section into the page and update the facet.
+     */
+    load_filter_callback: function(id, data) {
+      // The result is a 'domain-section' and the toc for the domain + type
+      var domain_section = $(data.result.html);
+      var toc = $(data.result.toc);
+      var domain_id = domain_section.attr('data-id');
+      var is_commons = domain_section.find('.status').is('.commons');
+
+      // Enable menus
+      propbox.init_menus(domain_section, true);
+      $(".nicemenu-item.edit", domain_section).show();
+
+      if (topic.facet.contains(domain_id)) {
+        // Just insert the type-section in the present domain-section.
+        var domain = topic.facet.get(domain_id);
+        var type_section = domain_section.find('.type-section');
+        domain.section.append(type_section);
+        // And the new type toc in the nav under the existing domain
+        domain.toc_types.append($('.toc-type', toc));
+      }
+      else {
+        // Insert the new domain-section into the page.
+        $('#topic-data').prepend(domain_section);
+        // Insert the new domain toc into the nav
+        $('#toc').prepend(toc);
+      }
+
+      // Update filter, toc and facet
+      topic.facet.init();
+      var pill = $('#pill-filter-box')
+          .find('.pill-value[value=' + escape_attr_(id) + ']');
+      if (!pill.length) {
+        pill = topic.pill(id);
+        $('#pill-filter-suggest').before(pill);
+      }
       topic.update_facet(true);
+      // Goto filtered section
+      $('.toc-link', pill).click();
     },
 
     /**
@@ -370,9 +486,6 @@
     }
   };
 
-  $(topic.init);
-
-
   function escape_attr_(val) {
     return val.replace(/\//g, '\\\/');
   };
@@ -390,6 +503,15 @@
   };
 
   function TopicFacet() {
+    this.init();
+  };
+
+  /**
+   * Initialize the in-memory data structure with what is in the page.
+   * If you update the page, you should re-initialize your facet by calling
+   * this.
+   */
+  TopicFacet.prototype.init = function() {
     var domains = this.domains = {
       // Commons domains key'ed by domain id
       commons: [],
@@ -402,7 +524,6 @@
 
     var toc = $('#toc');
     var topicbox = $('#topic-data');
-    var type_map = toc.metadata();
 
     $('.toc-domain', toc).each(function() {
       var toc_domain = $(this);
@@ -438,11 +559,11 @@
           domain: domain,
           properties: []
         };
-        if (type_map[type_id]) {
-          domain.types.push(type);
+        if (toc_type.is('.bare')) {
+          domain.bare_types.push(type);
         }
         else {
-          domain.bare_types.push(type);
+          domain.types.push(type);
         }
         schemas[type_id] = type;
 
@@ -626,6 +747,20 @@
     }
   };
 
+  /**
+   * Does the facet contain the specified schema (domain|type|property)?
+   * @param {string} schema_id The domain|type|property id.
+   * @return {boolean} TRUE if in the face, otherwise, return FALSE.
+   */
+  TopicFacet.prototype.contains = function(schema_id) {
+    return this.schemas[schema_id] != null;
+  };
+
+  TopicFacet.prototype.get = function(schema_id) {
+    return this.schemas[schema_id];
+  };
+
+  $(topic.init);
 
 
 })(jQuery, window.freebase, window.propbox);

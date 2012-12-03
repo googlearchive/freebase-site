@@ -127,12 +127,14 @@ function get_description(topic, tm) {
   if (is_schema_object) {
     desc = get_latest_value(topic, "/common/topic/description");
     if (!desc) {
-      desc = get_latest_value(topic, "/common/topic/article");
+      var article = get_latest_value(topic, "/common/topic/article");
+      desc = get_first_value(article, "/common/document/text");
     }
   } else {
     desc = get_first_value(topic, "/common/topic/description");
     if (!desc) {
-      desc = get_first_value(topic, "/common/topic/article");
+      var article = get_latest_value(topic, "/common/topic/article");
+      desc = get_first_value(article, "/common/document/text");
     }
   }
   return desc;

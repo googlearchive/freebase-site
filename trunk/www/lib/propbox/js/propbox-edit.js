@@ -600,10 +600,12 @@
           lang: propbox.options.lang
         },
         onsuccess: function(data) {
-          var html = $(data.result.html);
-          prop_section.replaceWith(html);
-          propbox.init_menus(html, true);
-          $(".nicemenu-item.edit", html).show();
+          var new_values = $(data.result.html).children();
+          var old_values = prop_section.children();
+          old_values.remove();
+          prop_section.append(new_values);
+          propbox.init_menus(prop_section, true);
+          $(".nicemenu-item.edit", prop_section).show();
         }
       }));
     },

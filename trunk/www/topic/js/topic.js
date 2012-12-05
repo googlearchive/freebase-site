@@ -116,6 +116,12 @@
           })
           .blur(function() {
             $('#pill-filter-box').removeClass('focused');
+          })
+          .keydown(function(e) {
+            // Backspace in empty input removes the last filter
+            if (e.keyCode === 8 && $(this).val() === '') {
+              $('#pill-filter-box').find('.pill-x:last').click();
+            }
           });
 
       // Keyboard shorcut to filter 'f'
@@ -523,6 +529,7 @@
     var schemas = this.schemas = {};
 
     var toc = $('#toc');
+    var self = this;
     var topicbox = $('#topic-data');
 
     $('.toc-domain', toc).each(function() {

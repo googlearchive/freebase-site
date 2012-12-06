@@ -156,7 +156,10 @@
         <span class="inline-message">
           ${h.sprintf(TYPE_NOT_ASSERTED, type_structure.text)}
           <acre:block if="!type_structure.never_assert">
-            <a href="#" onclick="return propbox.assert_type(this);">${ASSERT_TYPE}</a>
+            <a href="#"
+               onclick="return propbox.add_type(this, '${type_structure.id}', ${JSON.stringify(type_structure.included_types)});">
+              ${ASSERT_TYPE}
+            </a>
           </acre:block>
         </span>
       </div>
@@ -1034,4 +1037,24 @@ propbox edit forms
     });
   </acre:script>
   ${acre.markup.bless(anchors.join(", "))}
+</acre:block>
+
+
+<acre:block def="add_type_result(id, type_id, included_types, lang)">
+  <acre:script>
+    var msg;
+    if (included_types.length) {
+      msg = h.sprintf(
+          _("This type and its included type(s) (%s) " +
+            "have been asserted on this topic. " +
+            "You may need to reload and adjust your filters to see them."),
+          included_types.join(", "));
+    }
+    else {
+      msg = _("This type has been asserted on this topic.");
+    }
+  </acre:script>
+  <span class="inline-message">
+    ${msg}
+  </span>
 </acre:block>

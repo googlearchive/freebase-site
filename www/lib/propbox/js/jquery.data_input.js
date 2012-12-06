@@ -91,9 +91,6 @@
               mydata.namespace = data.namespace;
             }
           }
-          if (data.incompatible_types) {
-              mydata.incompatible_types = data.incompatible_types;
-          }
           self.container.data("data", mydata);
           self.container.removeClass("error").addClass("valid");
           self.container.trigger("valid");
@@ -134,11 +131,17 @@
         var suggest_options = null;
         if (o.suggest_impl) {
           suggest_options =
-            o.suggest_impl.instance(type, true, self.metadata && self.metadata.lang || o.lang);
+            o.suggest_impl.instance(
+                type, true, self.metadata && self.metadata.lang || o.lang);
         }
+        var included_types = o.structure.expected_type.included_types;
+        suggest_options = 
+          self.options.incompatible_types.suggest_options(
+            type, included_types, suggest_options);
         i.validate_topic($.extend({
             incompatible_types: self.options.incompatible_types,
-            expected_type: type
+            expected_type: type,
+            included_types: included_types
           }, suggest_options))
           .bind("valid.data_input", function(e, data) {
             self.fb_select(data);
@@ -282,8 +285,6 @@
   $.validate_topic.prototype = {
     init: function() {
       var self = this;
-      // a map of ids to incompatible types
-      this.incompatible_types = {};
       this.input.suggest(this.options)
         .bind("fb-textchange.validate_topic", function() {
           if (self.input.val() === "") {
@@ -313,23 +314,24 @@
      * then this check will automatically make the data "valid".
      */
     incompatible_types_check: function(data) {
-        var self = this;
-        if (self.options.incompatible_types && self.options.expected_type) {
-            self.options.incompatible_types.check(data.id, self.options.expected_type, {
-                compatible: function() {
-                    self.valid(data);
-                },
-                incompatible: self.options.incompatible_types.inline_suggest_incompatible_callback(self.input, {
-                    onConfirm: function(id, ect, incompatible_types) {
-                        self.incompatible_types[id] = incompatible_types;
-                        self.valid(data);
+      var self = this;
+      if (self.options.incompatible_types && self.options.expected_type) {
+        self.options.incompatible_types.check(
+            data, self.options.expected_type, self.options.included_types, {
+              compatible: function() {
+                self.valid(data);
+              },
+              incompatible: self.options.incompatible_types
+                  .inline_incompatible_callback({
+                    onConfirm: function(suggest_data, ect, included_types) {
+                      self.valid(data);
                     }
-                })
+                  }, self.input)
             });
-        }
-        else {
-            this.valid(data);
-        }
+      }
+      else {
+        this.valid(data);
+      }
     },
 
     invalid: function() {
@@ -343,9 +345,6 @@
     valid: function(data) {
       if (typeof data === "string") {
         data = {create_new:data};
-      }
-      if (data.id && this.incompatible_types[data.id]) {
-        data.incompatible_types = this.incompatible_types[data.id];
       }
       this.input.trigger("valid", data);
     },

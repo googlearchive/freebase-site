@@ -202,9 +202,36 @@
       return false;
     },
 
-    assert_type: function(context) {
-      alert('Not yet implemented');
+    add_type: function(context, type_id, included_types) {
+      context = $(context);
+      var type_section = context.parents(".type-section");
+      // Do we have lib/incompatible_types/incompatible_types.js
+      var incompatible_types = propbox.options.incompatible_types;
+      if (incompatible_types) {
+        var id = propbox.options.id;
+        incompatible_types.search(
+            id, type_id, included_types, {
+              compatible: function() {
+                propbox.add_type_submit(context, type_section);
+              },
+              incompatible:
+                  incompatible_types.overlay_incompatible_callback({
+                        onConfirm: function() {
+                          propbox.add_type_submit(context, type_section);
+                        }
+                      })
+            });
+      }
+      else {
+        propbox.add_type_submit(context, type_section);
+      }
       return false;
+    },
+
+    add_type_submit: function(context, type_section) {
+      propbox.get_script("/propbox-edit.mf.js", function() {
+        propbox.edit.add_type_submit(context, type_section);
+      });
     },
 
     /**

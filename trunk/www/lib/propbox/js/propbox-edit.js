@@ -532,6 +532,24 @@
         alert("Edit image not yet implemented");
     },
 
+    add_type_submit: function(trigger, type_section) {
+      var type_id = type_section.attr('data-id');
+      var submit_data = {
+        id: propbox.options.id,
+        type: type_id,
+        lang: propbox.options.lang
+      };
+      $.ajax($.extend(formlib.default_submit_ajax_options(), {
+        url: propbox.options.base_ajax_url + "/add_type_submit.ajax",
+        data: submit_data,
+        onsuccess: function(data) {
+          // Replace assert type message with response message.
+          var html = $(data.result.html);
+          trigger.parents('.inline-message:first').replaceWith(html);
+        }
+      }));
+    },
+
     /**
      * Add HAS_NO_VALUE flag to property
      */
@@ -628,7 +646,8 @@
         .data_input({
           lang: propbox.options.lang,
           suggest_impl: propbox.options.suggest_impl,
-          incompatible_types: propbox.options.incompatible_types
+          incompatible_types: propbox.options.incompatible_types,
+          structure: options.structure
         })
         .bind("valid", function() {
           context.trigger(options.event_prefix + "valid");

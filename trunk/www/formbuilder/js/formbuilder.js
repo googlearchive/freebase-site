@@ -49,7 +49,7 @@
 
                 /**
                  * The incompatible_types interface.
-                 * Must implement "check" and "inline_suggest_incompatible_callback"
+                 * Must implement "check" and "inline_incompatible_callback"
                  * @see lib/incompatible_types/incompatible-types.js
                  */
                 incompatible_types: fb.incompatible_types

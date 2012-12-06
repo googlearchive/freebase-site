@@ -71,7 +71,7 @@
 
         /**
          * The incompatible_types interface.
-         * Must implement "check" and "inline_suggest_incompatible_callback"
+         * Must implement "check" and "inline_incompatible_callback"
          * @see lib/incompatible_types/incompatible-types.js
          */
         incompatible_types: fb.incompatible_types
@@ -440,44 +440,6 @@
           window.loaction.href = new_url;
         }
       }
-    },
-
-
-    add_type: function(trigger, type_id) {
-      trigger = $(trigger); // suggest input
-
-      // incompatible type check
-      function compatible_callback(id, type, incompatible_types) {
-        fb.get_script(fb.h.static_url("manage-type.mf.js"), function() {
-          topic.manage_type.add_type_begin(trigger, type_id, incompatible_types);
-        });
-      };
-      function cancel_callback() {
-        // try again
-        trigger.focus();
-      }
-      function onload_callback() {
-        // update .incompatible-topic with the current page topic name
-        $(".incompatible-overlay-dialog .incompatible-topic").text($($(".page-title > h1 > span").get(0).firstChild).text());
-      }
-      fb.incompatible_types.check(fb.c.id, type_id, {
-        compatible: compatible_callback,
-        incompatible: fb.incompatible_types.overlay_suggest_incompatible_callback(trigger, {
-            onLoad: onload_callback,
-            onCancel: cancel_callback,
-            onConfirm: compatible_callback
-        })
-      });
-
-      return false;
-    },
-
-    remove_type: function(trigger, type_id) {
-      trigger = $(trigger);
-      fb.get_script(fb.h.static_url("manage-type.mf.js"), function() {
-        topic.manage_type.remove_type_begin(trigger, type_id);
-      });
-      return false;
     },
 
     PILL_HTML: (function() {

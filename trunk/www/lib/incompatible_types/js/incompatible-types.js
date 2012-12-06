@@ -32,332 +32,404 @@
 
 (function($, fb) {
 
-   var it = fb.incompatible_types = {
+  var it = fb.incompatible_types = {
 
-     overlay_dialog: null,
-     inline_dialog: null,
+    overlay_dialog: null,
+    inline_dialog: null,
 
-     /**
-      * Check the compatibility of the types of topic_id to
-      * the specified type_id (i.e., the expected type of a property)
-      * and its /freebase/type_hints/included_types.
-      * 
-      * If the topic_id is safe to be typed with type_id and its included types,
-      * callbacks.compatible will be invoked with 2 arguments:
-      * 1) topic_id
-      * 2) type_id
-      * 
-      * If any of the existing types of topic_id is incompatible with the type_id
-      * or its included types, callbacks.incompatible will be invoked with
-      * 3 arguments:
-      * 1) topic_id
-      * 2) type_id
-      * 3) A map of type ids to a list of existing types of topic_id that 
-      *    are incompatible (/dataworld/incompatible_types). 
-      *    The keys may include the type_id we are trying to assert and/or
-      *    any of the included types of type_id that are incompatible
-      *    with any of the existing types of topic_id. This
-      *    map will also include the list of "included_types" of type_id,
-      *    so that one can distinguish the included type incompatibility.
-      *    For example, when trying to assert "/people/ethnicity" to a country:
-      * 
-      *     {
-      *        "/people/ethnicity": ["/location/location", "/location/country"],
-      *        "included_types": ["/common/topic"]
-      *     }
-      * 
-      * Usage:
-      * 
-      *   check("/en/blade_runner", "/film/film", {
-      *     compatible: function(id, type) { ... },
-      *     incompatible: function(id, type, incompatible_types) { ... }
-      *   });
-      */
-     check: function(topic_id, type_id, callbacks) {
-         callbacks = callbacks || {};
-         $.ajax({
-             url: fb.h.ajax_url("lib/incompatible_types/incompatible_types.ajax"),
-             data: {id:topic_id, type:type_id},
-             dataType: "json",
-             beforeSend: function() {
-                 fb.status.doing("Checking compatibility...");
-             },
-             success: function(data) {
-                 var result = data.result;
-                 var incompatible = false;
-                 if (!$.isEmptyObject(result)) {
-                     $.each(result, function(k, v) {
-                         if (k !== "included_types") {
-                             incompatible = true;
-                             return false;
-                         }
-                     });
-                 }
-                 if (incompatible) {
-                     if (callbacks.incompatible) {
-                         // incompatible types
-                         callbacks.incompatible(topic_id, type_id, result);
-                     }
-                 }
-                 else if (callbacks.compatible) {
-                     callbacks.compatible(topic_id, type_id, result);
-                 }
-             },
-             error: function(xhr) {
-                 fb.status.error(xhr.responseText);
-             },
-             complete: function() {
-                 fb.status.clear();
-             }
-         });
-     },
+    /**
+     * Add incompatible parameters to suggest/search options for a type
+     * and its included types.
+     * <ol>
+     *   <li>filter=(should (not incompatible:type_id))</li>
+     *   <li>output=(incompatible:type_id incompatible:included_type1 ...)</li>
+     * </ol>
+     * @param {string} type_id The type to check for incompatibility.
+     * @param {Array.<string>} included_types The included types of type_id to
+     *    to check for incompatibility.
+     * @param {Object} opt_suggest_options Existing suggest options that will
+     *    be extended to include the incompatible search options.
+     * @return opt_suggest_options or a new dictionary
+     *     with the search incompatible parameters.
+     */
+    suggest_options: function(
+        type_id, included_types, opt_suggest_options) {
+      var o = opt_suggest_options || {};
+      var types = [type_id].concat(included_types || []);
+      // Add filter=(should (not incompatible:type_id))
+      var filter = o.filter;
+      if (!$.isArray(filter)) {
+        filter = [];
+        if (filter != null) {
+          filter.push(o.filter);
+        }
+        o.filter = filter;
+      }
+      filter.push('(should (not incompatible:' + type_id + '))');
+      o.filter = filter;
 
-     /**
-      * The default incompatible callback for a suggest input that 
-      * overlays a confirm dialog with the list of incompatible types in which the
-      * user can then override or cancel.
-      * 
-      * This will return a callback function that can be used as 
-      * incompatible callback for check().
-      * 
-      * Usage:
-      *   
-      *   check("/en/blade_runner", "/people/person", {
-      *       compatible: ...,
-      *       incompatible: overlay_suggest_incompatible_callback(input, {
-      *           onLoad: function() {...},   // optional
-      *           onClose: function() {...},  // optional
-      *           onCancel: function() {...}, // optional
-      *           onConfirm: function(topic_id, incompatible_type_id, incompatible_types) { ... } // optional
-      *       })
-      *   })
-      * 
-      * @param suggest_input:Object - jQuery object referring to the suggest 
-      *   input element.
-      * @param callbacks:Object - A map of callback options with respect 
-      *   to the overlay dialog:
-      *     - onLoad:Function - when the dialog is loaded and displayed.
-      *     - onClose:Function - when the dialog is closed.
-      *     - onCancel:Function - when the user clicks the cancel button.
-      *     - onConfirm:Function - when the user confirms (override) the 
-      *         incompatibility dialog. This method will invoked with the topic_id,
-      *         incompatible type_id, and the incompatible_types result from
-      *         lib/incompatible_types/incompatible_types.ajax
-      */
-     overlay_suggest_incompatible_callback: function(suggest_input, callbacks) {
-         if (!it.overlay_dialog) {
-             it.overlay_dialog = $(".incompatible-overlay-dialog");
-         }
-         if (it.overlay_dialog.length) {
-             callbacks = callbacks || {};
-             return function(topic_id, incompatible_type_id, incompatible_types) {
-                 it.overlay_dialog.removeData("overlay");
+      // Add output=(incompatible:type_id)
+      var output = o.output;
+      if (output) {
+        var m = /^\((.*)\)$/.exec(o.output);
+        if (m) {
+          output = '(' + it.search_output_(types) + ' ' + m[1] + ')';
+        }
+      }
+      if (!output) {
+        output = it.search_output_(types, true);
+      }
+      o.output = output;
 
-                 $(".modal-content", it.overlay_dialog)
-                     .empty()
-                     .append(it.description_html(topic_id, incompatible_type_id, incompatible_types));
+      return o;
+    },
 
-                 $(".incompatible-topic", it.overlay_dialog).text(suggest_input.val());
+    /**
+     * For a list of types, get the search output parameter value to get the
+     * incompatibility info for each type. For example:
+     * <code>
+     *   search_output_(['t1', 't2']) == 'incompatible:t1 incompatible:t2';
+     *   search_output_(['t1', 't2'], true) ==
+     *       '(incompatible:t1 incompatible:t2)';
+     * </code>
+     * If wrap is TRUE, wrap the result within parentheses '()'.
+     * @param {Array.<string>} types The list of type ids.
+     * @param {?Boolean} opt_wrap If TRUE, wrap the result with parens.
+     * @return {String} A valid search output value with or without parens.
+     */
+    search_output_: function(types, opt_wrap) {
+      var o = types.map(function(t) {
+        return 'incompatible:' + t;
+      }).join(' ');
+      if (opt_wrap) {
+        o = '(' + o + ')';
+      }
+      return o;
+    },
 
-                 it.overlay_dialog.overlay({
-                     close: "button",
-                     closeOnClick: false,
-                     load: true,
-                     fixed: false,
-                     mask: {
-                         color: '#000',
-                         loadSpeed: 200,
-                         opacity: 0.5
-                     },
-                     onClose: function() {
-                         suggest_input.focus().select();
-                         $("button", it.overlay_dialog).unbind();
-                         if (callbacks.onClose) {
-                             callbacks.onClose();
-                         }
-                     },
-                     onLoad: function() {
-                         $(".cancel", it.overlay_dialog)
-                             .focus()
-                             .click(function() {
-                                 suggest_input.focus().select().trigger("textchange");
-                                 if (callbacks.onCancel) {
-                                     callbacks.onCancel();
-                                 }
-                             });
-                         $(".save", it.overlay_dialog).click(function() {
-                             suggest_input.focus().select();
-                             if (callbacks.onConfirm) {
-                                 callbacks.onConfirm(topic_id, incompatible_type_id, incompatible_types);
-                             }
-                         });                         
-                         if (callbacks.onLoad) {
-                             callbacks.onLoad();
-                         }
-                     }
-                 });
-             };
-         }
-         else {
-             return it.native_confirm_suggest_incompatible_callback(suggest_input, callbacks);
-         }
-     },
+    /**
+     * Check the suggest item (that was selected) containing the
+     * Search API incompatible output result as specified in
+     * fb.incompatible_types.suggest_options.
+     *
+     * If search deemed the item incompatible with the specified type,
+     * callbacks.incompatible will be invoked with 3 arguments:
+     * <ol>
+     *   <li>{Object} data - The suggest data on fb-select.</li>
+     *   <li>{string} type_id - The type that is incompatible or whose
+     *       included types are incompatible.</li>
+     *   <li>included_types - The included types of type_id.</li>
+     * </ol>
+     * Otherwise, callbacks.compatible will be invoked.
+     *
+     * Usage:
+     * <code>
+     *   check(
+     *       suggest_data,
+     *       "/location/country",
+     *       ['/location/location', '/common/topic'],
+     *       {
+     *         compatible: function(data, type_id) { ... },
+     *         incompatible: function(data, type_id) { ... }
+     *       });
+     * </code>
+     *
+     * @param {Object} suggest_data The suggest data or search result item to
+     *    check for incompatible results.
+     * @param {string} type_id The type we are checking for incompatibility
+     * @param {Array.<string>} included_types The included types of type_id we
+     *    are checking for incompatibility.
+     * @param {Object} callbacks Object signature:
+     *     {Function} callbacks.compatible, {Function} callbacks.incompatible.
+     */
+    check: function(suggest_data, type_id, included_types, callbacks) {
+      callbacks = callbacks || {};
+      var incompatible = false;
+      var output = suggest_data.output;
+      if (output) {
+        // Check type_id and included_types in the search output
+        var check_types = [type_id].concat(included_types || []);
+        $.each(check_types, function(i, t) {
+          var key = 'incompatible:' + t;
+          if (// Search return 'true' instead of boolean
+              output[key]['/type/object/type'][0] === 'true' ||
+              output[key]['/type/object/type'][0] === true) {
+            incompatible = true;
+          }
+          // Short-circuit if incompatible==TRUE
+          return !incompatible;
+        });
+      }
+      if (incompatible) {
+        if (callbacks.incompatible) {
+          // incompatible types
+          callbacks.incompatible(suggest_data, type_id, included_types);
+        }
+      }
+      else if (callbacks.compatible) {
+        callbacks.compatible(suggest_data, type_id, included_types);
+      }
+    },
 
-     /**
-      * This is like overlay_suggest_incompatible_callback but displayed inline
-      * with the suggest_input instead of using an overlay.
-      * 
-      * @see overlay_suggest_incompatible_callback
-      */
-     inline_suggest_incompatible_callback: function(suggest_input, callbacks) {
-         if (!it.inline_dialog) {
-             it.inline_dialog = $(".incompatible-inline-dialog");
-         }
-         if (it.inline_dialog.length) {
-             callbacks = callbacks || {};
-             return function(topic_id, incompatible_type_id, incompatible_types) {
-                 $(".modal-content", it.inline_dialog)
-                     .empty()
-                     .append(it.description_html(topic_id, incompatible_type_id, incompatible_types));   
+    /**
+     * Invoke Search API directly to check incompatibility of a topic id to a
+     * type and its included types.
+     * @param {string} id The topic id to check if incompatible with type_id.
+     * @param {string} type_id The type id to check if incompatible with id.
+     * @param {Array.<string>} included_types The included types of type_id.
+     * @param {Object} callbacks Signature: {Function} callbacks.compatible,
+     *     {Function} callbacks.incompatible.
+     * @see check
+     */
+    search: function(id, type_id, included_types, callbacks) {
+      var types = [type_id].concat(included_types || []);
+      var options = {
+        filter: '(all mid:' + id + ')',
+        output: it.search_output_(types, true)
+      };
+      $.ajax({
+        url: fb.h.fb_googleapis_url('/search', options),
+        dataType: 'jsonp',
+        success: function(data) {
+          if ($.isArray(data.result) && data.result.length > 0) {
+            it.check(data.result[0], type_id, included_types, callbacks);
+          }
+          else {
+            fb.status.error('Incompatible type check search error: ' + id);
+          }
+        }
+      });
+    },
 
-                 $(".incompatible-topic", it.inline_dialog).text(suggest_input.val());
+    /**
+     * The default incompatible callback allowing the user to override
+     * or cancel.
+     *
+     * This will return a callback function that can be used as
+     * incompatible callback for check().
+     *
+     * Usage:
+     * <code>
+     *   check(
+     *       data, 
+     *       '/location/country', 
+     *       ['/location/location', '/common/topic'],
+     *       {
+     *         compatible: function() {...},
+     *         incompatible: overlay_incompatible_callback({
+     *           onLoad: function() {...},   // optional
+     *           onClose: function() {...},  // optional
+     *           onCancel: function() {...}, // optional
+     *           onConfirm:
+     *               function(data, type_id, included_types) {...} // optional
+     *         })
+     *       });
+     *
+     * @param callbacks:Object - A map of callback options with respect
+     *     to the overlay with the following signature:
+     *     <ul>
+     *       <li>{Function} onLoad When the dialog is loaded and displayed.
+     *       <li>{Function} onClose When the dialog is closed.
+     *       <li>{Function} onCancel When the user clicks the cancel button.
+     *       <li>{Function} onConfirm When the user confirms (override) the
+     *         incompatibility dialog. This method will invoked with the
+     *         suggest_data, type_id and included_types.</li>
+     * @param opt_input:Object - jQuery object referring to the input element
+     *     that initiated the incompatible check. This is most likely a suggest
+     *     input.
+     */
+    overlay_incompatible_callback: function(callbacks, opt_input) {
+      if (!it.overlay_dialog) {
+        it.overlay_dialog = $(".incompatible-overlay-dialog");
+      }
+      if (it.overlay_dialog.length) {
+        callbacks = callbacks || {};
+        return function(suggest_data, type_id, included_types) {
+          it.overlay_dialog.removeData("overlay");
 
-                 $(".save", it.inline_dialog)
-                     .unbind()
-                     .click(function() {
-                         suggest_input.focus().select();
-                         if (callbacks.onConfirm) {
-                             callbacks.onConfirm(topic_id, incompatible_type_id, incompatible_types);
-                         }
-                         it.inline_dialog.hide(callbacks.onClose);
-                     });
-                 $(".cancel", it.inline_dialog)
-                     .unbind()
-                     .click(function() {
-                         suggest_input.focus().select().trigger("textchange");
-                         if (callbacks.onCancel) {
-                             callbacks.onCancel();
-                         }
-                         it.inline_dialog.hide(callbacks.onClose);
-                     });
-                 var offset_parent = suggest_input.offsetParent();
-                 var offset = suggest_input.position();
-                 offset_parent.append(it.inline_dialog);
-                 it.inline_dialog.css({top:offset.top+suggest_input.outerHeight(), left:offset.left});
-                 it.inline_dialog.show(callbacks.onLoad);
-             };
-         }
-         else {
-             return it.native_confirm_suggest_incompatible_callback(suggest_input, callbacks);
-         }
-     },
+          $(".modal-content", it.overlay_dialog)
+            .empty()
+            .append(it.description_html(suggest_data, type_id, included_types));
 
-     /**
-      * This is like overlay_suggest_incompatible_callback but using the native
-      * confirm dialog.
-      * 
-      * @see overlay_suggest_incompatible_callback
-      */
-     native_confirm_suggest_incompatible_callback: function(suggest_input, callbacks) {
-         callbacks = callbacks || {};
-         return function(topic_id, incompatible_type_id, incompatible_types) {
-           // Since we are using the native confirm dialog, 
-           // there is no way to add a hook for callbacks.onLoad.
-           if (confirm(it.description_text(topic_id, incompatible_type_id, incompatible_types))) {
-               suggest_input.focus().select();
-               if (callbacks.onConfirm) {
-                   callbacks.onConfirm(topic_id, incompatible_type_id, incompatible_types);
-               }
-           }
-           else {
-               suggest_input.focus().select().trigger("textchange");
-               if (callbacks.onCancel) {
-                   callbacks.onCancel();                     
-               }
-           }
-           if (callbacks.onClose) {
-               callbacks.onClose();
-           }
-           suggest_input.focus().select();
-         };
-     },
+          it.overlay_dialog.overlay({
+            close: "button",
+            closeOnClick: false,
+            load: true,
+            fixed: false,
+            mask: {
+              color: '#000',
+              loadSpeed: 200,
+              opacity: 0.5
+            },
+            onClose: function() {
+              if (opt_input) {
+                opt_input.focus().select();
+              }
+              $("button", it.overlay_dialog).unbind();
+              if (callbacks.onClose) {
+                callbacks.onClose();
+              }
+            },
+            onLoad: function() {
+              $(".cancel", it.overlay_dialog)
+                .focus()
+                .click(function() {
+                  if (opt_input) {
+                    opt_input.focus().select().trigger("textchange");
+                  }
+                  if (callbacks.onCancel) {
+                    callbacks.onCancel();
+                  }
+                });
+                $(".save", it.overlay_dialog)
+                  .click(function() {
+                    if (opt_input) {
+                      opt_input.focus().select();
+                    }
+                    if (callbacks.onConfirm) {
+                      callbacks.onConfirm(
+                          suggest_data, type_id, included_types);
+                    }
+                  });
+                if (callbacks.onLoad) {
+                  callbacks.onLoad();
+                }
+              }
+            });
+        };
+      }
+      else {
+        return it.native_confirm_incompatible_callback(callbacks, opt_input);
+      }
+    },
 
-     /**
-      * Generate the description html for the incompatible dialogs 
-      * (overlay and inline).
-      * 
-      * @param topic_id:String - The topic we are trying to assert the 
-      *     incompatible_type_id.
-      * @param incompatible_type_id:String - The incompatible type id.
-      * @param incompatible_types:Object - A map of type ids to
-      *    a list of existing types of topic_id that 
-      *    are incompatible (/dataworld/incompatible_types). 
-      *    The keys may include the type_id we are trying to assert and/or
-      *    any of the included types of type_id that are incompatible
-      *    with any of the existing types of topic_id. This
-      *    map will also include the list of "included_types" of type_id,
-      *    so that one can distinguish the included type incompatibility.
-      *    For example, when trying to assert "/people/ethnicity" to a country:
-      * 
-      *     {
-      *        "/people/ethnicity": ["/location/location", "/location/country"],
-      *        "included_types": ["/common/topic"]
-      *     }
-      *
-      */
-     description_html: function(topic_id, incompatible_type_id, incompatible_types) {
-         var html = $("<div>");
-         var div;
-         if (incompatible_types[incompatible_type_id]) {
-             div = $('<div><span class="incompatible-topic"></span> is already typed as <ul class="incompatible-existing"></ul>It\'s unlikely it should also be typed as <b class="incompatible-type"></b>.</div>');
-             $(".incompatible-topic", div).text(topic_id);
-             var ul = $(".incompatible-existing", div);
-             $.each(incompatible_types[incompatible_type_id], function(i, existing_id) {
-                 ul.append($('<li>').append($('<b>').text(existing_id)));
-             });
-             $(".incompatible-type", div).text(incompatible_type_id);
-             html.append(div);
-         }
+    /**
+     * This is like overlay_incompatible_callback but displayed inline
+     * with the an_input instead of using an overlay.
+     *
+     * @see overlay_suggest_incompatible_callback
+     */
+    inline_incompatible_callback: function(callbacks, input) {
+      if (!it.inline_dialog) {
+        it.inline_dialog = $(".incompatible-inline-dialog");
+      }
+      if (it.inline_dialog.length) {
+        callbacks = callbacks || {};
+        return function(suggest_data, type_id, included_types) {
+          $(".modal-content", it.inline_dialog)
+            .empty()
+            .append(it.description_html(suggest_data, type_id, included_types));
 
-         var to_type = [incompatible_type_id];  // confirm will assert the types in this list
-         var not_to_type = [];                  // and NOT assert the types in this list
-         if (incompatible_types.included_types) {
-             $.each(incompatible_types.included_types, function(i, t) {
-                 if (incompatible_types[t]) {
-                     not_to_type.push(t);
-                 }
-                 else {
-                     to_type.push(t);
-                 }
-             });
-         }
+          $(".save", it.inline_dialog)
+            .unbind()
+            .click(function() {
+              input.focus().select();
+              if (callbacks.onConfirm) {
+                callbacks.onConfirm(suggest_data, type_id, included_types);
+              }
+              it.inline_dialog.hide(callbacks.onClose);
+            });
+          $(".cancel", it.inline_dialog)
+            .unbind()
+            .click(function() {
+              input.focus().select().trigger("textchange");
+              if (callbacks.onCancel) {
+                callbacks.onCancel();
+              }
+              it.inline_dialog.hide(callbacks.onClose);
+            });
+          var offset_parent = input.offsetParent();
+          var offset = input.position();
+          offset_parent.append(it.inline_dialog);
+          it.inline_dialog.css({
+              top:offset.top+input.outerHeight(),
+              left:offset.left
+          });
+          it.inline_dialog.show(callbacks.onLoad);
+        };
+      }
+      else {
+        return it.native_confirm_incompatible_callback(callbacks, input);
+      }
+    },
 
-         div = $('<div>If you continue, <span class="incompatible-topic"></span> will be typed as <ul class="incompatible-to-type"></ul></div>');
-         $(".incompatible-topic", div).text(topic_id);
-         var ul = $(".incompatible-to-type", div);
-         $.each(to_type, function(i, id) {
-             ul.append($('<li>').append($('<b>').text(id)));
-         });
-         if (not_to_type.length) {
-             div.append('&nbsp;It will <b>*not*</b> be typed as <ul class="incompatible-not-to-type"></ul>');
-             ul = $(".incompatible-not-to-type", div);
-             $.each(not_to_type, function(i, id) {
-                 ul.append($('<li>').append($('<b>').text(id)));
-             });
-         }
-         html.append(div);
-         html.append("<p>Are you sure you want to continue?<p>");
+    /**
+     * This is like overlay_incompatible_callback but using the native
+     * confirm dialog.
+     *
+     * @see overlay_suggest_incompatible_callback
+     */
+    native_confirm_incompatible_callback: function(callbacks, opt_input) {
+      callbacks = callbacks || {};
+      return function(suggest_data, type_id, included_types) {
+        // Since we are using the native confirm dialog,
+        // there is no way to add a hook for callbacks.onLoad.
+        if (confirm(it.description_text(
+            suggest_data, type_id, included_types))) {
+          if (opt_input) {
+            opt_input.focus().select();
+          }
+          if (callbacks.onConfirm) {
+            callbacks.onConfirm(suggest_data, type_id, included_types);
+          }
+        }
+        else {
+          if (opt_input) {
+            opt_input.focus().select().trigger("textchange");
+          }
+          if (callbacks.onCancel) {
+            callbacks.onCancel();
+          }
+        }
+        if (callbacks.onClose) {
+          callbacks.onClose();
+        }
+        if (opt_input) {
+          opt_input.focus().select();
+        }
+      };
+    },
 
-         return html;
-     },
+    /**
+     * Generate the description html for the incompatible dialogs
+     * (overlay and inline).
+     *
+     * @param topic_id:String - The topic we are trying to assert the
+     *     incompatible_type_id.
+     * @param type_id:String - The incompatible type id.
+     * @param included_types:Object - The included types of type_id.
+     */
+    description_html: function(suggest_data, type_id, included_types) {
+      var html = $("<div>");
+      var div;
+      div = $('<div><b class="incompatible-topic"></b> '
+              + 'is incompatible with '
+              + '<b class="incompatible-type"></b>.</div>');
+      $(".incompatible-topic", div).text(
+        suggest_data.name || suggest_data.id);
+      $(".incompatible-type", div).text(type_id);
+      html.append(div);
 
-     /**
-      * Generate the description text for the incompatible native confirm dialog.
-      */
-     description_text: function(topic_id, incompatible_type_id, incompatible_types) {
-         return it.description_html(topic_id, incompatible_type_id, incompatible_types).text();
-     }
+      div = $('<div>If you continue, '
+              + '<b class="incompatible-topic"></b> '
+              + 'will be typed as <b class="incompatible-type"></b> '
+              + 'and its included types (if any).</div>');
+      $(".incompatible-topic", div).text(suggest_data.name || suggest_data.id);
+      $(".incompatible-type", div).text(type_id);
+      html.append(div);
 
-   };
+      html.append("<p>Are you sure you want to continue?<p>");
+
+      return html;
+    },
+
+    /**
+     * Generate the description text for the incompatible native confirm dialog.
+     */
+    description_text: function(suggest_data, type_id, included_types) {
+      return it.description_html(suggest_data, type_id, included_types).text();
+    }
+
+  };
 
 })(jQuery, window.freebase);

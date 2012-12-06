@@ -148,51 +148,6 @@
 
       same(ep.clause({create_new:"foo", lang:"bar"}, "insert"), {id:null, name:{value:"foo", lang:"bar"}, create:"unconditional", connect:"insert"});
       same(ep.clause({create_new:"foo", lang:"bar"}, "update"), {id:null, name:{value:"foo", lang:"bar"}, create:"unconditional", connect:"update"});
-
-
-      same(ep.clause({
-                         id:"foo", 
-                         incompatible_types:{
-                             "/type/inc_type": ["/type/a"]
-                         }
-                     },
-                     "insert", 
-                     {
-                         id:"/type/ect", 
-                         included_types:["/type/inc_type"]
-                     }),
-                     {
-                         id:"foo", 
-                         connect:"insert", 
-                         type: [{
-                             id:"/type/ect",
-                             connect:"insert"
-                         }]
-                     });
-
-      same(ep.clause({
-                         id:"foo", 
-                         incompatible_types: {
-                             "/type/ect": ["/type/a", "/type/b"],
-                             "/type/inc_type": ["/type/c"]
-                         }
-                     },
-                     "insert", 
-                     {
-                         id:"/type/ect", 
-                         included_types:["/type/inc_type", "/type/inc_type2"]
-                     }),
-                     {
-                         id:"foo", 
-                         connect:"insert", 
-                         type:[{
-                             id:"/type/ect", 
-                             connect:"insert"
-                         }, {
-                             id:"/type/inc_type2", 
-                             connect:"insert"
-                         }]
-                     });
     });
 
 

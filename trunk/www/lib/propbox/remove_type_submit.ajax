@@ -29,42 +29,51 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var validators = acre.require("lib/validator/validators.sjs");
-var apis = acre.require("lib/promise/apis");
+var validators = acre.require('validator/validators.sjs');
+var typeloader = acre.require('schema/typeloader.sjs');
+var propbox = acre.require('propbox/propbox.mjt');
+var apis = acre.require('promise/apis');
 var freebase = apis.freebase;
 var deferred = apis.deferred;
-var components = acre.require("manage_type_components.mjt");
 
 /**
- * remove type form
+ * Remove a type from a topic.
  */
 var SPEC = {
 
-  method: "POST",
+  method: 'POST',
 
   auth: true,
 
   validate: function(params) {
     return [
-      validators.MqlId(params, "id", {required:true}),
-      validators.MqlId(params, "type", {required:true}),
-      validators.LangId(params, "lang", {if_empty:"/lang/en"})
+      validators.MqlId(params, 'id', {required:true}),
+      validators.MqlId(params, 'type', {required:true}),
+      validators.LangId(params, 'lang', {if_empty:'/lang/en'})
     ];
   },
 
   run: function(id, type, lang) {
-    var q = {
-      id: id,
-      type: {
-        id: type,
-        connect: "delete"
-      }
-    };
-    return freebase.mqlwrite(q)
-      .then(function(env) {
-        return {
-          html: acre.markup.stringify(components.remove_type_result(id, type, lang))
+    // Load type schema to get included types (for undo).
+    return typeloader.load(type, lang)
+      .then(function(schema) {
+        var included_types = schema['/freebase/type_hints/included_types'];
+        var q = {
+          id: id,
+          type: {
+            id: type,
+            connect: 'delete'
+          }
         };
+        return freebase.mqlwrite(q)
+          .then(function(env) {
+            return {
+              // Success message
+              html: acre.markup.stringify(
+                propbox.remove_type_result(id, type, included_types, lang))
+            };
+        });
       });
-  }
+    }
 };
+

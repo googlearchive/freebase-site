@@ -58,6 +58,7 @@
   var VALUE = _("Value");
   var DEPRECATED_PROPERTY = _("deprecated");
   var TYPE_NOT_ASSERTED = _("%s is not asserted on this topic.");
+  var REMOVE_TYPE = _("Remove this type from this topic.");
   var ASSERT_TYPE = _("Assert type now.");
   var PROPERTY_LOCKED = _("This property is only editable by " +
     "specified users (members of the /type/property/authorities permission).");
@@ -132,6 +133,9 @@
 </acre:block>
 
 <acre:block def="typebox(topic, type_structure, lang)">
+  <acre:script>
+    var is_asserted = ph.is_asserted_type(topic, type_structure);
+  </acre:script>
   <div class="type-section" data-id="${type_structure.id}">
     <div class="header">
       <h2 class="foobar kbs">
@@ -146,11 +150,12 @@
             </span>
           </span>
         </span>
+        <acre:block if="is_asserted">
+          <a href="#" class="type-section-delete" title="${REMOVE_TYPE}"
+             onclick="return propbox.remove_type(this, '${type_structure.id}');">x</a>
+        </acre:block>
       </h2>
     </div>
-    <acre:script>
-      var is_asserted = ph.is_asserted_type(topic, type_structure);
-    </acre:script>
     <acre:block if="!is_asserted">
       <div class="message-section">
         <span class="inline-message">
@@ -1057,4 +1062,19 @@ propbox edit forms
   <span class="inline-message">
     ${msg}
   </span>
+</acre:block>
+
+
+<acre:block def="remove_type_result(id, type_id, included_types, lang)">
+  <div class="message-section">
+    <span class="inline-message">
+      ${_("This type has been removed from this topic.")}
+      <a href="#"
+         onclick="return propbox.add_type(this, '${type_id}', ${JSON.stringify(included_types)});">
+        ${_("Undo")}
+      </a>
+    </span>
+  </div>
+</acre:block>
+
 </acre:block>

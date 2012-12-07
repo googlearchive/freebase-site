@@ -551,6 +551,31 @@
     },
 
     /**
+     * Remove (de-assert) a type.
+     */
+    remove_type_submit: function(trigger, type_section) {
+      var type_id = type_section.attr('data-id');
+      var submit_data = {
+        id: propbox.options.id,
+        type: type_id,
+        lang: propbox.options.lang
+      };
+      $.ajax($.extend(formlib.default_submit_ajax_options(), {
+        url: propbox.options.base_ajax_url + "/remove_type_submit.ajax",
+        data: submit_data,
+        onsuccess: function(data) {
+          // Add the response message to be able to assert type again (undo).
+          // The result html is a message-section.
+          var html = $(data.result.html);
+          // Add the message after the header.
+          type_section.find('> .header').after(html);
+          // Hide the trigger.
+          trigger.hide();
+        }
+      }));
+    },
+
+    /**
      * Add HAS_NO_VALUE flag to property
      */
     add_has_no_value: function (prop_section) {

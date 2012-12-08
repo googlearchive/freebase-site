@@ -305,7 +305,7 @@ class ActionSetupSimpleDNS:
   def __call__(self):
     c = self.context
 
-    domains = set(['devel.sandbox-freebase.com', 'devel.freebase.com'])
+    domains = set(['www.devel-freebase.com'])
 
     if pwd.getpwuid(os.getuid())[0] != 'root':
         return c.error('You must run this script as root.')
@@ -349,7 +349,7 @@ class ActionSetupWildcardDNS:
     ROOT_RESOLVER = '/etc/resolver'
     ROOT_NAMED = '/var/named'
 
-    local_domains = ['devel.freebase.com', 'devel.sandbox-freebase.com', 'devel.branch.qa.metaweb.com', 'devel.trunk.qa.metaweb.com']
+    local_domains = ['www.devel-freebase.com, acre.com']
 
     local_domains.append(c.options.acre_host)
 

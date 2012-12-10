@@ -288,5 +288,11 @@ function to_structure(domains_list, lang) {
   return structure;
 };
 
-
-
+/**
+ * A generic Topic API error.
+ */
+function TopicAPIError(error) {
+  this.error = error;
+  this.message = error.message;
+};
+TopicAPIError.prototype = new Error();

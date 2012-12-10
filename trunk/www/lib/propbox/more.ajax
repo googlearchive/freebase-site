@@ -53,24 +53,27 @@ var SPEC = {
   },
 
   run: function(s, p, lang) {
-    var options = {
-      filter: p,
-      limit: 0,
-      lang: h.lang_code(i18n.get_lang(true, lang))
-    };
-    var promises = {
-      prop_structure: queries.prop_structure(p, lang),
-      topic: freebase.get_topic(s, options)
-    };
-    return deferred.all(promises)
-      .then(function(r) {
-        var prop_structure = r.prop_structure;
-        var topic = r.topic;
-        var values = h.get_values(topic, p) || [];
-        return {
-          html: acre.markup.stringify(
-            propbox.propbox(topic, prop_structure, values, lang))
+    return queries.prop_structure(p, lang)
+      .then(function(prop_structure) {
+        var options = {
+          filter: p,
+          limit: 0
         };
+        if (prop_structure.expected_type.id === '/type/text') {
+          // For /type/text we want to display all languages
+          options.lang = 'all';
+        }
+        else {
+          options.lang = h.lang_code(i18n.get_lang(true, lang));
+        }
+        return freebase.get_topic(s, options)
+          .then(function(topic) {
+            var values = h.get_values(topic, p) || [];
+            return {
+              html: acre.markup.stringify(
+                propbox.propbox(topic, prop_structure, values, lang))
+            };
+          });
       });
   }
 };

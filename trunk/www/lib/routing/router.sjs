@@ -1550,12 +1550,20 @@ function ObjectRouter(rules) {
     if (req_id) {
 
       var o;
+      var error;
       var d = object_query.object(req_id, properties)
         .then(function(obj) {
           o = obj;
+        }, function(err) {
+          error = err;
         });
       acre.async.wait_on_results();
 
+      // Error
+      if (error) {
+        var TopicAPIError = acre.require("queries/topic.sjs").TopicAPIError;
+        throw new TopicAPIError(error);
+      }
       // No object found
       if (!o) return false;
 

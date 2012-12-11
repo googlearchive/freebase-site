@@ -700,7 +700,15 @@ function init_rules(lib) {
             "onclick": "return window.freebase.flag.offensive(this);"
           }]
         }
-      ].concat(h.extend(true, [], DEFAULT_GEAR))
+      ].concat(h.extend(true, [], DEFAULT_GEAR)).concat([
+        {
+          "name": _("<b>Keyboard Shortcuts</b>"),
+          "onclick": "return fb.topic.kbs_overlay_trigger.click()",
+          "show": function(){
+            return this.current_tab.key == "props";
+          }
+        }
+      ])
     },
     {
       "name": _("Image"),

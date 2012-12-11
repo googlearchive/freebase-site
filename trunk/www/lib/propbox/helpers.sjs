@@ -373,7 +373,7 @@ function property_requires_permission_or_authorities(prop_structure) {
  *  'kbs' and 'data-row' as css classes.
  */
 function get_propbox_data_row_css_class(prop_structure, prop_value) {
-  var css = ['kbs data-row'];
+  var css = ['kbs data-row hover-row'];
   if (property_requires_permission_or_authorities(prop_structure)) {
     css.push('data-row-requires-permission');
   }

@@ -221,7 +221,7 @@
       valid.push(link.operation);
     }
   </acre:script>
-  <tr class="data-row ${valid.join(' ')}">
+  <tr class="data-row hover-row ${valid.join(' ')}">
     <th class="row-header odd" scope="row">
       <span class="wrapper truncate">
         <span class="literal-value literal-value-key property-value key-value"

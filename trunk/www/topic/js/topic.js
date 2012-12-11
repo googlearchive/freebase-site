@@ -129,8 +129,8 @@
         pill_suggest.focus();
       });
 
-      // Keyboard shortcuts overlay
-      $(".keyboard-shortcuts > a").overlay({
+      // Keyboard shortcut overlay
+      fb.topic.kbs_overlay_trigger = $(".keyboard-shortcuts").overlay({
           close: ".modal-buttons .button.cancel",
           closeOnClick: false,
           fixed: false,
@@ -219,14 +219,13 @@
     /**
      * Collapse/expand domains/types table-of-contents.
      */
-    toggle_types: function(toggle) {
-      $(toggle).toggleClass('expanded');
-      if ($(toggle).is('.expanded')) {
+    toggle_types: function(show) {
+      if (show) {
         var width = $('.nav.column').width() + 20;
         $.localstore('types_expanded', 1, false);
         $('.data.column').animate({marginRight: width}, function() {
           $('.nav.column').slideDown(function() {
-            topic.init_nav_scrolling($(this));
+            topic.init_nav_scrolling($(".nav-module", this));
           });
         });
       }

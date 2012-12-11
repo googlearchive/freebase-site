@@ -109,12 +109,14 @@
       </span>
       <h1 class="kbs">
         <span class="mark">
-          <a title="${domain_structure.id}" href="javascript:void(0);"
-             class="schema-name domain-name"
-             name="${domain_structure.id}">${domain_structure.text}</a>
-          <a class="schema-id domain-id"
-             href="${h.fb_url(domain_structure.id, [['schema']])}">
-            ${domain_structure.id}</a>
+          <span class="domain-title">
+            <a title="${domain_structure.id}" href="javascript:void(0);"
+               class="schema-name domain-name"
+               name="${domain_structure.id}">${domain_structure.text}</a>
+            <a class="schema-id domain-id"
+               href="${h.fb_url(domain_structure.id, [['schema']])}">
+              ${domain_structure.id}</a>
+          </span>
         </span>
       </h1>
     </div>
@@ -138,7 +140,7 @@
   </acre:script>
   <div class="type-section" data-id="${type_structure.id}">
     <div class="header">
-      <h2 class="foobar kbs">
+      <h2 class="foobar kbs hover-row">
         <span class="header-label">
           <span class="wrapper mark">
             <span class="type-label">
@@ -191,15 +193,9 @@
 <acre:block def="propbox(topic, prop_structure, prop_values, lang)">
   <div class="property-section"
        data-id="${prop_structure.id}">
-    <div class="sub-foobar kbs">
+    <div class="sub-foobar kbs hover-row">
       <span class="header-label">
         ${prop_menu(topic, prop_structure, prop_values, lang)}
-        <acre:block if="prop_structure.authorities == null && prop_structure.requires_permission === true">
-          <span class="lock" title="${PROPERTY_LOCKED}"></span>
-        </acre:block>
-        <acre:block elif="prop_structure.authorities != null">
-          <span class="lock" title="${PROPERTY_REQUIRES_AUTHORITY}"></span>
-        </acre:block>
         <acre:block if="prop_structure.deprecated">
           <span class="property-state">(${DEPRECATED_PROPERTY})</span>
         </acre:block>
@@ -493,20 +489,10 @@
     var ps = ph.get_property_status(topic, prop_structure, prop_values);
   </acre:script>
   <span class="wrapper mark">
-    <ul class="inline-menu combo-menu nicemenu">
+    <ul class="outer-menu nicemenu">
       <li class="inline-menu-item nicemenu-item">
         <span class="headmenu">
-          <acre:block if="ps.has_status">
-            <a href="#" onclick="return false;" class="default-action-hidden">
-              ${ps.unique_edit ? EDIT_PROPERTY : ADD_PROPERTY}
-            </a>
-          </acre:block>
-          <acre:block else="">
-            <a href="#" onclick="return false;" class="default-action">
-              ${ps.unique_edit ? EDIT_PROPERTY : ADD_PROPERTY}
-            </a>
-          </acre:block>
-          <a href="javascript:void(0)" class="more-action">menu</a>
+          <a href="javascript:void(0)" class="more-action"></a>
         </span>
         <ul class="row-menu submenu">
           <acre:block if="!ps.has_status">
@@ -541,6 +527,24 @@
       <a name="${prop_structure.id}" href="javascript:void(0);"
          class="schema-name prop-name">${prop_structure.text}</a>
     </span>
+    <acre:block if="prop_structure.authorities == null && prop_structure.requires_permission === true">
+      <span class="lock" title="${PROPERTY_LOCKED}"></span>
+    </acre:block>
+    <acre:block else="">
+      <acre:script>
+        var attrs = {"class": "property-modify"};
+        if (prop_structure.authorities != null) {
+          attrs["class"] += " locked";
+        }
+      </acre:script>
+      <div if="!ps.has_status" acre:attrs="attrs" title="${PROPERTY_REQUIRES_AUTHORITY}">
+          <a href="#" acre:if="ps.unique_edit" onclick="return propbox.prop_edit(this, ${prop_structure.unique});"></a>
+          <a href="#" acre:else="" onclick="return propbox.prop_add(this, ${prop_structure.unique});"></a>
+      </div>
+    </acre:block>
+    <acre:block
+
+    </acre:block>
   </span>
 </acre:block>
 
@@ -552,11 +556,10 @@
       is_blob = true;
     }
   </acre:script>
-  <ul class="combo-menu nicemenu">
+  <ul class="outer-menu nicemenu">
     <li class="nicemenu-item">
       <span class="headmenu">
-        <a href="#" onclick="return false;" class="default-action edit-action">edit</a>
-        <a href="javascript:void(0)" class="more-action">menu</a>
+        <a href="javascript:void(0)" class="more-action"></a>
       </span>
       <ul class="submenu row-menu">
         <li class="row-menu-item"><a href="#" onclick="return propbox.value_edit(this);">${EDIT}</a></li>

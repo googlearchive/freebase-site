@@ -171,6 +171,7 @@
         classname += label === 'Topic' ? 'img' : 'no-img';
       </acre:script>
       <div class="$classname">
+        ${object_label()}
         <div id="image" acre:if="c.show_image">
           <acre:block if="c.object.image">
           <acre:script>
@@ -184,7 +185,6 @@
             ${image.image_thumb(c.object.id, 50, options)}
           </acre:block>
         </div>
-        ${object_label()}
       </div>
 
       <div class="page-title">
@@ -435,9 +435,12 @@
       onclick = nav.onclick;
     }
 
-    var show = true;
-    if (nav.show) {
-      show = acre.require(nav.app + "/" + nav.script)[nav.show](c.object);
+    var show = nav.show;
+    if (typeof show == "undefined") {
+      show = true;
+    }
+    else if (typeof show == "string") {
+      show = acre.require(nav.app + "/" + nav.script)[show](c.object);
     }
   </acre:script>
   <acre:block if="show">

@@ -76,13 +76,23 @@
         $(".nicemenu", context).nicemenu();
       }
       var row;
-      if (context && context.is(".data-row")) {
+      if (context && context.is(".hover-row")) {
         row = context;
       }
       else {
-        row = $(".data-row", context);
+        row = $(".hover-row", context);
       }
       row.hover(propbox.row_menu_hoverover, propbox.row_menu_hoverout);
+      row.dblclick(function() {
+        var action = $(".nicemenu .default-action", this);
+        if (!action.length) {
+          action = $(".nicemenu:first .submenu:first a:first", this);
+        }
+        var href = action.attr("href");
+        if (href=="#" || href.indexOf("javascript:void(0)")==0) {
+          $(action).click();
+        }
+      });
       $(".nicemenu .headmenu", context)
         .add($(".nicemenu .default-action", context))
         .click("click", function() {
@@ -100,14 +110,11 @@
     // show row menu button on hover
     row_menu_hoverover: function(e) {
       var row = $(this);
-      propbox.row_menu_hoverover.timeout = setTimeout(function() {
-        row.addClass("row-hover");
-      }, 300);
+      row.addClass("row-hover");
     },
 
     // hide row menu button on mouseout
     row_menu_hoverout: function(e) {
-      clearTimeout(propbox.row_menu_hoverover.timeout);
       var row = $(this);
       row.removeClass("row-hover");
     },
@@ -160,9 +167,12 @@
     },
 
     prop_edit: function(context, unique) {
-      var prop = $(context).parents(".submenu")
-        .data("headmenu").parents(".property-section");
-      var value_menu = prop.find(".data-section .data-row:first:visible " +
+      var prop_section = $(context).parents(".property-section");
+      if (!prop_section.length) {
+        prop_section = $(context).parents(".submenu")
+          .data("headmenu").parents(".property-section");
+      }
+      var value_menu = prop_section.find(".data-section .data-row:first:visible " +
         ".nicemenu:first .headmenu:first a");
       if (value_menu.length) {
         value_menu.click();
@@ -174,8 +184,11 @@
     },
 
     prop_add: function(context, unique) {
-      var prop_section = $(context).parents(".submenu")
-        .data("headmenu").parents(".property-section");
+      var prop_section = $(context).parents(".property-section");
+      if (!prop_section.length) {
+        prop_section = $(context).parents(".submenu")
+          .data("headmenu").parents(".property-section");
+      }
       propbox.get_script("/propbox-edit.mf.js", function() {
         propbox.edit.prop_add_begin(prop_section, unique);
       });

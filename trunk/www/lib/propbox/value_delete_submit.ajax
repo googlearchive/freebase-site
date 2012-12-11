@@ -66,9 +66,10 @@ var SPEC = {
 
   run: function(s, p, o, lang, namespace, user_id) {
     // we want to make sure we are looking at the latest
-    acre.freebase.touch();
-    return queries.prop_structure(p, lang)
-      .then(function(prop_structure) {
+    return freebase.touch()
+    .then(function(){
+      return queries.prop_structure(p, lang);
+    }).then(function(prop_structure) {
         return queries.prop_values(s, prop_structure, o, lang, namespace)
           .then(function(prop_values) {
             if (prop_values.length) {

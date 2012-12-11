@@ -349,7 +349,7 @@ class ActionSetupWildcardDNS:
     ROOT_RESOLVER = '/etc/resolver'
     ROOT_NAMED = '/var/named'
 
-    local_domains = ['www.devel-freebase.com, acre.com']
+    local_domains = ['www.devel-freebase.com', 'acre.com']
 
     local_domains.append(c.options.acre_host)
 

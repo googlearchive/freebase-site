@@ -86,7 +86,7 @@
 </acre:block>
 
 <acre:block def="user_table_row(user)">
-  <tr acre: class="data-row vcard ${JSON.stringify(user.metadata)}">
+  <tr acre: class="data-row hover-row vcard ${JSON.stringify(user.metadata)}">
     ${user_row_header(user)}
     ${user_timestamp_row(user.timestamp)}
     ${user_assertions_row(user.assertions)}

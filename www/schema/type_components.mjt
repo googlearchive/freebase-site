@@ -45,7 +45,7 @@
 </acre:script>
 
 <acre:block def="type_property_row(prop, type_id)">
-  <tr class="data-row">
+  <tr class="data-row hover-row">
     <th scope="row" class="row-header odd">
       <span class="wrapper">
         <a href="${h.fb_url(prop.id, [['schema']])}">${i18n.display_name(prop)}</a>
@@ -159,7 +159,7 @@
         <h3 class="table-empty-title">${_("This type doesn't have any properties")}</h3>
       </th>
     </tr>
-    <acre:block for="prop in properties" class="data-row">
+    <acre:block for="prop in properties" class="data-row hover-row">
       ${type_property_row(prop, type_id)}
     </acre:block>
   </tbody>
@@ -167,7 +167,7 @@
 
 <!-- enumerated topics -->
 <acre:block def="enumerated_topic_row(topic, type_id)">
-  <tr class="data-row">
+  <tr class="data-row hover-row">
     <th class="row-header first odd">
       <span class="wrapper">
         <a href="${h.fb_url(topic.id)}" title="${topic.id}">
@@ -216,7 +216,7 @@
       <th class="column-header first" scope="col">${_('Originating Type')}</th>
       <th class="column-header" scope="col">${_('Property')}</th>
     </tr>
-    <tr acre:for="prop in props" class="data-row">
+    <tr acre:for="prop in props" class="data-row hover-row">
       <td class="odd">
         <span class="wrapper">
           <a href="${h.fb_url(prop.schema.id, [['schema']])}">

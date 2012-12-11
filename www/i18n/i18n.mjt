@@ -89,7 +89,7 @@
 </acre:block>
 
 <acre:block def="name_row(name, lang_code)">
-  <tr class="data-row">
+  <tr class="data-row hover-row">
     <th class="row-header odd" scope="row">
       <span class="wrapper truncate">
         <span class="literal-value literal-value-text property-value">
@@ -131,7 +131,7 @@
 </acre:block>
 
 <acre:block def="empty_name_row(lang_code, lang_id)">
-  <tr class="data-row">
+  <tr class="data-row hover-row">
     <th class="row-header odd" scope="row">
       <span class="wrapper missing"
             ondblclick="return fb.i18n_tab.add_name(this, '${lang_id}');">

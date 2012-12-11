@@ -42,12 +42,8 @@
 #page-header {
   padding-top: 10px;
   font-size: 12px;
-  background: #404141;
+  background-color: #66757d;
   color: #e7ebed;
-  background-repeat: repeat;
-  background-image: -webkit-linear-gradient(-45deg, rgba(255, 255, 255, .015) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .015) 50%, rgba(255, 255, 255, .015) 75%, transparent 75%, transparent);
-  background-image: -moz-repeating-linear-gradient(45deg, transparent, transparent 0.6%, rgba(255,255,255,0.015) 0.6%, rgba(255,255,255,0.015) 1.2%);
-  background-size: 6px 6px;
   .box_shadow();
 }
 
@@ -68,7 +64,9 @@
 }
 
 .page-title {
-  margin-left: 100px;
+  margin-left: 120px;
+  text-shadow: 0 1px rgba(0,0,0,0.8);
+
 
   /*
     Object Title
@@ -158,10 +156,10 @@
 
 .object-label {
   float: left;
-  margin: 0 10px 0 30px;
+  margin: 0 10px 0 40px;
   padding: 3px;
   background: #000;
-  background: rgba(0,0,0,0.3);
+  background: rgba(0,0,0,03);
   border: 1px solid #111;
   border: 1px solid rgba(0,0,0,0.5);
   .rounded_corners(3px);
@@ -261,7 +259,7 @@ a.label-trigger {
 .img #image:after {
   content: "";
   position: absolute;
-  top: 3px; left: 3px;
+  top: 20px; left: 3px;
   border-color: #fff transparent transparent #fff;
   border-style: solid;
   border-width: 26px;
@@ -277,13 +275,12 @@ a.label-trigger {
 .creation-timestamp {
   float: right;
   margin: 0 30px 0;
-  color: #ccc;
   line-height: 28px;
   font-size: 12px;
 }
 
 .creation-timestamp a {
-  color: #ccc;
+  color: #e7ebed;
   border-bottom: 1px dotted;
 }
 
@@ -342,7 +339,7 @@ spec has been implemented, including complete vcards, tooltips, etc.
  */
 
 #description {
-  margin-right: 30px;
+  margin: 5px 30px 0 0;
 }
 
 #page-header .nav {
@@ -399,7 +396,7 @@ spec has been implemented, including complete vcards, tooltips, etc.
 .tab-nav {
   float: left;
   min-height: 35px;
-  margin-left: 30px;
+  margin-left: 40px;
   border-left: 1px solid;
 
   li {
@@ -458,21 +455,21 @@ spec has been implemented, including complete vcards, tooltips, etc.
     height: 35px;
     line-height: 35px;
     border-right: 1px solid;
-    padding: 0 35px;
+    padding: 0 30px;
     text-shadow: 1px 1px 1px rgba(0,0,0,0.7);
     .transition();
   }
 
   a.current span {
-    border: 0;
+    position: relative;
+    border: none;
     font-weight: bold;
     background: #FFD02F;
     .linear_gradient(#FFD02F, #FEB22A);
-    color: #58575f;
-    position: relative;
-    text-shadow: none;
-    height: 36px;
-    .box_shadow(0,1px,3px,#000);
+    color: #393939;
+    text-shadow: 0 1px rgba(255,255,255,0.6);
+    height: 37px;
+    .box_shadow(1px,4px,4px,rgba(0,0,0,0.2))
   }
 
   /* Create caret for active state */

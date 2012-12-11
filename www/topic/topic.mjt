@@ -54,15 +54,17 @@
   </acre:script>
 
   <div id="tabbar">
-    <div id="types-toggle">
-      <a href="javascript:void(0);" onclick="fb.topic.toggle_types(this);">${_('Types')}</a>
+    <div id="tabbar-types" class="types-toggle">
+      <a href="javascript:void(0);" onclick="fb.topic.toggle_types(true);" class="clear">
+        <span class="right-arrow"></span>${_('Go to Type:')}
+      </a>
     </div>
     <div id="pill-filter-box">
       <acre:block for="filter in c.filter">
         ${pill(filter)}
       </acre:block>
       <input type="text" id="pill-filter-suggest"
-             placeholder="${_('Show topic data for domain, type or property...')}">
+             placeholder="${_('View and edit specific domains, types, or properties...')}">
       <span id="pill-template" style="display:none;">
         ${pill()}
       </span>
@@ -73,6 +75,11 @@
     <acre:script>
       var domains = c.topic && c.topic.structure && c.topic.structure.order;
     </acre:script>
+    <div class="types-toggle">
+      <a href="javascript:void(0);" onclick="fb.topic.toggle_types(false);">
+        <span class="down-arrow"></span> ${_('Go to Type:')}
+      </a>
+    </div>
     <div class="nav-module">
       <div class="nav-section" id="toc">
         <acre:block if="domains && domains.length">
@@ -91,13 +98,6 @@
         </label>
       </div>
     </div>
-
-    <p class="keyboard-shortcuts nav-module">
-      <a href="javascript:void(0);" rel="#overlay">
-        ${_("Keyboard shortcuts available")}
-      </a>
-    </p>
-
   </div>
 
   <div id="topic-data" class="column data" style="opacity:0;">
@@ -146,6 +146,7 @@
 </acre:block>
 
 <acre:block def="keyboard_shortcuts()">
+  <link class="keyboard-shortcuts" rel="#overlay" />
   <div class="modal" style="display:none" id="overlay">
     <div class="modal-inner">
       <h1 class="modal-title">${_("Keyboard Shortcuts")}</h1>

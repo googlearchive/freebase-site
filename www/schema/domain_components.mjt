@@ -43,7 +43,7 @@
 
 <!-- Domain Regular Types markup pattern -->
 <acre:block def="domain_type_row(type)">
-  <tr class="data-row">
+  <tr class="data-row hover-row">
     <th class="odd row-header" scope="row">
       <span class="wrapper">
         <a href="${h.fb_url(type.id, [['schema']])}">${i18n.display_name(type, "")}</a>

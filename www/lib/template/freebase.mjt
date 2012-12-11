@@ -160,9 +160,9 @@
           ${exports.nav_user_signedin()}
         </acre:block>
         <acre:block else="">
-          <strong id="nav-username">
+          <div id="nav-username">
             <a href="${h.fb_url('/')}" class="trigger" title="View your profile">${_("You")}</a>
-          </strong>
+          </div>
           <div id="user-controls">
             <ul>
               <li>

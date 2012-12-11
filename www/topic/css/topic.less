@@ -3,36 +3,53 @@
 */
 #page-content {
   position: relative;
+  padding-left: 40px;
 }
 
 #tabbar {
   padding-bottom: 12px;
 }
 
-#types-toggle {
-    float: right;
-    font-size: 1.4em;
-    width: 230px;
-    padding-left: 6px;
-    margin-top: 12px;
-    text-align: center;
+#tabbar-types {
+  float: right;
+  width: 185px;
+  padding-left: 6px;
+  margin-top: 6px;
 }
 
-#types-toggle a {
-    padding-left: 16px;
-    background: url("/static/lib.www.trunk.svn.freebase-site.googlecode.dev/template/img/ui-icons.png") no-repeat 0 -558px;
-}
-#types-toggle a:hover {
-    background: url("/static/lib.www.trunk.svn.freebase-site.googlecode.dev/template/img/ui-icons.png") no-repeat 0 -585px;
-}
+.types-toggle {
+  font-size: 1.4em;
+  font-weight: bold;
 
-#types-toggle a.expanded {
-    background: url("/static/lib.www.trunk.svn.freebase-site.googlecode.dev/template/img/ui-icons.png") no-repeat 0 -503px;
-}
-#types-toggle a.expanded:hover {
-    background: url("/static/lib.www.trunk.svn.freebase-site.googlecode.dev/template/img/ui-icons.png") no-repeat 0 -530px;
-}
+  a {
+    color: #393939;    
+  }
 
+  .span {
+    margin-right: 10px;
+  }
+
+  .right-arrow {
+    display: inline-block;
+    position: relative;
+    top: 2px;
+    margin-right: 5px;
+    width: 0; height: 0;
+    border-style: solid;
+    border-color: transparent #FFD02F;
+    border-width: 7px 0 7px 7px;
+  }
+
+  .down-arrow {
+    display:inline-block;
+    position: relative;
+    top: -2px;
+    width: 0; height: 0;
+    border-style: solid;
+    border-color: #FFD02F transparent;
+    border-width: 7px 7px 0 7px;
+  }
+}
 
 .toc-domain {
     border-top: 1.5px solid #D4DDE3;
@@ -43,10 +60,11 @@
     color: #80A0B2;
     position: relative;
     top: -12px;
-    background: white;
+    background: #fafbfc;
     padding: 0px 6px;
-    left: 14px;
+    left: 24px;
 }
+
 .toc-domain a:hover {
     text-decoration: none;
 }
@@ -55,22 +73,21 @@
     font-size: 14px;
 }
 ul.toc-types {
-    padding: 0px 20px 12px;
+    padding: 0px 20px 12px 30px;
     position: relative;
     top: -12px;
 }
 
-
-
 #pill-filter-box {
-    border: 1px solid rgb(225, 226, 227);
+    border: 1px solid rgb(206,206,206);
     background: white;
     margin-right: 250px;
+    padding-left: 10px;
+    box-shadow: 0 0 0 5px #e0e3e6;
 }
 
 #pill-filter-box.focused {
     border-color: rgb(97, 215, 247);
-    box-shadow: 0px 0px 3px rgb(170, 170, 170);
 }
 
 #pill-filter-suggest {
@@ -78,7 +95,7 @@ ul.toc-types {
     width: 325px;
     font-size: 1.2em;
     line-height: 1.3;
-    border: 0;
+    border: none;
 }
 
 .pill {
@@ -112,13 +129,19 @@ a.pill-x:hover {
 
 .nav.column {
     display: none;
-    float: right;
+    position: absolute;
+    right: 0; top: 1px;
+    background: #fafbfc;
     width: 230px;
-}
+    height: 100%;
+    box-shadow: -4px 4px 0 #dfe3e5;
+    .types-toggle {
+      margin: 35px 0 33px 10px;
+    }
 
-.nav-module {
-    background: white;
-    padding-top: 16px;
+    .nav-module {
+      background: #fafbfc;
+    }
 }
 
 .nav-section {
@@ -134,61 +157,79 @@ a.pill-x:hover {
     position: absolute;
 }
 
-.domain-section {
-    padding-top: 16px;
-}
 
-.type-section {
-  margin: 0 0 20px;
-  padding: 15px;
-  background: #fff;
-  .box_shadow(1px, 2px, 3px, #bbb);
-}
-
-.domain-section .header {
-    font-weight: normal;
-    border-top: 1.5px solid #D4DDE3;
-}
-
-.domain-section h1 .mark {
-    position: relative;
-    top: -12px;
-    padding: 0px 6px 0 16px;
-    background: rgb(232, 235, 238);
-    left: 14px;
-}
-a.domain-name {
-    color: rgb(128, 160, 178) !important;
-}
 
 
 /*
  ### Domain Box Styling
 */
+.domain-section {
+  position: relative;
+  margin-bottom: 40px;
 
-/* The Domain Name */
-.section h1 {
-  font-size: 16px;
-  margin-bottom: 8px;
+  &:after {
+    z-index: -1;
+    content: "";
+    display: block;
+    position: absolute; top: 15px;
+    width: 100%; height: 10px;
+    border-top: 1px solid #D4DDE3;
+    border-left: 1px solid #D4DDE3;
+    box-shadow: inset 1px 1px 1px 0 white;
+  }
+
+  .header {
+    font-size: 1.8em;
+    font-weight: normal;
+    margin-bottom: 10px;
+
+    .domain-title {
+      display: inline-block;
+      background-color: #e8ebee;
+      padding: 0 6px;
+      margin-left: -6px;
+    }
+
+    .domain-name {
+      color: rgb(128, 160, 178) !important;
+    }
+
+    .status {
+      float: right;
+      margin-top: 7px;
+      margin-right: 25px;
+      font-size: 11px;
+      color: #aaa;
+      background-color: #e8ebee;
+      border-left: solid 6px #e8ebee;
+      padding: 0 6px 0 16px;
+    }
+  }
 }
 
-/* Domain status: Commons, Base, Unpublished, etc.*/
-.header .status {
-  float: right;
-  margin-top: 7px;
-  margin-right: 15px;
-  font-size: 11px;
-  color: #aaa;
-  padding-left: 20px;
+.type-section {
+  margin: 0 0 20px;
+  background: #fff;
+  box-shadow: 0 0 0 4px #e1e4e6;
+
+  .header {
+    margin-bottom: 0;
+    .linear_gradient(#8EAABA, #80A0B2);
+    .box_shadow(0, 1px, 2px, #aaa);
+
+    .type-name {
+      text-shadow: 0 1px rgba(0,0,0,0.8);
+    }
+  }
 }
 
 /*
  * Styling for Commons vs User Domain
  */
-
 .status.commons,
 .status.user {
-  background: url(lib/template/img/ui-icons.png) no-repeat;
+  background-image: url(lib/template/img/ui-icons.png);
+  background-repeat: no-repeat;
 }
 
 .status.commons {
@@ -206,13 +247,8 @@ a.domain-name {
   list-style: none !important;
 }
 
-.kbs.row-hover .combo-menu {
-  visibility: visible;
-}
-
-#page-content .combo-menu li,
-#page-content .combo-menu li {
-  background-image: none;
+.property-section {
+  position: relative;
 }
 
 .row-menu {
@@ -235,14 +271,6 @@ Keyboard Shortcuts cheatsheet
   background: transparent;
   border: 0;
   .box_shadow(0,0,0);
-}
-
-.keyboard-shortcuts a {
-  display: inline-block;
-  padding-bottom: 3px;
-  color: #666;
-  padding-left: 40px;
-  background: url(lib/template/img/keyboard.png) no-repeat left top;
 }
 
 .key-map {

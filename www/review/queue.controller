@@ -33,37 +33,38 @@ var helper = acre.require("lib/helper/helpers.sjs");
 var freebase = acre.require("lib/promise/apis").freebase;
 var validators = acre.require("lib/validator/validators.sjs");
 
-var SPEC = {  
-    auth:true,    
+var SPEC = {
+    auth:true,
+    auth_redirect: helper.account_url('signin', {onsignin:acre.request.url}),
     template: "queue.mjt",
-    template_base: "lib/template/freebase.mjt",      
-    validate: function(params) {       
+    template_base: "lib/template/freebase.mjt",
+    validate: function(params) {
         return [
             params.auth_user,
             (params.kind)    ? validators.OneOf(params, "kind", {required:true, oneof:["merge", "split", "offensive", "delete"] }) : null,
             (params.created) ? validators.OneOf(params, "created", {required:true, oneof:["notcreated", "created", "both"] }) : null,
-            (params.voted)   ? validators.OneOf(params, "voted", {required:true, oneof:["votedon", "notvotedon", "both"] }) : null,  
-            (params.admin)   ? validators.OneOf(params, "admin", {required:true, oneof:["nonadmin", "adminonly", "both"] }) : null, 
+            (params.voted)   ? validators.OneOf(params, "voted", {required:true, oneof:["votedon", "notvotedon", "both"] }) : null,
+            (params.admin)   ? validators.OneOf(params, "admin", {required:true, oneof:["nonadmin", "adminonly", "both"] }) : null,
             (params.domain)  ? validators.MqlId(params, "domain", {required:true}) : null,
-            (params.flags)   ? validators.MultiValue(validators.String(params, "flags", {required:true}).split(","), {validator:validators.MqlId, if_invalid:null, allow_null:true, required:true}) : null,           
+            (params.flags)   ? validators.MultiValue(validators.String(params, "flags", {required:true}).split(","), {validator:validators.MqlId, if_invalid:null, allow_null:true, required:true}) : null,
         ];
     },
     run: function(user, kind, created, voted, admin, domain, flags) {
-        
+
         var flagArray = [];
         if(flags) {
             flags.forEach(function(flag) {
                 if(flag !== null) {
                     flagArray.push(flag);
                 }
-            });       
-            flagArray.push(-1);                    
-        }        
+            });
+            flagArray.push(-1);
+        }
 
-        return {           
+        return {
             "params" : {
                 "user": user,
-                "kind": kind, 
+                "kind": kind,
                 "created":created,
                 "voted": voted,
                 "admin": admin,

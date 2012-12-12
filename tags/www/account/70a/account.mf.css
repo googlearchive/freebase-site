@@ -1,5 +1,36 @@
-[
-	"lib/template/css/mixins.less",
-	"lib/template/css/freebase.ui.module.less",
-  "css/account.less"
-]
+
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Additional Licenses for Third Party components can be found here:
+ * http://wiki.freebase.com/wiki/Freebase_Site_License
+ *
+ */
+.module{border:5px solid #e5e5e7;background:#f8f8f8;margin-bottom:20px;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;-webkit-box-shadow:0 0 2px #777;-moz-box-shadow:0 0 2px #777;box-shadow:0 0 2px #777}.module.collapsed{margin-bottom:0}.module-title{position:relative;text-align:center;font-size:14px;font-weight:bold;line-height:1;padding:7px 0;border:1px solid #e1e2e3;background-image:-webkit-gradient(linear,0% 0,0% 100%,from(#f7f7f7),to(#eaeaea));background-image:-webkit-linear-gradient(#f7f7f7,#eaeaea);background-image:-moz-linear-gradient(0% 55% 90deg,#eaeaea,#f7f7f7);background-repeat:repeat}.module-title .trigger{display:block;width:13px;height:13px;background:url("/static/97a.lib.www.tags.svn.freebase-site.googlecode.dev/template/img/ui-icons.png") no-repeat 0 -505px;position:absolute;right:5px;top:9px;text-indent:-9999px}.module-title .trigger:hover{background-position:0 -532px}.module-title .trigger.collapsed{background-position:0 -560px}.module-title .trigger.collapsed:hover{background-position:0 -587px}.module-section{padding:10px;border-bottom:1px solid #e1e2e3}.module-section.alt{background:#edf9fd}.module-section-title{font-size:12px;font-weight:bold;margin-bottom:5px}.module-section ul{font-size:11px;list-style:none}.nav .module-section ul a{display:block;padding:2px 5px}.nav .module-section ul a:hover{background:#ececec;background:rgba(0,0,0,0.1);text-decoration:none}.module-section .text-input{width:95%}h1{font-size:16px;font-weight:bold}h2{font-size:12px;font-weight:bold}.form-field{padding:7px 2px}label{font-size:12px;font-weight:bold}body{min-width:0}input.error{border:1px solid red}.input-error{color:red;display:none}p{font-size:1.2em;padding:5px 0}.inner-content{padding:5px}li{margin-left:15px}.input-standard{border:1px solid #ccc;-moz-border-radius:4px;-webkit-border-radius:4px;border-radius:4px;padding:.6em .4em;margin:0}#reconnect,#registration{width:550px}#reconnect-section h2,#register-accordion h2{margin:0;padding:5px 15px;font-size:14px;font-weight:normal;border-bottom:1px solid #ddd;cursor:pointer;color:#1170A3;background:#F8F8F8}#register-accordion h2.current{cursor:default;color:#666;font-weight:bold}#reconnect-section .pane,#register-accordion .pane{padding:15px;background:#fff;border-bottom:1px solid #ddd}.input-help{font-size:1.1em;margin-left:.5em}#claim-token{width:38em}#claim-content{height:500px}

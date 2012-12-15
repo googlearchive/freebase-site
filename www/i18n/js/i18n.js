@@ -34,9 +34,6 @@
   var i18n_tab = fb.i18n_tab = {
 
     init: function() {
-      // To avoid flickering for truncate css
-      $("#i18n-table").fixedcolumn();
-
       // Initialize menus
       propbox.init_menus();
     },

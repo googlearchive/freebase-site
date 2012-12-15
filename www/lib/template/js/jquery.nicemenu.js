@@ -95,6 +95,12 @@
         css["zIndex"] = options.overlay.css("zIndex");
       }
       submenu.css(css);
+      submenu.mouseover(function() {
+        // For any :hover rules that make the menu show/hide,
+        // we want to keep the headmenu visible while hovering over
+        // the submenu.
+        headmenu.parents(".data-row:first").mouseover();
+      });
 
       $(document.body).append(submenu);
       submenu.addClass(".submenu-valid");

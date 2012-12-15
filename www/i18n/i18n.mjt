@@ -51,53 +51,51 @@
 </acre:block>
 
 <acre:block def="page_content()">
-  <div class="section wrapper">
-    <h2 class="table-title clear">${_('Names')}</h2>
-    <table class="table table-sortable" id="i18n-table">
-      <thead>
-        <tr>
-          <th class="column-header first {sorter: 'string'}" scope="col">
-            <span class="sort-icon">${_("Name")}</span>
-          </th>
-          <th class="column-header {sorter: 'string'}" scope="col">
-            <span class="sort-icon">${_("Language")}</span>
-          </th>
-          <th class="column-header {sorter: 'string'}" scope="col">
-            <span class="sort-icon">${_("Code")}</span>
-          </th>
-          <th class="column-header {sorter: 'string'}" scope="col">
-            <span class="sort-icon">${_("Timestamp")}</span>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <acre:block for="lang_code in i18n.LANG_TIERS">
-          <acre:script>
-            var name = c.names[lang_code];
-            var lang = i18n.LANGS_BY_CODE[lang_code];
-          </acre:script>
-          <acre:block if="name">
-            ${name_row(name, lang_code)}
-          </acre:block>
-          <acre:block else="">
-            ${empty_name_row(lang_code, lang.id)}
-          </acre:block>
+  <h2 class="table-title clear">${_('Names')}</h2>
+  <table class="table table-sortable" id="i18n-table">
+    <thead>
+      <tr>
+        <th class="column-header first {sorter: 'string'}" scope="col">
+          <span class="sort-icon">${_("Name")}</span>
+        </th>
+        <th class="column-header {sorter: 'string'}" scope="col">
+          <span class="sort-icon">${_("Language")}</span>
+        </th>
+        <th class="column-header {sorter: 'string'}" scope="col">
+          <span class="sort-icon">${_("Code")}</span>
+        </th>
+        <th class="column-header {sorter: 'string'}" scope="col">
+          <span class="sort-icon">${_("Timestamp")}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <acre:block for="lang_code in i18n.LANG_TIERS">
+        <acre:script>
+          var name = c.names[lang_code];
+          var lang = i18n.LANGS_BY_CODE[lang_code];
+        </acre:script>
+        <acre:block if="name">
+          ${name_row(name, lang_code)}
         </acre:block>
-      </tbody>
-    </table>
-  </div>
+        <acre:block else="">
+          ${empty_name_row(lang_code, lang.id)}
+        </acre:block>
+      </acre:block>
+    </tbody>
+  </table>
 </acre:block>
 
 <acre:block def="name_row(name, lang_code)">
   <tr class="data-row hover-row">
-    <th class="row-header odd" scope="row">
-      <span class="wrapper truncate">
+    <td class="row-header odd" scope="row">
+      <span class="wrapper">
+        ${name_menu(name, lang_code)}
         <span class="literal-value literal-value-text property-value">
           ${name.value}
         </span>
-        ${name_menu(name, lang_code)}
       </span>
-    </th>
+    </td>
     <td class="even">
       ${i18n.LANGS_BY_CODE[lang_code].name}
     </td>
@@ -113,11 +111,10 @@
 </acre:block>
 
 <acre:block def="name_menu(name, lang_code)">
-  <ul class="combo-menu nicemenu">
+  <ul class="outer-menu nicemenu">
     <li class="nicemenu-item">
       <span class="headmenu">
-        <a href="#" onclick="return false;" class="default-action edit-action">edit</a>
-        <a href="javascript:void(0)" class="more-action">menu</a>
+        <a href="javascript:void(0)" class="more-action"></a>
       </span>
       <ul class="submenu row-menu">
         <li class="row-menu-item"><a href="#" onclick="return fb.i18n_tab.edit_name(this, '${name.value}', '${name.lang}');">${EDIT}</a></li>
@@ -132,12 +129,12 @@
 
 <acre:block def="empty_name_row(lang_code, lang_id)">
   <tr class="data-row hover-row">
-    <th class="row-header odd" scope="row">
+    <td class="row-header odd" scope="row">
       <span class="wrapper missing"
             ondblclick="return fb.i18n_tab.add_name(this, '${lang_id}');">
         ${MISSING}
       </span>
-    </th>
+    </td>
     <td class="even">
       ${i18n.LANGS_BY_CODE[lang_code].name}
     </td>

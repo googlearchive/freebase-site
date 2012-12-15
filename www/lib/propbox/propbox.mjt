@@ -487,6 +487,8 @@
   <acre:script>
     var ect = prop_structure.expected_type.id;
     var ps = ph.get_property_status(topic, prop_structure, prop_values);
+    var lock = prop_structure.authorities == null &&
+        prop_structure.requires_permission === true;
   </acre:script>
   <span class="wrapper mark">
     <ul class="outer-menu nicemenu">
@@ -495,7 +497,7 @@
           <a href="javascript:void(0)" class="more-action"></a>
         </span>
         <ul class="row-menu submenu">
-          <acre:block if="!ps.has_status">
+          <acre:block if="! (ps.has_status || lock)">
             <li acre:if="ps.unique_edit" class="row-menu-item">
               <a href="#" onclick="return propbox.prop_edit(this, ${prop_structure.unique});">${EDIT_VALUE}</a>
             </li>
@@ -503,7 +505,7 @@
               <a href="#" onclick="return propbox.prop_add(this, ${prop_structure.unique});">${ADD_NEW_VALUE}</a>
             </li>
           </acre:block>
-          <acre:block if="ps.is_empty && !ps.has_status">
+          <acre:block if="ps.is_empty && ! (ps.has_status || lock)">
             <li class="row-menu-item fb-site-only">
               <a href="#" onclick="return propbox.add_has_no_value(this);">${HAS_NO_VALUE}</a>
             </li>
@@ -527,7 +529,7 @@
       <a name="${prop_structure.id}" href="javascript:void(0);"
          class="schema-name prop-name">${prop_structure.text}</a>
     </span>
-    <acre:block if="prop_structure.authorities == null && prop_structure.requires_permission === true">
+    <acre:block if="lock">
       <span class="lock" title="${PROPERTY_LOCKED}"></span>
     </acre:block>
     <acre:block else="">
@@ -555,6 +557,8 @@
     if (ect === "/common/document" || ect === "/common/image") {
       is_blob = true;
     }
+    var lock = prop_structure.authorities == null &&
+        prop_structure.requires_permission === true;
   </acre:script>
   <ul class="outer-menu nicemenu">
     <li class="nicemenu-item">
@@ -562,12 +566,14 @@
         <a href="javascript:void(0)" class="more-action"></a>
       </span>
       <ul class="submenu row-menu">
-        <li class="row-menu-item"><a href="#" onclick="return propbox.value_edit(this);">${EDIT}</a></li>
-        <li class="row-menu-item"><a href="#" onclick="return propbox.value_delete(this);">${DELETE}</a></li>
-        <acre:block if="!is_blob && topic && prop_structure && prop_value && lang">
-          <li acre:if="!h.is_literal_type(prop_structure.expected_type.id)" class="row-menu-item fb-site-only">
-            <a href="${h.fb_url(prop_value.id, [['i18n']])}">${EDIT_LOCALIZED_TEXT}</a>
-          </li>
+        <acre:block if="!lock">
+          <li class="row-menu-item"><a href="#" onclick="return propbox.value_edit(this);">${EDIT}</a></li>
+          <li class="row-menu-item"><a href="#" onclick="return propbox.value_delete(this);">${DELETE}</a></li>
+          <acre:block if="!is_blob && topic && prop_structure && prop_value && lang">
+            <li acre:if="!h.is_literal_type(prop_structure.expected_type.id)" class="row-menu-item fb-site-only">
+              <a href="${h.fb_url(prop_value.id, [['i18n']])}">${EDIT_LOCALIZED_TEXT}</a>
+            </li>
+          </acre:block>
         </acre:block>
         <acre:block if="topic && parent_prop_structure && parent_prop_structure.expected_type.mediator">
           <li class="row-menu-item fb-site-only">

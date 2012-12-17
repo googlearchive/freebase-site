@@ -1,0 +1,9 @@
+<acre:script>
+  var c = this.exports.c = {
+    name: "World"
+  };
+</acre:script>
+
+<acre:block def="content_body()">
+  Hello ${c.name}!
+</acre:block>

@@ -214,9 +214,13 @@ thead th.tbody-header.expanded {
   margin-top: 0.3em;
 }
 
-.row-hover td,
-.row-hover th {
-  background: #dcdedf;
+.hover-row {
+  position: relative;
+
+  &:hover {
+    /*outline: solid 1px #e8ebee;*/
+    background-color: rgba(0,0,0,0.02);
+  }
 }
 
 .table th.table-empty-column,

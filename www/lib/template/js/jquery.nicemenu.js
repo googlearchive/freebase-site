@@ -68,7 +68,9 @@
 
   function headmenu_click_handler(e, options) {
     var headmenu = $(this);
+    var menu = headmenu.data("menu");
     var submenu = headmenu.data("submenu");
+    menu.addClass("active");
     if (!submenu.is(".submenu-valid")) {
       var pos = headmenu.offset();
       var height = headmenu.outerHeight();
@@ -95,13 +97,6 @@
         css["zIndex"] = options.overlay.css("zIndex");
       }
       submenu.css(css);
-      submenu.mouseover(function() {
-        // For any :hover rules that make the menu show/hide,
-        // we want to keep the headmenu visible while hovering over
-        // the submenu.
-        headmenu.parents(".data-row:first").mouseover();
-      });
-
       $(document.body).append(submenu);
       submenu.addClass(".submenu-valid");
     }
@@ -122,8 +117,11 @@
       $(".headmenu", this.element).each(function() {
         var headmenu = $(this);
         var submenu = headmenu.next(".submenu");
+        var menu = headmenu.parents(".nicemenu");
         headmenu.data("submenu", submenu);
+        headmenu.data("menu", menu);
         submenu.data("headmenu", headmenu);
+        submenu.data("menu", menu);
         $(".default-action", headmenu).click(default_action_click_handler);
         headmenu.click(function(e) {
           return headmenu_click_handler.apply(this, [e, options]);
@@ -139,7 +137,11 @@
   });
 
   function hide_menus(menus) {
-    (menus || $(".submenu:visible")).fadeOut();
+    menus = menus || $(".submenu:visible");
+    if (menus.data("menu")) {
+      menus.data("menu").removeClass("active");
+    }
+    menus.hide();
   };
 
   function invalidate_menus(menus) {

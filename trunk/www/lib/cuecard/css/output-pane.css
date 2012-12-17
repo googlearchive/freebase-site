@@ -31,7 +31,7 @@
 
 .cuecard-outputPane-tabs {
   position: relative;
-  z-index: 100;
+  z-index: 9;
   border-bottom: solid 1px #E4E6E7;
 }
 
@@ -140,12 +140,12 @@ div.cuecard-outputPane-list iframe {
 /*
  *  Examples
  */
- 
+
 h1.title {
    color: #f1f2f3;
    font-size: 21px;
 }
- 
+
 a.cuecard-examples-example {
     display: block;
     text-decoration: none;

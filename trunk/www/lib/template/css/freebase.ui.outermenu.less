@@ -27,6 +27,7 @@
     display: inline-block;
     height: 18px; width: 19px;
     border-right: @border;
+    .box_shadow(1px,0,1px,#fde191);
 
   	.more-action {
       position: absolute;
@@ -57,7 +58,12 @@
   }
 }
 
-.row-hover .outer-menu .nicemenu-item {
+.row-hover .outer-menu .nicemenu-item,
+.outer-menu.active .nicemenu-item {
   display: inline-block;
   padding: 0;
+}
+
+.outer-menu.active .more-action {
+  border-color: black transparent;
 }

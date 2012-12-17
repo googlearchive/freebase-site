@@ -80,5 +80,5 @@ function link_class(link) {
   if (link.operation != null) {
     operation = " " + link.operation;
   }
-  return h.trim(h.sprintf("%s%s", valid_class(link), operation));
+  return h.trim(h.sprintf("hover-row %s%s", valid_class(link), operation));
 };

@@ -380,21 +380,13 @@ tr.new-row * {
     background: url(template/img/ui-icons.png) no-repeat 0px -1585px;
 }
 
-/* Invalidate conflicting rule from freebase.ui.table.less */
-/**
-.row-hover td,
-.row-hover th {
-  background: none;
-}
-**/
-
-.hover-row {
-  position: relative;
-
-  &:hover {
-    outline: solid 1px #e8ebee;
-    background-color: rgba(0,0,0,0.02);
-  }
+/*
+ * Remove from here and un-comment
+ * from freebase.ui.table.less if all
+ * table backgrounds converted to white
+ */
+.hover-row:hover {
+  outline: solid 1px #e8ebee;
 }
 
 .header-label .menu-trigger {

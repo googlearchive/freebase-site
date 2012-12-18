@@ -1,0 +1,391 @@
+/*
+ ### Page Structure
+*/
+#page-content {
+  position: relative;
+  padding-left: 40px;
+}
+
+#tabbar {
+  padding-bottom: 12px;
+}
+
+#tabbar-types {
+  float: right;
+  width: 185px;
+  padding-left: 6px;
+  margin-top: 6px;
+}
+
+.types-toggle {
+  font-size: 1.4em;
+  font-weight: bold;
+
+  a {
+    color: #393939;    
+  }
+
+  .span {
+    margin-right: 10px;
+  }
+
+  .right-arrow {
+    display: inline-block;
+    position: relative;
+    top: 2px;
+    margin-right: 5px;
+    width: 0; height: 0;
+    border-style: solid;
+    border-color: transparent #FFD02F;
+    border-width: 7px 0 7px 7px;
+  }
+
+  .down-arrow {
+    display:inline-block;
+    position: relative;
+    top: -2px;
+    width: 0; height: 0;
+    border-style: solid;
+    border-color: #FFD02F transparent;
+    border-width: 7px 7px 0 7px;
+  }
+}
+
+.toc-domain {
+    border-top: 1.5px solid #D4DDE3;
+}
+
+.toc-domain a {
+    font-size: 16px;
+    color: #80A0B2;
+    position: relative;
+    top: -12px;
+    background: #fafbfc;
+    padding: 0px 6px;
+    left: 24px;
+}
+
+.toc-domain a:hover {
+    text-decoration: none;
+}
+ 
+.toc-type a {
+    font-size: 14px;
+}
+ul.toc-types {
+    padding: 0px 20px 12px 30px;
+    position: relative;
+    top: -12px;
+}
+
+#pill-filter-box {
+    border: 1px solid rgb(206,206,206);
+    background: white;
+    margin-right: 250px;
+    padding-left: 10px;
+    box-shadow: 0 0 0 5px #e0e3e6;
+}
+
+#pill-filter-box.focused {
+    border-color: rgb(97, 215, 247);
+}
+
+#pill-filter-suggest {
+    padding: 5px;
+    width: 325px;
+    font-size: 1.2em;
+    line-height: 1.3;
+    border: none;
+}
+
+.pill {
+    font-size: 1.2em;
+    margin: 0 4px;
+    padding: 0 4px;
+    border: 0;
+    border: 1px solid #FFD02F;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    border-radius: 8px 8px 8px 8px;
+    .linear_gradient(#FFD02F, #FEB22A);
+}
+
+.pill:hover {
+    border: 1px solid #FEB22A;
+    .linear_gradient(#FEB22A, #FFD02F);
+}
+
+a.pill-text {
+    color: black;
+}
+a.pill-x {
+    color: white;
+    padding-left: 12px;
+}
+a.pill-text:hover,
+a.pill-x:hover {
+    text-decoration: none;
+}
+
+.nav.column {
+    display: none;
+    position: absolute;
+    right: 0; top: 1px;
+    background: #fafbfc;
+    width: 230px;
+    height: 100%;
+    box-shadow: -4px 4px 0 #dfe3e5;
+    .types-toggle {
+      margin: 35px 0 33px 10px;
+    }
+
+    .nav-module {
+      background: #fafbfc;
+    }
+}
+
+.nav-section {
+    border-bottom: 1px solid rgb(225, 226, 227);
+}
+
+.nav-section ul,
+.nav-section li {
+  list-style: none;
+}
+
+.fixed-nav.column {
+    position: absolute;
+}
+
+
+
+
+/*
+ ### Domain Box Styling
+*/
+.domain-section {
+  position: relative;
+  margin-bottom: 40px;
+
+  &:after {
+    z-index: -1;
+    content: "";
+    display: block;
+    position: absolute; top: 15px;
+    width: 100%; height: 10px;
+    border-top: 1px solid #D4DDE3;
+    border-left: 1px solid #D4DDE3;
+    box-shadow: inset 1px 1px 1px 0 white;
+  }
+
+  .header {
+    font-size: 1.8em;
+    font-weight: normal;
+    margin-bottom: 10px;
+
+    .domain-title {
+      display: inline-block;
+      background-color: #e8ebee;
+      padding: 0 6px;
+      margin-left: -6px;
+    }
+
+    .domain-name {
+      color: rgb(128, 160, 178) !important;
+    }
+
+    .status {
+      float: right;
+      margin-top: 7px;
+      margin-right: 25px;
+      font-size: 11px;
+      color: #aaa;
+      background-color: #e8ebee;
+      border-left: solid 6px #e8ebee;
+      padding: 0 6px 0 16px;
+    }
+  }
+}
+
+.type-section {
+  margin: 0 0 20px;
+  background: #fff;
+  box-shadow: 0 0 0 4px #e1e4e6;
+
+  .header {
+    margin-bottom: 0;
+    .linear_gradient(#8EAABA, #80A0B2);
+    .box_shadow(0, 1px, 2px, #aaa);
+
+    .type-name {
+      text-shadow: 0 1px rgba(0,0,0,0.8);
+    }
+  }
+}
+
+/*
+ * Styling for Commons vs User Domain
+ */
+.status.commons,
+.status.user {
+  background-image: url(lib/template/img/ui-icons.png);
+  background-repeat: no-repeat;
+}
+
+.status.commons {
+  background-position: 0 -1389px;
+}
+
+.status.user {
+  background-position: 0 -1417px;
+}
+
+
+/* menu styling for property value triggers */
+
+.data-table tr.current li {
+  list-style: none !important;
+}
+
+.property-section {
+  position: relative;
+}
+
+.row-menu {
+  .rounded_corners(0);
+}
+
+#show-all-section {
+  text-align: center;
+  font-size: 12px;
+  padding: 12px 0;
+}
+
+/*
+Keyboard Shortcuts cheatsheet
+*/
+
+.keyboard-shortcuts {
+  text-align: center;
+  font-size: 12px;
+  background: transparent;
+  border: 0;
+  .box_shadow(0,0,0);
+}
+
+.key-map {
+  font-size: 12px;
+  margin: 10px 0;
+}
+
+.key-symbol {
+  display: inline-block;
+  line-height: 1;
+  text-align: center;
+  width: 14px;
+  padding: 5px;
+  border: 1px solid #d1d2d3;
+  margin-right: 5px;
+  .linear_gradient;
+}
+
+.key-desc {
+  display: inline;
+}
+
+
+
+
+/*
+/*
+ * Flag > Merge dialog 
+ */
+
+.merge-topic {
+  width: 100%;
+}
+
+.merge-topic tr:first-child td {
+  border-bottom: 1px solid #d1d2d3;
+}
+
+.merge-topic td {
+  padding: 20px 10px;
+  font-size: 11px;
+}
+
+.merge-topic td.label {
+  width: 60px;
+  text-align: right;
+  color: #ccc;
+  padding-right: 15px;
+  vertical-align: middle;
+}
+
+.label .form-label {
+  margin: 0;
+  font-size: 18px;
+  font-weight: lighter;
+}
+
+.flag img {
+  float: left;
+  margin: 0 10px 5px 0;
+  border: 3px solid #e1e2e3;
+  .rounded_corners;
+}
+
+.merge-topic p,
+.merge-topic .topic-title {
+  font-weight: bold;
+}
+
+.merge-topic .topic-title {
+  margin-top: 5px;
+}
+
+.merge-topic p strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+
+/*
+ * Add Type Results 
+ */
+
+.add-type-result-msg,
+.add-type-result-msg-note {
+  margin: -15px;
+  margin-bottom: 15px;
+  font-size: 12px;
+  padding: 5px 30px;
+}
+
+.add-type-result-msg .close-msg,
+.add-type-result-msg-note .close-msg {
+  display: none;
+}
+
+.add-type-result-msg {
+  font-weight: bold;
+  color: #252525;
+  background-color: #a4ce9a;
+  background-image: -webkit-repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2) 2px, rgba(255,255,255,0) 2px, rgba(255,255,255,0) 4px);
+  background-image: -moz-repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2) 2px, rgba(255,255,255,0) 2px, rgba(255,255,255,0) 4px);
+}
+
+.add-type-result-msg-note {
+  background: #e8f0db; 
+  padding: 10px 30px;
+}
+
+
+/**
+ * For now, don't show /type/object/key and /type/object/type
+ */
+.property-section[data-id="/type/object/type"],
+.property-section[data-id="/type/object/key"] {
+  display: none;
+}
+

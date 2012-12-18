@@ -1,0 +1,152 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var components = acre.require("lib/template/components.mjt");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+  var filter_components = acre.require("lib/filter/components.mjt");
+  var freebase_components = acre.require("lib/template/components.mjt");
+  var fh = acre.require("lib/filter/helpers.sjs");
+  var queries = acre.require("queries.sjs");
+  var MISSING = _("(double click to add)");
+  var EDIT = _("Edit");
+  var DELETE = _("Delete");
+  var LINK = _("Inspect link");
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="i18n.mf.css" />
+</acre:block>
+
+<acre:block def="page_content()">
+  <h2 class="table-title clear">${_('Names')}</h2>
+  <table class="table table-sortable" id="i18n-table">
+    <thead>
+      <tr>
+        <th class="column-header first {sorter: 'string'}" scope="col">
+          <span class="sort-icon">${_("Name")}</span>
+        </th>
+        <th class="column-header {sorter: 'string'}" scope="col">
+          <span class="sort-icon">${_("Language")}</span>
+        </th>
+        <th class="column-header {sorter: 'string'}" scope="col">
+          <span class="sort-icon">${_("Code")}</span>
+        </th>
+        <th class="column-header {sorter: 'string'}" scope="col">
+          <span class="sort-icon">${_("Timestamp")}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <acre:block for="lang_code in i18n.LANG_TIERS">
+        <acre:script>
+          var name = c.names[lang_code];
+          var lang = i18n.LANGS_BY_CODE[lang_code];
+        </acre:script>
+        <acre:block if="name">
+          ${name_row(name, lang_code)}
+        </acre:block>
+        <acre:block else="">
+          ${empty_name_row(lang_code, lang.id)}
+        </acre:block>
+      </acre:block>
+    </tbody>
+  </table>
+</acre:block>
+
+<acre:block def="name_row(name, lang_code)">
+  <tr class="data-row hover-row">
+    <td class="row-header odd" scope="row">
+      <span class="wrapper">
+        ${name_menu(name, lang_code)}
+        <span class="literal-value literal-value-text property-value">
+          ${name.value}
+        </span>
+      </span>
+    </td>
+    <td class="even">
+      ${i18n.LANGS_BY_CODE[lang_code].name}
+    </td>
+    <td class="odd">
+      ${lang_code}
+    </td>
+    <td class="even">
+      <acre:block if="name.link">
+        ${name.link.timestamp}
+      </acre:block>
+    </td>
+  </tr>
+</acre:block>
+
+<acre:block def="name_menu(name, lang_code)">
+  <ul class="outer-menu nicemenu">
+    <li class="nicemenu-item">
+      <span class="headmenu">
+        <a href="javascript:void(0)" class="more-action"></a>
+      </span>
+      <ul class="submenu row-menu">
+        <li class="row-menu-item"><a href="#" onclick="return fb.i18n_tab.edit_name(this, '${name.value}', '${name.lang}');">${EDIT}</a></li>
+        <li class="row-menu-item"><a href="#" onclick="return fb.i18n_tab.delete_name(this, '${name.value}', '${name.lang}');">${DELETE}</a></li>
+        <acre:block if="name.link">
+          <li class="row-menu-item"><a href="${h.fb_url(c.id, [['links'], ['property', '/type/object/name'], ['timestamp', name.link.timestamp]])}">${LINK}</a></li>
+        </acre:block>
+      </ul>
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="empty_name_row(lang_code, lang_id)">
+  <tr class="data-row hover-row">
+    <td class="row-header odd" scope="row">
+      <span class="wrapper missing"
+            ondblclick="return fb.i18n_tab.add_name(this, '${lang_id}');">
+        ${MISSING}
+      </span>
+    </td>
+    <td class="even">
+      ${i18n.LANGS_BY_CODE[lang_code].name}
+    </td>
+    <td class="odd">
+      ${lang_code}
+    </td>
+    <td class="even">
+      -
+    </td>
+  </tr>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="i18n.mf.js"></script>
+</acre:block>

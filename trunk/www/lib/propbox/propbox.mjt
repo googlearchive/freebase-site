@@ -1074,6 +1074,30 @@ propbox edit forms
 </acre:block>
 
 
+<acre:block def="remove_type_form(id, type_id, included_types, lang)">
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <span>${_("Remove type")}</span>
+      </h1>
+      <div class="modal-content">
+        <p>${_("Are you sure you want to remove this type from this topic?")}</p>
+        <acre:block if="included_types && included_types.length">
+          <p>
+            ${h.sprintf(_("This will not remove any of the data for the type's properties or its included type(s): %s."), included_types.join(", "))}
+          </p>
+        </acre:block>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <input type="hidden" name="id" value="${id}"/>
+      <input type="hidden" name="type" value="${type_id}"/>
+      <input type="hidden" name="lang" value="${lang}"/>
+      ${form.submit_buttons()}
+    </div>
+  </div>
+</acre:block>
+
 <acre:block def="remove_type_result(id, type_id, included_types, lang)">
   <div class="message-section">
     <span class="inline-message">

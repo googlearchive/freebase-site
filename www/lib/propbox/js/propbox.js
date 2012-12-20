@@ -219,7 +219,7 @@
       context = $(context);
       var type_section = context.parents('.type-section');
       propbox.get_script('/propbox-edit.mf.js', function() {
-        propbox.edit.remove_type_submit(context, type_section);
+        propbox.edit.remove_type_begin(context, type_section);
       });
       return false;
     },

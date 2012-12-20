@@ -40,7 +40,7 @@ function assert(truth, msg) {
   if (!truth) {
     throw validators.Invalid.factory.apply(null, [msg]);
   }
-};
+}
 
 /**
  * Return an input category name for an expected type id.
@@ -55,7 +55,7 @@ function data_input_type(type_id) {
     return type_id.split("/").pop();
   }
   return "topic";
-};
+}
 
 /**
  * Get the corresponding validator for a literal type.
@@ -82,7 +82,7 @@ function literal_validator(type_id) {
   else {
     return validators.String;
   }
-};
+}
 
 /**
  * Transform a MQL property data result to a Topic API value.
@@ -127,7 +127,7 @@ function minimal_prop_value(prop_structure, prop_data, lang) {
     }
   }
   return value;
-};
+}
 
 /**
  * Transform a MQL prop schema to a prop structure optimized for rendering
@@ -214,7 +214,7 @@ function minimal_prop_structure(prop_schema, lang) {
     structure.authorities["members"] = members;
   }
   return structure;
-};
+}
 
 /**
  * minimal_prop_structure + recursive into sub properties
@@ -231,7 +231,7 @@ function to_prop_structure(prop_schema, lang, all) {
     });
   }
   return prop_structure;
-};
+}
 
 /**
  * Convert MQL query results (prop_data) to Topic API values format.
@@ -248,7 +248,7 @@ function to_prop_values(prop_structure, prop_data, lang) {
   prop_data = prop_data || [];
   if (prop_data != null && !h.isArray(prop_data)) {
     prop_data = [prop_data];
-  };
+  }
   if (prop_structure.unique &&
       lang && prop_structure.expected_type.id === "/type/text") {
     var data = i18n.mql.get_text(lang, prop_data);
@@ -276,7 +276,7 @@ function to_prop_values(prop_structure, prop_data, lang) {
     }
   }
   return values;
-};
+}
 
 function mqlread_query(topic_id, prop_structure, prop_value, lang, namespace, options) {
   var clause = {
@@ -297,7 +297,7 @@ function mqlread_query(topic_id, prop_structure, prop_value, lang, namespace, op
   }
   clause[prop_structure.id] = prop_clause;
   return clause;
-};
+}
 
 
 function mqlread_clause(prop_structure, prop_value, lang, namespace, options) {
@@ -310,7 +310,7 @@ function mqlread_clause(prop_structure, prop_value, lang, namespace, options) {
     clause.link = {
       creator: null
     };
-  };
+  }
   if (is_literal) {
     if (ect.id == "/type/text") {
       if (lang) {
@@ -343,7 +343,7 @@ function mqlread_clause(prop_structure, prop_value, lang, namespace, options) {
     }
   }
   return [h.extend(clause, options)];
-};
+}
 
 /**
  * A property requires permission/authorization
@@ -357,7 +357,7 @@ function property_requires_permission_or_authorities(prop_structure) {
   return prop_structure.requires_permission === true ||
       !(prop_structure.authorities == null ||
         h.isEmptyObject(prop_structure.authorities.members));
-};
+}
 
 
 /**
@@ -381,7 +381,7 @@ function get_propbox_data_row_css_class(prop_structure, prop_value) {
     css.push('data-row-creator-' + h.id_key(prop_value.creator));
   }
   return css.join(' ');
-};
+}
 
 
 /**
@@ -425,7 +425,7 @@ function user_can_add(user_id, prop_structure) {
       return true;
     }
   }
-};
+}
 
 
 /**
@@ -483,7 +483,7 @@ function user_can_edit(user_id, prop_structure, prop_value) {
       }
     }
   }
-};
+}
 
 
 /**
@@ -511,18 +511,19 @@ function is_authority(prop_structure, user_id) {
  * @return {Boolean} if the property is bare property
  */
 function is_asserted_type(topic, type_structure) {
-  var asserted = true;
   var t = type_structure.id;
-  if (t !== "/type/object") {
-    var values = h.get_values(topic, "/type/object/type");
-    if (values == null) {
-      asserted = false;
-    }
-    else {
-      asserted = values.some(function(val){
-        return t === val.id;
-      });
-    }
+  if (t === '/type/object') {
+    return false;
+  }
+  var asserted = true;
+  var values = h.get_values(topic, "/type/object/type");
+  if (values == null) {
+    asserted = false;
+  }
+  else {
+    asserted = values.some(function(val){
+      return t === val.id;
+    });
   }
   return asserted;
 }

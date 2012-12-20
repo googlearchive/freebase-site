@@ -550,27 +550,65 @@
       }));
     },
 
-    /**
-     * Remove (de-assert) a type.
-     */
-    remove_type_submit: function(trigger, type_section) {
+    remove_type_begin: function(trigger, type_section) {
       var type_id = type_section.attr('data-id');
       var submit_data = {
         id: propbox.options.id,
         type: type_id,
         lang: propbox.options.lang
       };
-      $.ajax($.extend(formlib.default_submit_ajax_options(), {
-        url: propbox.options.base_ajax_url + "/remove_type_submit.ajax",
+      $.ajax($.extend(formlib.default_begin_ajax_options(), {
+        url: propbox.options.base_ajax_url + '/remove_type_begin.ajax',
         data: submit_data,
+        onsuccess: function(data) {
+          var html = $(data.result.html);
+          var event_prefix = 'propbox.edit.remove_type.';
+          var options = {
+            event_prefix: event_prefix,
+            // callbacks
+            init: edit.remove_type_init,
+            validate: edit.remove_type_validate,
+            submit: edit.remove_type_submit,
+            // submit ajax options
+            ajax: {
+              url: propbox.options.base_ajax_url + '/remove_type_submit.ajax'
+            },
+            // jQuery object
+            type_section: type_section,
+            form: html,
+            trigger: trigger
+          };
+
+          formlib.init_modal_form(options);
+        }
+      }));
+    },
+
+    remove_type_init: function(options) {
+      // enable submit and focus on cancel button
+      $('button.cancel', options.form).focus();
+      formlib.enable_submit(options);
+    },
+
+    remove_type_validate: function() {
+      return true;
+    },
+
+    /**
+     * Remove (de-assert) a type.
+     */
+    remove_type_submit: function(options, ajax_options) {
+      $.ajax($.extend(ajax_options, {
         onsuccess: function(data) {
           // Add the response message to be able to assert type again (undo).
           // The result html is a message-section.
           var html = $(data.result.html);
           // Add the message after the header.
-          type_section.find('> .header').after(html);
-          // Hide the trigger.
-          trigger.hide();
+          options.type_section.find('> .header').after(html);
+          // Remove the remove button
+          options.trigger.hide();
+          // Close modal dialog
+          options.form.trigger(options.event_prefix + "cancel");
         }
       }));
     },

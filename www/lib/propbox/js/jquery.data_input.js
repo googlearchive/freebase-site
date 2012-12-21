@@ -134,10 +134,15 @@
             o.suggest_impl.instance(
                 type, true, self.metadata && self.metadata.lang || o.lang);
         }
-        var included_types = o.structure.expected_type.included_types;
-        suggest_options = 
-          self.options.incompatible_types.suggest_options(
-            type, included_types, suggest_options);
+        var included_types = null;
+        if (o.structure && self.options.incompatible_types) {
+          // structure and incompatible_types 
+          // are required for incompatible check
+          included_types = o.structure.expected_type.included_types;
+          suggest_options = 
+            self.options.incompatible_types.suggest_options(
+              type, included_types, suggest_options);
+        }        
         i.validate_topic($.extend({
             incompatible_types: self.options.incompatible_types,
             expected_type: type,

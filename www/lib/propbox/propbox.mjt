@@ -445,7 +445,12 @@
       <a href="${h.fb_url(true, object_id)}" acre:attrs="attrs">${prop_value.text}</a>
     </acre:block>
     <acre:block else="">
-      <span acre:attrs="attrs">${prop_value.text}</span>
+      <acre:block if="prop_structure.id === '/common/topic/description'">
+        <span acre:attrs="attrs">${prop_value.value}</span>
+      </acre:block>
+      <acre:block else="">
+        <span acre:attrs="attrs">${prop_value.text}</span>
+      </acre:block>
       <acre:block if="ect === '/type/text' && prop_value.lang">
         ${i18n_c.lang_code(prop_value.lang, lang)}
       </acre:block>

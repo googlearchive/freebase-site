@@ -87,7 +87,7 @@
       <acre:script>
         var desc = i18n.display_text(prop, "", "/common/topic/description");
       </acre:script>
-      <p acre:if="desc" style="white-space: nowrap; overflow:hidden">${h.ellipsify(desc, 80)}</p>
+      <p acre:if="desc">${desc}</p>
       <acre:script>
         var meta = [];
         if (prop['/freebase/property_hints/deprecated']) {

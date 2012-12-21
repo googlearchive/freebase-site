@@ -272,10 +272,13 @@
         <li class="nav-footer-item">
           <a href="http://www.google.com/tools/feedback/intl/en/error.html" onclick="
           try{
+            var data = {
+              'fb-dateline': jQuery.cookie('fb-dateline')
+            };
             userfeedback.api.startFeedback({
               productId: '68931',
               disableScrolling: false
-            });
+            }, data);
             return false;
           }catch(e){}">${_("Feedback")}</a>
         </li>

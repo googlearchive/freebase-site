@@ -117,12 +117,11 @@ function update_property(options) {
         type: "/type/property",
         key: {namespace:o.type, value:null, optional:true},
         name: {value:null, lang:o.lang, optional:true},
-        "/common/topic/description": {
+        "/common/topic/description": [{
           value: null,
           lang: o.lang,
-          optional: true,
-          limit: 1
-        },
+          optional: true
+        }],
         expected_type: null,
         unit: null,
         unique: null,
@@ -194,28 +193,39 @@ function update_property(options) {
       }
             
       var desc = [];
-      if (remove.description && old["/common/topic/description"]) {
-        desc.push({
-          value: old["/common/topic/description"].value,
-          lang: old["/common/topic/description"].lang,
-          connect: "delete"
+      if (remove.description) {
+        // We need to cleanup since /common/topic/description is not unique
+        old["/common/topic/description"].forEach(function(d) {
+          desc.push({
+            value: d.value,
+            lang: d.lang,
+            connect: "delete"
+          });
         });
       }
       else if (o.description != null) {
-        if (old["/common/topic/description"]) {
-          // /common/topic/description is not unique
-          // we need to delete the old one first.
+        var existing = false;
+        old["/common/topic/description"].forEach(function(d) {
+          if (o.description === d.value) {
+            existing = true;
+          }
+          else {
+            // Again we need to cleanup old values 
+            // since /common/topic/description is not unique.
+            desc.push({
+              value: d.value,
+              lang: d.lang,
+              connect: "delete"
+            });
+          }
+        });
+        if (!existing) {
           desc.push({
-            value: old["/common/topic/description"].value,
-            lang: old["/common/topic/description"].lang,
-            connect: "delete"
+            value: o.description,
+            lang: o.lang,
+            connect: "insert"
           });
         }
-        desc.push({
-          value: o.description,
-          lang: o.lang,
-          connect: "insert"
-        });
       }
       if (desc.length) {
         update["/common/topic/description"] = desc;

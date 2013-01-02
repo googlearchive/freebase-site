@@ -30,5 +30,22 @@
  */
 
  if (acre.current_script === acre.request.script) {
-	acre.write("User-agent: *\nDisallow: /");
+
+  if (acre.request.server_name === "www.freebase.com" ||
+      acre.request.server_name === "dev.freebase.com") {
+
+    var disallow_folders = [
+      "/static/",
+      "/ajax/"
+    ];
+
+    var output_text = "User-agent: *";
+    disallow_folders.forEach(function(folder) {
+      output_text += "\nDisallow: "+folder;
+    });
+    acre.write(output_text);
+
+  } else {
+    acre.write("User-agent: *\nDisallow: /");
+  }
 }

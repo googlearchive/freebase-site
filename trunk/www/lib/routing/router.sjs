@@ -557,19 +557,6 @@ function init_rules(lib) {
       "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
     },
     {
-      "name": _("Dataset"),
-      "type": "/dataworld/information_source",
-      "tabs": [
-        {
-          "name": _("Writes"),
-          "key": "writes",
-          "app": "triples",
-          "script": "writes.tab"
-        }
-      ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
-      "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
-    },
-    {
       "name": _("Load"),
       "type": "/dataworld/mass_data_operation",
       "tabs": [
@@ -639,10 +626,10 @@ function init_rules(lib) {
           "script": "topic.tab"
         },
         {
-            "name": _("I18n"),
-            "key": "i18n",
-            "app": "i18n",
-            "script": "i18n.tab"
+          "name": _("I18n"),
+          "key": "i18n",
+          "app": "i18n",
+          "script": "i18n.tab"
         },
         {
           "name": _("Keys"),
@@ -655,6 +642,15 @@ function init_rules(lib) {
           "key": "links",
           "app": "triples",
           "script": "triples.tab"
+        },
+        {
+          "name": _("Writes"),
+          "key": "writes",
+          "app": "triples",
+          "script": "writes.tab",
+          "hidden": function(object) {
+            return object.type_map['/dataworld/information_source'] == null;
+          }
         }
       ],
       "nav_keys": [
@@ -709,6 +705,19 @@ function init_rules(lib) {
           }
         }
       ])
+    },
+    {
+      "name": _("Dataset"),
+      "type": "/dataworld/information_source",
+      "tabs": [
+        {
+          "name": _("Writes"),
+          "key": "writes",
+          "app": "triples",
+          "script": "writes.tab"
+        }
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
+      "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
     },
     {
       "name": _("Image"),

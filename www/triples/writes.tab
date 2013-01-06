@@ -33,6 +33,18 @@ var h = acre.require("lib/helper/helpers.sjs");
 var filters = acre.require("lib/filter/filters.sjs");
 var links = acre.require("lib/queries/links.sjs");
 
+/**
+ * List of attribution types (object_type) supported by the writes tab.
+ */
+var ATTRIBUTION_TYPES = [
+  '/type/attribution',
+  '/type/user',
+  '/dataworld/information_source',
+  '/dataworld/software_tool',
+  '/dataworld/mass_data_operation',
+  '/freebase/apps/acre_app'
+];
+
 var SPEC = {
 
   template: "writes.mjt",
@@ -50,6 +62,19 @@ var SPEC = {
   },
 
   run: function(object, object_type, f) {
+    var attr_type = object_type.id;
+    if (ATTRIBUTION_TYPES.indexOf(attr_type) === -1) {
+      // The object_type is an unknown attribution type.
+      // Look at object.type_map to get a suitable attribution type.
+      ATTRIBUTION_TYPES.every(function(t) {
+        if (object.type_map[t]) {
+          attr_type = t;
+          return false;
+        }
+        return true;
+      });
+    }
+
     var id = object.id;
     return {
       id: id,
@@ -59,7 +84,7 @@ var SPEC = {
       // filter components
       filters: f,
 
-      writes: links.writes(id, object_type.id, f)
+      writes: links.writes(id, attr_type, f)
     };
   }
 

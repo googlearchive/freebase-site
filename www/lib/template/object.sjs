@@ -73,6 +73,14 @@ function main(rule, object) {
     if (t.key in acre.request.params || t.path === acre.request.path_info) {
       current_tab = t;
     }
+    var hidden = false;
+    if (typeof t.hidden === 'boolean') {
+      hidden = t.hidden;
+    }
+    else if (typeof t.hidden === 'function') {
+      hidden = t.hidden(object);
+    }
+    t.hidden = hidden;
     if (!t.hidden) {
       if (t.more) {
         more_tabs.push(t);

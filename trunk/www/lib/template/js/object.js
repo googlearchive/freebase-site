@@ -61,10 +61,11 @@
     var offset = $obj_timestamp.width();
     $("#page-header h1").css("margin-right", offset);
 
-    if (!$("body").is(".embed")) {
-      // Initialize page scroll behavior for fixed positioning on scroll
-      // SITE-1218: comment out for now, until we re-implement in SITE-1219
-      // fb.init_page_scroll();
+    var less_blurb = $('#less-blurb');
+    if (less_blurb.length) {
+      less_blurb.click(minimize_blurb);
+      $('#more-blurb').click(maximize_blurb);
+      $(window).bind('scroll resize', update_blurb);
     }
 
     fb.init_search();
@@ -116,92 +117,6 @@
   };
 
 
-  /**
-   * Turn masthead stickiness on/off dependent on viewport
-   */
-  fb.init_page_scroll = function() {
-
-    // The mininum height at which stickiness should be triggered
-    var MIN_VIEWPORT_HEIGHT = 1000;
-    // Constant for tracking whether to show/hide navbar in sticky mode
-    // Set to true to hide navbar but show masthead
-    // Set to false to always show both
-    var HIDE_NAVBAR = false;
-
-    // Our page elements
-    var $view     = $(window);
-    var $masthead = $("#page-header");
-    var $navbar   = $("#header");
-    var $content  = $("#content");
-
-    // Various page element heights and calculations
-    var viewport_height = $view.height();
-    var navbar_height   = $navbar.outerHeight();
-    var masthead_height = $masthead.outerHeight();
-    var total_height    = navbar_height + masthead_height;
-    var comparison_height = 0;
-
-    // If HIDE_NAVBAR = false, than change values to include
-    // the height of the navbar. Otherwise, only the masthead
-    // is considered for setting values
-    if(HIDE_NAVBAR) {
-      total_height = navbar_height;
-      comparison_height = navbar_height;
-    }
-
-    // Bind to the window scroll and resize events. Remember, resizing can
-    // also change the scroll of the page.
-    $view.bind(
-      "scroll resize",
-      function(){
-
-        // Need to check this immediately so that we can turn off
-        // stickiness if the user has resized browser window with
-        // stickiness turned on
-        if(viewport_height < MIN_VIEWPORT_HEIGHT) {
-          $masthead.removeClass("sticky");
-          $content.css({
-            'padding-top': '0'
-          });
-        }
-
-        // Get the current scroll pos & height of the window.
-        var scroll_offset = $view.scrollTop();
-        viewport_height   = $view.height();
-
-        // only trigger if viewport is greater than MIN_VIEWPORT_HEIGHT
-        if (viewport_height > MIN_VIEWPORT_HEIGHT) {
-          if (scroll_offset > comparison_height) {
-            if(!HIDE_NAVBAR) {
-              $navbar.addClass("sticky");
-            }
-            else {
-              $masthead.css({
-                'top': 0
-              });
-            }
-            $masthead.addClass("sticky");
-            $content.css({
-              'padding-top': total_height + 'px'
-            });
-          }
-          // reset positioning otherwise
-          else {
-            if(!HIDE_NAVBAR) {
-              $navbar.removeClass("sticky");
-            }
-            $masthead.removeClass("sticky");
-            $content.css({
-              'padding-top': '0'
-            });
-          }
-        }
-      }
-    );
-
-  };
-
-
   fb.init_search = function() {
       // Global shortcut for focusing/blurring freebase suggest module in header
       var FOCUS_KEY = 191; // '/'
@@ -218,5 +133,47 @@
         }
       });
   };
+
+  var min_blurb = null;
+  var max_blurb = null;
+  var blurb_top = null;
+  $(function() {
+    min_blurb = $('#min-blurb');
+    max_blurb = $('#max-blurb');
+    blurb_top = max_blurb.offset().top;
+  });
+
+  function minimize_blurb(e) {
+    if (!min_blurb.is(':visible')) {
+      max_blurb.hide();
+      min_blurb.show();
+    }
+    // If explicitly clicked, don't auto-resize.
+    if (e) {
+      $(window).unbind('scroll resize', update_blurb);
+    }
+    return false;
+  }
+
+  function maximize_blurb(e) {
+    if (!max_blurb.is(':visible')) {
+      min_blurb.hide();
+      max_blurb.show();
+    }
+    // If explicitly clicked, don't auto-resize.
+    if (e) {
+      $(window).unbind('scroll resize', update_blurb);
+    }
+    return false;
+  }
+
+  function update_blurb() {
+    if ($(document.body).scrollTop() < 40) {
+      maximize_blurb();
+    }
+    else {
+      minimize_blurb();
+    }
+  }
 
 })(jQuery, window.freebase);

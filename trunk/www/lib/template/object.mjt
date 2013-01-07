@@ -297,17 +297,17 @@
             <acre:block if="c.object.description">
               <acre:script>
                 var d = c.object.description;
-                var more = d.text !== d.value;
+                var less = d.text !== d.value;
               </acre:script>
-              <p class="blurb">
-                ${d.text}
-                <a acre:if="more" href="#" title="${_('Show more')}" 
-                    onclick="$$(this).parent('p').hide().next('p').show();return false;">[ + ]</a>
-              </p>
-              <p acre:if="more" style="display:none;">
+              <p class="blurb" id="max-blurb">
                 ${d.value}
-                <a href="#" title="${_('Show less')}" 
-                    onclick="$$(this).parent('p').hide().prev('p').show();return false;">[ - ]</a>
+                <a acre:if="less" href="#" title="${_('Show less')}" 
+                   id="less-blurb">[ - ]</a>
+              </p>
+              <p acre:if="less" id="min-blurb" style="display:none;">
+                ${d.text}
+                <a href="#" title="${_('Show more')}" 
+                   id="more-blurb">[ + ]</a>
               </p>
               <!-- TODO: show citation text -->
             </acre:block>

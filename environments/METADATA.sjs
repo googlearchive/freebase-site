@@ -11,7 +11,8 @@ var METADATA = {
     "masouras@google.com",
     "bneutra@google.com",
     "daepark@google.com",
-    "kconragan@google.com"
+    "kconragan@google.com",
+    "pmikota@google.com"
   ],
   "oauth_providers": {
     "freebase" : {

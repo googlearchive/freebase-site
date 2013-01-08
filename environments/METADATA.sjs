@@ -1,6 +1,6 @@
 /**
- *  In Acre, the app metadata of the top-level request script determines 
- *  the keystore binding (project) and oauth providers that will be used 
+ *  In Acre, the app metadata of the top-level request script determines
+ *  the keystore binding (project) and oauth providers that will be used
  *  for the entire request, so we need to set those here
 **/
 
@@ -19,7 +19,6 @@ var METADATA = {
       "redirect_URL": "https://" + acre.request.server_name + "/account/signedin"
     },
     "freebase_writeuser" : {
-      "writeuser": "fb_writeuser",
       "redirect_URL": "https://" + acre.request.server_name + "/account/signedin"
     }
   }

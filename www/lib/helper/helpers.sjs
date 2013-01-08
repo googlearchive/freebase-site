@@ -367,7 +367,7 @@ function splice_with_key(list, key, item) {
  * Otherwise, return text.
  * @param {string} text The text to ellipsify.
  * @param {number} opt_max_length Ellipsify to the last index of a whitespace
- *     before opt_max_length. 
+ *     before opt_max_length.
  * @param {string} opt_default_text If text is EMPTY return this instead.
  * @return {string?}
  */
@@ -498,7 +498,7 @@ function _is_reciprocal_equivalent(prop1, prop2) {
 };
 
 /**
- * Return the prop's reverse_property OR master_property. 
+ * Return the prop's reverse_property OR master_property.
  * If none exists, return NULL.
  */
 function _get_reciprocal_property(prop) {
@@ -506,18 +506,18 @@ function _get_reciprocal_property(prop) {
 };
 
 /**
- * Get all the "visible" sub properties of the specified property's 
+ * Get all the "visible" sub properties of the specified property's
  * expected_type.
- * 
+ *
  * Visible sub properties have:
  * 1. /freebase/property_hints/display_none != true
  * 2. /freebase/property_hints/deprecated != true
  * 3. Not a unique reciprocal property of prop
- * 
- * By default only disambiguators are returned but you can override this 
+ *
+ * By default only disambiguators are returned but you can override this
  * by passing all=true.
- * 
- * @param prop:Object - The prop schema returned by 
+ *
+ * @param prop:Object - The prop schema returned by
  *   lib/schema/proploader.sjs:load() or load_path()
  * @param all:Boolean - If TRUE return all the sub property's of the property's
  *   expected_type regardless of whether or not it's a disambiguator
@@ -528,7 +528,7 @@ function get_visible_subprops(prop, all) {
   var visible = [];
   for (var i=0,l=subprops.length; i<l; i++) {
       var subprop = subprops[i];
-      var disambiguator =  subprop.disambiguator || 
+      var disambiguator =  subprop.disambiguator ||
           subprop["/freebase/property_hints/disambiguator"];
       var display_none = subprop.display_none ||
           subprop["/freebase/property_hints/display_none"];
@@ -546,7 +546,7 @@ function get_visible_subprops(prop, all) {
 
 
 /**
- * Get all the disambiguating properties of the specified property's 
+ * Get all the disambiguating properties of the specified property's
  * expected type. Disambiguator properties have:
  *
  * 1. /freebase/property_hints/disambiguator == true
@@ -554,7 +554,7 @@ function get_visible_subprops(prop, all) {
  * 3. /freebase/property_hints/deprecated != true
  * 4. Not a unique reciprocal property of prop
  *
- * @param prop:Object - The prop schema returned by 
+ * @param prop:Object - The prop schema returned by
  *   lib/schema/proploader.sjs:load() or load_path()
  * @return Array - A list of disambiguating properties of prop's expected_type.
  */
@@ -582,10 +582,10 @@ unique_ish.map = (function() {
 
 /**
  * Determine if a domain is in "Commons".
- * A domain is in "Commons" if it has /freebase/domain_profile/category 
+ * A domain is in "Commons" if it has /freebase/domain_profile/category
  * with /category/commons.
  * Otherwise, rely on it's id prefix (that it does not start with /user/* or /base*)
- * 
+ *
  * @param domain:String or Object - If String, does simple domain id regex.
  *     If Object, inspect domain["/freebase/domain_profile/category"];
  *     If an Array, assume that is the "/freebase/domain_profile/category" list.
@@ -722,16 +722,16 @@ function fb_object_type(types, id) {
  * Should be used with conjuction to lib/queries/creator.sjs['extend'].
  *
  * @see lib/queries/creator.sjs
- * 
+ *
  * creator normalized from:
  * {creator: "/user/id"}
  * {attribution: {creator: {id: "/user/id"}}}
  * {creator: {id: "/m/id"}}
- * 
+ *
  * app normalized from:
  * {attribution: {"/freebase/apps/written_by": {id: "/app/id"}}}
  * {attribution: {"/dataworld/provenance/tool": {id: "/app/id"}}}
- * 
+ *
  * dataset from:
  * {attribution: {"/dataworld/provenance/source": {id: "/dataset/id"}}}
  */
@@ -1128,7 +1128,7 @@ function set_cache_policy(policy, options, headers) {
 
   if (cache_options["public"]) {
     // Set Last-modified headers to be one day before so that browsers like Chrome
-    // won't try to bust the cache with Cache-control: max-age=0 request headers. 
+    // won't try to bust the cache with Cache-control: max-age=0 request headers.
     var last_modified = new Date((new Date()).getTime() - 86400000 * 90);
     headers["Last-Modified"] = last_modified.toUTCString();
   }
@@ -1195,7 +1195,9 @@ function account_provider(name, opts) {
 /**
  * Check keystore for "freebase_writeuser" credentials
  */
-function enable_writeuser() {
+function enable_writeuser(writeuser) {
+  writeuser = writeuser || "fb_writeuser";
+  acre.oauth.providers.freebase_writeuser.writeuser = writeuser;
   if (!acre.oauth.has_credentials("freebase_writeuser")) {
     throw "Can't proceed without freebase_writeuser credentials.";
   }

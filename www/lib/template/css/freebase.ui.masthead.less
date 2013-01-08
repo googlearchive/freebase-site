@@ -80,10 +80,14 @@
   .inline-menu {
     display: inline-block;
     position: relative;
+  }
+
+  .namemenu {
     top: -12px;
   }
 
-  .menu-trigger .lang-code {
+  .menu-trigger .lang-code,
+  .menu-trigger span {
     position: static;
     display: inline-block;
     font-size: 11px;
@@ -94,6 +98,10 @@
     color: #f1f2f3;
     .transition;
     .rounded_corners;
+  }
+
+  .menu-trigger {
+    border-bottom: none !important;
   }
 
   h1.lock {
@@ -535,9 +543,8 @@ spec has been implemented, including complete vcards, tooltips, etc.
   .transition();
 }
 
-
+.submenu.weblinks,
 .submenu.object-settings {
-  width: 200px;
   border: 0;
   background: #343434;
   font-size: 12px;
@@ -546,6 +553,7 @@ spec has been implemented, including complete vcards, tooltips, etc.
   .box_shadow(0,2px,2px,rgba(0,0,0,0.5));
 }
 
+.weblinks,
 .object-settings {
 
   .submenu-title {
@@ -561,7 +569,7 @@ spec has been implemented, including complete vcards, tooltips, etc.
   }
 
   a:hover {
-    background: rgba(0,0,0,0.3);
+    background-color: rgba(0,0,0,0.3);
     text-decoration: none;
   }
 
@@ -573,6 +581,14 @@ spec has been implemented, including complete vcards, tooltips, etc.
   ul li a {
     padding-left: 15px;
   }
+}
+
+.weblinks {
+  padding-left: 10px !important;
+}
+
+.object-settings {
+  width: 200px;
 
   .no-settings {
     display: none;
@@ -596,6 +612,7 @@ spec has been implemented, including complete vcards, tooltips, etc.
     border-bottom: 1px solid rgba(0,0,0,0.8);
   }
 }
+
 
 .object-actions-toggle:hover {
   background: #111;
@@ -753,7 +770,6 @@ spec has been implemented, including complete vcards, tooltips, etc.
 /*
  * Localization Menu
  */
-
 .submenu.localization {
   z-index: 10; /* this needs to be greater than the masthead when position:fixed */
   background: #343434;
@@ -798,4 +814,13 @@ spec has been implemented, including complete vcards, tooltips, etc.
     color: #fff;
   }
 }
+
+.weblink-favicon {
+    padding-left: 20px !important;
+    background-repeat: no-repeat;
+    display: inline-block;
+    background-size: 16px 16px;
+    background-position: 0 center;
+}
+
 

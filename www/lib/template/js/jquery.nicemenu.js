@@ -153,10 +153,6 @@
   $(document)
     .click(function() {
       hide_menus();
-    })
-    .bind("scroll resize", function() {
-      hide_menus();
-      invalidate_menus();
     });
 
 })(jQuery);

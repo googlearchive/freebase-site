@@ -44,7 +44,10 @@ var OBJECT_FILTERS = [
     "/common/topic/notable_for",
     "/common/topic/image",
     "/common/topic/description",
-    "/common/topic/article"
+    "/common/topic/article",
+    "/common/topic/official_website",
+    "/common/topic/social_media_presence",
+    "/common/topic/topic_equivalent_webpage"
 ];
 
 /**
@@ -59,7 +62,8 @@ var OBJECT_FILTERS = [
 function object(id, props) {
     var api_options = {
         lang: h.lang_code(i18n.get_lang(true)),
-        filter: OBJECT_FILTERS.concat(props || [])
+        filter: OBJECT_FILTERS.concat(props || []),
+        limit: 0
     };
     return freebase.get_topic(id, api_options)
       .then(function(topic) {
@@ -84,7 +88,10 @@ function object(id, props) {
           description: get_description(topic, type_map),
           notability: get_notability(topic),
           linkcount: get_linkcount(topic),
-          flag: get_first_value(topic, "!/freebase/review_flag/item")
+          flag: get_first_value(topic, "!/freebase/review_flag/item"),
+
+          weblinks: get_weblinks(topic)
+         
         };
       });
 };
@@ -322,3 +329,85 @@ function get_object_banners(obj, obj_type) {
   }
   return deferred.resolved(banners);
 };
+
+/**
+ * Get /common/topic/official_website, /common/topic/social_media_presence,
+ * /common/topic/topic_equivalent_webpage urls sorted by their domains
+ * giving precedence to wikipedia.org. For wikipedia.org urls, sort the urls
+ * with precedence to the current lang (i18n.lang).
+ * @param {object} obj The object query result.
+ * @return {Array.<object>} Where each object in the array has signature:
+ *     <ul>
+ *       <li>{domain} string The domain name (i.e., "wikipedia.org").</li>
+ *       <li>{Array.<string>} urls The urls of this domain</li> 
+ *       <li>{string} favicon The domain favicon url.</li>
+ *     </ul>
+ */
+function get_weblinks(topic) {
+  var result = [];
+  var official = get_values(topic, "/common/topic/official_website") || [];
+  var social = get_values(topic, "/common/topic/social_media_presence") || [];
+  var equivalent = 
+      get_values(topic, "/common/topic/topic_equivalent_webpage") || [];
+  var all = official.concat(social).concat(equivalent);
+  var by_domains = {};
+  all.forEach(function(item) {
+    var url = item.value;
+    var domain = h.parse_uri(url).host;
+    var parts = domain.split('.');
+    if (parts.length >= 2) {
+      // Get the domain part of the host
+      domain = parts.slice(parts.length - 2).join('.');
+    }
+    domain = domain.toLowerCase();
+    var d = by_domains[domain];
+    if (!d) {
+      d = by_domains[domain] = {domain:domain, urls:[]};
+      result.push(d);
+    }
+    d.urls.push(url);
+  });
+  var wikipedia = by_domains['wikipedia.org'];
+  if (wikipedia) {
+    // Since we don't have language mappings to wikipedial urls,
+    // try all language codes for the current lang.
+    // For example, for /lang/iw, try 'http://iw.wikipedia.org/...' and 
+    // 'http://he.wikipedia.org/...'.
+    var lang_codes = i18n.LANGS_BY_ID[i18n.lang].key;
+    var prefixes = lang_codes.map(function(l) {
+      return 'http://' + l + '.';
+    });
+    wikipedia.urls.sort(function(a, b) {
+      var nomatch = prefixes.every(function(prefix) {
+        return !h.startsWith(a, prefix);
+      });
+      if (nomatch) {
+        nomatch = prefixes.every(function(prefix) {
+          return !h.startsWith(b, prefix);
+        });
+        if (nomatch) {
+          return b < a;
+        } else {
+          return 1;
+        }        
+      } else {
+        return -1;
+      }
+    });
+  }
+  result.sort(function(a, b) {
+    if (a.domain === 'wikipedia.org') {
+      return -1;
+    } else if (b.domain === 'wikipedia.org') {
+      return 1;
+    } else {
+      return b.domain < a.domain;
+    }    
+  });
+  // favicons
+  result.forEach(function(d) {
+    d.favicon = 
+        d.urls[0].replace(/^(http:\/\/[^\/]+).*$/, '$1') + '/favicon.ico';
+  });
+  return result;
+}

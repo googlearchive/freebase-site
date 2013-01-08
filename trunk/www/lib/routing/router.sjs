@@ -308,7 +308,7 @@ function init_rules(lib) {
       "name": _("Type"),
       "type": "/type/type",
       "properties": [
-        "/type/type/domain", 
+        "/type/type/domain",
         "/freebase/type_hints/deprecated",
         "/freebase/type_hints/mediator",
         "/freebase/type_hints/enumeration",
@@ -655,27 +655,27 @@ function init_rules(lib) {
       ],
       "nav_keys": [
         {
-          "if": function() { 
+          "if": function() {
               return this.object.notability && this.object.notability.notable_type;
           },
           "label": _("notable type"),
-          "key": function() { 
-              return this.object.notability.notable_type.id; 
+          "key": function() {
+              return this.object.notability.notable_type.id;
           },
           "url": function() {
-              return h.fb_url(this.object.notability.notable_type.id, [['schema']]); 
+              return h.fb_url(this.object.notability.notable_type.id, [['schema']]);
           }
         },
         {
-          "if": function() { 
-              return this.object.notability && this.object.notability.notable_for; 
+          "if": function() {
+              return this.object.notability && this.object.notability.notable_for;
           },
           "label": _("notable for"),
-          "key": function() { 
+          "key": function() {
               return this.object.notability.notable_for.id;
           },
-          "url": function() { 
-              return h.fb_url(this.object.notability.notable_for.id, [['schema']]); 
+          "url": function() {
+              return h.fb_url(this.object.notability.notable_for.id, [['schema']]);
           }
         }
       ],
@@ -845,6 +845,22 @@ function init_rules(lib) {
     }
   ];
 
+  // *********** GMID *************
+
+  rules["gmid"] = [
+    {
+      "name": _("Object"),
+      "type": "/type/object",
+      "tabs": [
+        {
+          "name": _("Properties"),
+          "key": "props",
+          "app": "topic",
+          "script": "topic.tab"
+        }
+      ]
+    }
+  ];
 
   // *********** PREFIX *************
 
@@ -860,7 +876,7 @@ function init_rules(lib) {
     {prefix:"/robots.txt",         app:"lib", script:"routing/robots.sjs"},
 
     {prefix:"/flyout",             app:"lib", script:"flyout/flyout.controller"},
-    {prefix:"/formbuilder",        app:"formbuilder", 
+    {prefix:"/formbuilder",        app:"formbuilder",
                                    script:"formbuilder.controller"},
 
     {prefix:"/account/claim",      app:"account", script:"claim.controller"},
@@ -872,7 +888,7 @@ function init_rules(lib) {
     //
 
     // Review queue
-    {prefix:"/review",       app:"review", script:"queue.controller"},   
+    {prefix:"/review",       app:"review", script:"queue.controller"},
 
     // Homepage
     {prefix:"/index",                   url:"/", redirect: 301},
@@ -1481,7 +1497,7 @@ function CustomRouter(rules) {
     var site_host = h.parse_uri(acre.freebase.site_host).host;
     var site_parts = site_host.split(".");
     var req_parts = req.server_name.split(".");
-    if ((site_parts.length === 3) && (req_parts.length === 3) 
+    if ((site_parts.length === 3) && (req_parts.length === 3)
         && (req_parts[1] === site_parts[1]) && (req_parts[2] === site_parts[2])) {
       // don't route site host
       if ((req_parts[0] === site_parts[0]) || (req_parts[0] === "devel")) {
@@ -1626,7 +1642,7 @@ function route(environment_rules) {
 
   var base_rules = init_rules(environment_rules.labels.lib);
   var rules = extend_rules(base_rules, environment_rules);
-  
+
   // Explicitly set the error and not_found pages
   var lib_md = acre.get_metadata();
   var not_found_path = acre.resolve(lib_md.not_found_page);
@@ -1647,13 +1663,19 @@ function route(environment_rules) {
     else {
       router.route(scope.acre.request, scope);
     }
-  };
+  }
 
   // For utility scripts, still run all routers
-  // to get the dumped rules, then run UtilRouter 
-  var is_util = (scope.acre.request.path_info.indexOf("/_") == 0);
+  // to get the dumped rules, then run UtilRouter
+  var is_util = (scope.acre.request.path_info.indexOf("/_") === 0);
   if (is_util) {
     rules.dumped_rules = {};
+  }
+
+  // For /g/ MIDs run only ObjectRouter with gmid rule
+  var is_gmid = (scope.acre.request.path_info.indexOf("/g/") === 0);
+  if (is_gmid) {
+    do_router(["gmid", ObjectRouter]);
   }
 
   var routers = rules["routers"];
@@ -1668,4 +1690,4 @@ function route(environment_rules) {
   acre.response.status = 404;
   acre.write(acre.include(not_found_path));
   acre.exit();
-};
+}

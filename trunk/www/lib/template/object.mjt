@@ -225,7 +225,7 @@
             var name = c.object.name ? c.object.name.value : c.object.id;
           </acre:script>
           ${name}
-          <ul class="inline-menu nicemenu">
+          <ul class="inline-menu nicemenu namemenu">
             <li class="inline-menu-item nicemenu-item">
               <span class="headmenu">
                 <a href="#" class="menu-trigger" onclick="return false;">
@@ -290,6 +290,44 @@
               </span>
               <span acre:else="">${nk.key}</span>
             </span>
+            <acre:script>
+              var weblinks = c.object.weblinks;
+            </acre:script>
+            <acre:block if="weblinks.length">
+              <acre:script>
+                var first = weblinks.shift();
+              </acre:script>
+              <span class="key">
+                <strong>${_("on the web")}:</strong>
+                <span>
+                  <a href="${first.urls[0]}" target="_new"
+                     class="weblink-favicon"
+                     style="background-image:url(${first.favicon});">
+                    <span>${first.domain}</span>
+                  </a>
+                  <acre:block if="weblinks.length">
+                    <ul class="inline-menu nicemenu">
+                      <li class="inline-menu-item nicemenu-item">
+                        <a href="#" class="headmenu menu-trigger">
+                          <span>&nbsp;</span>
+                        </a>
+                        <ul class="submenu weblinks row-menu left">
+                          <acre:block for="weblink in weblinks">
+                            <li>
+                              <a href="${weblink.urls[0]}" target="_new"
+                                 class="weblink-favicon"
+                                 style="background-image:url(${weblink.favicon});">
+                                <span>${weblink.domain}</span>
+                              </a>
+                            </li>
+                          </acre:block>
+                        </ul>
+                      </li>
+                    </ul>
+                  </acre:block>
+                </span>
+              </span>
+            </acre:block>
           </div>
 
           <!!-- Show object description -->

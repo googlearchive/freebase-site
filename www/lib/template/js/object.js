@@ -136,11 +136,9 @@
 
   var min_blurb = null;
   var max_blurb = null;
-  var blurb_top = null;
   $(function() {
     min_blurb = $('#min-blurb');
     max_blurb = $('#max-blurb');
-    blurb_top = max_blurb.offset().top;
   });
 
   function minimize_blurb(e) {

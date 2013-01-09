@@ -368,7 +368,11 @@ function get_weblinks(topic) {
     }
     var d = by_domains[domain];
     if (!d) {
-      d = by_domains[domain] = {domain:domain, urls:[]};
+      d = by_domains[domain] = {
+        domain: domain,
+        urls: [],
+        favicon: 'http://www.' + domain + '/favicon.ico'
+      };
       result.push(d);
     }
     d.urls.push(url);
@@ -409,17 +413,6 @@ function get_weblinks(topic) {
     } else {
       return b.domain < a.domain;
     }    
-  });
-  // favicons
-  result.forEach(function(d) {
-    var favicon = null;
-    if (d.domain == 'musicbrainz.org') {
-      d.favicon = 'http://www.musicbrainz.org/favicon.ico';
-    }
-    else {
-      d.favicon = 
-        d.urls[0].replace(/^(http:\/\/[^\/]+).*$/, '$1') + '/favicon.ico';
-    }
   });
   return result;
 }

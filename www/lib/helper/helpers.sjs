@@ -109,6 +109,7 @@ var exports = {
   "ensure_protocol": ensure_protocol,
   "parse_uri": parse_uri,
   "resolve_article_uri": resolve_article_uri,
+  "proxy_image_url": proxy_image_url,
 
   // ROUTING
   "split_path" : split_path,
@@ -1614,6 +1615,17 @@ function resolve_article_uri(article) {
   }
   return article;
 };
+
+/**
+ * Use google image proxy to load external images faster.
+ */
+var PROXY_IMAGE_PREFIX =
+  'https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?url=';
+var PROXY_IMAGE_SUFFIX =
+  "&container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*";
+function proxy_image_url(url) {
+  return PROXY_IMAGE_PREFIX + url + PROXY_IMAGE_SUFFIX;
+}
 
 // -----Functions for routing -----
 

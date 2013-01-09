@@ -354,12 +354,18 @@ function get_weblinks(topic) {
   all.forEach(function(item) {
     var url = item.value;
     var domain = h.parse_uri(url).host;
-    var parts = domain.split('.');
-    if (parts.length >= 2) {
-      // Get the domain part of the host
-      domain = parts.slice(parts.length - 2).join('.');
+    // handle http://mb-redir.freebaseapps.com -> musicbrainz
+    if (domain === 'mb-redir.freebaseapps.com') {
+      domain = 'musicbrainz.org';
     }
-    domain = domain.toLowerCase();
+    else {
+      var parts = domain.split('.');
+      if (parts.length >= 2) {
+        // Get the domain part of the host
+        domain = parts.slice(parts.length - 2).join('.');
+      }
+      domain = domain.toLowerCase();
+    }
     var d = by_domains[domain];
     if (!d) {
       d = by_domains[domain] = {domain:domain, urls:[]};
@@ -406,8 +412,14 @@ function get_weblinks(topic) {
   });
   // favicons
   result.forEach(function(d) {
-    d.favicon = 
+    var favicon = null;
+    if (d.domain == 'musicbrainz.org') {
+      d.favicon = 'http://www.musicbrainz.org/favicon.ico';
+    }
+    else {
+      d.favicon = 
         d.urls[0].replace(/^(http:\/\/[^\/]+).*$/, '$1') + '/favicon.ico';
+    }
   });
   return result;
 }

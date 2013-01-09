@@ -371,7 +371,7 @@ function get_weblinks(topic) {
       d = by_domains[domain] = {
         domain: domain,
         urls: [],
-        favicon: 'http://www.' + domain + '/favicon.ico'
+        favicon: h.proxy_image_url('http://www.' + domain + '/favicon.ico')
       };
       result.push(d);
     }
@@ -416,3 +416,4 @@ function get_weblinks(topic) {
   });
   return result;
 }
+

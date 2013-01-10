@@ -101,4 +101,21 @@ $(function() {
       });
   });
 
+  test("is_system_type", function() {
+      var valid = [
+          "/type/domain", "/type/type", "/type/property",
+          "/type/user", "/type/namespace", "/type/collection"
+      ];
+      var invalid = [
+          null, "", "/m/03_x5t", "/people/profession", "/en/barack_obama",
+          "/type", "/user", "/common/topic", "/common/image"
+      ];
+      $.each(valid, function(i, n) {
+          ok($.suggest.is_system_type(n), n);
+      });
+      $.each(invalid, function(i, n) {
+          ok(!$.suggest.is_system_type(n), n);
+      });
+  })
+
 });

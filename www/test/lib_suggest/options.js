@@ -250,47 +250,6 @@ $(function() {
              .val("aplusk").trigger("textchange");
          });
 
-    function test_suggest_result(options, prefix, expected, on_empty) {
-      var o = $.extend({}, default_options, options);
-      test_input1.suggest(o);
-      var inst = get_instance();
-
-      stop(TIMEOUT_DELAY);
-      test_input1
-        .bind("fb-pane-show",
-              function() {
-                var found = false;
-                var compare_expected;
-                if (typeof expected === "function") {
-                  compare_expected = function(data) {
-                    return expected(data);
-                  };
-                }
-                else {
-                  compare_expected = function(data) {
-                    return data.mid === expected;
-                  };
-                }
-                var list = $(">li", inst.list);
-                if (list.length) {
-                  list.each(function() {
-                      var data = $(this).data("data.suggest");
-                      found = compare_expected(data);
-                      if (found) {
-                        return false;
-                      }
-                  });
-                  ok(found);
-                  start();
-                }
-                else if (on_empty) {
-                  ok(on_empty());
-                  start();
-                }
-              })
-        .val(prefix).trigger("textchange");
-    };
-
     var filters = [
       "(any type:/music/artist)",
       "(any type:/people/person type:/music/artist)",
@@ -305,30 +264,30 @@ $(function() {
       test("filter=" + filter, 1, function() {
         test_suggest_result({
             filter: filter
-        }, bob_dylan_mid, bob_dylan_mid);
+        }, bob_dylan_text, bob_dylan_mid);
       });
     });
 
     test("lang [default]", function() {
-      test_suggest_result(null, "/en/seoul", function(first) {
+      test_suggest_result(null, "Seoul", function(first) {
         return first.name === "Seoul";
       });
     });
 
     test("lang=en", function() {
-      test_suggest_result({lang:"en"}, "/en/seoul", function(first) {
+      test_suggest_result({lang:"en"}, "Seoul", function(first) {
         return first.name === "Seoul";
       });
     });
 
     test("lang=ko", function() {
-      test_suggest_result({lang:"ko"}, "/en/seoul", function(first) {
+      test_suggest_result({lang:"ko"}, "서울", function(first) {
         return first.name.indexOf("서울") !== -1;
       });
     });
 
     test("lang=es,ko", function() {
-      test_suggest_result({lang:"es,ko"}, "/en/cheong_wa_dae", function(first) {
+      test_suggest_result({lang:"es,ko"}, "청와대", function(first) {
         return first.name === "청와대";
       });
     });

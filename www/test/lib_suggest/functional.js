@@ -49,4 +49,24 @@ $(function() {
         .trigger("textchange");
 
     });
+
+    /**
+     * SITE-1264
+     */
+    test("id prefix (/people/pers)", function() {
+      test_suggest_result(null, "/people/pers", "/people/person");
+    });
+
+    test("mid (/m/03_x5t)", function() {
+      test_suggest_result(null, "/m/03_x5t", "/m/03_x5t");
+    });
+
+    test("id (/en/barack_obama)", function() {
+      test_suggest_result(null, "/en/barack_obama", "/m/02mjmr");
+    });
+
+    test("id (/film/film)", function() {
+      test_suggest_result(null, "/film/film", "/film/film");
+    });
+
   });

@@ -39,6 +39,7 @@ var default_options = {
 };
 var test_value = "bob dyla";
 var bob_dylan_mid = "/m/01vrncs";
+var bob_dylan_text = "Bob Dylan";
 
 var position_threshold = 10;
 
@@ -64,4 +65,46 @@ function simulate_mouseclick(elt) {
     .simulate("mouseup")
     .simulate("mouseclick")
     .click();
+};
+
+
+function test_suggest_result(options, prefix, expected, on_empty) {
+  var o = $.extend({}, default_options, options);
+  test_input1.suggest(o);
+  var inst = get_instance();
+
+  stop(TIMEOUT_DELAY);
+  test_input1
+    .bind("fb-pane-show",
+          function() {
+            var found = false;
+            var compare_expected;
+            if (typeof expected === "function") {
+              compare_expected = function(data) {
+                return expected(data);
+              };
+            }
+            else {
+              compare_expected = function(data) {
+                return data.mid === expected || data.id === expected;
+              };
+            }
+            var list = $(">li", inst.list);
+            if (list.length) {
+              list.each(function() {
+                  var data = $(this).data("data.suggest");
+                  found = compare_expected(data);
+                  if (found) {
+                    return false;
+                  }
+              });
+              ok(found);
+              start();
+            }
+            else if (on_empty) {
+              ok(on_empty());
+              start();
+            }
+          })
+    .val(prefix).trigger("textchange");
 };

@@ -56,7 +56,7 @@ $(function() {
                      }
                    })
              .focus()
-             .val(bob_dylan_mid)
+             .val(bob_dylan_text)
              .trigger("textchange");
          });
 

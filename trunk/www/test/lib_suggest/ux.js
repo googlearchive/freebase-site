@@ -16,11 +16,11 @@ $(function() {
                      })
                .bind("fb-pane-show", function() {
                        if ($(">li", inst.list).length) {
-                         onshow();
+                           onshow();
                        }
                      })
                .focus()
-               .val(bob_dylan_mid)
+               .val(bob_dylan_text)
                .trigger("textchange");
            });
     };
@@ -87,7 +87,7 @@ $(function() {
                      }
                    })
              .focus()
-             .val(bob_dylan_mid)
+             .val(bob_dylan_text)
              .trigger("textchange");
          });
 

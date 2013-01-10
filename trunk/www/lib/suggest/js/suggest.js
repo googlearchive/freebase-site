@@ -1053,6 +1053,13 @@
         else {
             return false;
         }
+    },
+
+    is_system_type: function(type_id) {
+      if (type_id == null) {
+        return false;
+      }
+      return (type_id.indexOf("/type/") === 0);
     }
   });
 
@@ -1179,8 +1186,11 @@
           }
           extend_ac_param = structured[2];
           if ($.suggest.check_mql_id(query)) {
-              // handle anything that looks like a valid mql id
-              filter.push("(all mid:\"" + query + "\")");
+              // handle anything that looks like a valid mql id:
+              // filter=(all%20alias{start}:/people/pers)&prefixed=true
+              filter.push("(any alias{start}:\"" + query + "\" mid:\"" +
+                          query + "\")");
+              extend_ac_param['prefixed'] = true;
               query = "";
           }
       }
@@ -1253,16 +1263,17 @@
         .append($.suggest.strongify(data.name || data.id, response_data.prefix));
       var name = $("<div>").addClass(css.item_name)
         .append(label);
+      var nt = data.notable;
       if (data.under) {
         $(":first", label).append($("<small>").text(" ("+data.under+")"));
       }
-      if (this.options.scoring != null  &&
-          this.options.scoring.toUpperCase() === 'SCHEMA') {
+      if ((nt != null && $.suggest.is_system_type(nt.id)) ||
+          (this.options.scoring != null  &&
+           this.options.scoring.toUpperCase() === 'SCHEMA')) {
         $(":first", label).append($("<small>").text(" ("+data.id+")"));
       }
       var types = data.type;
       li.append(name);
-      var nt = data.notable;
       var type = $("<div>").addClass(css.item_type);
       if (nt && nt.name) {
         type.text(nt.name);

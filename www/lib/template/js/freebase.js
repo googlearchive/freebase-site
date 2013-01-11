@@ -589,6 +589,10 @@
         if (lang) {
           o.lang = fb.suggest_lang.lang(lang);
         }
+
+        // only get /m mids (no /g mids)
+        o.filter = [o.filter, '(all namespace:/m)'];
+
         return o;
       },
 
@@ -599,6 +603,9 @@
         var filters = [
           // everything should be of /type/type
           "type:/type/type",
+
+          // only /m mids (no /g mids)
+          'namespace:/m',
 
           // can't cotype things in /type and /freebase
           "(not namespace:/type)",
@@ -625,7 +632,10 @@
        */
       expected_type: function() {
         var filters = [
-          "type:/type/type"
+          "type:/type/type",
+
+          // only /m mids (no /g mids)
+          'namespace:/m'
         ];
         return $.extend({scoring:"schema"}, fb.suggest_options.all.apply(null, filters));
       },
@@ -638,7 +648,10 @@
           "type:/type/property",
 
           // can't delegate to properties in /type/object
-          "(not namespace:/type/object)"
+          "(not namespace:/type/object)",
+
+          // only /m mids (no /g mids)
+          'namespace:/m'
         ];
         return $.extend({scoring:"schema"}, fb.suggest_options.all.apply(null, filters));
       }

@@ -421,7 +421,7 @@
         filters = topic.get_filters();
       }
       var all = $('#show-all').is(':checked');;
-      var params = {props:''};
+      var params = {props:'', lang:fb.h.lang_code(fb.lang)};
       if (filters.length) {
         params.filter = filters;
       }

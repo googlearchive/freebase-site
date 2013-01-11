@@ -449,7 +449,8 @@ var _INVALID_LINK_PROPERTIES = {
   '/type/object/timestamp': 1,
   '/type/object/creator': 1,
   '/type/object/attribution': 1,
-  '/type/object/mid': 1
+  '/type/object/mid': 1,
+  '/type/key/namespace': 1
 };
 function supports_link_property(prop_id) {
   return _INVALID_LINK_PROPERTIES[prop_id] !== 1;

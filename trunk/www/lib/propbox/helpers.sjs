@@ -286,16 +286,20 @@ function mqlread_query(topic_id, prop_structure, prop_value, lang, namespace, op
   var properties = prop_structure.properties;
   if (properties) {
     properties.forEach(function(subprop_structure) {
-      h.extend(prop_clause[0], 
+      h.extend(prop_clause[0],
                mqlread_query(prop_value, subprop_structure, null, lang));
       if (topic_id && h.is_reciprocal(prop_structure, subprop_structure)) {
-        // don't get the subject id (topic_id) if subprop_structure 
+        // don't get the subject id (topic_id) if subprop_structure
         // is a reciprocal property of prop_structure
         prop_clause[0][subprop_structure.id][0]["id!="] = topic_id;
       }
     });
   }
   clause[prop_structure.id] = prop_clause;
+  // For subproperties with expected_type /type/key we can't ask for an id
+  if (prop_structure.expected_type.id === '/type/key') {
+    delete prop_clause[0].id;
+  }
   return clause;
 }
 
@@ -387,7 +391,7 @@ function get_propbox_data_row_css_class(prop_structure, prop_value) {
 /**
  * Can the specified user assert a new value to the property?
  * @param {string} user_id The user id.
- * @param {object} prop_structure The property structure with 
+ * @param {object} prop_structure The property structure with
  *   requires_permission and authorities.
  * @return {boolean} TRUE if the user can add, otherwise return FALSE.
  */
@@ -396,7 +400,7 @@ function user_can_add(user_id, prop_structure) {
     if (prop_structure.requires_permission === true) {
       // authorities=null, requires_permission=true
       // Unwritable by any user.
-      return false;      
+      return false;
     }
     else {
       // authorities=null, requires_permission=false|null
@@ -431,10 +435,10 @@ function user_can_add(user_id, prop_structure) {
 /**
  * Can the specified user edit or delete an exiting property value?
  * @param {string} user_id The user id.
- * @param {object} prop_structure The property structure with 
+ * @param {object} prop_structure The property structure with
  *   requires_permission and authorities.
  * @param {object} value The value object with a value['creator'].
- * @return {boolean} TRUE if the user can edit the value, 
+ * @return {boolean} TRUE if the user can edit the value,
  *   otherwise return FALSE.
  */
 function user_can_edit(user_id, prop_structure, prop_value) {
@@ -442,7 +446,7 @@ function user_can_edit(user_id, prop_structure, prop_value) {
     if (prop_structure.requires_permission === true) {
       // authorities=null, requires_permission=true
       // Unwritable by any user.
-      return false;      
+      return false;
     }
     else {
       // authorities=null, requires_permission=false|null

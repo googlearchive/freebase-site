@@ -206,7 +206,7 @@ function init_rules(lib) {
       "name": _("Links"),
       "key": "links",
       "app": "triples",
-      "script": "triples.tab",
+      "script": "links.tab",
       "more": true
     }
   ];
@@ -523,7 +523,7 @@ function init_rules(lib) {
           "name": _("Links"),
           "key": "links",
           "app": "triples",
-          "script": "triples.tab"
+          "script": "links.tab"
         }
       ],
       "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
@@ -608,7 +608,7 @@ function init_rules(lib) {
           "name": _("Links"),
           "key": "links",
           "app": "triples",
-          "script": "triples.tab"
+          "script": "links.tab"
         }
       ],
       "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
@@ -641,7 +641,7 @@ function init_rules(lib) {
           "name": _("Links"),
           "key": "links",
           "app": "triples",
-          "script": "triples.tab"
+          "script": "links.tab"
         },
         {
           "name": _("Writes"),
@@ -739,7 +739,7 @@ function init_rules(lib) {
           "name": _("Links"),
           "key": "links",
           "app": "triples",
-          "script": "triples.tab"
+          "script": "links.tab"
         },
         {
           "name": _("Keys"),
@@ -770,7 +770,7 @@ function init_rules(lib) {
           "name": _("Links"),
           "key": "links",
           "app": "triples",
-          "script": "triples.tab"
+          "script": "links.tab"
         },
         {
           "name": _("Keys"),
@@ -801,7 +801,7 @@ function init_rules(lib) {
           "name": _("Links"),
           "key": "links",
           "app": "triples",
-          "script": "triples.tab"
+          "script": "links.tab"
         },
         {
           "name": _("Keys"),
@@ -838,7 +838,7 @@ function init_rules(lib) {
           "name": _("Links"),
           "key": "links",
           "app": "triples",
-          "script": "triples.tab"
+          "script": "links.tab"
         }
       ],
       "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))

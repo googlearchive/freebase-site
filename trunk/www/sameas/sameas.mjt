@@ -277,7 +277,7 @@
         <ul class="submenu row-menu">
           <li class="row-menu-item"><a href="#" onclick="return fb.sameas.edit_key(this, ${is_type_namespace_keys});">${EDIT}</a></li>
           <li class="row-menu-item"><a href="#" onclick="return fb.sameas.delete_key(this, ${is_type_namespace_keys});">${DELETE}</a></li>
-          <li class="row-menu-item"><a href="${h.fb_url(c.id, [['links'], ['property', '/type/namespace/keys'], ['timestamp', link.timestamp]])}">${LINK}</a></li>
+          <li class="row-menu-item"><a href="${h.fb_url(c.id, [['links'], ['filter', '/type/namespace/keys'], ['timestamp', link.timestamp]])}">${LINK}</a></li>
         </ul>
       </li>
     </ul>

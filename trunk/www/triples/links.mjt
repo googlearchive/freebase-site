@@ -1,0 +1,460 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var _ = i18n.gettext;
+  var th = acre.require("helpers.sjs");
+
+  var FILTER_BY_PROP = _("Filter by property");
+  var FILTER_BY_CREATOR = _("Filter by creator");
+  var FILTER_BY_ATTR = _("Filter by attribution");
+  var INSTANCES_BY_PROP = _("View property instances");
+  var WRITES_BY_CREATOR = _("View writes by creator");
+  var WRITES_BY_ATTR = _("View writes by attribution");
+  var WRITES_BY_APP = _("View writes by app");
+  var WRITES_BY_DATASET = _("View writes by dataset");
+  var PROP_SCHEMA = _("View property schema");
+  var INSPECT_PROP = _("Inspect property");
+  var INSPECT_CREATOR = _("Inspect creator");
+  var INSPECT_ATTR = _("Inspect attribution");
+
+  var ATTR_CREATOR = _("%s (user)");
+  var ATTR_APP = _("%s (app)");
+  var ATTR_DATASET = _("%s (dataset)");
+
+  var NONE = _("none");
+  var CVT = _("cvt");
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="links.mf.css" />
+</acre:block>
+
+<acre:block def="page_content()">
+
+  <div id="tabbar">
+    <div id="by-creator">
+      <strong>by</strong>
+      <div class="pill-box" id="pill-creator-box">
+        <acre:block if="c.creator">
+          ${pill_creator(c.creator, null, 'fb.links.update_creator();')}
+        </acre:block>
+        <input acre:attrs="c.creator ? {style:'visibility:hidden;'} : {}"
+               type="text" class="pill-suggest" id="pill-creator-suggest"
+               placeholder="${_('creator or attribution...')}"
+               value="${c.creator || ''}">
+        <span id="pill-creator-template" class="pill-template">
+          ${pill_creator()}
+        </span>
+      </div>
+    </div>
+    <div class="pill-box" id="pill-filter-box">
+      <acre:block for="filter in c.filter">
+        ${pill(filter)}
+      </acre:block>
+      <input type="text" class="pill-suggest" id="pill-filter-suggest"
+             placeholder="${_('View specific properties...')}">
+      <span id="pill-template" class="pill-template">
+        ${pill()}
+      </span>
+    </div>
+    <div id="common-filters">
+      <strong>${_("Common filters:")}</strong>
+      ${common_filter("/type/object/name")} |
+      ${common_filter("/common/topic/alias")} |
+      ${common_filter("/type/object/key")} |
+      ${common_filter("/type/namespace/keys")} |
+      ${common_filter("/type/object/type")} |
+      ${common_filter("/type/type/instance")}
+    </div>
+
+    <div id="tabbar-controls">
+      <strong>${_("Options:")}</strong>
+      <label for="historical">
+        <input type="checkbox" name="historical" value="true"
+               acre:attrs="c.historical ? {'checked':'checked'} : {}">${_("Show historical writes")}
+      </label> |
+      <label for="sort">
+        <input type="checkbox" name="sort" value="timestamp"
+               acre:attrs="c.sort == 'timestamp' ? {'checked':'checked'} : {}">${_("Show earliest writes first")}
+      </label> |
+      <label for="fullts">
+        <input type="checkbox" name="fullts" value="true" id="fullts"
+          acre:attrs="c.fullts ? {'checked':'checked'} : {}">${_("Show full timestamp")}
+      </label> |
+      <label for="fullattr">
+        <input type="checkbox" name="fullattr" value="true" id="fullattr"
+          acre:attrs="c.fullattr ? {'checked':'checked'} : {}">${_("Show full attribution")}
+      </label> |
+      <label for="timestamp">
+        ${_("Timestamp")}
+        <input type="text" name="timestamp" id="timestamp-from"
+               placeholder="${_('YYYY-MM-DD...')}"
+               value="${c.timestamp && c.timestamp.length ? c.timestamp[0] : ''}">
+          ${_("to")}
+        <input type="text" name="timestamp" id="timestamp-to"
+               placeholder="${_('YYYY-MM-DD...')}"
+               value="${c.timestamp && c.timestamp.length === 2 ? c.timestamp[1] : ''}">
+      </label>
+    </div>
+  </div>
+
+  <div class="column links" id="links-data" style="opacity:0;">
+    ${main_links(c.id, c.links, c.historical)}
+  </div>
+</acre:block>
+
+<acre:block def="common_filter(pid)">
+  <a href="javascript:void(0);" title="${h.sprintf(FILTER_BY_PROP, pid)}"
+     data-id="${pid}"
+     onclick="fb.links.add_filter('${pid}');">${pid}</a>
+</acre:block>
+
+<acre:block def="main_links(id, links, historical, offset)">
+  <div class="section links-section" data-id="Links">
+    <div class="header">
+      <h1 class="kbs">
+        <span class="mark">
+          <span class="links-title">
+            <a href="javascript:void(0);"
+               class="schema-name links-name" name="Links">
+              ${_("Links")}
+            </a>
+          </span>
+        </span>
+      </h1>
+    </div>
+    <div class="body">
+      <table class="data-table" id="infinitescroll">
+        <thead>
+          <tr>
+            <th class="first">
+              <span class="property-header">&nbsp;</span></th>
+            <th>
+              <span class="property-header">${_("subject")}</span></th>
+            <th class="menu-col">
+              <span class="property-header">${_("predicate")}</span></th>
+            <th>
+              <span class="property-header">${_("object/value")}</span></th>
+            <th class="menu-col">
+              <span class="property-header">${_("creator")}</span></th>
+            <th class="menu-col">
+              <span class="property-header">${_("attribution")}</span></th>
+            <th>
+              <span class="property-header">${_("timestamp")}</span></th>
+            <acre:block if="historical">
+              <th>
+                <span class="property-header operation-header">
+                  ${_("operation")}</span></th>
+            </acre:block>
+          </tr>
+        </thead>
+
+        ${links_body(id, links, historical, offset)}
+
+        <tfoot>
+          <tr>
+            <td acre:attrs="historical ? {colspan:'8'} : {colspan:'7'}">
+              <a id="infinitescroll-next" href="${h.ajax_url('/links.ajax')}">next</a>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="links_body(id, links, historical, offset)">
+  <acre:script>
+    // next timestamp for inifinite scroll
+    var body_attrs = {};
+    if (links.length >= 100) {
+      body_attrs['data-next'] = links[links.length-1].timestamp;
+    }
+    offset = offset || 0;
+  </acre:script>
+  <tbody acre:attrs="body_attrs">
+    <acre:block for="i,link in links">
+      ${link_row(link, historical, i+offset+1)}
+    </acre:block>
+  </tbody>
+</acre:block>
+
+<acre:block def="link_row(link, historical, row_number)">
+  <tr class="data-row hover-row${link.valid ? '' : ' invalid'}">
+    <acre:block if="row_number != null">
+      <td class="row-number first">${row_number}</td>
+    </acre:block>
+    ${triple(link)}
+    <td class="menu-col">${creator(link)}</td>
+    <td class="menu-col">${attribution(link)}</td>
+    <td>${timestamp(link)}</td>
+    <acre:block if="historical">
+      <td>${link.operation}</td>
+    </acre:block>
+  </tr>
+</acre:block>
+
+<acre:block def="triple(link)">
+  <acre:block if="link['me:target']">
+    <acre:block if="link.master_property.reverse_property">
+      ${reverse_triple(link)}
+    </acre:block>
+    <acre:block else="">
+      ${incoming_triple(link)}
+    </acre:block>
+  </acre:block>
+  <acre:block else="">
+    ${outgoing_triple(link)}
+  </acre:block>
+</acre:block>
+
+<acre:block def="outgoing_triple(link)">
+  <td class="break">
+    <span class="self">${link['me:source'].id}</span>
+  </td>
+  <td class="menu-col">${property(link)}</td>
+  <td class="break">
+    ${target_value(link.target_value)}
+    ${topic(link.target)}
+  </td>
+</acre:block>
+
+<acre:block def="incoming_triple(link)">
+  <td class="break">
+    ${topic(link.source)}
+  </td>
+  <td class="menu-col">${property(link)}</td>
+  <td class="break">
+    ${target_value(link.target_value)}
+    <span class="self">${link['me:target'].id}</span>
+  </td>
+</acre:block>
+
+<acre:block def="reverse_triple(link)">
+  <td class="break">
+    <span class="self">${link['me:target'].id}</span>
+  </td>
+  <td class="menu-col">${property(link, true)}</td>
+    <td class="break">
+    ${target_value(link.target_value)}
+    ${topic(link.source)}
+  </td>
+</acre:block>
+
+
+<acre:block def="target_value(v)" if="v != null">
+  <span class="property-value">${v.value}</span>
+</acre:block>
+
+<acre:block def="topic(t)" if="t != null">
+  <acre:script>
+    // If /common/topic, use t.mid. Otherwise use t.id.
+    var id = t['topic:type'] ? t.mid : t.id;
+    var name = i18n.display_name(t, "");
+  </acre:script>
+  <a class="property-value" data-id="${id}"
+     href="${h.fb_url(id, [['links']])}">${id}</a>
+  <acre:block if="id == t.mid && name != null">
+    <span class="name">${name}</span>
+  </acre:block>
+  <acre:block if="t['cvt:type']">
+    <a href="javascript:void(0);"
+       onclick="fb.links.toggle_cvt(this, '${id}')"
+       class="cvt">${CVT}</a>
+  </acre:block>
+</acre:block>
+
+<acre:block def="property(link, show_reverse)">
+  <acre:script>
+    var this_property = link.master_property.id;
+    var other_property = link.master_property.reverse_property &&
+        link.master_property.reverse_property.id;
+    if (show_reverse && other_property) {
+      var tmp = this_property;
+      this_property = other_property;
+      other_property = tmp;
+    }
+  </acre:script>
+  <ul class="inline-menu nicemenu">
+    <li class="nicemenu-item">
+      <span class="headmenu">
+        <a href="javascript:void(0)" class="more-action"></a>
+      </span>
+      <ul class="submenu row-menu">
+        <li class="row-menu-item">
+          <a href="javascript:void(0);"
+             onclick="fb.links.add_filter('${this_property}');">
+            ${h.sprintf(FILTER_BY_PROP, this_property)}</a>
+        </li>
+        <li class="row-menu-item">
+          <a href="${h.fb_url(this_property, [['schema']])}">
+            ${h.sprintf(PROP_SCHEMA, this_property)}</a>
+        </li>
+        <li class="row-menu-item">
+          <a href="${h.fb_url(this_property, [['links']])}">
+            ${h.sprintf(INSPECT_PROP, this_property)}</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+  <a class="property-value" data-id="${this_property}"
+     title="${h.sprintf(INSTANCES_BY_PROP, this_property)}"
+     href="${h.fb_url(this_property, [['instances']])}">
+    ${this_property}</a>
+</acre:block>
+
+<acre:block def="timestamp(link)">
+  <acre:script>
+    var parts = link.timestamp.split('T');
+  </acre:script>
+  <span class="timestamp">
+    <span class="date">${parts[0]}</span><span class="time fullts">T${parts[1]}</span>
+  </span>
+</acre:block>
+
+<acre:block def="creator(link)">
+  <acre:block if="link.creator">
+    <ul class="inline-menu nicemenu">
+      <li class="nicemenu-item">
+        <span class="headmenu">
+          <a href="javascript:void(0)" class="more-action"></a>
+        </span>
+        <ul class="submenu row-menu">
+          <li class="row-menu-item">
+            <a href="javascript:void(0);"
+               onclick="fb.links.update_creator('${link.creator.id}');">
+              ${h.sprintf(FILTER_BY_CREATOR, link.creator.id)}</a>
+          </li>
+          <li class="row-menu-item">
+            <a href="${h.fb_url(link.creator.id, [['links']])}">
+              ${h.sprintf(INSPECT_CREATOR, link.creator.id)}</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <a class="property-value" data-id="${link.creator.id}"
+       title="${h.sprintf(WRITES_BY_CREATOR, link.creator.id)}"
+       href="${h.fb_url(link.creator.id, [['writes']])}">
+      ${link.creator.id}</a>
+  </acre:block>
+  <acre:block else="">
+    <span class="empty">${NONE}</span>
+  </acre:block>
+</acre:block>
+
+<acre:block def="attribution(link)">
+  <acre:block if="link.attribution">
+    <acre:script>
+      var attr = h.get_attribution(link);
+    </acre:script>
+    <ul class="inline-menu nicemenu">
+      <li class="nicemenu-item">
+        <span class="headmenu">
+          <a href="javascript:void(0)" class="more-action"></a>
+        </span>
+        <ul class="submenu row-menu">
+          <li class="row-menu-item">
+            <a href="javascript:void(0);"
+               onclick="fb.links.update_creator('${link.attribution.id}');">
+              ${h.sprintf(FILTER_BY_ATTR, link.attribution.id)}</a>
+          </li>
+          <li class="row-menu-item">
+            <a href="${h.fb_url(link.attribution.id, [['links']])}">
+              ${h.sprintf(INSPECT_ATTR, link.attribution.id)}</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <a class="property-value" data-id="${link.attribution.id}"
+       title="${h.sprintf(WRITES_BY_ATTR, link.attribution.id)}"
+       href="${h.fb_url(link.attribution.id, [['writes']])}">
+      ${link.attribution.id}</a>
+    <acre:block if="attr.creator || attr.app || attr.dataset">
+      <ul class="fullattr">
+        <li acre:if="attr.creator">
+          <a class="property-value" data-id="${attr.creator}"
+             title="${h.sprintf(WRITES_BY_CREATOR, attr.creator)}"
+             href="${h.fb_url(attr.creator, [['writes']])}">
+            ${h.sprintf(ATTR_CREATOR, attr.creator)}</a>
+        </li>
+        <li acre:if="attr.app">
+          <a class="property-value" data-id="${attr.app.id}"
+             title="${h.sprintf(WRITES_BY_APP, attr.app.id)}"
+             href="${h.fb_url(attr.app.id, [['writes']])}">
+            ${h.sprintf(ATTR_APP, attr.app.id)}</a>
+        </li>
+        <li acre:if="attr.dataset">
+          <a class="property-value" data-id="${attr.dataset.id}"
+             title="${h.sprintf(WRITES_BY_DATASET, attr.dataset.id)}"
+             href="${h.fb_url(attr.dataset.id, [['writes']])}">
+            ${h.sprintf(ATTR_DATASET, attr.dataset.id)}</a>
+        </li>
+      </ul>
+    </acre:block>
+  </acre:block>
+  <acre:block else="">
+    <span class="empty">${NONE}</span>
+  </acre:block>
+</acre:block>
+
+<acre:block def="pill(filter_id, onclick_remove)">
+  <acre:script>
+    filter_id = filter_id || '';
+    onclick_remove = onclick_remove || 'fb.links.remove_filter(this)';
+  </acre:script>
+  <span class="pill">
+    <a href="#${filter_id}" class="pill-text toc-link">${filter_id}</a>
+    <input class="pill-value" type="hidden" name="filter" value="${filter_id}" />
+    <a href="javascript:void(0);" class="pill-x"
+       onclick="${onclick_remove}">x</a>
+  </span>
+</acre:block>
+
+<acre:block def="pill_creator(creator_id)">
+  ${pill(creator_id, 'fb.links.remove_creator(this);')}
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="links.mf.js"></script>
+  <script>
+    $(function() {
+      // Prevent flickering because some filtering is done client-side
+      $('#links-data').animate({opacity:1}, 'fast');
+    });
+  </script>
+</acre:block>
+
+
+

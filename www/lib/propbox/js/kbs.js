@@ -317,10 +317,16 @@
 
     this.next = function() {
       var current = get_current();
-      var next = this._next(current);
-      if (next) {
-        set_next(current, next);
+      if (current && current.length) {
+        var next = this._next(current);
+        if (next) {
+          set_next(current, next);
+          return;
+        }
       }
+      // Set current to the first visible "kbs" class.
+      current = $(".kbs:visible:first", context);
+      set_next(current, current);
     };
 
     this._next = function(current) {

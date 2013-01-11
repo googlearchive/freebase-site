@@ -50,10 +50,6 @@
 
       propbox.kbs = new kbs(context);
 
-      // set current kbs element to the first visible kbs class
-      propbox.kbs.set_next(propbox.kbs.get_current(),
-        $(".kbs:visible:first", context, true));
-
       $(".kbs", context)
         .live("click", function() {
            // set current on click

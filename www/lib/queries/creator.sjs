@@ -65,6 +65,7 @@ function extend(q, filter_ids) {
   };
 
   clause["attribution"] = {
+    id: null,
     creator: {
       id: null,
       key: {
@@ -114,46 +115,57 @@ function extend(q, filter_ids) {
  * Returns a clause for constraining a query to only links
  * created by the IDs specified
  *
- * @param ids:array (required) - IDs to constrain to
- * @param type:String - hint as to what kind of object ids are
- *
+ * @param {Array.<string>|string} ids - One or more ids to constrain to.
+ * @param {Array.<string>|string| types - One or more type hints
+ *     as to what kind of object ids are
  * @return a promise that returns a query clause to be used with 
  *         link: or to extend a type: "/type/link" query
  */
-function by(ids, type) {
+function by(ids, types) {
   // if no ids specified, just return standard creator clause
   if (!ids || !ids.length) {
     return deferred.resolved(extend({}));
   }
-  
   if (h.type(ids) === 'string') {
     ids = [ids];
+  }
+  if (h.type(types) === 'string') {
+    types = [types];
+  }
+  // Build up type hints map or try all attribution type queries.
+  var type_hints = {};
+  var all = true;
+  if (types && types.length) {
+    types.forEach(function(t) {
+      type_hints[t] = 1;
+    });
+    all = false;
   }
 
   var creators = [];
   var promises = [];
 
-  if (!type || type === "/type/attribution") {
+  if (all || type_hints['/type/attribution']) {
     creators = creators.concat(ids);
   }
   
-  if (!type || type === "/type/user") {
+  if (all || type_hints['/type/user']) {
     promises.push(creators_by_user(ids));
   }
 
-  if (!type || type === "/dataworld/information_source") {
+  if (all || type_hints['/dataworld/information_source']) {
     promises.push(creators_by_dataset(ids));
   }
 
-  if (!type || type === "/dataworld/software_tool") {
+  if (all || type_hints['/dataworld/software_tool']) {
     promises.push(creators_by_tool(ids));
   }
   
-  if (!type || type === "/dataworld/mass_data_operation") {
+  if (all || type_hints['/dataworld/mass_data_operation']) {
     promises.push(creators_by_mdo(ids));
   }
   
-  if (!type || type === "/freebase/apps/acre_app") {
+  if (all || type_hints['/freebase/apps/acre_app']) {
     promises.push(creators_by_acre_app(ids));
   }
 

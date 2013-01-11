@@ -525,7 +525,7 @@
             <acre:script>
               var master_prop = prop_structure.master_property ? prop_structure.master_property.id : prop_structure.id;
             </acre:script>
-            <a href="${h.fb_url(topic.id, [['links'],['property', master_prop],['historical',1]])}">${HISTORY_PROPERTY}</a>
+            <a href="${h.fb_url(topic.id, [['links'],['filter', master_prop],['historical',1]])}">${HISTORY_PROPERTY}</a>
           </li>
         </ul>
       </li>

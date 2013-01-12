@@ -238,12 +238,10 @@
             data: {id: id},
             traditional: true,
             onsuccess: function(data) {
-              var cvt_table = $(data.result.html).find('.data-table:first');
-              // hide thead
-              var thead = cvt_table.find('thead').remove();
-              var tfoot = cvt_table.find('tfoot').remove();
+              var cvt_tbody = $(data.result.html);
+              var cvt_table = $('<table class="data-table">').append(cvt_tbody);
               var cvt_tr = $('<tr class="cvt-row">');
-              var cvt_td = $('<td>').attr('colspan', thead.find('th').length);
+              var cvt_td = $('<td>').attr('colspan', 7);
               cvt_td.append(cvt_table);
               cvt_tr.append(cvt_td);
               row.after(cvt_tr);

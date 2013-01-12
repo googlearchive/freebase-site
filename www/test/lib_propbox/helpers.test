@@ -124,7 +124,7 @@ test("mqlread_clause", function() {
     value: false,
     optional: true,
     link: {creator:null}
-  }]);
+                                                              }]);
 
   //type/int
   prop_structure = {
@@ -241,6 +241,7 @@ test("mqlread_query", function() {
       id: "/m/123",
       optional: true,
       link: {creator:null},
+      type: [{id:null, optional:true}],
       "/subprop/1": [{
         value: null,
         lang: null,
@@ -435,7 +436,7 @@ test('is_authority', function() {
 });
 
 test('get_propbox_data_row_css_class', function() {
-  var DEFAULT_CSS = 'kbs data-row';
+  var DEFAULT_CSS = 'kbs data-row hover-row';
   var c = ph.get_propbox_data_row_css_class({}, {});
   same(c, DEFAULT_CSS, c);
 

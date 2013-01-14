@@ -1,7 +1,8 @@
 [
   "lib/template/css/mixins.less",
   "lib/template/css/freebase.ui.infinitescroll.less",
-  "lib/template/css/freebase.ui.i18n.less",
+  "lib/template/css/freebase.ui.table.less",
+  "lib/template/css/freebase.ui.propbox.less",
   "lib/template/css/freebase.ui.pill.less",
-  "css/links.less"
+  "css/search.less"
 ]

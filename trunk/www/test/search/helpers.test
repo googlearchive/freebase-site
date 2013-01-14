@@ -1,0 +1,74 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+var h = acre.require("label/search/helpers.sjs");
+
+test('operator', function() {
+
+  equals(h.operator('any', 'foo'), '(any foo)');
+  equals(h.operator('all', 'foo'), '(all foo)');
+  equals(h.operator('should', 'foo'), '(should foo)');
+  equals(h.operator('not', 'foo'), '(not foo)');
+
+  equals(h.operator('any', ['foo', 'bar']), '(any foo bar)');
+  equals(h.operator('all', ['foo', 'bar']), '(all foo bar)');
+  equals(h.operator('should', ['foo', 'bar']), '(should (any foo bar))');
+  equals(h.operator('not', ['foo', 'bar']), '(not (any foo bar))');
+
+  equals(h.operator(), null);
+  equals(h.operator('any'), null);
+  equals(h.operator('any', ''), null);
+  equals(h.operator('any', []), null);
+  equals(h.operator('foo', ['bar']), null);
+});
+
+test('is_empty', function() {
+  ok(h.is_empty());
+  ok(h.is_empty(null));
+  ok(h.is_empty(''));
+  ok(h.is_empty([]));
+  ok(h.is_empty({}));
+  ok(!h.is_empty('foo'));
+  ok(!h.is_empty(['foo']));
+  ok(!h.is_empty({'foo':'bar'}));
+  ok(!h.is_empty(0));
+  ok(!h.is_empty('0'));
+  ok(!h.is_empty(-1));
+});
+
+test('search_lang', function() {
+  equals(h.search_lang(), 'en');
+  equals(h.search_lang('/lang/en'), 'en');
+  equals(h.search_lang('en'), 'en');
+  equals(h.search_lang('/lang/zh'), 'zh,en');
+  equals(h.search_lang('/lang/foo'), 'en');
+});
+

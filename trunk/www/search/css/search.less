@@ -1,0 +1,124 @@
+
+#page-content {
+  position: relative;
+  padding-left: 165px;
+  max-width: 920px;
+}
+
+#tabbar {
+  padding-bottom: 12px;
+}
+
+#tabbar-controls {
+    font-size: 1.3em;
+    padding-top: .5em;
+}
+#tabbar-controls label {
+/*    display: block;*/
+}
+
+#pill-filter-box {
+    padding-left: 10px;
+}
+
+#pill-filter-suggest {
+    width: 325px;
+}
+
+/*
+ ### Domain Box Styling
+*/
+.search-section {
+  font-size: 1.2em;
+  position: relative;
+  margin-bottom: 40px;
+
+  &:after {
+    z-index: -1;
+    content: "";
+    display: block;
+    position: absolute; top: 15px;
+    width: 100%; height: 10px;
+    border-top: 1px solid #D4DDE3;
+    border-left: 1px solid #D4DDE3;
+    box-shadow: inset 1px 1px 1px 0 white;
+  }
+
+  .header {
+    font-size: 1.8em;
+    font-weight: normal;
+    margin-bottom: 10px;
+
+    .search-title {
+      display: inline-block;
+      background-color: #e8ebee;
+      padding: 0 6px;
+      margin-left: -6px;
+    }
+
+    .results-name {
+      color: rgb(128, 160, 178) !important;
+    }
+  }
+}
+
+.body tbody {
+
+}
+
+.correction-row > td {
+    padding: 1em !important;
+    font-size: 1.3em;
+}
+
+tr.search-row > td {
+    padding-bottom: 1em;
+}
+
+.result-thumb {
+    width: 100px;
+}
+.result-thumb img {
+    margin: 1em;
+    border: 1px solid #ccc;
+}
+
+.result-item {
+    margin: 1em 0 0;
+}
+
+.result-item-title {
+    font-size: 1.2em;
+}
+
+.result-item-id {
+    font-size: .8em;
+    color: #888;
+}
+
+.result-item-types {
+    color: #888;
+    margin-bottom: 0.3em;
+    font-size: 1em;
+    font-style: italic;
+}
+
+
+
+.body tbody.empty-result > tr,
+.body tbody.empty-result > tr:hover {
+    border: 0;
+    outline: none;
+}
+
+.body tbody.empty-result p,
+.body tbody.empty-result ul {
+    padding: .5em 0 0 1em;
+    font-size: 1.3em;
+}
+.body tbody.empty-result ul,
+.body tbody.empty-result li {
+    margin-left: 1.3em;
+}
+
+

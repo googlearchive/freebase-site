@@ -59,13 +59,13 @@
         <span class="right-arrow"></span>${_('Go to Type:')}
       </a>
     </div>
-    <div id="pill-filter-box">
+    <div id="pill-filter-box" class="pill-box">
       <acre:block for="filter in c.filter">
         ${pill(filter)}
       </acre:block>
-      <input type="text" id="pill-filter-suggest"
+      <input type="text" id="pill-filter-suggest" class="pill-suggest"
              placeholder="${_('View and edit specific domains, types, or properties...')}">
-      <span id="pill-template" style="display:none;">
+      <span id="pill-template" class="pill-template" style="display:none;">
         ${pill()}
       </span>
     </div>

@@ -45,6 +45,9 @@
 
 (function($, fb) {
 
+  // Use traditional param
+  $.ajaxSettings.traditional = true;
+
   if (fb.datelineReloading) {
     // we're in the process of reloading because of a
     // dateline change don't perform any inits
@@ -544,7 +547,8 @@
           status: null,
           parent: "#site-search-box",
           align: "right",
-          filter: '(not type:/common/document)'
+          filter: '(not type:/common/document)',
+          soft: true
         });
         return o;
       },

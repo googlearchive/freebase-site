@@ -462,6 +462,7 @@
         if (e.shiftKey) {
           this.shift_enter(e);
           e.preventDefault();
+          return;
         }
         else if ($("." + o.css.item, this.list).length) {
           var s = this.get_selected();
@@ -469,18 +470,28 @@
             this.onselect(s);
             this.hide_all();
             e.preventDefault();
+            return;
           }
-          else {
+          else if (!o.soft) {
             var data = this.input.data("data.suggest");
             if ($("."+this.options.css.item + ":visible", this.list).length) {
               this.updown(false);
               e.preventDefault();
+              return;
             }
           }
         }
-        //console.log("enter preventDefault");
+      }
+      if (o.soft) {
+        // submit form
+        this.soft_enter();
+      }
+      else {
+        e.preventDefault();
       }
     },
+
+    soft_enter: function(e) {},
 
     shift_enter: function(e) {},
 

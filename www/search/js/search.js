@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2012, Google Inc.
  * All rights reserved.
@@ -30,9 +31,23 @@
  */
 (function($, fb, formlib) {
 
-  var links = fb.links = {
+  var search = fb.search = {
 
     init: function() {
+
+      // Take over main search box
+      search.query = $('#fb-search-input');
+      search.query.data('suggest')._destroy();
+      search.query
+        .unbind()
+        .keypress(function(e) {
+          if (e.keyCode === 13) {
+            e.preventDefault();
+            search.update_window_history();
+            search.update_search();
+          }
+        });
+
       // Focus input when the filter box gets focus
       $('#pill-filter-box').click(function() {
         $('#pill-filter-suggest').focus();
@@ -42,11 +57,10 @@
       var pill_suggest = $('#pill-filter-suggest')
           .suggest($.extend({
             scoring: 'schema'
-          }, fb.suggest_options.all('type:/type/property')))
+          }, fb.suggest_options.all('type:/type/type')))
           .bind('fb-select', function(e, data) {
             var input = $(this);
-            var type = null;
-            links.add_filter(data.id);
+            search.add_filter(data.id);
             input.val('').trigger('textchange');
           })
           .focus(function() {
@@ -62,58 +76,22 @@
             }
           });
 
-      // Initialize creator suggest input
-      var creator_suggest = $('#pill-creator-suggest')
-          .suggest(fb.suggest_options.any(
-              'type:/type/user',
-              'type:/type/attribution'))
-          .bind('fb-select', function(e, data) {
-            links.update_creator(data.id);
-          })
-          .focus(function() {
-            $('#pill-creator-box').addClass('focused');
-          })
-          .blur(function() {
-            $('#pill-creator-box').removeClass('focused');
-          });
-
       // Keyboard shorcut to filter 'f'
       fb.keyboard_shortcut.add('f', function() {
         pill_suggest.focus();
       });
 
-      // toggle fullts, fullattr client-side
-      links.toggle_timestamp($('#fullts').is(':checked'));
-      links.toggle_attribution($('#fullattr').is(':checked'));
-
       // Handle options changes (checkboxes, text-input)
-      $('#tabbar-controls :checkbox').change(links.update_options);
+      $('#tabbar-controls select').change(search.update_options);
+      $('#tabbar-controls :checkbox').change(search.update_options);
       $('#tabbar-controls :text').keypress(function(e) {
         if (e.keyCode === 13) {
-          links.update_options(e);
+          search.update_options(e);
         }
       });
 
       // Handle infinite scroll
-      links.infinitescroll();
-    },
-
-    toggle_timestamp: function(full, context) {
-      if (full) {
-        $('.fullts', context).show();
-      }
-      else {
-        $('.fullts', context).hide();
-      }
-    },
-
-    toggle_attribution: function(full, context) {
-      if (full) {
-        $('.fullattr', context).show();
-      }
-      else {
-        $('.fullattr', context).hide();
-      }
+      search.infinitescroll();
     },
 
     /**
@@ -121,14 +99,14 @@
      * @param {string} id The property id.
      */
     add_filter: function(id) {
-      if (links.get_filters().indexOf(id) !== -1) {
+      if (search.get_filters().indexOf(id) !== -1) {
         // already in the filter
         return;
       }
-      var pill = links.pill(id);
+      var pill = search.pill(id);
       $('#pill-filter-suggest').before(pill);
-      links.update_window_history();
-      links.update_links();
+      search.update_window_history();
+      search.update_search();
     },
 
     /**
@@ -137,8 +115,8 @@
     remove_filter: function(x) {
       var id = $(x).prev('.pill-value').val();;
       $(x).parent('.pill').remove();
-      links.update_window_history();
-      links.update_links();
+      search.update_window_history();
+      search.update_search();
       return false;
     },
 
@@ -155,126 +133,57 @@
       return filters;
     },
 
-    get_creator: function() {
-      var creator = links.get_filters($('#pill-creator-box'));
-      if (creator.length) {
-        return creator[0];
-      }
-      return null;
-    },
-
-    update_creator: function(id) {
-      if (links.get_creator() === id) {
-        return;
-      }
-      var pill = links.pill_creator(id);
-      $('#pill-creator-box')
-        .find('.pill:visible').remove()
-        .end()
-        .prepend(pill);
-      // hide creator suggest
-      $('#pill-creator-suggest').css('visibility', 'hidden');
-      links.update_window_history();
-      links.update_links();
-    },
-
-    remove_creator: function() {
-      $('#pill-creator-box')
-        .find('.pill:visible').remove();
-      // show creator suggest
-      $('#pill-creator-suggest').css('visibility', 'visible').val('').focus();
-      links.update_window_history();
-      links.update_links();
+    correction: function(value) {
+      search.query.val(value);
+      search.update_window_history();
+      search.update_search();
     },
 
     update_options: function(e) {
-      links.update_window_history();
-      var input = e.target;
-      if (input.name === 'fullts') {
-        links.toggle_timestamp(input.checked);
-      } else if (input.name === 'fullattr') {
-        links.toggle_attribution(input.checked);
-      } else {
-        links.update_links();
-      }
+      search.update_window_history();
+      search.update_search();
     },
 
     /**
      * Update the main links section with the current filters using ajax.
      */
-    update_links: function() {
+    update_search: function() {
       // disable infinitescroll
-      links.destroy_infinitescroll();
-      var params = links.get_page_params();
+      search.destroy_infinitescroll();
+      var params = search.get_page_params();
       $.ajax($.extend(formlib.default_begin_ajax_options(), {
-        url: fb.h.ajax_url('links.ajax'),
-        data: $.extend({id:fb.c.id}, params),
+        url: fb.h.ajax_url('search.ajax'),
+        data: params,
         traditional: true,
         onsuccess: function(data) {
           $('#infinitescroll > tbody').replaceWith(data.result.html);
-          links.toggle_timestamp($('#fullts').is(':checked'));
-          links.toggle_attribution($('#fullattr').is(':checked'));
-          $("#links-data .nicemenu").nicemenu();
-          links.infinitescroll();
+          // re-enable infinitescroll
+          search.infinitescroll();
         }
       }));
-    },
-
-    toggle_cvt: function(trigger, id) {
-      trigger = $(trigger);
-      var row = trigger.parents('.data-row:first');
-      if (trigger.is('.expanded')) {
-        row.next('.cvt-row').hide();
-        trigger.removeClass('expanded');
-      }
-      else {
-        var cvt_row = row.next('.cvt-row');
-        if (cvt_row.length) {
-          cvt_row.show();
-          trigger.addClass('expanded');
-        }
-        else {
-          $.ajax($.extend(formlib.default_begin_ajax_options(), {
-            url: fb.h.ajax_url('links.ajax'),
-            data: {id: id},
-            traditional: true,
-            onsuccess: function(data) {
-              var cvt_tbody = $(data.result.html);
-              var cvt_table = $('<table class="data-table">').append(cvt_tbody);
-              var cvt_tr = $('<tr class="cvt-row">');
-              var cvt_td = $('<td>').attr('colspan', 7);
-              cvt_td.append(cvt_table);
-              cvt_tr.append(cvt_td);
-              row.after(cvt_tr);
-              trigger.addClass('expanded');
-            }
-          }));
-        }
-      }
     },
 
     /**
      * Get the url params that identify the current filter and option state.
      */
     get_page_params: function() {
-      var filters = links.get_filters();
-      var params = {links:'', lang:fb.h.lang_code(fb.lang)};
+      var filters = search.get_filters();
+      var params = {
+        query: search.query.val(),
+        lang:fb.h.lang_code(fb.lang)
+      };
       if (filters.length) {
-        params.filter = filters;
+        params.type = filters;
       }
-      var creator = links.get_creator();
-      if (creator) {
-        params.creator = creator;
-      }
-      $('#tabbar-controls input').each(function() {
+      $('#tabbar-controls :input').each(function() {
         var input = $(this);
+        var name = input.attr('name');
         if (input.is(':checkbox')) {
           if (input.is(':checked')) {
-            params[input.attr('name')] = input.val();
+            params[name] = input.val();
           }
         }
-        else if (input.is(':text')) {
-          var name = input.attr('name');
+        else {
           var value = params[name];
           if (value == null) {
             params[name] = input.val();
@@ -294,7 +203,7 @@
      * Update window history so that filters are bookmark-able.
      */
     update_window_history: function(reload) {
-      var params = links.get_page_params();
+      var params = search.get_page_params();
       // update window history
       var url_parts = window.location.href.split('?');
       var new_url = url_parts[0];
@@ -316,8 +225,8 @@
 
     infinitescroll: function() {
       var tbody = $('#infinitescroll > tbody');
-      var next = tbody.attr('data-next');
-      if (!next) {
+      var cursor = tbody.attr('data-next');
+      if (!cursor) {
         // nothing to scroll
         return;
       }
@@ -336,10 +245,8 @@
         pathParse: function() {
           return [
             a_next[0].href + '?' +
-                $.param($.extend(links.get_page_params(), {
-                  id: fb.c.id,
-                  next: tbody.attr('data-next'),
-                  offset: tbody.find('>tr').length
+                $.param($.extend(search.get_page_params(), {
+                  cursor: tbody.attr('data-next')
                 })) + '&page=',
             ''
           ];
@@ -348,21 +255,14 @@
       }, function(data) {
         data = JSON.parse(data);
         var new_tbody = $(data.result.html);
-
-        $('.nicemenu', new_tbody).nicemenu();
-
-        var next = new_tbody.attr('data-next');
-        tbody.append($('>tr', new_tbody));
-
-
-        links.toggle_timestamp($('#fullts').is(':checked'));
-        links.toggle_attribution($('#fullattr').is(':checked'));
-
-
-
-        tbody.attr('data-next', next);
-        if (!next) {
-          links.destroy_infinitescroll();
+        tbody.append($('>tr.search-row', new_tbody));
+        var cursor = new_tbody.attr('data-next');
+        if (cursor) {
+          tbody.attr('data-next', cursor);
+        }
+        else {
+          tbody.removeAttr('data-next');
+          search.destroy_infinitescroll();
         }
       });
     },
@@ -372,29 +272,13 @@
     })(),
 
     pill: function(id, use_template) {
-      var pill = $(use_template || links.PILL_HTML);
+      var pill = $(use_template || search.PILL_HTML);
       $('.pill-text', pill).text(id)[0].href = '#' + id;
       $('.pill-value', pill).val(id);
       return pill;
-    },
-
-    PILL_CREATOR_HTML: (function() {
-      return $('#pill-creator-template').html();
-    })(),
-
-    pill_creator: function(creator_id) {
-      return links.pill(creator_id, links.PILL_CREATOR_HTML);
     }
   };
 
-  function escape_attr_(val) {
-    return val.replace(/\//g, '\\\/');
-  };
-
-  function links_section_(name) {
-    return $('.links-section[data-id=' + escape_attr_(name) + ']');
-  };
-
-  $(links.init);
+  $(search.init);
 
 })(jQuery, window.freebase, window.formlib);

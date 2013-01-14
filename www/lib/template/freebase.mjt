@@ -210,12 +210,14 @@
   <acre:block else="">
     <!!-- Freebase Suggest -->
     <div id="fb-search">
-      <input type="text"
-             id="fb-search-input"
-             name="query"
-             autocomplete="off"
-             placeholder="Find&hellip;" />
-      ${fb_search_input_params(exports)}
+      <form action="${h.fb_url('/search')}" method="GET">
+        <input type="text"
+               id="fb-search-input"
+               name="query"
+               autocomplete="off"
+               placeholder="Find&hellip;" />
+        ${fb_search_input_params(exports)}
+      </form>
       <div id="site-search-box"></div>
       <div id="site-search-label"><span>${_("Start typing to get some suggestions")}</span></div>
     </div>

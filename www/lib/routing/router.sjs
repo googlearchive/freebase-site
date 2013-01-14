@@ -81,6 +81,7 @@ function init_rules(lib) {
     "policies":   "//policies" + codebase,
     "query":      "//query" + codebase,
     "review":     "//review" + codebase,
+    "search":     "//search" + codebase,
     "sameas":     "//sameas" + codebase,
     "sample":     "//sample" + codebase,
     "schema":     "//schema" + codebase,
@@ -878,6 +879,8 @@ function init_rules(lib) {
     {prefix:"/flyout",             app:"lib", script:"flyout/flyout.controller"},
     {prefix:"/formbuilder",        app:"formbuilder",
                                    script:"formbuilder.controller"},
+    {prefix:"/search",             app:"search",
+                                   script:"search.controller"},
 
     {prefix:"/account/claim",      app:"account", script:"claim.controller"},
     {prefix:"/account/reconnect",  app:"account", script:"reconnect.controller"},
@@ -916,7 +919,6 @@ function init_rules(lib) {
     {prefix:"/signin/changepassword",   url:"/", redirect:301},
     {prefix:"/signin/activate",         url:"/", redirect:301},
     {prefix:"/signin/authorize_token",  url:"/", redirect:301},
-    {prefix:"/search",                  url:"/", redirect:301},
 
     // Feedback
     {prefix:"/site/feedback",           url:"http://bugs.freebase.com", redirect:301},

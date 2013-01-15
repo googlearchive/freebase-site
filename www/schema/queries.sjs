@@ -90,7 +90,7 @@ function domains(q) {
             var activity = activities["summary_/guid/" + domain.guid.substring(1)];
             if (activity) {
               domain.instance_count = activity.total.t;
-            }              
+            }
           });
           return domains;
         });
@@ -169,10 +169,11 @@ function load_domain(id, lang, options) {
     };
     if (options.types) {
         // get all types
-        q.types = [{          
+        q.types = [{
             optional: true,
             id: null,
-            type: "/type/type"
+            type: "/type/type",
+            limit: 1000
         }];
     }
     return freebase.mqlread(q)
@@ -196,10 +197,10 @@ function load_domain(id, lang, options) {
                     };
                     if (options.types_instance_count) {
                         // load activity for each type
-                        promises.types_instance_count = 
+                        promises.types_instance_count =
                             freebase
                                 .get_static(
-                                  "activity", 
+                                  "activity",
                                   "summary_/guid/" + domain.guid.slice(1), {
                                     timeout: 3000
                                   })
@@ -254,8 +255,8 @@ function load_type(type_id, lang, options) {
             }
 
             if (options.instance_count) {
-              return freebase                       
-                  .get_static("activity", 
+              return freebase
+                  .get_static("activity",
                               "summary_/guid/" + type.guid.slice(1), {
                                   timeout: 3000
                               })
@@ -269,7 +270,7 @@ function load_type(type_id, lang, options) {
                           return type;
                       }, function(e) {
                         return type;
-                      });  
+                      });
             }
             else {
               return type;
@@ -537,7 +538,7 @@ function included_types(id, lang) {
                     .then(function(r) {
                         return inc_types.map(function(t) {
                             return r[t];
-                        });                        
+                        });
                     });
             }
             return [];

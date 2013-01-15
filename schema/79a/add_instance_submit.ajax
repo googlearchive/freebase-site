@@ -1,0 +1,89 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+var validators = acre.require("lib/validator/validators.sjs");
+var queries = acre.require("queries");
+var components = acre.require("type_components.mjt");
+var deferred = acre.require("lib/promise/deferred");
+var freebase = acre.require("lib/promise/apis").freebase;
+var create_topic = acre.require("lib/queries/create_topic").create_topic;
+
+/**
+ * add a topic instance to an enumeration type
+ */
+var SPEC = {
+
+  method: "POST",
+
+  auth: true,
+
+  validate: function(params) {
+    var id = validators.MqlId(params, "id", {if_empty:null});
+    var name = validators.String(params, "name", {if_empty:null});
+    if (! (id || name)) {
+      throw new validators.Invalid("id or name is required");
+    }
+    return [
+      id,
+      validators.MqlId(params, "type", {required:true}),             // type id
+      validators.LangId(params, "lang", {if_empty:"/lang/en"}),
+      name
+    ];
+  },
+
+  run: function(id, type, lang, name) {
+    var promise;
+    if (!id && name) {
+      promise = create_topic({
+        name: name,
+        lang: lang
+      })
+      .then(function(created) {
+        id = created.id;
+        return true;
+      });
+    }
+    else {
+      promise = deferred.resolved(true);
+    }
+    return promise
+      .then(function() {
+        return queries.add_instance(id, type);
+      })
+      .then(function() {
+        return queries.minimal_topic(id, lang);
+      })
+      .then(function(topic) {
+        return {
+          html: acre.markup.stringify(components.enumerated_topic_row(topic, type))
+        };
+      });
+  }
+};

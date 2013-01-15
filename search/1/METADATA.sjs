@@ -1,7 +1,10 @@
 var METADATA = {
   "mounts": {
-    "lib":  "//lib.www.trunk.svn.freebase-site.googlecode.dev"
-  }
+    "lib": "//100.lib.www.branches.svn.freebase-site.googlecode.dev"
+  }, 
+  "app_tag": null, 
+  "app_version": 1, 
+  "app_key": "search"
 };
 
 acre.require(METADATA.mounts.lib +

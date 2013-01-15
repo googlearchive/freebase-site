@@ -1,0 +1,170 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+var h = acre.require("helper/helpers.sjs");
+var validators = acre.require("validator/validators.sjs");
+var propbox = acre.require("propbox/propbox.mjt");
+var queries = acre.require("propbox/queries.sjs");
+var ph = acre.require("propbox/helpers.sjs");
+var apis = acre.require("promise/apis.sjs");
+var freebase = apis.freebase;
+var deferred = apis.deferred;
+
+/**
+ * prop add form
+ */
+var SPEC = {
+
+  method: "GET",
+
+  auth: true,
+
+  validate: function(params) {
+    var namespace = null;
+    if (params.p === "/type/object/key" || params.p === "/type/namespace/keys") {
+      // namespace is required when editing keys
+      namespace = validators.MqlId(params, "namespace", {required:true});
+    }
+    return [
+      validators.MqlId(params, "s", {required:true}),           // subject id
+      validators.MqlId(params, "p", {required:true}),           // property id
+      validators.String(params, "replace", {required:true}),    // object value/id (being edited)
+      validators.LangId(params, "lang", {if_empty:"/lang/en"}), // lang id
+      namespace,
+      params.auth_user.id
+    ];
+  },
+
+  run: function(s, p, replace, lang, namespace, user_id) {
+    // we want to make sure we are looking at the latest
+    return freebase.touch()
+    .then(function(){
+      return queries.prop_structure(p, lang);
+    }).then(function(prop_structure) {
+        var ect = prop_structure.expected_type.id;
+        if (ect === "/common/document") {
+          return SPEC.run_document(s, prop_structure, replace, lang);
+        }
+        else if (ect === "/common/image") {
+          return SPEC.run_image(s, prop_structure, replace, lang);
+        }
+        else {
+          return SPEC.run_default(
+            s, prop_structure, replace, lang, namespace, user_id);
+        }
+      });
+  },
+
+  run_document: function(s, prop_structure, replace, lang) {
+    // modal document edit form
+    var promises = [];
+    promises.push(
+        freebase.mqlread({
+            id: replace,
+            type: "/common/document",
+            source_uri: null,
+            content: {
+                optional: true,
+                type: "/type/content",
+                language: null
+            }
+        })
+        .then(function(env) {
+            return env.result;
+        })
+    );
+    promises.push(
+        freebase.get_blob(replace, "escaped")
+            .then(function(blob) {
+                return blob.body;
+            })
+    );
+    return deferred.all(promises)
+        .then(function([document, blob]) {
+            if (document.source_uri) {
+                // can't edit document with source_uri
+                return {
+                    html: acre.markup.stringify(
+                        propbox.cant_edit_document_form(s,
+                            prop_structure, document))
+                };
+            }
+            else {
+                document.body = blob;
+                if (!document.content.language) {
+                    document.content.language = "/lang/en";
+                }
+                return {
+                    html: acre.markup.stringify(
+                        propbox.prop_add_document_form(s, prop_structure, lang, document))
+                };
+            }
+        });
+  },
+
+  run_image: function(s, prop_structure, replace, lang) {
+    // modal image edit form
+    return {
+      html: acre.markup.stringify(propbox.prop_add_image_form(s,
+        prop_structure, lang, replace))
+    };
+  },
+
+  run_default: function(s, prop_structure, replace, lang, namespace, user_id) {
+    // default inline form
+    var promises = [];
+    promises.push(queries.prop_values(s, prop_structure, replace, lang, namespace));
+    promises.push(queries.get_enumerated_types(prop_structure, lang));
+    return deferred.all(promises)
+      .then(function([prop_values, enum_types]) {
+        if (prop_values.length) {
+          var prop_value = h.first_element(prop_values);
+          if (ph.user_can_edit(user_id, prop_structure, prop_value)) {
+            return {
+              html: acre.markup.stringify(propbox.value_edit_form(
+                  s, prop_structure, prop_value, lang))
+            };
+          }
+          else {
+            throw new Error(
+              'User does not have permission to edit this link.');
+          }
+        }
+        else {
+          // The "replace" value is no longer valid.
+          // Alert use to reload (touch) and try again.
+          return {
+            invalid: true,
+            reload: true
+          };
+        }
+      });
+  }
+};

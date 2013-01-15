@@ -405,21 +405,6 @@ test("minimal_prop_value", function() {
 });
 
 
-test('property_requires_permission_or_authorities', function() {
-  ok(ph.property_requires_permission_or_authorities(
-       {requires_permission:true}));
-  ok(!ph.property_requires_permission_or_authorities({}));
-  ok(!ph.property_requires_permission_or_authorities({requres_permssion:null}));
-  ok(!ph.property_requires_permission_or_authorities(
-       {requres_permssion:false}));
-
-  ok(!ph.property_requires_permission_or_authorities({authorities:null}));
-  ok(!ph.property_requires_permission_or_authorities({authorities:{}}));
-  ok(!ph.property_requires_permission_or_authorities({authorities:{members:{}}}));
-  ok(ph.property_requires_permission_or_authorities(
-       {authorities:{members:{'/user/foo':1}}}));
-});
-
 test('is_authority', function() {
   same(ph.is_authority({}, '/user/foo'), false);
   same(ph.is_authority(
@@ -442,7 +427,6 @@ test('get_propbox_data_row_css_class', function() {
 
   c = ph.get_propbox_data_row_css_class({requires_permission:true}, {});
   ok(c.indexOf('data-row-requires-permission') != -1, c);
-  ok(c.indexOf('data-row-creator-') == -1, c);
 
   c = ph.get_propbox_data_row_css_class(
       {authorities:{members:{}}}, {creator:'/user/foo'});
@@ -450,13 +434,12 @@ test('get_propbox_data_row_css_class', function() {
 
   c = ph.get_propbox_data_row_css_class(
       {authorities:{members:{'/user/bar':1}}}, {creator:'/user/foo'});
-  ok(c.indexOf('data-row-requires-permission') != -1, c);
-  ok(c.indexOf('data-row-creator-') == -1, c);
+  same(c, DEFAULT_CSS, c);
 
   c = ph.get_propbox_data_row_css_class(
       {authorities:{members:{'/user/foo':1}}}, {creator:'/user/foo'});
-  ok(c.indexOf('data-row-requires-permission') != -1, c);
-  ok(c.indexOf('data-row-creator-foo') != -1, c);
+  ok(c.indexOf('data-row-requires-authority') != -1, c);
+  ok(c.indexOf('data-row-creator-user-foo') != -1, c);
 
 });
 
@@ -549,7 +532,7 @@ test('user_can_edit', function() {
                        mock_prop_structure(authorities, false), {
                          'creator': '/user/masouras'
                        }),
-       false, 'authorities=foo, requires_permission=false');
+       true, 'authorities=foo, requires_permission=false');
 
   same(ph.user_can_edit('/user/masouras',
                        mock_prop_structure(authorities, false), {
@@ -558,6 +541,12 @@ test('user_can_edit', function() {
        false, 'authorities=foo, requires_permission=false');
 
   same(ph.user_can_edit('/user/masouras',
+                       mock_prop_structure(authorities, false), {
+                         'creator': '/user/masouras'
+                       }),
+       true, 'authorities=foo, requires_permission=false');
+
+  same(ph.user_can_edit('/user/jasondouglas',
                        mock_prop_structure(authorities, false), {
                          'creator': '/user/masouras'
                        }),

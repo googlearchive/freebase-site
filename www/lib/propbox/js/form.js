@@ -731,6 +731,11 @@
          if (!errmsg) {
              errmsg = msg;
          }
+
+         // remove: "JS exception: Error: "
+         if (errmsg && errmsg.indexOf("JS exception: Error: ") === 0) {
+           errmsg = errmsg.substring("JS exception: Error: ".length);
+         }
          return errmsg;
      }
    };

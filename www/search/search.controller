@@ -132,23 +132,30 @@ function search(query, type, operator, options) {
           types: sh.get_result_types(item)
         }));
       });
-      return h.extend(params, {
+
+      return {
         query: query,
         type: type,
         operator: operator,
         result: results,
+        prefixed: params.prefixed,
+        scoring: params.scoring,
+        lang: params.lang,
         cursor: r.cursor,
         correction: r.correction
-      });
+      };
     }, function(e) {
-      return h.extend(params, {
+      return {
         query: query,
         type: type,
         operator: operator,
         result: [],
+        prefixed: params.prefixed,
+        scoring: params.scoring,
+        lang: params.lang,
         cursor: null,
         correction: []
-      });
+      };
     });
 }
 

@@ -1,0 +1,289 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var components = acre.require("lib/template/components.mjt");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+  var filter_components = acre.require("lib/filter/components.mjt");
+  var freebase_components = acre.require("lib/template/components.mjt");
+  var fh = acre.require("lib/filter/helpers.sjs");
+  var queries = acre.require("queries.sjs");
+  var EDIT = _("Edit");
+  var DELETE = _("Delete");
+  var LINK = _("Inspect link");
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="sameas.mf.css" />
+  <link rel="stylesheet" type="text/css" href="lib/template/css/chosen.jquery.css" />
+</acre:block>
+
+<acre:block def="page_content()">
+  <div class="column nav">
+    <div class="module">
+      <h2 class="module-title">
+        <a href="javascript:void(0);" class="trigger">Collapse column</a>
+        <span>Filter this data</span>
+      </h2>
+      <div class="module-section alt">
+        ${filter_components.timestamp_filter(c.object.id, c.filters)}
+      </div>
+      <div class="module-section alt">
+        ${filter_components.sort_timestamp_filter(c.id, c.filters)}
+      </div>
+      <div class="module-section alt">
+        ${filter_components.as_of_time_filter(c.object.id, c.filters)}
+      </div>
+      <div class="module-section alt">
+        ${filter_components.creator_filter(c.object.id, c.filters)}
+      </div>
+      <div class="module-section alt">
+        ${filter_components.historical_filter(c.id, c.filters)}
+      </div>
+    </div>
+  </div>
+  <div class="column keys${c.filters.historical ? ' historical' : ''}" 
+       id="keys-data" role="main">
+    <acre:script>
+      var is_ns = c.type_namespace_keys.length > 0 || c.object.type_map["/type/namespace"];
+    </acre:script>
+
+    <acre:block if="is_ns">
+      <div id="keys" class="section two-column">
+        ${type_namespace_keys(c.id, c.type_namespace_keys, c.filters)}
+        ${type_object_key(c.id, c.type_object_key, c.filters)}
+      </div>       
+    </acre:block>
+    <acre:block else="">
+      <div id="keys" class="section">
+        ${type_object_key(c.id, c.type_object_key, c.filters)}
+      </div>
+    </acre:block>
+
+  </div>
+</acre:block>
+
+<acre:block def="type_object_key(id, data, filters)">
+  <div id="type-object-key">
+    <div class="button-group edit">
+      <a href="#" id="create-key" class="button primary"
+         onclick="return fb.sameas.add_key(this, false);">
+        ${_("Create new")}
+      </a>
+    </div>
+    <h2 class="table-title clear"><a name="infinitescroll-count">${_("/type/object/key")} (${i18n_c.number(data.length)})</a></h2>
+    <table class="table table-sortable infinitescroll">
+      <thead>
+        <tr>
+          <th class="column-header first {sorter: 'ignoreCase'}" scope="col">
+            <span class="sort-icon">${_("key")}</span>
+          </th>
+          <th class="column-header first {sorter: 'ignoreCase'}" scope="col">
+            <span class="sort-icon">${_("decoded")}</span>
+          </th>
+          <th class="column-header {sorter: 'string'}" scope="col">
+            <span class="sort-icon">${_("namespace")}</span>
+          </th>
+          <th class="column-header {sorter: 'string'}" scope="col">
+            <span class="sort-icon">${_("url")}</span>
+          </th>
+          <th class="column-header column-header-asc {sorter: 'string'}" scope="col">
+            <span class="sort-icon">${_("timestamp")}</span>
+          </th>
+          <th acre:if="filters.historical" class="column-header {sorter: 'string'}" scope="col">
+            <span class="sort-icon">${_("operation")}</span>
+          </th>
+        </tr>
+      </thead>
+
+      ${keys_body(id, data, filters, false)}
+
+      <tfoot>
+        <tr>
+          <td acre:attrs="filters.historical ? {colspan:'6'} : {colspan:'5'}">
+            <acre:script>
+              var params = {id:id, p:"/type/object/key"};
+              for (var k in filters) {
+                if (filters[k] != null) {
+                  params[k] = filters[k];
+                }
+              }              
+            </acre:script>
+            <a class="infinitescroll-next" href="${h.ajax_url('infinitescroll.ajax', params)}">next</a>
+          </td>
+        </tr>
+      </tfoot>
+
+    </table>
+  </div>
+</acre:block>
+
+<acre:block def="type_namespace_keys(id, data, filters)">
+  <div id="type-namespace-keys">
+    <div class="button-group edit">
+      <a href="#" id="create-key" class="button primary"
+         onclick="return fb.sameas.add_key(this, true);">
+        ${_("Create new")}
+      </a>
+    </div>
+    <h2 class="table-title clear"><a name="infinitescroll-count">${_("/type/namespace/keys")} (${i18n_c.number(data.length)})</a></h2>
+    <table class="table table-sortable infinitescroll">
+      <thead>
+        <tr>
+          <th class="column-header first {sorter: 'ignoreCase'}" scope="col">
+            <span class="sort-icon">${_("key")}</span>
+          </th>
+          <th class="column-header first {sorter: 'ignoreCase'}" scope="col">
+            <span class="sort-icon">${_("decoded")}</span>
+          </th>
+          <th class="column-header {sorter: 'string'}" scope="col">
+            <span class="sort-icon">${_("object")}</span>
+          </th>
+          <th class="column-header {sorter: 'string'}" scope="col">
+            <span class="sort-icon">${_("url")}</span>
+          </th>
+          <th class="column-header column-header-asc {sorter: 'string'}" scope="col">
+            <span class="sort-icon">${_("timestamp")}</span>
+          </th>
+          <th acre:if="filters.historical" class="column-header {sorter: 'string'}" scope="col">
+            <span class="sort-icon">${_("operation")}</span>
+          </th>
+        </tr>
+      </thead>
+
+      ${keys_body(id, data, filters, true)}
+
+      <tfoot>
+        <tr>
+          <td acre:attrs="filters.historical ? {colspan:'6'} : {colspan:'5'}">
+            <acre:script>
+              var params = {id:id, p:"/type/namespace/keys"};
+              for (var k in filters) {
+                if (filters[k] != null) {
+                  params[k] = filters[k];
+                }
+              }              
+            </acre:script>
+            <a class="infinitescroll-next" href="${h.ajax_url('infinitescroll.ajax', params)}">next</a>
+          </td>
+        </tr>
+      </tfoot>
+
+    </table>
+  </div>  
+</acre:block>
+
+<acre:block def="keys_body(id, data, filters, is_type_namespace_keys)">
+  <tbody acre:attrs="data.length ? {'data-next':data[data.length-1].timestamp} : {}">
+    <acre:block for="key in data">
+      ${key_row(id, key, filters, is_type_namespace_keys)}
+    </acre:block>
+  </tbody>
+</acre:block>
+
+<acre:block def="key_row(id, link, filters, is_type_namespace_keys)">
+  <acre:script>
+    var key_info = queries.key_info(link);
+    var valid = link.valid === false ? ["invalid"] : ["valid"];
+    if (link.operation) {
+      valid.push(link.operation);
+    }
+  </acre:script>
+  <tr class="data-row hover-row ${valid.join(' ')}">
+    <th class="row-header odd" scope="row">
+      <span class="wrapper truncate">
+        <span class="literal-value literal-value-key property-value key-value"
+              data-value="${link.target_value.value}">
+          ${key_info.value}
+        </span>
+        ${key_menu(link, is_type_namespace_keys)}
+      </span>
+    </th>
+    <td class="even">
+      <span class="truncate">
+        <span class="literal-value literal-value-key property-value key-value"
+              data-value="${link.target_value.value}">
+          ${acre.freebase.mqlkey_unquote(key_info.value)}
+        </span>
+      </span>
+    </th>
+    <td class="odd">
+      <span class="truncate">
+        <acre:block if="is_type_namespace_keys">
+          <a class="property-value key-namespace"
+             data-id="${key_info.object}" href="${h.fb_url(key_info.object, [['keys']])}">${key_info.object}</a>
+        </acre:block>
+        <acre:block else="">
+          <a class="property-value key-namespace"
+             data-id="${key_info.namespace}" href="${h.fb_url(key_info.namespace, [['keys']])}">${key_info.namespace}</a>
+        </acre:block>                    
+      </span>
+    </td>
+    <td class="even">
+      <span class="truncate">
+        <acre:block if="key_info.url">
+          <a href="${key_info.url}" target="_new">${key_info.url}</a>
+        </acre:block>
+        <acre:block else="">
+          <span>-</span>
+        </acre:block>
+      </span>
+    </td>    
+    <td class="odd">${link.timestamp}</td>
+    <td acre:if="filters.historical" class="even">${link.operation}</td>
+  </tr>
+</acre:block>
+
+<acre:block def="key_menu(link, is_type_namespace_keys)">
+  <acre:block if="link.valid !== false">
+    <ul class="combo-menu nicemenu">
+      <li class="nicemenu-item">
+        <span class="headmenu">
+          <a href="#" onclick="return false;" class="default-action edit-action">edit</a>
+          <a href="javascript:void(0)" class="more-action">menu</a>
+        </span>
+        <ul class="submenu row-menu">
+          <li class="row-menu-item"><a href="#" onclick="return fb.sameas.edit_key(this, ${is_type_namespace_keys});">${EDIT}</a></li>
+          <li class="row-menu-item"><a href="#" onclick="return fb.sameas.delete_key(this, ${is_type_namespace_keys});">${DELETE}</a></li>
+          <li class="row-menu-item"><a href="${h.fb_url(c.id, [['links'], ['filter', '/type/namespace/keys'], ['timestamp', link.timestamp]])}">${LINK}</a></li>
+        </ul>
+      </li>
+    </ul>
+  </acre:block>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="sameas.mf.js"></script>
+</acre:block>

@@ -350,21 +350,6 @@ function mqlread_clause(prop_structure, prop_value, lang, namespace, options) {
 }
 
 /**
- * A property requires permission/authorization
- * if /type/property/requries_permission is
- * TRUE or /type/property/authorities is not NULL.
- * @param {object} prop_structure The property structure.
- *   @see minimal_prop_structure.
- * @return {boolean} TRUE if the property requires permission otherwise FALSE.
- */
-function property_requires_permission_or_authorities(prop_structure) {
-  return prop_structure.requires_permission === true ||
-      !(prop_structure.authorities == null ||
-        h.isEmptyObject(prop_structure.authorities.members));
-}
-
-
-/**
  * A helper to return all the css classes for a propbox data-row.
  * @param {object} prop_structure The property structure.
  *   @see minimal_prop_structure.
@@ -378,11 +363,13 @@ function property_requires_permission_or_authorities(prop_structure) {
  */
 function get_propbox_data_row_css_class(prop_structure, prop_value) {
   var css = ['kbs data-row hover-row'];
-  if (property_requires_permission_or_authorities(prop_structure)) {
+  if (prop_structure.requires_permission === true) {
     css.push('data-row-requires-permission');
-  }
-  if (is_authority(prop_structure, prop_value.creator)) {
-    css.push('data-row-creator-' + h.id_key(prop_value.creator));
+  } else if (prop_structure.authorities != null) {
+    if (is_authority(prop_structure, prop_value.creator)) {
+      css.push('data-row-requires-authority');
+      css.push('data-row-creator' + prop_value.creator.replace(/\//g, '-'));
+    }
   }
   return css.join(' ');
 }
@@ -470,21 +457,19 @@ function user_can_edit(user_id, prop_structure, prop_value) {
     else {
       // authorities=foo, requires_permission=false|null
       // Any user can assert triples for this property,
-      // but triples created by a member of the foo permission
-      // can can only be deleted by the same user who created it.
+      // but triples created by an authority can only be edited by
+      // an authority. Otherwise, anyone can edit the triple.
       if (prop_value.creator) {
-        if (is_authority(prop_structure, user_id)) {
-          return prop_value.creator === user_id;
-        }
-        else {
-          // (Dae) Is this true? Anyone should able to edit/delete the value
-          // they asserted?
-          return prop_value.creator === user_id;
+        if (is_authority(prop_structure, prop_value.creator)) {
+          if (is_authority(prop_structure, user_id)) {
+            return true;
+          }
+          else {
+            return false;
+          }
         }
       }
-      else {
-        return false;
-      }
+      return true;
     }
   }
 }

@@ -45,50 +45,56 @@
 <acre:block def="content_body()">
   <div id="page-content">
     <div id="tabbar">
-      <div class="pill-box" id="pill-filter-box">
-        <acre:block for="type in c.type">
-          ${pill(type)}
-        </acre:block>
-        <input type="text" class="pill-suggest" id="pill-filter-suggest"
-               placeholder="${_('Constrain results by type...')}" />
-        <span id="pill-template" class="pill-template">
-          ${pill()}
-        </span>
+      <div id="search-box">
+        <label for="query">${_("Search")}</label>
+        <input type="text" id="query" name="query" value="${c.query}" />
       </div>
-      <div id="tabbar-controls">
-        <strong>${_("Options:")}</strong>
-        <label for="operator">
-          Operator
-          <select name="operator">
-            <option value="any"
-                    acre:attrs="c.operator == 'any' ? {'selected':'selected'} : {}">
-              any</option>
-            <option value="all"
-                    acre:attrs="c.operator == 'all' ? {'selected':'selected'} : {}">
-              all</option>
-            <option value="should"
-                    acre:attrs="c.operator == 'should' ? {'selected':'selected'} : {}">
-              should</option>
-            <option value="not"
-                    acre:attrs="c.operator == 'not' ? {'selected':'selected'} : {}">
-              not</option>
-          </select>
-        </label> |
-        <label for="scoring">
-          Scoring
-          <select name="scoring">
-            <option value="entity"
-                    acre:attrs="c.scoring == 'entity' ? {'selected':'selected'} : {}">
-              entity</option>
-            <option value="schema"
-                    acre:attrs="c.scoring == 'schema' ? {'selected':'selected'} : {}">
-              schema</option>
-          </select>
-        </label> |
-        <label for="prefixed">
-          <input type="checkbox" name="prefixed" value="true"
-                 acre:attrs="c.prefixed ? {'checked':'checked'} : {}">Prefixed
-        </label>
+      <div id="search-options">
+        <div class="pill-box" id="pill-filter-box">
+          <acre:block for="type in c.type">
+            ${pill(type)}
+          </acre:block>
+          <input type="text" class="pill-suggest" id="pill-filter-suggest"
+                 placeholder="${_('Constrain results by type...')}" />
+          <span id="pill-template" class="pill-template">
+            ${pill()}
+          </span>
+        </div>
+        <div id="tabbar-controls">
+          <strong>${_("Options:")}</strong>
+          <label for="operator">
+            Operator
+            <select name="operator">
+              <option value="any"
+                      acre:attrs="c.operator == 'any' ? {'selected':'selected'} : {}">
+                any</option>
+              <option value="all"
+                      acre:attrs="c.operator == 'all' ? {'selected':'selected'} : {}">
+                all</option>
+              <option value="should"
+                      acre:attrs="c.operator == 'should' ? {'selected':'selected'} : {}">
+                should</option>
+              <option value="not"
+                      acre:attrs="c.operator == 'not' ? {'selected':'selected'} : {}">
+                not</option>
+            </select>
+          </label> |
+          <label for="scoring">
+            Scoring
+            <select name="scoring">
+              <option value="entity"
+                      acre:attrs="c.scoring == 'entity' ? {'selected':'selected'} : {}">
+                entity</option>
+              <option value="schema"
+                      acre:attrs="c.scoring == 'schema' ? {'selected':'selected'} : {}">
+                schema</option>
+            </select>
+          </label> |
+          <label for="prefixed">
+            <input type="checkbox" name="prefixed" value="true"
+                   acre:attrs="c.prefixed ? {'checked':'checked'} : {}">Prefixed
+          </label>
+        </div>
       </div>
     </div>
 
@@ -218,11 +224,6 @@
 
 <acre:block def="footer_script()">
   <script src="search.mf.js"></script>
-  <script>
-    $(function() {
-      $('#fb-search-input').val('${c.query}').select();
-    });
-  </script>
 </acre:block>
 
 <acre:block def="tag_strong(text)">

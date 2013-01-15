@@ -36,10 +36,8 @@
     init: function() {
 
       // Take over main search box
-      search.query = $('#fb-search-input');
-      search.query.data('suggest')._destroy();
+      search.query = $('#query').focus();
       search.query
-        .unbind()
         .keypress(function(e) {
           if (e.keyCode === 13) {
             e.preventDefault();

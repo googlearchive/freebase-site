@@ -1,13 +1,41 @@
 
 #page-content {
   position: relative;
-  padding-left: 165px;
-  max-width: 920px;
 }
 
 #tabbar {
-  padding-bottom: 12px;
+  padding-bottom: 3em;
 }
+
+#search-box {
+    padding-left: 15px;
+    padding-bottom: 1em;
+}
+#search-box label {
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+#query {
+    font-size: 2em;
+    padding: 4px;
+    width: 400px;
+    border: 1px solid rgb(206,206,206);
+    box-shadow: 0 0 0 5px #e0e3e6;
+    margin-left: 6px;
+}
+#query:focus {
+    border-color: rgb(97, 215, 247);
+}
+
+#search-options {
+    background: #cecece;
+    padding: 15px;
+}
+#search-options .pill-box {
+    box-shadow: none;
+}
+
 
 #tabbar-controls {
     font-size: 1.3em;
@@ -29,6 +57,7 @@
  ### Domain Box Styling
 */
 .search-section {
+  clear: both;
   font-size: 1.2em;
   position: relative;
   margin-bottom: 40px;
@@ -62,8 +91,11 @@
   }
 }
 
-.body tbody {
-
+.body {
+  margin: 0 0 20px;
+  background: #fff;
+  box-shadow: 0 0 0 4px #e1e4e6;
+  padding: 0 15px 20px;
 }
 
 .correction-row > td {
@@ -79,7 +111,7 @@ tr.search-row > td {
     width: 100px;
 }
 .result-thumb img {
-    margin: 1em;
+    margin-top: 1em;
     border: 1px solid #ccc;
 }
 

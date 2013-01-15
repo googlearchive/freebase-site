@@ -1,0 +1,175 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var image = acre.require("lib/template/imagecomponents");
+  var filter_components = acre.require("lib/filter/components.mjt");
+  var freebase_components = acre.require("lib/template/components.mjt");
+  var fh = acre.require("lib/filter/helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+  var th = acre.require("helpers.sjs");
+  var triples = acre.require("triples.mjt");
+  var MORE = _("+");
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="triples.mf.css" />
+</acre:block>
+
+<acre:block def="page_content()">
+  <div class="column nav">
+    <div class="module">
+      <h2 class="module-title">
+        <a href="javascript:void(0);" class="trigger">Collapse column</a>
+        <span>Filter this data</span>
+      </h2>
+      <div class="module-section alt">
+        ${filter_components.historical_filter(c.id, c.filters)}
+      </div>
+      <div class="module-section alt">
+        ${filter_components.sort_timestamp_filter(c.id, c.filters)}
+      </div>
+      <div class="module-section alt">
+        ${filter_components.timestamp_filter(c.id, c.filters)}
+      </div>
+      <div class="module-section alt">
+        ${filter_components.as_of_time_filter(c.id, c.filters)}
+      </div>
+      <div class="module-section alt">
+        ${filter_components.creator_filter(c.id, c.filters)}
+      </div>
+    </div>
+  </div>
+
+  <div class="column links" id="triples-data" role="main" acre:attrs="c.filters.historical ? {'class':'historical'} : {}">
+
+    ${property(c.id, c.property_links, c.filters)}
+
+  </div>
+
+</acre:block>
+
+<acre:block def="property(id, data, filters)" if="data && data.length">
+  <div class="section">
+    <h2 class="table-title">
+      <a name="infinitescroll-count">
+        ${_("Instances of this property")} 
+        (${i18n_c.number(data.length)}<span class="more">${MORE}</span>)
+      </a>
+    </h2>
+    <table class="table table-sortable" id="infinitescroll">
+      <thead>
+        <tr>
+          <th class="column-header first" scope="col">
+            <span class="sort-icon">${_("source")}</span>
+          </th>
+          <th class="column-header" scope="col">
+            <span class="sort-icon">${_("target")}</span>
+          </th>
+          <th class="column-header" scope="col">
+            <span class="sort-icon">${_("user")}</span>
+          </th>
+          <th class="column-header" scope="col">
+            <span class="sort-icon">${_("app")}</span>
+          </th>
+          <th class="column-header" scope="col">
+            <span class="sort-icon">${_("dataset")}</span>
+          </th>
+          <th class="column-header ${filters.sort === 'timestamp' ? 'column-header-desc' : 'column-header-asc'} {sorter: 'string'}" scope="col">
+            <span class="sort-icon">${_("timestamp")}</span>
+          </th>
+          <th acre:if="filters.historical" class="column-header" scope="col">
+            <span class="sort-icon">${_("operation")}</span>
+          </th>
+        </tr>
+      </thead>
+
+      ${property_body(id, data, filters)}
+
+      <tfoot>
+        <tr>
+          <td acre:attrs="filters.historical ? {colspan:'6'} : {colspan:'5'}">
+            <acre:script>
+              var params = {id:id};
+              for (var k in filters) {
+                if (filters[k] != null) {
+                  params[k] = filters[k];
+                }
+              }              
+            </acre:script>
+            <a id="infinitescroll-next" href="${h.ajax_url('/infinitescroll_property.ajax', params)}">next</a>
+          </td>
+        </tr>
+      </tfoot>
+
+    </table>
+  </div>
+</acre:block>
+
+<acre:block def="property_body(id, data, filters)">
+  <tbody acre:attrs="data.length >= 100 ? {'data-next':data[data.length-1].timestamp} : {}">
+    <acre:block for="o in data">
+      ${property_row(id, o, filters)}
+    </acre:block>
+  </tbody>
+</acre:block>
+
+<acre:block def="property_row(id, o, filters)">
+  <tr class="${th.link_class(o)}">
+    <acre:script>
+      var attr = h.get_attribution(o);
+    </acre:script>
+    <th class="row-header odd" scope="row">
+      <span class="wrapper truncate">
+        ${triples.source(o)}
+        ${triples.link_menu(o)}
+      </span>
+    </th>
+    <td class="odd">
+      <span class="truncate">
+        ${o.target_value ? triples.target_value(o) : triples.target(o)}
+      </span>
+    </td>
+    <td class="even">${triples.user(attr)}</td>
+    <td class="odd">${triples.app(attr)}</td>
+    <td class="even">${triples.dataset(attr)}</td>
+    <td class="odd">${o.timestamp}</td>
+    <td acre:if="filters.historical" class="even">${o.operation}</td>
+  </tr>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="triples.mf.js"></script>
+</acre:block>

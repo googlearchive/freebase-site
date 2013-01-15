@@ -1,7 +1,36 @@
-[
-  "lib/template/css/mixins.less",
-  "lib/template/css/freebase.ui.infinitescroll.less",
-  "lib/template/css/freebase.ui.i18n.less",
-  "lib/template/css/freebase.ui.pill.less",
-  "css/links.less"
-]
+
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Additional Licenses for Third Party components can be found here:
+ * http://wiki.freebase.com/wiki/Freebase_Site_License
+ *
+ */
+#infscr-loading{display:inline-block;position:relative;margin:10px 0;padding:0 80px 9px 15px;border-bottom:1px solid #d5d7d8}#infscr-loading img{position:absolute;right:0;top:7px}#infscr-loading div{display:inline-block;color:#999;font-size:14px;line-height:20px}.js #infinitescroll-next{display:none}.form-group{margin:20px 0}.modal .table{border-top:0}.modal .table thead th{font-weight:bold;padding:3px 2px;font-size:12px;border-bottom:1px solid #d6d7d8}.modal tbody th.row-header{padding-left:0}#text-edit-form .data-input{background:none;padding-right:0;margin-right:5px;border-width:1px}#text-edit-form .lang{line-height:2.6}#text-edit-form .form-note{font-size:12px;font-style:italic}#text-edit-form .modal-title .key{font-size:12px;font-weight:normal;color:#333}#language-values{height:405px;overflow:auto}#language-values td.lang{width:300px}#language-values .icon-link{text-indent:-9999px}#language-values .delete-row{vertical-align:middle}#language-values tbody tr:hover{background:#f1f2f3;-webkit-transition:background .1s ease-in-out 0s;-moz-transition:background .1s ease-in-out 0s;-o-transition:background .1s ease-in-out 0s;transition:background .1s ease-in-out 0s}#language-values .new{background:#edf7f3}.preferred{}.preferred .lang{font-weight:bold}#text-edit-form .form-label{padding-left:5px;margin-bottom:7px}#text-edit-form .icon-link{padding-left:5px;font-size:11px}.lang-warning{visibility:hidden}.lang-select-submit,.lang-select-container{display:inline-block;padding:1px 2px}#text-edit-form .form-group .fb-input{width:150px}.lang-select-submit.focused,.lang-select-container.focused{-webkit-box-shadow:0 0 6px #61d7f7;-moz-box-shadow:0 0 6px #61d7f7;box-shadow:0 0 6px #61d7f7}#text-edit-form .message{margin:0}.pill-box{border:1px solid #cecece;background:white;box-shadow:0 0 0 5px #e0e3e6;padding:.5em 1em;line-height:1.3}.pill-box.focused{border-color:#61d7f7}.pill-suggest{border:none;display:inline-block;font-size:1.3em}.pill{display:inline-block;font-size:1.3em;padding:0 .5em;margin:.2em .5em .2em 0;border:1px solid #FFD02F;-moz-border-radius:8px;-webkit-border-radius:8px;border-radius:8px 8px 8px 8px;background-image:-webkit-gradient(linear,0% 0,0% 100%,from(#ffd02f),to(#feb22a));background-image:-webkit-linear-gradient(#ffd02f,#feb22a);background-image:-moz-linear-gradient(0% 55% 90deg,#feb22a,#ffd02f);background-repeat:repeat}.pill:hover{border:1px solid #FEB22A;background-image:-webkit-gradient(linear,0% 0,0% 100%,from(#feb22a),to(#ffd02f));background-image:-webkit-linear-gradient(#feb22a,#ffd02f);background-image:-moz-linear-gradient(0% 55% 90deg,#ffd02f,#feb22a);background-repeat:repeat}a.pill-text{color:black}a.pill-x{color:white;padding-left:12px}a.pill-text:hover,a.pill-x:hover{text-decoration:none}.pill-template{display:none}#page-content{position:relative;padding-left:40px}#tabbar{padding-bottom:12px}#tabbar-controls{font-size:1.3em}#tabbar-controls label{}#pill-filter-box{margin-right:250px}#pill-filter-suggest{width:325px}#by-creator{float:right;width:240px;padding-left:10px;white-space:nowrap}#pill-creator-box{display:inline-block;margin-left:10px;width:210px}#pill-creator-suggest{width:200px}#common-filters{font-size:1.3em;padding-top:.5em}.links-section{font-size:1.2em;position:relative;margin-bottom:40px}.links-section:after{z-index:-1;content:"";display:block;position:absolute;top:15px;width:100%;height:10px;border-top:1px solid #D4DDE3;border-left:1px solid #D4DDE3;box-shadow:inset 1px 1px 1px 0 white}.links-section .header{font-size:1.8em;font-weight:normal;margin-bottom:10px}.links-section .header .links-title{display:inline-block;background-color:#e8ebee;padding:0 6px;margin-left:-6px}.links-section .header .links-name{color:#80a0b2!important}.body{margin:0 0 20px;background:#fff;box-shadow:0 0 0 4px #e1e4e6;padding:0 15px 20px}.body tbody>tr{border-top:1px solid #EEE}.body tbody>tr.invalid{background:#FBEFEF;text-decoration:line-through}.body tbody>tr:hover{outline:solid 1px #E8EBEE;background-color:rgba(0,0,0,0.02)}.body tbody>tr.invalid:hover{background-color:#F8E0E0}.body td{white-space:nowrap}.body td,.body th{padding-left:10px!important}.body .first{padding-left:0!important}.body th.menu-col .property-header,.body td.menu-col .empty{padding-left:12px}td.desc{max-width:80%;white-space:normal!important}td.break{max-width:25%;white-space:normal!important;word-break:break-all!important}.lang,.unit,.time,.cvt,.name{word-break:normal!important;color:rgba(0,0,0,0.3)!important}.empty,.self{color:#EEE}a.cvt{display:inline-block;padding-right:20px;text-decoration:none}.data-row:hover a.cvt{background:url("/static/lib.www.trunk.svn.freebase-site.googlecode.dev/template/img/ui-icons.png") no-repeat right -558px}.data-row:hover a.cvt:hover{background:url("/static/lib.www.trunk.svn.freebase-site.googlecode.dev/template/img/ui-icons.png") no-repeat right -585px}.data-row:hover a.cvt.expanded,a.cvt.expanded{background:url("/static/lib.www.trunk.svn.freebase-site.googlecode.dev/template/img/ui-icons.png") no-repeat right -503px}.data-row:hover a.cvt.expanded:hover,a.cvt.expanded:hover{background-position:right -530px}.cvt-row{background:rgba(0,0,0,0.1)}.cvt-row .nicemenu{visibility:hidden!important}.data-row .inline-menu{display:inline-block;visibility:hidden}.data-row .inline-menu.active{visibility:visible}.data-row .more-action{display:inline-block;line-height:1;background:url("/static/101a.lib.www.tags.svn.freebase-site.googlecode.dev/template/img/ui-icons.png") no-repeat left -688px;padding:5px}.data-row .more-action:hover,.data-row .inline-menu.active .more-action{background-position:left -722px}.fullts,.fullattr{display:none}.fullattr{padding-left:12px;list-style:none}.data-row:hover .inline-menu{visibility:visible}

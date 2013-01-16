@@ -1,0 +1,532 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<!!--
+  This is the base template for any object (with an ID) in freebase
+  Uses template/freebase.mjt for chrome
+!!-->
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("helper/helpers.sjs");
+  var i18n = acre.require("i18n/i18n.sjs");
+  var i18n_c = acre.require("i18n/components.mjt");
+  var _ = i18n.gettext;
+  var components = acre.require("template/components.mjt");
+  var discuss_c = acre.require("discuss/components.mjt");
+  var image = acre.require("template/imagecomponents.mjt");
+  var base = acre.require("template/freebase.mjt");
+  var self= this;
+  var this_exports = this.exports;
+  var that_exports;
+  var fh = acre.require("filter/helpers.sjs");
+
+  var exec = function (o, scope) {
+    var ifexec = true;
+    if ("if" in o) {
+      ifexec = o["if"];
+    }
+    if (h.isFunction(ifexec)) {
+      try {
+        ifexec = o["if"] = ifexec.apply(scope);
+      } catch(e) {
+        console.error("Error in routing rule function", e);
+        ifexec = false;
+      }
+    }
+    if (ifexec) {
+      for (var key in o) {
+        if (key === "if") continue;
+        var val = o[key];
+        if (h.isFunction(val)) {
+          try {
+            o[key] = val.apply(scope);
+          } catch(e) {
+            console.error("Error in routing rule function", e);
+            ifexec = false;
+          }
+        }
+      }
+    }
+    return ifexec;
+  };
+</acre:script>
+
+<acre:block def="page(exports)">
+  <acre:script>
+    that_exports = exports;
+  </acre:script>
+  ${base.page(this_exports)}
+</acre:block>
+
+<acre:block def="freebase_js()">
+  <script src="template/object.mf.js"></script>
+</acre:block>
+
+<acre:block def="freebase_css()">
+  <link rel="stylesheet" type="text/css" href="template/object.mf.css" />
+</acre:block>
+
+<acre:block def="head()">
+  <!-- canonical url -->
+  <link rel="canonical" href="${h.fb_url(true, c.object.id)}" />
+  <!-- Update address bar if ID changed in object router -->
+  <script acre:if="c.object && acre.request.path_info !== c.object.id">
+    (function() {
+      var new_url = "${acre.request.url.replace(acre.request.path_info, c.object.id)}";
+      if (typeof history.replaceState === 'function') {
+        history.replaceState(null, "", new_url);
+      } else {
+        window.loaction.href = new_url;
+      }      
+    })();
+  </script>
+  <acre:block if="that_exports.head">
+    ${that_exports.head()}
+  </acre:block>
+</acre:block>
+
+<acre:block def="title()">
+  ${i18n.display_name(c.object)}
+</acre:block>
+
+<acre:block def="body(exports)">  
+  <!!-- over-ride default body to add "embed" class !!-->
+  <acre:script>
+    var embed = c.filters.embed ? " embed" : "";
+  </acre:script>
+  <!--[if IE 8 ]><body class="ie8${embed}"><![endif]-->
+  <!--[if IE 7 ]><body class="ie7${embed}"><![endif]-->
+  <!--[if IE 6 ]><body class="ie6${embed}"><![endif]-->
+  <!--[if !IE]>--><body class="${h.trim(embed)}"><!--<![endif]-->
+    ${base.inner_body(exports)}
+  </body>
+</acre:block>
+
+<acre:block def="content(exports)">
+  <div id="content" class="clear" data-id="${c.object.id}">
+    ${content_body()}
+  </div>
+</acre:block>
+
+<acre:block def="content_body()">
+  <div id="page-header">
+
+    <acre:block if="c.banners && c.banners.length">
+      <acre:block for="banner in c.banners">
+        <div class="page-flag">
+          <span class="page-flag-msg">${banner}</span>
+        </div>
+      </acre:block>
+    </acre:block>
+    <acre:block if="c.object.flag">
+      <div class="page-flag">
+        <!!-- Flags (merge, delete, split, objectionable) !!-->
+        <acre:script>
+          var flag = c.object.flag;
+          var msg = _("This topic has been flagged.");
+          var perm_obj = {id: flag.creator};
+        </acre:script>
+        <span class="page-flag-msg">${msg}</span>
+        <a href="${h.fb_url('/review?flags=' + flag.id)}">${_("Vote on this issue here")}</a>.
+        <span class="edit-perm ${JSON.stringify(perm_obj)}">
+          <a href="#" onclick="return window.freebase.flag.undo(this, '${flag.id}');">Undo</a>.
+        </span>
+      </div>
+    </acre:block>
+
+    <acre:block if="c.object">
+
+      <!!-- Object label + thumbnail !!-->
+      <acre:script>
+        var label = c.object_type.name;
+        var classname = 'object-label ';
+        classname += label === 'Topic' ? 'img' : 'no-img';
+      </acre:script>
+      <div class="$classname">
+        ${object_label()}
+        <div id="image" acre:if="c.show_image">
+          <acre:block if="c.object.image">
+          <acre:script>
+            var options = {
+              maxheight: 53,
+              maxwidth: 53,
+              mode: 'fillcropmid',
+              pad: 2
+            };
+          </acre:script>
+            ${image.image_thumb(c.object.id, 50, options)}
+          </acre:block>
+        </div>
+      </div>
+
+      <div class="page-title">
+
+        <!!-- Object Attribution !!-->
+        <span class="creation-timestamp">
+          <acre:block def="attribution()">
+            ${image.user_image_tiny(c.object.attribution.creator)}
+            ${_("Created by")}
+            ${components.attribution(c.object.attribution)}
+          </acre:block>
+          <acre:block if="c.object.timestamp">
+            <span acre:if="c.object.attribution">
+              ${attribution()}
+              ${_("on")}
+            </span>
+            <span acre:else="">
+              ${_("Created on")}
+            </span>
+            <acre:script>
+              var attrs = {
+                "class": "published",
+                "data-format": "long"
+              };
+            </acre:script>
+            <acre:block if="c.object.timestamp">
+              ${i18n_c.datetime(c.object.timestamp, attrs, "d")}
+            </acre:block>
+          </acre:block>
+          <acre:block else="">
+            ${attribution()}
+          </acre:block>
+        </span>
+
+        <!!-- Object Name !!-->
+        <h1 acre:attrs="c.object.permission ? {'class':'lock'} : {}">
+          <acre:script>
+            var name = c.object.name ? c.object.name.value : c.object.id;
+          </acre:script>
+          ${name}
+          <ul class="inline-menu nicemenu namemenu">
+            <li class="inline-menu-item nicemenu-item">
+              <span class="headmenu">
+                <a href="#" class="menu-trigger" onclick="return false;">
+                  <acre:block if="c.object.name">
+                    ${i18n_c.lang_code(c.object.name.lang, null, true)}
+                  </acre:block>
+                  <acre:block else="">
+                    <sup class="lang-code">${_('edit')}</sup>
+                  </acre:block>
+                </a>
+              </span>
+              <ul class="submenu localization">
+                <acre:script>
+                  var ajax_prefix = h.ajax_url('lib/i18n');
+                </acre:script>
+                <li>
+                  <a href="${h.fb_url(c.object.id, [['i18n']])}" class="icon-link">
+                    <span class="edit-icon">${_("View/edit localized names")} &hellip;</span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul> 
+        </h1>
+
+          <acre:block if="that_exports.nav_flags">
+            <span class="flags">
+              ${that_exports.nav_flags()}
+            </span>
+          </acre:block>
+
+          <!!-- Show object IDs and nav_keys -->
+          <div class="meta">
+            <span acre:if="c.object.id !== c.object.mid" class="key">
+              <strong>${_("id")}</strong>:
+              <span>${c.object.id}</span>
+            </span>
+            <span class="key">
+              <strong>${_("mid")}</strong>:
+              <span>${c.object.mid}</span>
+            </span>
+            <acre:block if="c.object.replaced_by">
+              <strong>${(_("replaced by"))}</strong>:
+              <a href="${h.fb_url(c.object.replaced_by.id)}"
+                 class="property-value" data-id="${c.object.replaced_by.id}">
+                ${c.object.replaced_by.id}
+              </a>
+            </acre:block>
+            <span acre:if="c.object.permission" class="key">
+              <strong>${_("permission")}</strong>:
+              <span>
+                <a href="${h.fb_url(c.object.permission.id)}">
+                  ${c.object.permission.id}
+                </a>
+              </span>
+            </span>
+            <span acre:for="nk in c.nav_keys" 
+                  acre:if="(exec(nk, c) && nk.key)" class="key">
+              <strong>${nk.label}:</strong>
+              <span acre:if="nk.url" >
+                <a href="$nk.url">${nk.key}</a>
+              </span>
+              <span acre:else="">${nk.key}</span>
+            </span>
+            <acre:script>
+              var weblinks = c.object.weblinks;
+            </acre:script>
+            <acre:block if="weblinks.length">
+              <acre:script>
+                var first = weblinks.shift();
+              </acre:script>
+              <span class="key">
+                <strong>${_("on the web")}:</strong>
+                <span>
+                  <a href="${first.urls[0]}" target="_new"
+                     class="weblink-favicon"
+                     style="background-image:url(${first.favicon});">
+                    <span>${first.domain}</span>
+                  </a>
+                  <acre:block if="weblinks.length">
+                    <ul class="inline-menu nicemenu">
+                      <li class="inline-menu-item nicemenu-item">
+                        <a href="#" class="headmenu menu-trigger">
+                          <span>&nbsp;</span>
+                        </a>
+                        <ul class="submenu weblinks row-menu left">
+                          <acre:block for="weblink in weblinks">
+                            <li>
+                              <a href="${weblink.urls[0]}" target="_new"
+                                 class="weblink-favicon"
+                                 style="background-image:url(${weblink.favicon});">
+                                <span>${weblink.domain}</span>
+                              </a>
+                            </li>
+                          </acre:block>
+                        </ul>
+                      </li>
+                    </ul>
+                  </acre:block>
+                </span>
+              </span>
+            </acre:block>
+          </div>
+
+          <!!-- Show object description -->
+          <div id="description" class="clear">
+            <acre:block if="c.object.description">
+              <acre:script>
+                var d = c.object.description;
+                var less = d.text !== d.value;
+              </acre:script>
+              <p class="blurb" id="max-blurb">
+                ${d.value}
+                <a acre:if="less" href="#" title="${_('Show less')}" 
+                   id="less-blurb">[ - ]</a>
+              </p>
+              <p acre:if="less" id="min-blurb" style="display:none;">
+                ${d.text}
+                <a href="#" title="${_('Show more')}" 
+                   id="more-blurb">[ + ]</a>
+              </p>
+              <!-- TODO: show citation text -->
+            </acre:block>
+          </div>
+        </div>
+
+      </div>
+      <div class="nav clear">
+        ${nav_navs()}
+        ${nav_tabs()}
+      </div>
+    </acre:block>
+  </div><!!-- /page-header-->
+
+  <div id="page-content">
+    <div id="page-content-wrapper">
+        <acre:block if="that_exports.page_content">
+          ${that_exports.page_content()}
+        </acre:block>
+    </div>
+    ${discuss_c.discuss_frame()}
+  </div>
+
+</acre:block>
+
+<acre:block def="footer_script()">
+  <acre:block if="that_exports.footer_script">
+    ${that_exports.footer_script()}
+  </acre:block>
+</acre:block>
+
+<acre:block def="nav_tabs()">
+  <acre:script>
+    var params = fh.global_filters(c.filters);
+    // use fb_url to get lang param
+    qs = h.fb_url("", params).substring(2);
+  </acre:script>
+  <ul class="tab-nav">
+    <acre:block for="tab in c.tabs">
+      <acre:script>
+        var url = "?" + tab.key + (qs.length ? "&" + qs : "");
+        var current = (tab.key === c.current_tab.key);
+      </acre:script>
+      <li>
+        <a acre:if="current" href="#" onclick="return false;" class="current"><span>${_(tab.name)}</span></a>
+        <a acre:else="" href="${url}"><span>${_(tab.name)}</span></a>
+      </li>
+    </acre:block>
+    <li class="more"  acre:if="c.more_tabs && c.more_tabs.length">
+      <ul class="inline-menu nicemenu">
+        <li class="inline-menu-item nicemenu-item">
+          <a  href="#" class="headmenu">
+            <span>More</span>
+          </a>
+          <ul class="row-menu submenu left object-settings">
+            <acre:block for="tab in c.more_tabs">
+              <acre:script>
+                var url = "?" + tab.key + (qs.length ? "&" + qs : "");
+                var current = (tab.key === c.current_tab.key);
+              </acre:script>
+              <li>
+                <a acre:if="current" href="#" onclick="return false;" class="current"><span>${_(tab.name)}</span></a>
+                <a acre:else="" href="${url}"><span>${_(tab.name)}</span></a>
+              </li>
+            </acre:block>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="nav_navs()" if="c.gear">
+  <ul class="nav-utilities inline-menu nicemenu">
+    <li class="inline-menu-item nicemenu-item">
+      <span class="mark headmenu">
+        <a href="#" class="object-actions-toggle">
+          <span class="outer-cog">
+            <span class="inner-cog"></span>
+            <span class="cog one"></span>
+            <span class="cog two"></span>
+            <span class="cog three"></span>
+            <span class="cog four"></span>
+            <span class="cog five"></span>
+            <span class="cog six"></span>
+            <span class="cog seven"></span>
+            <span class="cog eight"></span>
+          </span>
+        </a>
+      </span>
+      <ul class="row-menu submenu right object-settings">
+        <acre:block for="nav in c.gear" if="exec(nav, c)">
+          ${nav_item(nav)}
+        </acre:block>
+        <li class="no-settings">
+          <a name="no-settings"><span>${_("No settings for this object")}</span></a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="nav_item(nav)">
+  <acre:script>
+    var key = nav.key || nav.name.toLowerCase().replace(/\s+/g, '-');
+    var href, onclick;
+    if (nav.url) {
+      href = nav.url;
+    }
+    else if (nav.key) {
+      href = "?" + nav.key;
+    }
+    else if (nav.app && nav.script) {
+      href = h.reentrant_url("/static", nav.app, "/", nav.script);
+      onclick = [
+        "return fb.nav_get_script(this,",
+        JSON.stringify(nav.method || null),
+        ",",
+        JSON.stringify(nav.args || null),
+        ");"
+      ].join("");
+    }
+    else if (nav.onclick) {
+      href = "#";
+      onclick = nav.onclick;
+    }
+
+    var show = nav.show;
+    if (typeof show == "undefined") {
+      show = true;
+    }
+    else if (typeof show == "string") {
+      show = acre.require(nav.app + "/" + nav.script)[show](c.object);
+    }
+  </acre:script>
+  <acre:block if="show">
+    <li acre:attrs="nav.auth ? {'class':'edit'} : {}">               
+      <acre:block if="href">
+        <acre:block if="onclick">
+          <a href="${href}" onclick="${onclick}">
+            <span>${acre.markup.bless(nav.name)}</span>
+          </a>
+        </acre:block>
+        <acre:block else="">
+          <a href="${href}">
+            <span>${acre.markup.bless(nav.name)}</span>
+          </a>
+        </acre:block>
+      </acre:block>
+      <acre:block else="">
+        <label>${acre.markup.bless(nav.name)}</label>
+      </acre:block>
+      <acre:block if="nav.subnavs">
+        <ul class="subnavs">
+          <acre:block for="subnav in nav.subnavs">
+            ${nav_item(subnav)}
+          </acre:block>
+        </ul>
+      </acre:block>
+    </li>
+  </acre:block>
+</acre:block>
+
+
+<acre:block def="object_label()">
+  <acre:script>
+    var label = c.object_type.name;
+    if (c.object_type.id === '/type/user' && c.user_badge) {
+      label = c.user_badge;
+    }
+  </acre:script>
+  <div class="label">
+    <a class="label-trigger ${c.object_type.name.toLowerCase()}" href="javascript:void(0)">${label}</a>
+  </div>
+</acre:block>
+
+<acre:block def="acre_javascript_vars()">
+  <script>
+    SERVER.c.id = "${c.object.id}";
+  </script>
+  <acre:block if="that_exports.acre_javascript_vars">
+    ${that_exports.acre_javascript_vars()}
+  </acre:block>
+</acre:block>

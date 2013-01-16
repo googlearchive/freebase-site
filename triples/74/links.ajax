@@ -1,0 +1,77 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+var h = acre.require("lib/helper/helpers.sjs");
+var validators = acre.require('lib/validator/validators.sjs');
+var links_q = acre.require('links.tab');
+var links_t = acre.require('links.mjt');
+var creator_q = acre.require('lib/queries/creator.sjs');
+var apis = acre.require("lib/promise/apis.sjs");
+var freebase = apis.freebase;
+var deferred = apis.deferred;
+
+var SPEC = {
+
+  validate: function(params) {
+    return [
+      validators.MqlId(params, "id", {required:true}),
+      validators.MultiValue(params, 'filter', {
+        validator: validators.MqlId,
+        if_empty: []
+      }),
+      validators.MqlId(params, 'creator', {if_empty:null}),
+      validators.StringBool(params, 'historical', {if_empty:false}),
+      validators.OneOf(params, 'sort', {
+        if_empty: '-timestamp',
+        oneof: ['timestamp', '-timestamp']
+      }),
+      validators.MultiValue(params, 'timestamp', {
+        if_empty: null,
+        validator: validators.Timestamp
+      }),
+      validators.Timestamp(params, 'next', {if_empty:null}),
+      validators.Int(params, 'offset', {if_empty:0})
+    ];
+  },
+
+  run: function(
+      id, filter, creator, historical, sort, timestamp, next, offset) {
+    return links_q.get_links(
+      id, filter, creator, historical, sort, timestamp, next)
+        .then(function(r) {
+          return {
+            html: acre.markup.stringify(
+                links_t.links_body(id, r, historical, offset))
+          };
+        });
+  }
+};
+

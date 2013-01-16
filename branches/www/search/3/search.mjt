@@ -1,0 +1,244 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+  var image = acre.require("lib/template/imagecomponents.mjt");
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="search.mf.css" />
+</acre:block>
+
+<acre:block def="content_body()">
+  <div id="page-content">
+    <div id="tabbar">
+      <div id="search-box">
+        <label for="query">${_("Search")}</label>
+        <input type="text" id="query" name="query" value="${c.query}" />
+      </div>
+      <div id="search-options">
+        <div class="pill-box" id="pill-filter-box">
+          <acre:block for="type in c.type">
+            ${pill(type)}
+          </acre:block>
+          <input type="text" class="pill-suggest" id="pill-filter-suggest"
+                 placeholder="${_('Constrain results by type...')}" />
+          <span id="pill-template" class="pill-template">
+            ${pill()}
+          </span>
+        </div>
+        <div id="tabbar-controls">
+          <strong>${_("Options:")}</strong>
+          <label for="operator">
+            Operator
+            <select name="operator">
+              <option value="any"
+                      acre:attrs="c.operator == 'any' ? {'selected':'selected'} : {}">
+                any</option>
+              <option value="all"
+                      acre:attrs="c.operator == 'all' ? {'selected':'selected'} : {}">
+                all</option>
+              <option value="should"
+                      acre:attrs="c.operator == 'should' ? {'selected':'selected'} : {}">
+                should</option>
+              <option value="not"
+                      acre:attrs="c.operator == 'not' ? {'selected':'selected'} : {}">
+                not</option>
+            </select>
+          </label> |
+          <label for="scoring">
+            Scoring
+            <select name="scoring">
+              <option value="entity"
+                      acre:attrs="c.scoring == 'entity' ? {'selected':'selected'} : {}">
+                entity</option>
+              <option value="schema"
+                      acre:attrs="c.scoring == 'schema' ? {'selected':'selected'} : {}">
+                schema</option>
+            </select>
+          </label> |
+          <label for="prefixed">
+            <input type="checkbox" name="prefixed" value="true"
+                   acre:attrs="c.prefixed ? {'checked':'checked'} : {}">Prefixed
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="section search-section">
+      <div class="header">
+        <h1 class="kbs">
+          <span class="mark">
+            <span class="search-title">
+              <a href="javascript:void(0);"
+                 class="schema-name results-name" name="results">
+                ${_("Search Results")}
+              </a>
+            </span>
+          </span>
+        </h1>
+      </div>
+      <div class="body">
+        <table class="data-table" id="infinitescroll">
+
+          ${search_body(c.query, c.correction, c.result, c.cursor)}
+
+          <tfoot>
+            <tr>
+              <td colspan="2">
+                <a id="infinitescroll-next"
+                   href="${h.ajax_url('/search.ajax')}">next</a>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="search_body(query, correction, result, cursor)">
+  <acre:block if="result && result.length > 0">
+    <acre:script>
+      var offset = 0;
+      if (cursor) {
+        offset = cursor - result.length;
+      }
+    </acre:script>
+    <tbody acre:attrs="cursor ? {'data-next':cursor} : {}">
+      ${correction_row(correction)}
+      <acre:block for="i,item in result">
+        ${search_row(item, i+offset+1)}
+      </acre:block>
+    </tbody>
+  </acre:block>
+  <acre:block else="">
+    ${empty_body(query, correction)}
+  </acre:block>
+</acre:block>
+
+<acre:block def="empty_body(query, correction)">
+  <tbody class="empty-result">
+    ${correction_row(correction)}
+    <tr>
+      <td>
+        <p>
+          ${h.template_sprintf(_("Your search - %s - did not match any topics."),
+          tag_strong(query))}
+        </p>
+        <p>
+          ${_("Suggestions:")}
+        </p>
+        <ul>
+          <li>${_("Make sure all words are spelled correctly.")}</li>
+          <li>${_("Try different keywords.")}</li>
+          <li>${_("Try different constraints or options.")}</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</acre:block>
+
+<acre:block def="correction_row(correction)" if="correction && correction.length">
+  <tr class="correction-row">
+    <td colspan="2">
+      ${h.template_sprintf(_("Search instead for %s"),
+                           correction_link(correction[0]))}
+    </td>
+  </tr>
+</acre:block>
+
+<acre:block def="correction_link(correction)">
+  <a href="javascript:void(0);"
+     onclick="fb.search.correction('${correction}');">${correction}</a>
+</acre:block>
+
+<acre:block def="search_row(item)">
+  <tr class="search-row">
+    <td class="result-thumb">${search_thumb(item)}</td>
+    <td>${search_item(item)}</td>
+  </tr>
+</acre:block>
+
+<acre:block def="search_thumb(item)">
+  <acre:script>
+    var options = {
+    maxheight: 80,
+    maxwidth: 80,
+    mode: 'fillcropmid',
+    pad: 0
+    };
+  </acre:script>
+  ${image.image_thumb(item.id, 80, options)}
+</acre:block>
+
+<acre:block def="search_item(item)">
+  <div class="result-item">
+    <h3 class="result-item-title">
+      <a href="${h.fb_url(item.id)}">${item.name}</a>
+      <span class="result-item-id">${item.id}</a>
+    </h3>
+    <acre:block if="item.types.length">
+      <h4 class="result-item-types">
+        ${item.types.slice(0, 5).join(', ')}
+      </h4>
+    </acre:block>
+    <p class="description">
+      ${item.description || ''}
+    </p>
+  </div>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="search.mf.js"></script>
+</acre:block>
+
+<acre:block def="tag_strong(text)">
+  <strong>${text}</strong>
+</acre:block>
+
+<acre:block def="pill(filter_id, onclick_remove)">
+  <acre:script>
+    filter_id = filter_id || '';
+    onclick_remove = onclick_remove || 'fb.search.remove_filter(this)';
+  </acre:script>
+  <span class="pill">
+    <a href="#${filter_id}" class="pill-text toc-link">${filter_id}</a>
+    <input class="pill-value" type="hidden" name="filter" value="${filter_id}" />
+    <a href="javascript:void(0);" class="pill-x"
+       onclick="${onclick_remove}">x</a>
+  </span>
+</acre:block>

@@ -87,8 +87,8 @@
       links.toggle_attribution($('#fullattr').is(':checked'));
 
       // Handle options changes (checkboxes, text-input)
-      $('#tabbar-controls :checkbox').change(links.update_options);
-      $('#tabbar-controls :text').keypress(function(e) {
+      $('.filter-options :checkbox').change(links.update_options);
+      $('.filter-options:text').keypress(function(e) {
         if (e.keyCode === 13) {
           links.update_options(e);
         }
@@ -266,7 +266,7 @@
       if (creator) {
         params.creator = creator;
       }
-      $('#tabbar-controls input').each(function() {
+      $('.filter-options input').each(function() {
         var input = $(this);
         if (input.is(':checkbox')) {
           if (input.is(':checked')) {

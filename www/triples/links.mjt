@@ -89,43 +89,45 @@
         ${pill()}
       </span>
     </div>
-    <div id="common-filters">
+    <div id="common-filters" class="filter-options">
       <strong>${_("Common filters:")}</strong>
-      ${common_filter("/type/object/name")} |
-      ${common_filter("/common/topic/alias")} |
-      ${common_filter("/type/object/key")} |
-      ${common_filter("/type/namespace/keys")} |
-      ${common_filter("/type/object/type")} |
+      ${common_filter("/type/object/name")}<span class="sep">|</span>
+      ${common_filter("/common/topic/alias")}<span class="sep">|</span>
+      ${common_filter("/type/object/key")}<span class="sep">|</span>
+      ${common_filter("/type/namespace/keys")}<span class="sep">|</span>
+      ${common_filter("/type/object/type")}<span class="sep">|</span>
       ${common_filter("/type/type/instance")}
     </div>
-
-    <div id="tabbar-controls">
-      <strong>${_("Options:")}</strong>
-      <label for="historical">
+    <div id="filter-options" class="filter-options">
+      <strong>${_("Filter options:")}</strong>
+      <label for="historical" class="checkbox">
         <input type="checkbox" name="historical" value="true"
-               acre:attrs="c.historical ? {'checked':'checked'} : {}">${_("Show historical writes")}
-      </label> |
-      <label for="sort">
-        <input type="checkbox" name="sort" value="timestamp"
-               acre:attrs="c.sort == 'timestamp' ? {'checked':'checked'} : {}">${_("Show earliest writes first")}
-      </label> |
-      <label for="fullts">
-        <input type="checkbox" name="fullts" value="true" id="fullts"
-          acre:attrs="c.fullts ? {'checked':'checked'} : {}">${_("Show full timestamp")}
-      </label> |
-      <label for="fullattr">
-        <input type="checkbox" name="fullattr" value="true" id="fullattr"
-          acre:attrs="c.fullattr ? {'checked':'checked'} : {}">${_("Show full attribution")}
-      </label> |
+               acre:attrs="c.historical ? {'checked':'checked'} : {}">${_("Include deleted links")}
+      </label><span class="sep">|</span>
       <label for="timestamp">
         ${_("Timestamp")}
         <input type="text" name="timestamp" id="timestamp-from"
                placeholder="${_('YYYY-MM-DD...')}"
                value="${c.timestamp && c.timestamp.length ? c.timestamp[0] : ''}">
-          ${_("to")}
+        ${_("to")}
         <input type="text" name="timestamp" id="timestamp-to"
                placeholder="${_('YYYY-MM-DD...')}"
                value="${c.timestamp && c.timestamp.length === 2 ? c.timestamp[1] : ''}">
+      </label>
+    </div>
+    <div id="view-options" class="filter-options">
+      <strong>${_("View options:")}</strong>
+      <label for="sort" class="checkbox">
+        <input type="checkbox" name="sort" value="timestamp"
+               acre:attrs="c.sort == 'timestamp' ? {'checked':'checked'} : {}">${_("Sort oldest to newest")}
+      </label><span class="sep">|</span>
+      <label for="fullts" class="checkbox">
+        <input type="checkbox" name="fullts" value="true" id="fullts"
+          acre:attrs="c.fullts ? {'checked':'checked'} : {}">${_("Show full timestamp")}
+      </label><span class="sep">|</span>
+      <label for="fullattr" class="checkbox">
+        <input type="checkbox" name="fullattr" value="true" id="fullattr"
+          acre:attrs="c.fullattr ? {'checked':'checked'} : {}">${_("Show full attribution")}
       </label>
     </div>
   </div>

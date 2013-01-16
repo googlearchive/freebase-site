@@ -1,0 +1,250 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var th = acre.require("helpers.sjs");
+  var image = acre.require("lib/template/imagecomponents");  
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+  var propbox = acre.require("lib/propbox/propbox.mjt");
+
+  var SHOW_ALL = _('Show all domains and properties');
+  var SHOW_LESS = _('Show only Commons domains and asserted types');
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="topic.mf.css" />
+</acre:block>
+
+<acre:block def="page_content()">
+
+  <acre:script>
+    var type_map = th.get_type_map(c.object);
+  </acre:script>
+
+  <div id="tabbar">
+    <div id="tabbar-types" class="types-toggle">
+      <a href="javascript:void(0);" onclick="fb.topic.toggle_types(true);" class="clear">
+        <span class="right-arrow"></span>${_('Go to Type:')}
+      </a>
+    </div>
+    <div id="pill-filter-box" class="pill-box">
+      <acre:block for="filter in c.filter">
+        ${pill(filter)}
+      </acre:block>
+      <input type="text" id="pill-filter-suggest" class="pill-suggest"
+             placeholder="${_('View and edit specific domains, types, or properties...')}">
+      <span id="pill-template" class="pill-template" style="display:none;">
+        ${pill()}
+      </span>
+    </div>
+  </div>
+
+  <div class="column nav">
+    <acre:script>
+      var domains = c.topic && c.topic.structure && c.topic.structure.order;
+    </acre:script>
+    <div class="types-toggle">
+      <a href="javascript:void(0);" onclick="fb.topic.toggle_types(false);">
+        <span class="down-arrow"></span> ${_('Go to Type:')}
+      </a>
+    </div>
+    <div class="nav-module">
+      <div class="nav-section" id="toc">
+        <acre:block if="domains && domains.length">
+          <acre:block for="domain_id in domains">
+            ${toc_domain(c.topic, domain_id, type_map)}
+          </acre:block>
+        </acre:block>
+      </div>
+      <div class="nav-section" id="show-all-section">
+        <label>        
+          <input id="show-all" name="all"
+                 type="checkbox"
+                 acre:attrs="c.all ? {'checked':'checked'} : {}"
+                 onchange="fb.topic.show_all(this.checked);">
+            ${SHOW_ALL}
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div id="topic-data" class="column data" style="opacity:0;">
+
+    <acre:block if="c.topic">
+
+      ${propbox.topicbox(c.topic, i18n.lang)}
+
+      <div class="section domain domain-section show-all-section">
+        <div class="header">
+          <h1 class="kbs">
+            <span class="mark">
+              <a href="javascript:void(0);" id="show-all-link"
+                 onclick="$('#show-all').click();">
+                <span class="show-all-text"
+                      acre:attrs="c.all ? {style:'display:none;'} : {}">
+                  ${SHOW_ALL}
+                </span>
+                <span class="show-less-text"
+                      acre:attrs="c.all ? {} : {style:'display:none;'}">
+                  ${SHOW_LESS}
+                </span>
+              </a>
+            </span>
+          </h1>
+        </div>
+      </div>
+
+    </acre:block>
+
+    <acre:block else="">
+      Error retrieving topic data
+    </acre:block>
+  </div>
+  ${keyboard_shortcuts()}
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="topic.mf.js"></script>
+  <script>
+    $(function() {
+      // Prevent flickering because filtering is done client-side
+      $('#topic-data').animate({opacity:1}, 'fast');
+    });
+  </script>
+</acre:block>
+
+<acre:block def="keyboard_shortcuts()">
+  <link class="keyboard-shortcuts" rel="#overlay" />
+  <div class="modal" style="display:none" id="overlay">
+    <div class="modal-inner">
+      <h1 class="modal-title">${_("Keyboard Shortcuts")}</h1>
+      <div class="modal-content clear">
+        <div class="column">
+          <h2 class="modal-sub-title">${_("Navigation")}</h2>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("/")}</dt>
+            <dd class="key-desc">${_("search Freebase")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("f")}</dt>
+            <dd class="key-desc">${_("filter Data")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("j")}</dt>
+            <dd class="key-desc">${_("next item")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("k")}</dt>
+            <dd class="key-desc">${_("previous item")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("p")}</dt>
+            <dd class="key-desc">${_("next Property")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("P")}</dt>
+            <dd class="key-desc">${_("previous Property")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("t")}</dt>
+            <dd class="key-desc">${_("next Type")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("T")}</dt>
+            <dd class="key-desc">${_("previous Type")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("d")}</dt>
+            <dd class="key-desc">${_("next Domain")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("D")}</dt>
+            <dd class="key-desc">${_("previous Domain")}</dd>
+          </dl>
+        </div>
+        <div class="column middle">
+          <h2 class="modal-sub-title">Editing</h2>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("e")}</dt>
+            <dd class="key-desc">${_("edit / add new value")}</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <button class="button cancel">Close</button>
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="pill(filter_id)">
+  <acre:script>
+    filter_id = filter_id || '';
+  </acre:script>
+  <span class="pill">
+    <a href="#${filter_id}" class="pill-text toc-link">${filter_id}</a>
+    <input class="pill-value" type="hidden" name="filter" value="${filter_id}" />
+    <a href="javascript:void(0);" class="pill-x"
+       onclick="fb.topic.remove_filter(this);">x</a>
+  </span>
+</acre:block>
+
+<acre:block def="toc_domain(topic, domain_id, type_map)">
+  <acre:script>
+    type_map = type_map || {};
+    var domain = topic.structure.domains[domain_id];
+    var types = domain.types;
+    var commons = h.is_commons_domain(domain_id);
+  </acre:script>
+  <h2 class="toc-domain${commons ? ' commons' : ''}" data-id="${domain_id}">
+    <a href="#${domain_id}" class="toc-link" 
+       title="${domain_id}">${domain.text}</a>
+  </h2>
+  <acre:block if="types && types.length">
+    <ul class="toc-types">
+      <acre:block for="type_id in types">
+        <acre:script>
+          var type = topic.structure.types[type_id];
+          var bare = type_map[type_id] ? '' : ' bare';
+        </acre:script>
+        <li class="toc-type${bare}" data-id="${type_id}">
+          <a href="#${type_id}"
+             class="toc-link"
+             title="${type_id}">${type.text}</a>
+        </li>
+      </acre:block>
+    </ul>
+  </acre:block>
+</acre:block>

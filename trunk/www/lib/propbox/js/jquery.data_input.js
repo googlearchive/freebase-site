@@ -489,6 +489,9 @@
       this.tradio.bind("change.validate_boolean", function() {
         self.validate();
       });
+      this.fradio.bind("change.validate_boolean", function() {
+        self.validate();
+      });
     },
 
     _destroy: function() {

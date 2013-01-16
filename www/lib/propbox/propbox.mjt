@@ -761,12 +761,12 @@ propbox edit forms
     <span class="data-input boolean ${JSON.stringify(data)}">
       <label>
         <input type="radio" name="${name}" class="fb-boolean-input" value="true"
-               acre:attrs="prop_value.value === true ? {checked:'checked'} : {}"/>
+               acre:attrs="prop_value && prop_value.value === true ? {checked:'checked'} : {}"/>
         Yes
       </label>
       <label>
         <input type="radio" name="${name}" class="fb-boolean-input" value="false"
-               acre:attrs="prop_value.value === false ? {checked:'checked'} : {}"/>
+               acre:attrs="prop_value && prop_value.value === false ? {checked:'checked'} : {}"/>
         No
       </label>
     </span>
@@ -1113,6 +1113,4 @@ propbox edit forms
       </a>
     </span>
   </div>
-</acre:block>
-
 </acre:block>

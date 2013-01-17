@@ -117,8 +117,8 @@
         <a href="javascript:void(0)" class="more-action"></a>
       </span>
       <ul class="submenu row-menu">
-        <li class="row-menu-item"><a href="#" onclick="return fb.i18n_tab.edit_name(this, '${name.value}', '${name.lang}');">${EDIT}</a></li>
-        <li class="row-menu-item"><a href="#" onclick="return fb.i18n_tab.delete_name(this, '${name.value}', '${name.lang}');">${DELETE}</a></li>
+        <li class="row-menu-item"><a href="#" data-value="${name.value}" onclick="return fb.i18n_tab.edit_name(this, '${name.lang}');">${EDIT}</a></li>
+        <li class="row-menu-item"><a href="#" data-value="${name.value}" onclick="return fb.i18n_tab.delete_name(this, '${name.lang}');">${DELETE}</a></li>
         <acre:block if="name.link">
           <li class="row-menu-item"><a href="${h.fb_url(c.id, [['links'], ['filter', '/type/object/name'], ['timestamp', name.link.timestamp]])}">${LINK}</a></li>
         </acre:block>

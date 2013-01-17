@@ -46,16 +46,20 @@
       return false;
     },
 
-    edit_name: function(context, value, lang) {
-      var row = $(context).parents(".submenu").data("headmenu").parents(".data-row:first");
+    edit_name: function(context, lang) {
+      context = $(context);
+      var value = context.attr('data-value');
+      var row = context.parents(".submenu").data("headmenu").parents(".data-row:first");
       fb.get_script(fb.h.static_url("i18n-edit.mf.js"), function() {
         i18n_tab.edit.edit_name_begin(row, value, lang);
       });
       return false;
     },
 
-    delete_name: function(context, value, lang) {
-      var row = $(context).parents(".submenu").data("headmenu").parents(".data-row:first");
+    delete_name: function(context, lang) {
+      context = $(context);
+      var value = context.attr('data-value');
+      var row = context.parents(".submenu").data("headmenu").parents(".data-row:first");
       fb.get_script(fb.h.static_url("i18n-edit.mf.js"), function() {
         i18n_tab.edit.delete_name_begin(row, value, lang);
       });

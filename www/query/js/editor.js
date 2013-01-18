@@ -30,14 +30,14 @@
 */
 
 (function($, fb) {
-  
+
   var qe = fb.queryeditor = {
-    
+
     init: function() {
       CueCard.helper = fb.h.ajax_url("lib/cuecard/");
       CueCard.freebaseServiceUrl = fb.acre.freebase.googleapis_url + "/";
       CueCard.urlPrefix = CueCard.apiProxy.base = fb.h.ajax_url("lib/cuecard/");
-      
+
       var params = CueCard.parseURLParameters();
       var autorun = false;
 
@@ -108,12 +108,12 @@
       if ("autorun" in params) {
         autorun = true;
       }
-      
+
       queryEditorOptions.onChange = function() {
         qe.is_dirty = true;
         $("#save-query").addClass("disabled");
       };
-      
+
       queryEditorOptions.onRun = function(o) {
         if (o.result) {
           $("#save-query").removeClass("disabled");
@@ -132,7 +132,7 @@
 
         qe.is_dirty = false;
         if (autorun) qe.cuecard.queryEditor.run(false);
-        
+
         // fulhack to hide initial laying out
         setTimeout(function() {
           $("#qe-module, #the-output-pane").css("visibility", "visible");
@@ -154,7 +154,8 @@
 
       qe.page_chrome_height =  $("#header").outerHeight(true) +
                                ($("#page-content").outerHeight(true) - $("#page-content").height()) +
-                               $("#page-title").outerHeight(true);
+                               $("#page-title").outerHeight(true) +
+                               $("#footer").outerHeight(true);
 
       $(window).bind("beforeunload", function(evt) {
         qe.store();
@@ -171,7 +172,7 @@
         if (qe.cuecard.queryEditor) qe.cuecard.queryEditor.layout(innerHeight);
       }
     },
-    
+
     toggleControlPane: function(state) {
       $.localstore("cc_cp", (state ? "1" : "0"), false);
     },
@@ -186,18 +187,18 @@
       if (queryEditorOptions.emql) {
         params.emql = 1;
       }
-      
+
       if ("debug" in queryEditorOptions) {
         params.debug = queryEditorOptions.debug;
       }
-      
+
       if (queryEditorOptions.service != null) {
         params.service = queryEditorOptions.service;
       }
 
       return params;
     },
-    
+
     computeMqlReadLink: function(e) {
       $(this).attr("href", qe.cuecard.queryEditor.getMqlReadURL());
     },
@@ -213,7 +214,7 @@
       params.q = qe.cuecard.queryEditor.getUnresolvedQuery();
       $(this).attr("href", fb.h.fb_url("/queryeditor", params));
     },
-    
+
     computeTinyCompactLink: function() {
       var params = qe.getUrlFlags();
       params.q = qe.cuecard.queryEditor.getUnresolvedQuery();
@@ -245,9 +246,9 @@
       });
       return false;
     }
-    
+
   };
-  
+
   $(qe.init());
-    
+
 })(jQuery, window.freebase);

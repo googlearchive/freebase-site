@@ -69,6 +69,10 @@
         ${pill()}
       </span>
     </div>
+    <div id="recent-filters" class="filter-options">
+      <strong>${_("Recent filters:")}</strong>
+      <span id="recent-filters-container"></span>
+    </div>
   </div>
 
   <div class="column nav">

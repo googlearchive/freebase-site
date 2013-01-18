@@ -52,9 +52,27 @@
       throw "$." + name + " class already exists";
     }
     $.fn[name] = function(options) {
+      // You can also invoke a method on the instance
+      var method = null;
+      var method_args = null;
+      if ($.type(options) === 'string') {
+        method = options;
+        method_args = Array.prototype.slice.call(arguments, 1);
+      }
       return this.each(function() {
         var $this = $(this);
         var inst = $this.data("$."+name);
+
+        if (method) {
+          if (inst && $.type(inst[method]) === 'function') {
+            inst[method].apply(inst, method_args);
+          }
+          else {
+            console.warn(name, "Unable to invoke method", method);
+          }
+          return;
+        }
+
         if (inst) {
           // destroy existing instance
           inst._destroy();

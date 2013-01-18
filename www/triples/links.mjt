@@ -89,14 +89,9 @@
         ${pill()}
       </span>
     </div>
-    <div id="common-filters" class="filter-options">
-      <strong>${_("Common filters:")}</strong>
-      ${common_filter("/type/object/name")}<span class="sep">|</span>
-      ${common_filter("/common/topic/alias")}<span class="sep">|</span>
-      ${common_filter("/type/object/key")}<span class="sep">|</span>
-      ${common_filter("/type/namespace/keys")}<span class="sep">|</span>
-      ${common_filter("/type/object/type")}<span class="sep">|</span>
-      ${common_filter("/type/type/instance")}
+    <div id="recent-filters" class="filter-options">
+      <strong>${_("Recent filters:")}</strong>
+      <span id="recent-filters-container"></span>
     </div>
     <div id="filter-options" class="filter-options">
       <strong>${_("Filter options:")}</strong>

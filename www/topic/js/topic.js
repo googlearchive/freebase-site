@@ -38,18 +38,15 @@
 
       topic.facet = new TopicFacet();
 
+      // Recent filters
+      $('#recent-filters-container').lrulist({
+        key: 'topic.filters',
+        max: 10,
+        separator: '<span class="sep">|</span>',
+        template: topic.recent_filter
+      });
+
       $('#page-content')
-        .on('click', 'a.toc-link', function(e) {
-          // Animate scroll table-of-content nav links
-          var name = this.href.substring(this.href.indexOf('#') + 1);
-          var a = $('a[name=' + escape_attr_(name) + ']');
-          if (a.length) {
-            $('html, body').animate({
-              scrollTop: a.offset().top
-            }, 1000);
-          }
-          return false;
-        })
         .on('click', 'a.schema-name', function(e) {
           // Clicking on a schema (domain|type|property) name applies a filter.
           var name = $(this).attr('name');
@@ -238,6 +235,18 @@
     },
 
     /**
+     * Callback for $.lrulist to create a recent filter item.
+     */
+    recent_filter: function(id) {
+      return $('<a href="#">').text(id).click(topic.click_filter);
+    },
+
+    click_filter: function(e) {
+      topic.add_filter($(this).text());
+      return false;
+    },
+
+    /**
      * Add a filter pill.
      * @param {string} id The domain|type|property id
      * @param {string} opt_type The type of id
@@ -247,6 +256,8 @@
      *   assert a new type or a bare property.
      */
     add_filter: function(id, opt_type) {
+      $('#recent-filters-container').lrulist('update', id);
+
       var escape_id = escape_attr_(id);
       if ($('#pill-filter-box')
         .find('input[value=' + escape_id + ']').length) {

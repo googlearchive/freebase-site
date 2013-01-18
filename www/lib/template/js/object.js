@@ -65,7 +65,7 @@
     if (less_blurb.length) {
       less_blurb.click(minimize_blurb);
       $('#more-blurb').click(maximize_blurb);
-      $(window).bind('scroll resize', update_blurb);
+      //$(window).bind('scroll resize', update_blurb);
     }
 
     fb.init_search();
@@ -133,6 +133,7 @@
         }
       });
   };
+
 
   var min_blurb = null;
   var max_blurb = null;

@@ -33,6 +33,14 @@
   var links = fb.links = {
 
     init: function() {
+      // Recent filters
+      $('#recent-filters-container').lrulist({
+        key: 'links.filters',
+        max: 10,
+        separator: '<span class="sep">|</span>',
+        template: links.recent_filter
+      });
+
       // Focus input when the filter box gets focus
       $('#pill-filter-box').click(function() {
         $('#pill-filter-suggest').focus();
@@ -121,6 +129,7 @@
      * @param {string} id The property id.
      */
     add_filter: function(id) {
+      $('#recent-filters-container').lrulist('update', id);
       if (links.get_filters().indexOf(id) !== -1) {
         // already in the filter
         return;
@@ -129,6 +138,21 @@
       $('#pill-filter-suggest').before(pill);
       links.update_window_history();
       links.update_links();
+    },
+
+    /**
+     * Callback for $.lrulist to create a recent filter item.
+     */
+    recent_filter: function(id) {
+      return $('<a href="#">').text(id).click(links.click_filter);
+    },
+
+    /**
+     * Click on a filter link whose text is the filter.
+     */
+    click_filter: function(e) {
+      links.add_filter($(this).text());
+      return false;
     },
 
     /**

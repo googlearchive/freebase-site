@@ -194,8 +194,11 @@
           if ($.isArray(data.result) && data.result.length > 0) {
             it.check(data.result[0], type_id, included_types, callbacks);
           }
-          else {
-            fb.status.error('Incompatible type check search error: ' + id);
+          else if (callbacks.compatible) {
+            // Search did not return any results.
+            // http://bugs.freebase.com/browse/SITE-1290
+            // Assume it's compatible.
+            callbacks.compatible({id:id}, type_id, included_types);
           }
         }
       });

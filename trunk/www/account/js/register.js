@@ -37,9 +37,7 @@
       var match = error.code.match(/^\/api\/status\/error\/invalid\/(.*)(\/.*)?/);
       if (match) {
         var fieldname = match[1];
-        console.log($form, $form.find('input'));
         var $input = $form.find('input[name='+fieldname+']:first');
-        console.log($input);
         if ($input.length) {
           $input.addClass('error');
           $input.siblings('.input-help:first').hide();
@@ -49,10 +47,15 @@
             $input_error.show();
           }
         }
+      } else if (error.code === "/api/status/error/input/validation") {
+          fb.status.error("Username invalid. Please try a different username.",
+            true);
+      } else {
+          fb.status.error(JSON.stringify(error), true);
       }
     });
   };
-  
+
   fb.register.init = function() {
     // Initialize the accordion.
     $('#register-accordion').tabs('#register-accordion div.pane', {
@@ -66,11 +69,18 @@
       var $form = $(form);
       $form.ajaxForm({
         dataType: 'json',
+        beforeSubmit: function() {
+          fb.status.info("Creating account...", true);
+          fb.disable($("button.submit"));
+        },
         success: function(response, status, xhr) {
           $('#registration').html(response.result.html);
+          fb.status.clear();
         },
         error: function(xhr, status, error) {
           var response = JSON.parse(xhr.responseText);
+          fb.status.clear();
+          fb.enable($("button.submit"));
           fb.register.display_form_errors($form, response);
         }
       });
@@ -83,6 +93,6 @@
       $input.siblings('.input-help:first').show();
     });
   };
-  
+
   setTimeout(fb.register.init, 0);
 })(jQuery, window.freebase);

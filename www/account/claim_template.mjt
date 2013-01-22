@@ -52,29 +52,31 @@
   <div id="page-content">
     <div id="claim-content" class="module">
       <h1 class="module-title">Connect account</h1>
-      <p>Your Freebase account will be connected to your Google account.</p>
-      <form name="claim-account"
-            method="post"
-            action="${h.ajax_url('/claim_submit')}"
-        <fieldset>
-          <label for="token">Change request code from email:</label>
-          <div class="form-field clear">
-            <input name="token" class="input-standard" id="claim-token"
-                   type="text" spellcheck="false" value="${token}">
-            <script acre:if="!token" type="text/javascript">
-              document.getElementById("claim-token").focus();
-            </script>
-            <span class="input-help">
-              Make sure that the entire code is included.
-            </span>
-            <span class="input-error"></span>
-          </div>
-        </fieldset>
-        <button class="submit button button-primary"
-                name="claim" type="submit">
-          Connect my Account
-        </button>
-      </form>
+      <div class="pane">
+        <p>Your Freebase account will be connected to your Google account.</p>
+        <form name="claim-account"
+              method="post"
+              action="${h.ajax_url('/claim_submit')}">
+          <fieldset>
+            <label for="token">Change request code from email:</label>
+            <div class="form-field clear">
+              <input name="token" class="input-standard" id="claim-token"
+                     type="text" spellcheck="false" value="${token}">
+              <script acre:if="!token" type="text/javascript">
+                document.getElementById("claim-token").focus();
+              </script>
+              <span class="input-error"></span>
+              <div class="input-help">
+                Make sure that the entire code is included.
+              </div>
+            </div>
+          </fieldset>
+          <button class="submit button button-primary"
+                  name="claim" type="submit">
+            Connect my Account
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 </acre:block>

@@ -32,31 +32,72 @@
 var validators = acre.require('lib/validator/validators.sjs');
 var urlfetch = acre.require('lib/promise/apis').urlfetch;
 var templates = acre.require('templates');
-var h = acre.require('lib/helper/helpers.sjs');
+var h = acre.require('helpers.sjs');
+var ServiceError = acre.require('lib/handlers/service_lib.sjs').ServiceError;
 
 function simple_error_response() {
-  return {html: 'Freebase registration is currently down. Please try again later.'};
+  return {
+    html: 'Freebase registration is currently down. Please try again later.'
+  };
 }
 
 function unauthenticated_response() {
-  return {html: 'Must be logged in to use this service.'};
+  return {
+    html: 'Must be logged in to use this service.'
+  };
 }
 
 /**
- * Create the user in Freebase and connect to Google account.
+ * Create the user.
  */
 var SPEC = {
   method: 'POST',
 
   validate: function(params) {
-    return [validators.String(params, 'username')];
+    return [validators.MqlKey(params, 'username', {required:true})];
   },
 
   run: function(username) {
     if (!acre.oauth.has_credentials(h.account_provider())) {
       return unauthenticated_response();
     }
-    
-    return {html: acre.markup.stringify(templates.create_account(username))};
+
+    // Create user
+    var user_create_url = acre.freebase.googleapis_url+'/user/create/'+username;
+
+    return urlfetch(user_create_url, {
+      method: 'POST', sign: true})
+      .then(function(response) {
+        var result = JSON.parse(response.body);
+
+        if (result && result.username) {
+          return {
+            html: acre.markup.stringify(
+              templates.create_account(result.username)
+            )};
+        } else {
+          return simple_error_response();
+        }
+      }, function(failure) {
+        try {
+          var result = JSON.parse(failure.response.body).error;
+        } catch (e) {
+          return simple_error_response();
+        }
+
+        var error = h.extract_first_error(result);
+        if (error.code === 400) {
+          throw new ServiceError('400 Bad Request',
+            '/api/status/error/create', {
+            message: error.message ||
+              'There was an unknown error trying to create user.',
+            code: '/api/status/error/invalid/username'
+          });
+        }
+
+        return {
+          'html': JSON.stringify(failure)
+        };
+      });
   }
 };

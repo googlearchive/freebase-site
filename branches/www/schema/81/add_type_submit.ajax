@@ -1,0 +1,84 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+var validators = acre.require("lib/validator/validators.sjs");
+var create_type = acre.require("create_type.sjs").create_type;
+var components = acre.require("domain_components.mjt");
+var queries = acre.require("queries.sjs");
+var typeloader = acre.require("lib/schema/typeloader.sjs");
+
+/**
+ * add type form from a domain
+ */
+var SPEC = {
+
+  method: "POST",
+
+  auth: true,
+
+  validate: function(params) {
+    return [
+      validators.MqlId(params, "domain", {required:true}),            // domain to create the type in
+      validators.String(params, "name", {required:true}),             // type name
+      validators.TypeKey(params, "key", {required:true}),             // type key
+      validators.String(params, "description", {if_empty:null}),      // type description
+      validators.StringBool(params, "mediator", {if_empty:false}),    // mediator?
+      validators.StringBool(params, "enumeration", {if_empty:false}), // enumeration?
+      validators.StringBool(params, "deprecated", {if_empty:false}),  // deprecated?
+      validators.StringBool(params, "never_assert", {if_empty:false}),// never_assert?
+      validators.LangId(params, "lang", {if_empty:"/lang/en"})        // name,description lang
+    ];
+  },
+
+  run: function(domain, name, key, description,
+                mediator, enumeration, deprecated, never_assert, lang) {
+    return create_type({
+      domain: domain,
+      name: name,
+      key: key,
+      description: description,
+      mediator: mediator,
+      enumeration: enumeration,
+      deprecated: deprecated,
+      never_assert: never_assert,
+      lang: lang
+    })
+    .then(function(result) {
+        return queries.load_type(result.id, lang, {
+            instance_count: true
+        });
+    })
+    .then(function(type) {
+      return {
+        html: acre.markup.stringify(components.domain_type_row(type))
+      };
+    });
+  }
+};

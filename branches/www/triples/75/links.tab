@@ -1,0 +1,415 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+var h = acre.require("lib/helper/helpers.sjs");
+var validators = acre.require('lib/validator/validators.sjs');
+var creator_q = acre.require('lib/queries/creator.sjs');
+var i18n = acre.require("lib/i18n/i18n.sjs");
+var apis = acre.require("lib/promise/apis.sjs");
+var freebase = apis.freebase;
+var deferred = apis.deferred;
+
+var SPEC = {
+
+  template: "links.mjt",
+
+  validate: function(params) {
+    return [
+      params.object,
+      validators.MultiValue(params, 'filter', {
+          validator: validators.MqlId,
+          if_empty: []
+        }),
+      validators.MqlId(params, 'creator', {if_empty:null}),
+      validators.StringBool(params, 'historical', {if_empty:false}),
+      validators.OneOf(params, 'sort', {
+          if_empty: '-timestamp',
+          oneof: ['timestamp', '-timestamp']
+        }),
+      validators.StringBool(params, 'fullts', {if_empty:false}),
+      validators.StringBool(params, 'fullattr', {if_empty:false}),
+      validators.MultiValue(params, 'timestamp', {
+        if_empty: null,
+        validator: validators.Timestamp
+      })
+    ];
+  },
+
+  run: function(
+      object, filter, creator, historical, sort, fullts, fullattr,
+      timestamp) {
+
+    var id = object.id;
+
+    var promises = {
+      links:
+          get_links(id, filter, creator, historical, sort, timestamp)
+    };
+
+    return deferred.all(promises)
+      .then(function(r) {
+
+        return h.extend({
+          id: id,
+          object: object,
+
+          filter: filter,
+          creator: creator,
+          historical: historical,
+          sort: sort,
+          fullts: fullts,
+          fullattr: fullattr,
+          timestamp: timestamp
+        }, r);
+      });
+  }
+
+};
+
+
+function get_properties(pids) {
+  if (!(pids && pids.length)) {
+    return deferred.resolved([]);
+  }
+  return freebase.mqlread([{
+    id: null,
+    'id|=': pids,
+    type: '/type/property',
+    master_property: null,
+    reverse_property: null,
+    optional: true
+  }])
+  .then(function(env) {
+    return env.result;
+  });
+}
+
+/**
+ *
+ */
+function get_links(id, pids, creator, historical, sort, timestamp, next) {
+  var d = null;
+  if (pids && pids.length) {
+    d = get_properties(pids)
+      .then(function(props) {
+          if (!props.length) {
+            return deferred.resolved({});
+          }
+          var outgoing_ids = [];
+          var incoming_ids = [];
+          var reverse_ids = [];
+          props.forEach(function(p) {
+            if (p.master_property) {
+              reverse_ids.push(p.id);
+            }
+            else {
+              outgoing_ids.push(p.id);
+              if (!p.reverse_property) {
+                incoming_ids.push(p.id);
+              }
+            }
+          });
+          var promises = {};
+          if (outgoing_ids.length) {
+            promises.outgoing = get_outgoing_links(
+                id, outgoing_ids, creator, historical, sort, timestamp, next);
+          }
+          if (incoming_ids.length) {
+            promises.incoming = get_incoming_links(
+                id, incoming_ids, creator, historical, sort, timestamp, next);
+          }
+          if (reverse_ids.length) {
+            promises.reverse =
+                get_reverse_links(
+                  id, reverse_ids, creator, historical, sort, timestamp, next);
+          }
+          return deferred.all(promises);
+      });
+  }
+  else {
+    d = deferred.all({
+      outgoing: get_outgoing_links(
+          id, null, creator, historical, sort, timestamp, next),
+      incoming: get_incoming_links(
+          id, null, creator, historical, sort, timestamp, next),
+      reverse: get_reverse_links(
+          id, null, creator, historical, sort, timestamp, next)
+    });
+  }
+  return d
+    .then(function(r) {
+      var all = [];
+      ['outgoing', 'incoming', 'reverse'].forEach(function(k) {
+        if (r[k]) {
+          all = all.concat(r[k]);
+        }
+      });
+      var asc = sort === 'timestamp';
+      all.sort(function(a, b) {
+        if (asc) {
+          return b.timestamp < a.timestamp;
+        }
+        else {
+          return b.timestamp > a.timestamp;
+        }
+      });
+      return all.slice(0, 100);
+    });
+}
+
+function get_outgoing_links(
+    id, master_pids, creator, historical, sort, timestamp, next) {
+  var q = [{
+    type: '/type/link',
+    'me:source': {
+      id: id
+    },
+    master_property: {
+      id: null,
+      reverse_property: {
+        id: null,
+        optional: true
+      }
+    },
+    target_value: {},
+    target: {
+      id: null,
+      mid: null,
+      name: i18n.mql.query.name(),
+      'topic:type': {
+        id:'/common/topic',
+        optional:true
+      },
+      'cvt:type': {
+        id: null,
+        '/freebase/type_hints/mediator': true,
+        optional: true,
+        limit: 1
+      },
+      optional: true
+    },
+    timestamp: null,
+    optional: true
+  }];
+  apply_filter(q[0], master_pids, creator, historical, sort, timestamp, next);
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return env.result;
+    });
+}
+
+function get_incoming_links(
+    id, master_pids, creator, historical, sort, timestamp, next) {
+  var q = [{
+    type: '/type/link',
+    source: {
+      id: null,
+      mid: null,
+      name: i18n.mql.query.name(),
+      'topic:type': {
+        id:'/common/topic',
+        optional:true
+      },
+      'cvt:type': {
+        id: null,
+        '/freebase/type_hints/mediator': true,
+        optional: true,
+        limit: 1
+      }
+    },
+    master_property: {
+      id: null,
+      reverse_property: {
+        id: null,
+        optional: "forbidden"
+      }
+    },
+    'me:target': {
+      id: id
+    },
+    target_value: {},
+    timestamp: null,
+    optional: true
+  }];
+  apply_filter(q[0], master_pids, creator, historical, sort, timestamp, next);
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return env.result;
+    });
+}
+
+function get_reverse_links(
+    id, reverse_pids, creator, historical, sort, timestamp, next) {
+  var q = [{
+    type: '/type/link',
+    source: {
+      id: null,
+      mid: null,
+      name: i18n.mql.query.name(),
+      'topic:type': {
+        id:'/common/topic',
+        optional:true
+      },
+      'cvt:type': {
+        id: null,
+        '/freebase/type_hints/mediator': true,
+        optional: true,
+        limit: 1
+      }
+    },
+    master_property: {
+      id: null,
+      reverse_property: {
+        id: null
+      }
+    },
+    'me:target': {
+      id: id
+    },
+    target_value: {},
+    timestamp: null,
+    optional: true
+  }];
+  apply_filter(q[0], null, creator, historical, sort, timestamp, next);
+  apply_reverse_property(q[0], reverse_pids);
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return env.result;
+    });
+}
+
+
+function apply_filter(
+    query, master_pids, creator, historical, sort, timestamp, next) {
+  // filter master_property
+  apply_master_property(query, master_pids);
+
+  // filter creator
+  creator_q.extend(query);
+  if (creator) {
+    acre.freebase.extend_query(query, {
+      'filter:creator': {id: creator, limit:0}
+    });
+  }
+
+  // historical
+  if (historical) {
+    acre.freebase.extend_query(query, {
+      valid: null,
+      operation: null
+    });
+  }
+  else {
+    acre.freebase.extend_query(query, {
+      valid: true,
+      operation: null
+    });
+  }
+
+  // sort
+  acre.freebase.extend_query(query, {
+    sort: sort === 'timestamp' ? 'timestamp' : '-timestamp'
+  });
+
+  // timestamp
+  if (timestamp) {
+    if (!h.isArray(timestamp)) {
+      timestamp = [timestamp];
+    }
+    var len = timestamp.length;
+    if (len === 1) {
+      // 2010-09-25T18:42:24.0007Z
+      if (/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+Z/.test(timestamp[0])) {
+        // if full timestamp, look for that link with exact timestamp
+        acre.freebase.extend_query(query, {
+          'filter:timestamp': timestamp[0]
+        });
+      }
+      else {
+        // otherwise get everything earlier than this timestamp
+        acre.freebase.extend_query(query, {
+          'filter:timestamp>=': timestamp[0]
+        });
+      }
+    }
+    else if (len === 2) {
+      timestamp.sort(function(a, b) {
+        return b < a;
+      });
+      acre.freebase.extend_query(query, {
+        'filter:timestamp>=': timestamp[0],
+        'filter:timestamp<': timestamp[1]
+      });
+    }
+  }
+
+  // next
+  if (next) {
+    if (sort === 'timestamp') {
+      acre.freebase.extend_query(query, {
+         'next:timestamp>': next
+      });
+    }
+    else {
+      acre.freebase.extend_query(query, {
+         'next:timestamp<': next
+      });
+    }
+  }
+
+  return query;
+}
+
+function apply_master_property(query, master_pids) {
+  if (master_pids && master_pids.length) {
+    acre.freebase.extend_query(query, {
+      'filter_master:master_property': {
+        'id|=': master_pids,
+        limit: 0
+      }
+    });
+  }
+  return query;
+}
+
+function apply_reverse_property(query, reverse_pids) {
+  if (reverse_pids && reverse_pids.length) {
+    acre.freebase.extend_query(query, {
+      'filter_reverse:master_property': {
+        reverse_property: {
+          'id|=': reverse_pids
+        },
+        limit: 0
+      }
+    });
+  }
+  return query;
+}

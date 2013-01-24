@@ -1,0 +1,167 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+var h = acre.require('lib/helper/helpers.sjs');
+var validators = acre.require('lib/validator/validators.sjs');
+var i18n = acre.require('lib/i18n/i18n.sjs');
+var apis = acre.require('lib/promise/apis.sjs');
+var freebase = apis.freebase;
+var deferred = apis.deferred;
+var st = acre.require('search.mjt');
+var sh = acre.require('helpers.sjs');
+
+
+
+var SPEC = {
+
+  template: 'search.mjt',
+
+  validate: function(params) {
+    return validate_search_params(params);
+  },
+
+  run: function(query, type, operator, options) {
+    return search(query, type, operator, options);
+  }
+};
+
+function validate_search_params(params) {
+  return [
+    // query
+    validators.String(params, 'query', {if_empty:'*'}),
+
+    // type filters
+    validators.MultiValue(params, 'type', {
+      validator: validators.MqlId,
+      if_empty: []
+    }),
+
+    // operator for type filters
+    validators.OneOf(params, 'operator', {
+      oneof: ['any', 'all', 'should', 'not'],
+      if_empty: 'any'
+    }),
+
+    // search params
+    {
+      prefixed: validators.StringBool(params, 'prefixed', {if_empty:true}),
+      scoring: validators.OneOf(params, 'scoring', {
+        oneof: ['entity', 'schema'],
+        if_empty: 'entity'
+      }),
+      lang: sh.search_lang(
+          validators.LangId(params, 'lang', {if_empty:'/lang/en'})),
+      cursor: validators.Int(params, 'cursor', {if_empty:null})
+    }
+  ];
+};
+
+
+function search(query, type, operator, options) {
+  var params = h.extend(options, {
+    filter: ['(not type:/common/document)'],
+    output: '(description type)',
+    spell: 'always'
+  });
+  // Does the query look like an id?
+  // If so, use id prefix syntax.
+  if (validators.MqlId(query, {if_invalid:null})) {
+      params.filter.push(
+        sh.operator('any',
+            ['alias{start}:' + query, 'mid:' + query]));
+    query = '*';
+  }
+  // Convert type filters and operator into proper filter syntax.
+  if (type && type.length) {
+    var type_filter = type.map(function(t) {
+      return 'type:' + t;
+    });
+    type_filter = sh.operator(operator, type_filter);
+    if (type_filter) {
+      params.filter.push(type_filter);
+    }
+  }
+  // cleanup search params
+  for (var k in params) {
+    if (sh.is_empty(params[k])) {
+      delete params[k];
+    }
+  }
+  params.filter = sh.operator('all', params.filter);
+
+  return freebase.search(query, params)
+    .then(function(r) {
+      var results = [];
+      r.result.forEach(function(item) {
+        var use_id = item.mid;
+        if (item.notable && h.is_metaweb_system_type(item.notable.id) &&
+            item.id) {
+          use_id = item.id;
+        }
+        results.push(h.extend(item, {
+          id: use_id,
+          description: sh.get_result_description(item),
+          types: sh.get_result_types(item)
+        }));
+      });
+
+      return {
+        query: query,
+        type: type,
+        operator: operator,
+        result: results,
+        prefixed: params.prefixed,
+        scoring: params.scoring,
+        lang: params.lang,
+        cursor: r.cursor,
+        correction: r.correction
+      };
+    }, function(e) {
+      return {
+        query: query,
+        type: type,
+        operator: operator,
+        result: [],
+        prefixed: params.prefixed,
+        scoring: params.scoring,
+        lang: params.lang,
+        cursor: null,
+        correction: []
+      };
+    });
+}
+
+
+
+
+
+
+

@@ -8,27 +8,27 @@ var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
 var environment_rules = {
 
     "labels" : {
-        "lib": "//102a.lib.www.tags.svn.freebase-site.googlecode.dev",
+        "lib": "//103a.lib.www.tags.svn.freebase-site.googlecode.dev",
         "default" : "//default.dev",
 
-        "account": "//75a.account" + tags_codebase,
-        "appeditor": "//76a.appeditor" + tags_codebase,
-        "apps": "//77a.apps" + tags_codebase,
-        "create": "//72a.create" + tags_codebase,
-        "data": "//73a.data" + tags_codebase,
-        "formbuilder": "//19a.formbuilder" + tags_codebase,
-        "i18n": "//19a.i18n" + tags_codebase,
-        "mdo": "//53a.mdo" + tags_codebase,
-        "policies": "//75a.policies" + tags_codebase,
-        "query": "//72a.query" + tags_codebase,
-        "review": "//54a.review" + tags_codebase,
-        "sameas": "//73a.sameas" + tags_codebase,
-        "sample": "//74a.sample" + tags_codebase,
-        "schema": "//80a.schema" + tags_codebase,
-        "search": "//3a.search" + tags_codebase,
-        "topic": "//78a.topic" + tags_codebase,
-        "triples": "//74a.triples" + tags_codebase,
-        "users": "//52a.users" + tags_codebase
+        "account": "//76a.account" + tags_codebase,
+        "appeditor": "//77a.appeditor" + tags_codebase,
+        "apps": "//78a.apps" + tags_codebase,
+        "create": "//73a.create" + tags_codebase,
+        "data": "//74a.data" + tags_codebase,
+        "formbuilder": "//20a.formbuilder" + tags_codebase,
+        "i18n": "//20a.i18n" + tags_codebase,
+        "mdo": "//54a.mdo" + tags_codebase,
+        "policies": "//76a.policies" + tags_codebase,
+        "query": "//73a.query" + tags_codebase,
+        "review": "//55a.review" + tags_codebase,
+        "sameas": "//74a.sameas" + tags_codebase,
+        "sample": "//75a.sample" + tags_codebase,
+        "schema": "//81a.schema" + tags_codebase,
+        "search": "//4a.search" + tags_codebase,
+        "topic": "//79a.topic" + tags_codebase,
+        "triples": "//75a.triples" + tags_codebase,
+        "users": "//53a.users" + tags_codebase
 
     },
 

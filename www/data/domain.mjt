@@ -73,7 +73,7 @@
           <tbody>
             <tr acre:for="type in c.domain.types">
               <th class="row-header odd">
-                <a href="${h.fb_url(type.id, [['instances']])}">${i18n.display_name(type)}</a>
+                <a href="${h.fb_url(type.id, [['schema']])}">${i18n.display_name(type)}</a>
               </th>
               <td class="">
                 ${i18n_c.datetime(type.timestamp, [["class","published"]], 'd')}
@@ -86,7 +86,7 @@
                   <span>-</span>
                 </acre:block>
                 <acre:block else="">
-                  ${i18n_c.number(type.instance_count)}
+                  <a href="${h.fb_url(type.id, [['instances']])}">${i18n_c.number(type.instance_count)}</a>
                 </acre:block>
               </td>
             </tr>

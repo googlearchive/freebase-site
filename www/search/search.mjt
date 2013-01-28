@@ -36,6 +36,7 @@
   var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
   var image = acre.require("lib/template/imagecomponents.mjt");
+  var sh = acre.require("helpers.sjs");
 </acre:script>
 
 <acre:block def="head()">
@@ -209,12 +210,37 @@
   <div class="result-item">
     <h3 class="result-item-title">
       <a href="${h.fb_url(item.id)}">${item.name}</a>
-      <span class="result-item-id">${item.id}</a>
+      <span class="result-item-id mid">${item.id}</a>
     </h3>
     <acre:block if="item.types.length">
       <h4 class="result-item-types">
-        ${item.types.slice(0, 5).join(', ')}
+        ${item.types.slice(0, 10).join(', ')}
       </h4>
+    </acre:block>
+    <acre:block if="item.notable_properties.length">
+      <div class="result-notable-properties">
+        <acre:block for="notable_prop in item.notable_properties">
+          <dl>
+            <dt>${notable_prop['name']}:</dt>
+            <dd>
+              <acre:script>
+                var values = sh.flatten_search_values(notable_prop['values']);
+                console.log(values);
+              </acre:script>
+              <acre:block for="i,v in values" trim="1">
+                <acre:block if="i > 0">, </acre:block>
+                <acre:block if="v['id']" trim="1">
+                  <a class="property-value" data-id="${v['id']}"
+                     href="${h.fb_url(v['id'])}">${v['text']}</a>
+                </acre:block>
+                <acre:block else="" trim="1">
+                  ${v['text']}
+                </acre:block>
+              </acre:block>
+            </dd>
+          </dl>
+        </acre:block>
+      </div>
     </acre:block>
     <p class="description">
       ${item.description || ''}

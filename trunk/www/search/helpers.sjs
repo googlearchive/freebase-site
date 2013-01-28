@@ -124,6 +124,30 @@ function get_result_types(search_item) {
   return types;
 }
 
+function get_notable_properties(search_item) {
+  var notable_props = [];
+  var o = get_result_output(search_item, 'notable:/client/summary');
+  if (o) {
+    var notable_paths = o['/common/topic/notable_paths'];
+    if (notable_paths && notable_paths.length) {
+      notable_paths.forEach(function(path) {
+        notable_props.push({
+          'name': h.id_key(path).replace(/_/g, ' '),
+          'values': o[path]
+        });
+      });
+    }
+  }
+  o = get_result_output(search_item, 'name');
+  if (o && o['/common/topic/alias']) {
+    notable_props.push({
+      'name': 'alias',
+      'values': o['/common/topic/alias']
+    });
+  }
+  return notable_props;
+}
+
 /**
  * Retrieve the best description from ouput=(description) results
  * giving precedence to wikpedia then freebase descriptions.
@@ -165,4 +189,40 @@ function first_value(list) {
     return first;
   }
   return null;
+}
+
+/**
+ * Flatten search output values returned by search to a list that is more
+ * suitable for rendering in a template.
+ */
+function flatten_search_values(values) {
+  var res = [];
+  values.forEach(function(value) {
+    var item = {};
+    if (h.isPlainObject(value)) {
+      if (value['id'] || value['mid']) {
+        item.id = value['id'] || value['mid'];
+        item.text = first_value(value['name']) || value['name'];
+      }
+      else if (value['value'] != null) {
+        item.text = value['value'];
+      }
+      // Search may return other additional values likes dates, etc.
+      var extra_values = [];
+      for (var k in value) {
+        if (! (k == 'id' || k == 'mid' || k == 'name' ||
+               k == 'value' || k == 'lang')) {
+          extra_values.push(value[k]);
+        }
+      }
+      if (extra_values.length) {
+        item.text += ' (' + extra_values.join(', ') + ')';
+      }
+    }
+    else {
+      item.text = value;
+    }
+    res.push(item);
+  });
+  return res;
 }

@@ -88,7 +88,7 @@ function validate_search_params(params) {
 function search(query, type, operator, options) {
   var params = h.extend(options, {
     filter: ['(not type:/common/document)'],
-    output: '(description type)',
+    output: '(description type notable:/client/summary name)',
     spell: 'always'
   });
   // Does the query look like an id?
@@ -129,6 +129,7 @@ function search(query, type, operator, options) {
         results.push(h.extend(item, {
           id: use_id,
           description: sh.get_result_description(item),
+          notable_properties: sh.get_notable_properties(item),
           types: sh.get_result_types(item)
         }));
       });

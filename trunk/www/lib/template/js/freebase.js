@@ -966,6 +966,24 @@
     };
 
     /**
+     * Conveniently select the entire mid for easy copy/paste on dblclick.
+     */
+    fb.on_mid_dblclick = function(e) {
+      var text = e.target;
+      if (document.body.createTextRange) { //msie
+        var range = document.body.createTextRange();
+        range.moveToElementText(text);
+        range.select();
+      } else if (window.getSelection) { //all others
+        var selection = window.getSelection();        
+        var range = document.createRange();
+        range.selectNodeContents(text);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+    };
+
+    /**
      * document keypress => keyboard shortcut handlers
      */
     $(document).keypress(function(e) {
@@ -984,6 +1002,10 @@
     $("#page-content")
       .on("mouseover", "a.property-value", fb.hover.show)
       .on("mouseout", "a.property-value", fb.hover.hide);
+
+    $(document.body)
+      .on("dblclick", ".mid", fb.on_mid_dblclick)
+      .on("click", ".mid", fb.on_mid_dblclick);
 
   });
 

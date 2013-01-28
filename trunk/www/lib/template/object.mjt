@@ -261,11 +261,11 @@
           <div class="meta">
             <span acre:if="c.object.id !== c.object.mid" class="key">
               <strong>${_("id")}</strong>:
-              <span>${c.object.id}</span>
+              <span class="mid">${c.object.id}</span>
             </span>
             <span class="key">
               <strong>${_("mid")}</strong>:
-              <span>${c.object.mid}</span>
+              <span class="mid">${c.object.mid}</span>
             </span>
             <acre:block if="c.object.replaced_by">
               <strong>${(_("replaced by"))}</strong>:

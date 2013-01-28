@@ -499,6 +499,8 @@ h3.fbs-topic-properties {
 .fbs-flyout-pane p {
   font-size: 1.2em;
   line-height: 1.4;
+  max-height: 10em;
+  overflow: auto;
 }
 
 /* this class is applied with fbs-topic-flyout when a thumbnail is present

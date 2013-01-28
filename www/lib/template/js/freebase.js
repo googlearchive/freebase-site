@@ -884,12 +884,15 @@
 
       cache: {},
 
-      topic_url: fb.h.fb_googleapis_url() + 
-        "/topic${id}?filter=suggest&limit=3&key=" + fb.acre.freebase.api_key + 
-        "&lang=" + fb.h.lang_code(fb.lang),
+      search_url: fb.h.fb_googleapis_url() + 
+          "/search?filter=(all mid:${id})&" +
+          "output=(notable:/client/summary description type)&key=" + 
+          fb.acre.freebase.api_key + 
+          "&lang=" + fb.suggest_lang.lang(),
 
       image_url: fb.h.fb_googleapis_url() + 
-        "/image${id}?maxwidth=75&key=" + fb.acre.freebase.api_key,
+        "/image${id}?maxwidth=75&errorid=/freebase/no_image_png&key=" +
+        fb.acre.freebase.api_key,
 
       show: function() {
         var topic_link = this;
@@ -906,11 +909,14 @@
         }
         else {
           $.ajax({
-            url: fb.hover.topic_url.replace(/\$\{id\}/g, id),
+            url: fb.hover.search_url.replace(/\$\{id\}/g, id),
             success: function(data) {
-              var html = $.suggest.suggest.create_flyout(data, fb.hover.image_url);
-              fb.hover.cache[id] = html;
-              _show();
+              if (data['result'] && data['result'].length) {
+                var html = $.suggest.suggest.create_flyout(
+                    data['result'][0], fb.hover.image_url);
+                fb.hover.cache[id] = html;
+                _show();
+              }
             },
             dataType: "jsonp",
             cache: true

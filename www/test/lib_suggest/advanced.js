@@ -116,6 +116,42 @@ $(function() {
       $.each(invalid, function(i, n) {
           ok(!$.suggest.is_system_type(n), n);
       });
-  })
+  });
+
+  test("get_value", function() {
+    var get_value = $.suggest.suggest.get_value;
+
+    same(get_value(null, 'foo'), null);
+    same(get_value({}, 'foo'), null);
+    same(get_value(null, null), null);
+    same(get_value({}, []), null);
+    same(get_value({}, 'bar', true), []);
+
+    same(get_value({foo:null}, 'foo'), null);
+    same(get_value({foo:0}, 'foo'), 0);
+    same(get_value({foo:0}, 'foo', true), [0]);
+
+    same(get_value({foo:1}, 'foo'), 1);
+    same(get_value({foo:1}, 'foo', true), [1]);
+
+    same(get_value({foo:false}, 'foo'), false);
+    same(get_value({foo:false}, 'foo', true), [false]);
+
+    same(get_value({foo:true}, 'foo'), true);
+    same(get_value({foo:true}, 'foo', true), [true]);
+
+
+    same(get_value({foo:['bar']}, 'foo'), ['bar']);
+    same(get_value({foo:['bar']}, 'foo', true), ['bar']);
+
+    same(get_value({foo:[{name:'bar'}]}, 'foo', true), ['bar']);
+    same(get_value(
+           {foo:[{name:'bar'}, {id:'/m/xxx'}, {name:'baz'}]}, 'foo', true),
+        ['bar', '/m/xxx', 'baz']);
+    same(get_value({foo:[{value:'bar'}]}, 'foo', true), ['bar']);
+
+    same(get_value({foo:[{value:'bar', date:'2013'}]}, 'foo', true),
+         ['bar (2013)']);
+  });
 
 });

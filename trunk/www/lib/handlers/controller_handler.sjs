@@ -102,6 +102,7 @@ function run_spec(spec, scope) {
         return service_error;
       }
       // otherwise, render the error
+      acre.response.status = 503;
       spec.template = acre.require("error/error.mjt");
       return render({einfo: service_error}, spec, scope);
     })

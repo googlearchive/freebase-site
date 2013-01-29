@@ -32,6 +32,7 @@
 var reviewHelpers = acre.require('reviewhelpers.sjs');
 var h = acre.require('lib/helper/helpers.sjs');
 var apis = acre.require('lib/promise/apis.sjs');
+var freeq = acre.require('lib/freeq/queries.sjs');
 var freebase = apis.freebase;
 var deferred = apis.deferred;
 var i18n = acre.require('lib/i18n/i18n.sjs');
@@ -49,62 +50,67 @@ var freebaseExperts = '/m/0432s8d';
 var pipelineAdmins = '/m/03p3rjs';
 
 // processVote constants
-var success = _('Vote recorded.');
-var missingParams = _('Missing parameters.');
-var invalidUser = _('Invalid user parameter.');
-var invalidVote = _('Invalid vote.');
-var invalidFlag = _('MID did not match a flag.');
-var invalidItem = _('Item supplied is not an option for flag.');
-var malformedFlag = _('Malformed flag.');
-var lowPermission = _('User does not have permission.');
-var voteOnOwnFlag = _('User can not vote on own flag.');
+var SUCCESS = 'Vote recorded.';
+var MISSING_PARAMS = 'Missing parameters.';
+var INVALID_USER = 'Invalid user parameter.';
+var INVALID_VOTE = 'Invalid vote.';
+var INVALID_FLAG = 'MID did not match a flag.';
+var INVALID_ITEM = 'Item supplied is not an option for flag.';
+var MALFORMED_FLAG = 'Malformed flag.';
+var LOW_PERMISSION = 'User does not have permission.';
+var VOTE_ON_OWN_FLAG = 'User can not vote on own flag.';
 
 // processFlag constants
-var insufficientVotes = _('Insufficient votes to process');
-var conflictingVotes = _('Conflicting votes. Escalated to admin queue.');
-var errorEscalating = _('Error escalating flag: ');
-var consensusOfVotes = _('Consensus reached. Action being performed.');
-var langInReview = _('Found lang object in review. Escalating.');
-var schemaInReview = _('Found schema object in review. Escalating.');
-var bigLinksReview = _('Escalating flag due to high link count.');
+var INSUFFICIENT_VOTES = 'Insufficient votes to process';
+var CONFLICTING_VOTES = 'Conflicting votes. Escalated to admin queue.';
+var ERROR_ESCALATING = 'Error escalating flag ';
+var CONSENSUS_OF_VOTES = 'Consensus reached. Action being performed.';
+var LANG_IN_REVIEW = 'Found lang object in review. Escalating.';
+var SCHEMA_IN_REVIEW = 'Found schema object in review. Escalating.';
+var BIG_LINKS_REVIEW = 'Escalating flag due to high link count.';
+
+// executeVote constants
+var PROMISE_OK = 'Resolved promise';
+
+
+
 
 function processVote(flag, vote, item, user) {
-
     var flagInfo;
     var userInfo;
 
     if (!user || !vote || !flag) {
-        return deferred.rejected(missingParams);
+        return deferred.rejected(MISSING_PARAMS);
     }
     if (vote !== 'agree' && vote !== 'disagree' && vote !== 'skip') {
-        return deferred.rejected(invalidVote);
+        return deferred.rejected(INVALID_VOTE);
     }
 
-    return reviewHelpers.getFlagAndUserInfo(flag, user).then(function(results) {
-
+    // Touch here to get the latest data
+    return freebase.touch().then(function(){
+        return reviewHelpers.getFlagAndUserInfo(flag, user);
+    }).then(function(results) {
         flagInfo = results[0];
         userInfo = results[1];
-
         // Authenitcate user
         if (reviewHelpers.userOwnsFlag(flagInfo, userInfo)) {
-            return deferred.rejected(voteOnOwnFlag);
+            return deferred.rejected(VOTE_ON_OWN_FLAG);
         }
         if (!reviewHelpers.userCanVoteForFlag(flagInfo, userInfo)) {
-            return deferred.rejected(lowPermission);
+            return deferred.rejected(LOW_PERMISSION);
         }
 
         // Authenticate item, if neccesary
         if (reviewHelpers.getFlagKind(flagInfo) === 'merge' && vote === 'agree') {
             if (!item) {
-                return deferred.rejected(missingParams);
+                return deferred.rejected(MISSING_PARAMS);
             } else {
                 var items = reviewHelpers.getFlagItems(flagInfo);
                 if (items[0].id !== item && items[1].id !== item) {
-                    return deferred.rejected(invalidItem);
+                    return deferred.rejected(INVALID_ITEM);
                 }
             }
         }
-
         // Remove any previous votes, if neccesary
         var promise = null;
         var judgments = reviewHelpers.getFlagVotes(flagInfo);
@@ -115,14 +121,13 @@ function processVote(flag, vote, item, user) {
                 }
             });
         }
+
         if (!promise) {
-            return deferred.resolved('empty promise to contine');
-        } else {
-            return promise;
+          promise = deferred.resolved(null);
         }
+        return promise;
 
     }).then(function(result) {
-
         // Ready to write vote
         if (vote !== 'agree' || h.get_first_value(flagInfo, '/freebase/review_flag/kind').id !== mergeId) {
             item = null;
@@ -132,45 +137,123 @@ function processVote(flag, vote, item, user) {
     }).then(function(result) {
 
         if (h.has_value(flagInfo, '/freebase/review_flag/status')) {
+            // DO ADMIN VOTING
 
-            // ADMIN VOTING, DO FREEQ STUFF HERE
-            return deferred.resolved('Empty promise for freeq');
+            // We need to refresh flagInfo to get the latest (admin's) vote
+            return reviewHelpers.getAndValidateFlagInfo(flag)
+                .then(function(result){
+                    var flagInfo = result;
 
+                    // Find admin's judgement
+                    var judgement;
+                    var judgements = reviewHelpers.getFlagVotes(flagInfo);
+                    if (judgements) {
+                        judgements.forEach(function(judg) {
+                            if (judg.creator == user.id) {
+                                judgement = judg;
+                            }
+                        });
+                        return executeVote(flagInfo, [judgement]);
+                    } else {
+                        return deferred.rejected(INVALID_ITEM);
+                    }
+                });
         } else {
-            var judgments = reviewHelpers.getFlagVotes(flagInfo);
-            if (judgments && judgments.length > 2) {
+            var judgements = reviewHelpers.getFlagVotes(flagInfo);
+            if (judgements && judgements.length > 2) {
                 return processFlag(flag);
             }
-            return deferred.resolved('Empty promise to continue');
+            return deferred.resolved(PROMISE_OK);
         }
 
     }).then(function(result) {
-        return deferred.resolved(success);
+        return deferred.resolved(SUCCESS);
+    });
+}
+
+/**
+ * Execute Vote actions
+ *
+ */
+function executeVote(flagInfo, verifiedJudgements) {
+    h.enable_writeuser();
+
+    var flagKind = reviewHelpers.getFlagKind(flagInfo);
+
+    var flagItems = reviewHelpers.getFlagItems(flagInfo);
+    var judgements = verifiedJudgements || reviewHelpers.getFlagVotes(flagInfo);
+
+    var judgementVote = h.get_first_value(judgements[0],
+        '/freebase/flag_judgment/vote');
+    var judgementItem = h.get_first_value(judgements[0],
+        '/freebase/flag_judgment/item');
+
+    if (!flagItems || !flagItems.length) return deferred.rejected(INVALID_ITEM);
+    var promise;
+
+    // Is vote agree?
+    if (judgementVote.id === agreeVote) {
+        switch(flagKind) {
+            case "merge": // call FreeQ
+                var id_target, id_source;
+                if (judgementItem.id === flagItems[0].id) {
+                    id_target = flagItems[0].id;
+                    id_source = flagItems[1].id;
+                } else if (judgementItem.id === items[1].id) {
+                    id_target = flagItems[1].id;
+                    id_source = flagItems[0].id;
+                } else {
+                    return deferred.rejected(INVALID_ITEM);
+                }
+                promise = freeq.merge_topics(null, id_target, id_source, true);
+                break;
+
+            case "delete": // call FreeQ
+                var topic_id = flagItems[0].id;
+                promise = freeq.delete_topic(null, topic_id, true);
+                break;
+
+            case "offensive": // we don't do anything for offensive for now
+                return deferred.resolved(PROMISE_OK);
+
+            case "split": // we don't do anything for split for now
+                return deferred.resolved(PROMISE_OK);
+        }
+    } else if (judgementVote.id !== disagreeVote) {
+        // Vote is Skip or error
+        return deferred.resolved(PROMISE_OK);
+    }
+
+    promise = promise || deferred.resolved(PROMISE_OK);
+
+    // Delete flag and judgements
+    return promise.then(function(){
+        var promises = [];
+
+        // delete all judgements
+        var allJudgements = reviewHelpers.getFlagVotes(flagInfo);
+        if (allJudgements) {
+            allJudgements.forEach(function(judgement) {
+                promises.push(reviewHelpers.deleteEntity(judgement.id));
+            });
+        }
+        // delete flag
+        promises.push(reviewHelpers.deleteEntity(flagInfo.id));
+
+        return deferred.all(promises).then(function(result){
+            return deferred.resolved(PROMISE_OK);
+        });
     });
 }
 
 function processFlag(mid) {
-
-
-    return freebase.get_topic(mid, reviewHelpers.flagOptions).then(function(result) {
-
-        // Error checking
-        if (!result || result.errors || !result.id) {
-            return deferred.rejected(invalidFlag);
-        }
-        if (!reviewHelpers.isFlagFromTopic(result)) {
-            return deferred.rejected(invalidFlag);
-        }
-        if (!reviewHelpers.validFlagFromTopic(result)) {
-            return deferred.rejected(malformedFlag);
-        }
-
+    return reviewHelpers.getAndValidateFlagInfo(mid).then(function(result){
         var flagInfo = result;
 
         // Check if there are more than 2 votes
         var flagJudgments = reviewHelpers.getFlagVotes(flagInfo);
         if (!flagJudgments || flagJudgments.length < 3) {
-            return deferred.resolved(insufficientVotes);
+            return deferred.resolved(INSUFFICIENT_VOTES);
         }
 
         var flagItems = reviewHelpers.getFlagItems(flagInfo);
@@ -215,9 +298,8 @@ function processFlag(mid) {
 
         // Check and tally the votes
         if (verifiedJudgments.length < 3) {
-            return deferred.resolved(insufficientVotes);
+            return deferred.resolved(INSUFFICIENT_VOTES);
         }
-
         // Check for unanimous-ness
         var voteDirections = [0, 0, 0, 0];
         verifiedJudgments.forEach(function(judgment) {
@@ -238,7 +320,7 @@ function processFlag(mid) {
         if (voteDirections > 1) {
             // Conflicting :(
             return reviewHelpers.escalateFlagTo(flagInfo.id, 'conflicting').then(function(env) {
-                return deferred.resolved(conflictingVotes);
+                return deferred.resolved(CONFLICTING_VOTES);
             });
         } else {
             // Concensus!
@@ -261,7 +343,7 @@ function processFlag(mid) {
                     // Failed topic lookup checking
                     var item = results[i];
                     if (!item || item.errors || !item.id) {
-                        return deferred.rejected(malformedFlag);
+                        return deferred.rejected(MALFORMED_FLAG);
                     }
 
                     // No direct voting on things with more than 200 links or things in "/lang"
@@ -271,7 +353,7 @@ function processFlag(mid) {
                         linkType = links[i];
                         if (linkType.id === '/lang') {
                             return reviewHelpers.escalateFlagTo(flagInfo.id, 'system').then(function(env) {
-                                return deferred.rejected(langInReview);
+                                return deferred.rejected(LANG_IN_REVIEW);
                             });
                         } else {
                             total += linkType.count;
@@ -279,7 +361,7 @@ function processFlag(mid) {
                     }
                     if (total > 200) {
                         return reviewHelpers.escalateFlagTo(flagInfo.id, 'significant').then(function(env) {
-                            return deferred.rejected(bigLinksReview);
+                            return deferred.rejected(BIG_LINKS_REVIEW);
                         });
                     }
 
@@ -288,15 +370,13 @@ function processFlag(mid) {
                     for (var i = 0, l = types.length; i < l; i++) {
                         if (h.is_metaweb_system_type(types[0].id)) {
                             return reviewHelpers.escalateFlagTo(flagInfo.id, 'system').then(function(env) {
-                                return deferred.rejected(schemaInReview);
+                                return deferred.rejected(SCHEMA_IN_REVIEW);
                             });
                         }
                     }
                 }
 
-                // DO FREEQ STUFF HERE
-                return deferred.resolved(consensusOfVotes);
-
+                return executeVote(flagInfo, verifiedJudgments);
             });
         }
     });

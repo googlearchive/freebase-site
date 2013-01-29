@@ -36,7 +36,7 @@
     var i18n_c = acre.require("lib/i18n/components.mjt");
     var discuss_c = acre.require("lib/discuss/components.mjt");
     var propboxForm = acre.require("lib/propbox/form.mjt");
-    var _ = i18n.gettext;   
+    var _ = i18n.gettext;
 
     var LEFT_WINS = _("Left Wins");
     var RIGHT_WINS = _("Right Wins");
@@ -72,7 +72,7 @@
     <div class="flagreview-separator">
     </div>
     ${itempanel(displayInfo)}
-  </acre:block>        
+  </acre:block>
 </acre:block>
 
 <acre:block def="votepanel(displayInfo)">
@@ -82,10 +82,10 @@
   </div>
 </acre:block>
 
-<acre:block def="itempanel(displayInfo)">  
+<acre:block def="itempanel(displayInfo)">
   <div class="topic-frame">
     <div id="page-content-wrapper">
-      <div acre:if="displayInfo.items.length === 1" id="flag-content" class="flag-content"> 
+      <div acre:if="displayInfo.items.length === 1" id="flag-content" class="flag-content">
           <iframe src="${displayInfo.items[0].url}" width="100%" frameborder="0" style="height: auto; min-height: 800px;">
           </iframe>
       </div>
@@ -101,7 +101,7 @@
       </div>
     </div>
     ${discuss_c.discuss_frame()}
-  </div>      
+  </div>
 </acre:block>
 
 <acre:block def="flagreview_left(displayInfo)">
@@ -110,7 +110,7 @@
       <acre:block if="displayInfo.authToVote">
         ${flagreview_buttons(displayInfo)}
       </acre:block>
-  </div>                
+  </div>
 </acre:block>
 
 <acre:block def="tag_a(value, href)">
@@ -118,41 +118,41 @@
 </acre:block>
 
 <acre:block def="flagreview_right(displayInfo)">
-  <div class="flagreview-right" >                               
+  <div class="flagreview-right" >
     <div class="flag-creator-info">
       <acre:block if="displayInfo.isCreator">
         ${REMOVE_OWN_FLAG}
       </acre:block>
       <acre:block else="">
-        ${helper.template_sprintf(S_BY_S, tag_a(FLAGGED, displayInfo.flagUrl), tag_a(displayInfo.creator, displayInfo.creatorUrl))}                
-      </acre:block>            
+        ${helper.template_sprintf(S_BY_S, tag_a(FLAGGED, displayInfo.flagUrl), tag_a(displayInfo.creator, displayInfo.creatorUrl))}
+      </acre:block>
       - <a href="http://wiki.freebase.com/wiki/Review_Queue">${HELP}</a>
-    </div> 
+    </div>
     <div class="flagreview-bottomright">
-      <div class="sharing-options">          
-        <a href="${displayInfo.reviewUrl}" id="link-to-flag" onclick="return false">${LINK_TO_FLAG}</a> - 
-        <a href="${displayInfo.id}" id="add-link-to-list" onclick="return false">${ADD_TO_HOTLIST}</a> - 
+      <div class="sharing-options">
+        <a href="${displayInfo.reviewUrl}" id="link-to-flag" onclick="return false">${LINK_TO_FLAG}</a> -
+        <a href="${displayInfo.id}" id="add-link-to-list" onclick="return false">${ADD_TO_HOTLIST}</a> -
         <a href="" id="get-link-list" onclick="return false">${LINK_TO_HOTLIST}</a>
       </div>
-      <div class="flag-options">                
+      <div class="flag-options">
         <form class="toggle-discuss" data-id="${displayInfo.id}" style="display:inline;"> ${propboxForm.cancel_button(DISCUSS)}</form>
         <!!--
            Disable sharing links/options until we know what this is supposed to do
             <form class="toggle-share"   style="display:inline;"> ${propboxForm.cancel_button(SHARE)}</form>
             -->
-      </div>         
+      </div>
     </div>
   </div>
 </acre:block>
 
 <acre:block def="flagreview_title(displayInfo)">
-  <div class="flagreview-title">                
+  <div class="flagreview-title">
     <acre:block if="displayInfo.items.length === 1">
       ${tag_a(displayInfo.items[0].name, displayInfo.items[0].url)}
     </acre:block>
-    <acre:block elif="displayInfo.items.length === 2"> 
+    <acre:block elif="displayInfo.items.length === 2">
       ${helper.template_sprintf(S_VS_S, tag_a(displayInfo.items[0].name, displayInfo.items[0].url), tag_a(displayInfo.items[1].name, displayInfo.items[1].url))}
-    </acre:block>        
+    </acre:block>
     <acre:block if="displayInfo.status">
         <span class="flagreview-admin-message">${ADMIN_QUEUE}</span>
     </acre:block>
@@ -160,46 +160,46 @@
 </acre:block>
 
 <acre:block def="flagreview_buttons(displayInfo)">
-  <div class="vote-choices">            
+  <div class="vote-choices">
     <div acre:if="displayInfo.kind === 'merge'">
-      <span class="vote-label">${MERGE_THESE_TOPICS}</span> 
-      ${votebutton(LEFT_WINS ,  displayInfo.id, "agree", displayInfo.items[0].id, displayInfo)}
-      ${votebutton(RIGHT_WINS,  displayInfo.id, "agree", displayInfo.items[1].id, displayInfo)}
+      <span class="vote-label">${MERGE_THESE_TOPICS}</span>
+      ${votebutton(LEFT_WINS ,  displayInfo.id, "agree", displayInfo.items[0].mid, displayInfo)}
+      ${votebutton(RIGHT_WINS,  displayInfo.id, "agree", displayInfo.items[1].mid, displayInfo)}
       ${votebutton(DONT_MERGE, displayInfo.id, "disagree", null, displayInfo)}
       <span class="vote-label vote-separator">${NOT_SURE}</span>
-      ${votebutton(SKIP, displayInfo.id, "skip", null, displayInfo)}            
+      ${votebutton(SKIP, displayInfo.id, "skip", null, displayInfo)}
     </div>
     <div acre:if="displayInfo.kind === 'delete'">
-      <span class="vote-label">${DELETE_THIS_TOPIC}</span> 
+      <span class="vote-label">${DELETE_THIS_TOPIC}</span>
       ${votebutton(DELETE, displayInfo.id, "agree", null, displayInfo)}
       ${votebutton(DONT_DELETE, displayInfo.id, "disagree", null, displayInfo)}
       <span class="vote-label vote-separator">${NOT_SURE}</span>
-      ${votebutton(SKIP, displayInfo.id, "skip", null, displayInfo)}            
+      ${votebutton(SKIP, displayInfo.id, "skip", null, displayInfo)}
     </div>
     <div acre:if="displayInfo.kind === 'split'">
-      <span class="vote-label">${SPLIT_THIS_TOPIC}</span> 
+      <span class="vote-label">${SPLIT_THIS_TOPIC}</span>
       ${votebutton(SPLIT, displayInfo.id, "agree", null, displayInfo)}
       ${votebutton(DONT_SPLIT, displayInfo.id, "disagree", null, displayInfo)}
       <span class="vote-label vote-separator">${NOT_SURE}</span>
-      ${votebutton(SKIP, displayInfo.id, "skip", null, displayInfo)}            
+      ${votebutton(SKIP, displayInfo.id, "skip", null, displayInfo)}
     </div>
     <div acre:if="displayInfo.kind === 'offensive'">
-      <span class="vote-label">${OFFENSIVE_TOPIC}</span> 
+      <span class="vote-label">${OFFENSIVE_TOPIC}</span>
       ${votebutton(OFFENSIVE, displayInfo.id, "agree", null, displayInfo)}
       ${votebutton(NOT_OFFENSIVE, displayInfo.id, "disagree", null, displayInfo)}
       <span class="vote-label vote-separator">${NOT_SURE}</span>
-      ${votebutton(SKIP, displayInfo.id, "skip", null, displayInfo)}            
-    </div>              
+      ${votebutton(SKIP, displayInfo.id, "skip", null, displayInfo)}
+    </div>
   </div>
 </acre:block>
 
-<acre:block def="votebutton(name, flag, vote, item, displayInfo)">    
+<acre:block def="votebutton(name, flag, vote, item, displayInfo)">
   <form class="vote-form" method="GET">
     <input type="hidden" name="flag" value="${flag}">
-    <input type="hidden" name="vote" value="${vote}">             
+    <input type="hidden" name="vote" value="${vote}">
     <acre:block if="item">
       <input type="hidden" name="item" value="${item}">
-    </acre:block>        
+    </acre:block>
     <acre:block if="displayInfo && displayInfo.previousVote === vote && displayInfo.previousVoteItem === item">
       ${propboxForm.cancel_button(name)}
     </acre:block>

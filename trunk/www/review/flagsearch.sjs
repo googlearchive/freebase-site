@@ -35,18 +35,18 @@ var freebase = apis.freebase;
 var deferred = apis.deferred;
 
 function findFlags(user, limit, voted, created, order, kind, domain, admin, cursor) {
-        
-    var baseQuery = [{ 
-        "mid":null,  
-        "type":"/freebase/review_flag", 
-        "item":[{ 
-            "mid":null, 
-        }] 
+
+    var baseQuery = [{
+        "mid":null,
+        "type":"/freebase/review_flag",
+        "item":[{
+            "mid":null
+        }]
     }];
-          
+
     // Show flags that need admin review?
     var showAdmin = null;
-    if(admin) {       
+    if(admin) {
         if(admin === "adminonly") {
             showAdmin = "required";
         } else if(admin === "nonadmin") {
@@ -55,47 +55,60 @@ function findFlags(user, limit, voted, created, order, kind, domain, admin, curs
             showAdmin = null;
         } else {
             showAdmin = "forbidden";
-        }               
-    } 
+        }
+    }
     if(showAdmin) {
         var adminPatch = { "status": { "mid": null, "optional": showAdmin } };
         baseQuery = acre.freebase.extend_query(baseQuery, adminPatch);
     }
-           
-    if(kind) {        
+
+    if(kind) {
         if(kind === "merge" || kind === "split" || kind === "delete" || kind === "offensive" ) {
-            var kindPatch = { 
+            var kindPatch = {
                 "kind": {
                     "key": {
                         "value": kind,
                         "namespace":"/freebase/flag_kind"
-                     },
+                    }
                 }
             };
             baseQuery = acre.freebase.extend_query(baseQuery, kindPatch);
         }
+    } else {
+        // Without kind specified show all but split flags
+        var allowedKinds = {
+            "kind": {
+                "id": null,
+                "id|=": [
+                    "/freebase/flag_kind/merge",
+                    "/freebase/flag_kind/delete",
+                    "/freebase/flag_kind/offensive"
+                ]
+            }
+        };
+        baseQuery = acre.freebase.extend_query(baseQuery, allowedKinds);
     }
 
     // Deciding whether or not to show flags we've voted on.
     var showVotedOn = null;
     if(voted) {
         if(voted === "notvotedon") {
-            showVotedOn = "forbidden";       
+            showVotedOn = "forbidden";
         } else if(voted === "votedon") {
-            showVotedOn = "required";            
+            showVotedOn = "required";
         } else {
             showVotedOn = null;
         }
     }
-    if(showVotedOn) {        
+    if(showVotedOn) {
         var votedPatch = {
             "legacy:judgments": [{
                 "creator": {"id": user.id},
                 "optional": showVotedOn
-            }]                
-        }                
+            }]
+        };
         baseQuery = acre.freebase.extend_query(baseQuery, votedPatch);
-    } 
+    }
 
     // Deciding whether or not to show flags we've created.
     var showCreated = null;
@@ -109,51 +122,51 @@ function findFlags(user, limit, voted, created, order, kind, domain, admin, curs
         }
     }
     if(showCreated) {
-        var createdPatch = {                
+        var createdPatch = {
             "legacy:creator": {
                 "id": user.id,
                 "optional": showCreated
             }
-        }            
+        };
         baseQuery = acre.freebase.extend_query(baseQuery, createdPatch);
     }
 
     if(limit && limit > 0) {
         var limitPatch = {"limit": limit};
         baseQuery = acre.freebase.extend_query(baseQuery, limitPatch);
-    } 
+    }
 
     if(domain) {
-        var domainPatch = { 
-            "item": [{ 
-                "type": [{ 
+        var domainPatch = {
+            "item": [{
+                "type": [{
                     "domain": domain
                 }]
             }]
         };
         baseQuery = acre.freebase.extend_query(baseQuery, domainPatch);
-    } 
-    
+    }
+
     var sorting = {
         "timeasc" : {"timestamp":null, "sort":"timestamp" },
         "timedes" : {"timestamp":null, "sort":"-timestamp" },
         "voteasc" : {
-            "num:judgments": {"return": "count", "optional": true}, 
+            "num:judgments": {"return": "count", "optional": true},
             "sort": "num:judgments.count"
         },
-        "votedes" : { 
-            "num:judgments": {"return": "count", "optional": true}, 
+        "votedes" : {
+            "num:judgments": {"return": "count", "optional": true},
             "sort": "-num:judgments.count"
         }
     };
     if(sorting[order]){
-        acre.freebase.extend_query(baseQuery, sorting[order]);    
-    }             
+        acre.freebase.extend_query(baseQuery, sorting[order]);
+    }
 
     if(!cursor) {
-        cursor = true;       
+        cursor = true;
     }
-    return freebase.mqlread(baseQuery, {"cursor": cursor}); 
+    return freebase.mqlread(baseQuery, {"cursor": cursor});
 
 }
 

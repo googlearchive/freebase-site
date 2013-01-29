@@ -189,7 +189,7 @@
 
         var inDiv = $('#' + div);
         var outDiv = (currentDiv) ? $(currentDiv) : null;
-    
+
         if (!inDiv) {
             return;
         }
@@ -411,21 +411,21 @@
     function voteSubmit(voteForm) {
         $.ajax($.extend(formlib.default_submit_ajax_options({ 'form': voteForm }), {
             url: fb.h.ajax_url('vote.ajax'),
-            onsuccess: function(data) {
+            success: function(data) {
                 fb.status.info(data.result.result);
                 $(voteForm).find('button').addClass('cancel');
                 $(voteForm).find('button').removeClass('save');
                 $(voteForm).siblings('.vote-form').find('button').addClass('save');
                 $(voteForm).siblings('.vote-form').find('button').removeClass('cancel');
             },
-            onerror: function(data) {
-                fb.status.info(data.result);
+            error: function(data) {
+                fb.status.error(data.result, true);
             }
         }));
     }
     function rebuildSearchParameters(params) {
         if (params.kind) {
-            if (params.kind === 'merge' || params.kind === 'split' || 
+            if (params.kind === 'merge' || params.kind === 'split' ||
                     params.kind === 'delete' || params.kind === 'offensive') {
                 flagSearchParams.kind = params.kind;
             }
@@ -480,7 +480,7 @@
         } else {
             rebuildSearchParameters(params);
         }
-        loadNextAvailable();        
+        loadNextAvailable();
     });
 
 

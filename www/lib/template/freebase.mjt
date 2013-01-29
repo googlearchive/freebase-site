@@ -44,7 +44,6 @@
 <acre:block def="page(exports)">
   <acre:script>
     acre.response.set_header('content-type', 'text/html');
-    acre.response.status = 200;
   </acre:script>
   <!DOCTYPE html>
   <html lang="en" dir="ltr" class="no-js">

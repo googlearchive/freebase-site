@@ -118,26 +118,56 @@ var hasCharacter = /\D/;
   };
 
   var freebase_apis = [
-      {name: "fetch",            options_pos: 1},
-      {name: "touch",            options_pos: 0},
-      {name: "get_user_info",    options_pos: 0},
-      {name: "mqlread",          options_pos: 2},
-      {name: "mqlread_multiple", options_pos: 2},
-      {name: "mqlwrite",         options_pos: 2},
-      {name: "upload",           options_pos: 2},
-      {name: "create_group",     options_pos: 1},
-      {name: "get_blob",         options_pos: 2},
-      {name: "get_topic",        options_pos: 1},
-      {name: "get_topic_multi",  options_pos: 1},
-      {name: "search",           options_pos: 1},
-      {name: "geosearch",        options_pos: 1}
+      {name: "fetch",             options_pos: 1},
+      {name: "touch",             options_pos: 0},
+      {name: "get_user_info",     options_pos: 0},
+      {name: "mqlread",           options_pos: 2},
+      {name: "mqlread_multiple",  options_pos: 2},
+      {name: "mqlwrite",          options_pos: 2},
+      {name: "upload",            options_pos: 2},
+      {name: "create_group",      options_pos: 1},
+      {name: "get_blob",          options_pos: 2},
+      {name: "get_topic",         options_pos: 1},
+      {name: "get_topic_multi",   options_pos: 1},
+      {name: "search",            options_pos: 1},
+      {name: "geosearch",         options_pos: 1},
+      {name: "freeq.create_job",  options_pos: 0},
+      {name: "freeq.add_task",    options_pos: 1},
+      {name: "freeq.execute_job", options_pos: 1},
+      {name: "freeq.call",        options_pos: 1}
   ];
 
   freebase_apis.forEach(function(api){
-      freebase[api.name] = deferred.makePromise(
-          acre.freebase[api.name],
-          {position:api["options_pos"], key:"callback"},
-          {position:api["options_pos"], key:"errback"}
-      );
+
+      // Split api.name to get namespaces structure
+      var names = api.name.split(".");
+
+      // Traverse to api function in acre.freebase object
+      var api_function = acre.freebase;
+      var root = freebase;
+      names.every(function(name) {
+        api_function = api_function[name];
+
+        if (!api_function) {
+          throw "Can't find corresponding freebase api in acre: " + api;
+        }
+
+        if (typeof api_function === "function") {
+          // We are at leaf, add promise to freebase object structure
+          root[name] = deferred.makePromise(
+              api_function,
+              {position:api["options_pos"], key:"callback"},
+              {position:api["options_pos"], key:"errback"}
+          );
+          return false;
+        } else {
+          // We are not at leaf, create a structure
+          var member = root[name];
+          if(!member) {
+            root[name] = {};
+          }
+          root = member;
+        }
+      });
   });
 })();

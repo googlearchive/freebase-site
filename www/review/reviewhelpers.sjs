@@ -46,10 +46,11 @@ var skipVote = '/m/092s60p';
 var freebaseExperts = '/m/0432s8d';
 var pipelineAdmins = '/m/03p3rjs';
 
-var invalidUser = _('Invalid user parameter.');
-var invalidFlag = _('MID did not match a flag.');
+var INVALID_USER = 'Invalid user parameter.';
+var INVALID_FLAG = 'MID did not match a flag.';
+var MALFORMED_FLAG = 'Malformed flag.';
 
-var flagOptions = {
+var FLAG_OPTIONS = {
     'filter': [
         '/freebase/review_flag/',
         '/freebase/flag_judgment/',
@@ -58,7 +59,7 @@ var flagOptions = {
         '/type/object/type'
     ]
 };
-var userOptions = {
+var USER_OPTIONS = {
     'filter': [
         '/type/user/usergroup'
     ]
@@ -74,14 +75,14 @@ function getFlagAndUserInfo(flag, user) {
     var flagInfo;
     var userInfo;
 
-    var flagTopic = freebase.get_topic(flag, flagOptions);
+    var flagTopic = freebase.get_topic(flag, FLAG_OPTIONS);
 
     var userWasCached = true;
     var userTopic = acre.cache.get(cachedUserKey + user.id);
     if (userTopic) {
         userTopic = deferred.resolved(userTopic);
     } else {
-        userTopic = freebase.get_topic(user.id, userOptions);
+        userTopic = freebase.get_topic(user.id, USER_OPTIONS);
         userWasCached = false;
     }
 
@@ -89,12 +90,12 @@ function getFlagAndUserInfo(flag, user) {
 
         // Error checking
         if (!results[0] || results[0].errors || !results[0].id) {
-            return deferred.rejected(invalidFlag);
+            return deferred.rejected(INVALID_FLAG);
         } else {
             flagInfo = results[0];
         }
         if (!results[1] || results[1].errors || !results[1].id) {
-            return deferred.rejected(invalidUser);
+            return deferred.rejected(INVALID_USER);
         } else {
             userInfo = results[1];
         }
@@ -106,10 +107,10 @@ function getFlagAndUserInfo(flag, user) {
 
         // Validating Flag
         if (!isFlagFromTopic(flagInfo)) {
-            return deferred.rejected(invalidFlag);
+            return deferred.rejected(INVALID_FLAG);
         }
         if (!validFlagFromTopic(flagInfo)) {
-            return deferred.rejected(malformedFlag);
+            return deferred.rejected(MALFORMED_FLAG);
         }
 
         return deferred.resolved(results);
@@ -119,9 +120,11 @@ function getFlagAndUserInfo(flag, user) {
 // Checks a direct result from freebase.get_topic for review flag type
 function isFlagFromTopic(result) {
     var types = h.get_values(result, '/type/object/type');
-    for (var i = 0, l = types.length; i < l; i++) {
-        if (types[i].id === '/freebase/review_flag') {
-            return true;
+    if (types) {
+        for (var i = 0, l = types.length; i < l; i++) {
+            if (types[i].id === '/freebase/review_flag') {
+                return true;
+            }
         }
     }
     return false;
@@ -203,6 +206,27 @@ function userCanVoteForFlag(flagInfo, userInfo) {
     return true;
 }
 
+// Get Flag and check for errors
+function getAndValidateFlagInfo(flag) {
+    return freebase.get_topic(flag, FLAG_OPTIONS)
+        .then(function(result) {
+
+            // Error checking
+            if (!result || !result.id) {
+                return deferred.rejected(INVALID_FLAG);
+            }
+            if (!isFlagFromTopic(result)) {
+                return deferred.rejected(INVALID_FLAG);
+            }
+            if (!validFlagFromTopic(result)) {
+                return deferred.rejected(MALFORMED_FLAG);
+            }
+
+            return deferred.resolved(result);
+        });
+}
+
+
 // Escalates a flag to admin queue by using given status.
 function escalateFlagTo(flag, status) {
     var query = {
@@ -275,7 +299,7 @@ function deleteEntity(mid) {
 
     return linksForDeleteQuery(mid).then(function(data) {
 
-        if (!data) {
+        if (!data || !data.length) {
             return deferred.resolved('No links for MID ' + mid + ' found.');
         }
 

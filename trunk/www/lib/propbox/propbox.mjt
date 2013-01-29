@@ -542,9 +542,10 @@
         var attrs = {"class": "property-modify"};
         if (prop_structure.authorities != null) {
           attrs["class"] += " locked";
+          attrs["title"] = PROPERTY_REQUIRES_AUTHORITY;
         }
       </acre:script>
-      <div acre:if="!ps.has_status" acre:attrs="attrs" title="${PROPERTY_REQUIRES_AUTHORITY}">
+      <div acre:if="!ps.has_status" acre:attrs="attrs">
           <a href="#" acre:if="ps.unique_edit" onclick="return propbox.prop_edit(this, ${prop_structure.unique});"></a>
           <a href="#" acre:else="" onclick="return propbox.prop_add(this, ${prop_structure.unique});"></a>
       </div>

@@ -1,7 +1,36 @@
-[
-  "lib/template/css/mixins.less",
-  "lib/template/css/freebase.ui.datainput.less",
-  "lib/template/css/freebase.ui.outermenu.less",
-  "lib/template/css/freebase.ui.i18n.less",
-  "css/i18n.less"
-]
+
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Additional Licenses for Third Party components can be found here:
+ * http://wiki.freebase.com/wiki/Freebase_Site_License
+ *
+ */
+.data-input{display:inline-block;color:#999;background:#e1e2e3;border:2px solid #e1e2e3;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;-webkit-transition:all .3s linear 0s;-moz-transition:all .3s linear 0s;-o-transition:all .3s linear 0s;transition:all .3s linear 0s}.data-input.text,.data-input.datetime,.data-input.uri,.data-input.int,.data-input.float,.data-input.topic,.data-input.enumerated{background-image:url("/static/104a.lib.www.tags.svn.freebase-site.googlecode.dev/template/img/ui-icons.png");background-repeat:no-repeat;padding-right:23px}.data-input.focus{-webkit-box-shadow:0 0 6px #61d7f7;-moz-box-shadow:0 0 6px #61d7f7;box-shadow:0 0 6px #61d7f7}.fb-input{width:100px;height:15px;padding:4px 7px;border:0;border-top:1px solid #fff;background-image:-webkit-gradient(linear,0% 0,0% 100%,from(#f1f2f3),to(#fff));background-image:-webkit-linear-gradient(#f1f2f3,#fff);background-image:-moz-linear-gradient(0% 55% 90deg,#fff,#f1f2f3);background-repeat:repeat}.fb-input:focus{color:#666;background:#fff}.data-input.valid .fb-input{font-weight:bold;color:#222}.data-input.error{background-color:#d66819;border-color:#d66819}.data-input.error .fb-input{color:#666}.data-input.disabled{opacity:.5}.data-input.text{background-position:right -931px}.data-input.text.error{background-position:right -968px}.data-input.datetime{background-position:right -1009px}.data-input.datetime.error{background-position:right -1052px}.data-input.int,.data-input.float{background-position:right -1094px}.data-input.int.error,.data-input.float.error{background-position:right -1136px}.data-input.uri{background-position:right -1175px}.data-input.uri.error{background-position:right -1218px}.data-input.topic{background-position:right -1259px}.data-input.topic.error{background-position:right -1300px}.data-input.enumerated{background-position:right -1342px}.data-input.enumerated.error{background-position:right -1385px}.fb-boolean-input{float:left;margin:0 7px 0 0}.data-input label{float:left;position:relative;overflow:hidden;font-size:12px;font-weight:bold;line-height:1;color:#666;padding:6px 10px;border-right:1px solid #d1d2d3;border:1px solid #c1c2c3;background-image:-webkit-gradient(linear,0% 0,0% 100%,from(#efefef),to(#dcdcdc));background-image:-webkit-linear-gradient(#efefef,#dcdcdc);background-image:-moz-linear-gradient(0% 55% 90deg,#dcdcdc,#efefef);background-repeat:repeat}.data-input label:hover{cursor:pointer;z-index:1}.data-input label.selected{color:#333;background-image:-webkit-gradient(linear,0% 0,0% 100%,from(#d1d2d3),to(#f1f2f3));background-image:-webkit-linear-gradient(#d1d2d3,#f1f2f3);background-image:-moz-linear-gradient(0% 55% 90deg,#f1f2f3,#d1d2d3);background-repeat:repeat}.data-input:focus{-webkit-box-shadow:0 0 6px #61d7f7;-moz-box-shadow:0 0 6px #61d7f7;box-shadow:0 0 6px #61d7f7}.data-input label:first-child{border-right:0}.outer-menu{position:absolute}.outer-menu .nicemenu-item{display:none;height:18px;width:29px;background-color:#ffd02f;border-top:solid 1px #e6a82f;border-left:solid 1px #e6a82f;border-bottom:solid 1px #e6a82f;background-image:-webkit-gradient(linear,0% 0,0% 100%,from(#ffd02f),to(#feb22a));background-image:-webkit-linear-gradient(#ffd02f,#feb22a);background-image:-moz-linear-gradient(0% 55% 90deg,#feb22a,#ffd02f);background-repeat:repeat}.outer-menu .nicemenu-item:after{content:"";position:absolute;top:4px;right:0;border-style:solid;border-color:transparent white;border-width:5px 4px 5px 0}.outer-menu .headmenu{display:inline-block;height:18px;width:19px;border-right:solid 1px #e6a82f;-webkit-box-shadow:1px 0 1px #fde191;-moz-box-shadow:1px 0 1px #fde191;box-shadow:1px 0 1px #fde191}.outer-menu .headmenu .more-action{position:absolute;top:7px;left:4px;border-style:solid;border-color:white transparent;border-width:6px 5px 0 5px}.submenu{border:solid 1px #e6a82f;background-color:#ffd02f;-webkit-box-shadow:1px 3px 3px rgba(0,0,0,0.2);-moz-box-shadow:1px 3px 3px rgba(0,0,0,0.2);box-shadow:1px 3px 3px rgba(0,0,0,0.2)}.submenu .row-menu-item{border-bottom:solid 1px #fcdb68}.submenu .row-menu-item a{font-weight:bold;color:#393939;text-shadow:0 1px rgba(255,255,255,0.6)}.submenu .row-menu-item a:hover{background-color:#e8a526}.row-hover .outer-menu .nicemenu-item,.outer-menu.active .nicemenu-item{display:inline-block;padding:0}.outer-menu.active .more-action{border-color:black transparent}.form-group{margin:20px 0}.modal .table{border-top:0}.modal .table thead th{font-weight:bold;padding:3px 2px;font-size:12px;border-bottom:1px solid #d6d7d8}.modal tbody th.row-header{padding-left:0}#text-edit-form .data-input{background:none;padding-right:0;margin-right:5px;border-width:1px}#text-edit-form .lang{line-height:2.6}#text-edit-form .form-note{font-size:12px;font-style:italic}#text-edit-form .modal-title .key{font-size:12px;font-weight:normal;color:#333}#language-values{height:405px;overflow:auto}#language-values td.lang{width:300px}#language-values .icon-link{text-indent:-9999px}#language-values .delete-row{vertical-align:middle}#language-values tbody tr:hover{background:#f1f2f3;-webkit-transition:background .1s ease-in-out 0s;-moz-transition:background .1s ease-in-out 0s;-o-transition:background .1s ease-in-out 0s;transition:background .1s ease-in-out 0s}#language-values .new{background:#edf7f3}.preferred{}.preferred .lang{font-weight:bold}#text-edit-form .form-label{padding-left:5px;margin-bottom:7px}#text-edit-form .icon-link{padding-left:5px;font-size:11px}.lang-warning{visibility:hidden}.lang-select-submit,.lang-select-container{display:inline-block;padding:1px 2px}#text-edit-form .form-group .fb-input{width:150px}.lang-select-submit.focused,.lang-select-container.focused{-webkit-box-shadow:0 0 6px #61d7f7;-moz-box-shadow:0 0 6px #61d7f7;box-shadow:0 0 6px #61d7f7}#text-edit-form .message{margin:0}#page-content{position:relative;padding-left:40px}.wrapper{position:relative;display:inline-block;padding-left:8px}.data-row .outer-menu{left:-36px}.missing{color:#FAC}.form-row{padding:5px 15px}

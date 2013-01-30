@@ -1,0 +1,176 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var image = acre.require("lib/template/imagecomponents");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="data.mf.css" />
+</acre:block>
+
+<acre:block def="page_content()">
+<!-- Types -->
+<div class="section wrapper">
+  <div class="views">
+    <div class="table-title-wrapper clear">
+      <h2 class="table-title">
+        ${h.template_sprintf(_("Explore %s by Type"), i18n.display_name(c.object))}
+      </h2>
+    </div>
+    <div class="panes">
+      <div id="types" class="pane">
+        <table cellspacing="0" class="table-sortable table" acre:if="c.domain.types.length">
+          <thead>
+            <tr>
+              <th class="column-header first {sorter: 'ignoreCase'}">
+                <span class="sort-icon">${_("Name")}</span>
+              </th>
+              <th class="column-header {sorter: 'datetime'}">
+                <span class="sort-icon">${_("Created on")}</span>
+              </th>
+              <th class="column-header {sorter: 'ignoreCase'}">
+                <span class="sort-icon">${_("by")}</span>
+              </th>
+              <th class="column-header numeric {sorter: 'number'}">
+                <span class="sort-icon">${_("Instances")}</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr acre:for="type in c.domain.types">
+              <th class="row-header odd">
+                <a href="${h.fb_url(type.id, [['schema']])}">${i18n.display_name(type)}</a>
+              </th>
+              <td class="">
+                ${i18n_c.datetime(type.timestamp, [["class","published"]], 'd')}
+              </td>
+              <td class="odd">
+                <a href="${h.fb_url(type.creator)}">${h.id_key(type.creator)}</a> 
+              </td>
+              <td class="numeric">
+                <acre:block if="type.instance_count == null">
+                  <span>-</span>
+                </acre:block>
+                <acre:block else="">
+                  <a href="${h.fb_url(type.id, [['instances']])}">${i18n_c.number(type.instance_count)}</a>
+                </acre:block>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div acre:else="" class="empty-result">
+          <p>${_("No Types have been created in this domain.")}</p>
+          <p acre:if="c.domain.featured_views && c.domain.featured_views.length">
+            <a href="#queries">${_("Try browsing by query instead.")}</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="column object-activity">
+  <h2 class="table-title">${_("Data Summary")}</h2>
+  <table cellspacing="0" class="table">
+    <thead>
+      <tr>
+        <th class="column-header first"><strong class="primary">Total Facts</strong> <span>daily writes</span> </th>
+        <th class="column-header"><strong class="secondary">Total Topics</strong></th>
+      </tr>
+    </thead>
+    <tbody class="data-statistics">
+      <tr>
+        <th class="row-header">
+          <span class="metric primary">${h.format_stat(c.domain.total_facts)}</span>
+          <span class="activity-summary" data-activity="${JSON.stringify(c.domain.activity_summary)}"></span>
+          <span class="metric-byline">
+            <strong class="primary">${h.format_stat(c.domain.facts_last_week)}</strong><br>
+            ${_("last week")}
+          </span>
+        </th>
+        <td>
+          <span class="metric secondary">
+            ${h.format_stat(c.domain.total_topics)}
+          </span>
+          <span class="metric-byline" style="margin-left:10px">
+            ${h.template_sprintf(_('%s with articles'), strong_percent(c.domain.topics_with_articles))}<br/>
+            ${h.template_sprintf(_('%s with images'), strong_percent(c.domain.topics_with_images))}
+          </span>
+        </td>
+      </tr>
+    </tbody>
+    <tbody acre:if="c.domain.top_contributors && c.domain.top_contributors.length"
+           class="data-statistics">
+      <tr class="secondary-header">
+        <th class="row-header" colspan="2">
+          <strong>Top Contributors this week</strong> 
+        </th>
+      </tr>
+      <tr>
+        <th class="row-header" colspan="2">
+          <ul acre:if="c.domain.top_contributors"
+            class="user-list">
+            <li acre:for="i, user in c.domain.top_contributors" 
+            acre:if="i < 6">
+            ${image.user_image_medium(user)}
+            <strong><a href="${h.fb_url(user.id, [['writes'], ['domain', c.id]])}">$user.display_name</a><br></strong>
+            <strong>${i18n_c.number(user.v)} ${_("facts")}</strong><br>
+            ${i18n_c.integer(user.percentage, null, 'p0')}
+            </li>
+          </ul>
+        </th>
+      </tr>
+    </tbody>
+  </table>
+  <div id="domain-review-box">
+    <h2 class="table-title info-box-title">
+      ${_("Review flags in this domain")}
+    </h2>
+    <div class="info-box">
+      ${_("Help improve Freebase by reviewing topics that have been marked for merge or delete in this domain.")}
+      <a href="${h.fb_url('/review?domain=' + c.id)}">${_("Review flags.")}</a>
+    </div>
+  </div>
+</div>
+</acre:block>
+
+<acre:block def="strong_percent(n)">
+  <strong class="secondary">${i18n_c.integer(n, null, 'p0')}</strong>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="data.mf.js"></script>
+</acre:block>

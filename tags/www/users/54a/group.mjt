@@ -1,0 +1,146 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var image = acre.require("lib/template/imagecomponents");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="group.mf.css" />
+</acre:block>
+
+<acre:block def="page_content()">
+  <acre:block if="!c.usergroups || !c.usergroups.length">
+    <h1 class="table-title">${_("No usergroups found")}</h1>
+  </acre:block>
+  <acre:block for="group in c.usergroups">
+    <h1 class="table-title">${i18n.display_name(group)}</h1>
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="column-header first" scope="col">${_("User")}</span></th>
+          <th class="column-header" scope="col">${_("On Freebase since")}</span></th>
+          <th class="column-header" scope="col">${_("Freebase assertions")}</span></th>
+          <th class="column-header" scope="col">${_("Also edits")}</span></th>
+        </tr>
+      </thead>
+      <tbody class="${JSON.stringify(group.metadata)}">
+        <tr acre:if="group.metadata.boot && !group.users.length">
+           <th colspan="4" class="table-empty-column" scope="col">
+            <p>
+              <a href="${h.fb_url(group.metadata.id)}">
+                ${h.sprintf("View users in %s", group.metadata.id)}
+              </a>
+            </p>
+          </th>
+        </tr>
+        <acre:block for="user in group.users">
+          ${user_table_row(user)}
+        </acre:block>
+      </tbody>
+      <tfoot class="table-edit edit">
+        <tr class="trigger-row">
+          <td colspan="5">
+            <a href="javascript:void(0);"
+               class="icon-link" onclick="return freebase.dispatch(event, freebase.group.add_user, null, this);">
+              <span class="add-icon">${_('Add New')}</span>
+            </a>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </acre:block>
+</acre:block>
+
+<acre:block def="user_table_row(user)">
+  <tr acre: class="data-row hover-row vcard ${JSON.stringify(user.metadata)}">
+    ${user_row_header(user)}
+    ${user_timestamp_row(user.timestamp)}
+    ${user_assertions_row(user.assertions)}
+    ${user_domains_row(user.groups, 3)}
+  </tr>
+</acre:block>
+
+<acre:block def="user_row_header(user)">
+  <th class="row-header odd">
+    <span class="wrapper">
+    ${image.user_image_small(user)}
+    <a href="${h.fb_url(user.id)}" class="fn url" title="${_('View user profile')}">${h.id_key(user.id)}</a>
+    ${user_menu(user)}
+    </span>
+  </th>
+</acre:block>
+
+<acre:block def="user_menu(user)">
+  <span class="edit">
+    <ul class="combo-menu nicemenu">
+      <li class="nicemenu-item">
+        <span class="headmenu">
+          <a href="#" onclick="return false;" class="default-action edit-action">remove</a>
+          <a href="javascript:void(0)" class="more-action">menu</a>
+        </span>
+        <ul class="submenu row-menu">
+          <li class="row-menu-item"><a href="#" onclick="return fb.group.remove_user(this);">${_("remove")}</a></li>
+        </ul>
+      </li>
+    </ul>
+  </span>
+</acre:block>
+
+<acre:block def="user_timestamp_row(timestamp)">
+  <td class="even">
+    ${i18n_c.datetime(timestamp, [["class","published"]], 'd')}
+  </td>
+</acre:block>
+
+<acre:block def="user_assertions_row(writes)">
+  <td class="odd">${i18n_c.number(writes)}</td>
+</acre:block>
+
+<acre:block def="user_domains_row(domains, num)">
+  <td class="even">
+    <acre:block for="i, d in domains" trim="1">
+      <acre:script>var name = i18n.display_name(d);</acre:script>
+      <acre:block if="i > 0">, </acre:block>
+        <a href="${h.fb_url(d.id)}" title="${_('Go to ') + name}">${name}</a>
+      <acre:block if="i==num-1">, ...</acre:block>
+    </acre:block>
+  </td>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="group.mf.js"></script>
+</acre:block>

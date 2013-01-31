@@ -667,7 +667,7 @@ propbox edit forms
     <tbody>
       <tr class="add-cvt-row edit-row">
         <acre:block for="subprop_structure in prop_structure.properties">
-          <td>
+          <td class="vert-form-fields">
             ${form_field(subprop_structure, null, lang)}
             <acre:block if="!subprop_structure.unique">
               <div class="magicbox-template">
@@ -841,7 +841,7 @@ propbox edit forms
     <tbody>
       <tr class="edit-row">
         <acre:block for="subprop_structure in prop_structure.properties">
-          <td>
+          <td class="vert-form-fields">
             <acre:script>
               var subprop_value = prop_value.property && prop_value.property[subprop_structure.id] && prop_value.property[subprop_structure.id].values || [];
             </acre:script>

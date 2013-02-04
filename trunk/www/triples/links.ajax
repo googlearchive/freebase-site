@@ -42,7 +42,7 @@ var SPEC = {
 
   validate: function(params) {
     return [
-      validators.MqlId(params, "id", {required:true}),
+      validators.MqlId(params, "linked_id", {if_empty:null, if_invalid:null}),
       validators.MultiValue(params, 'filter', {
         validator: validators.MqlId,
         if_empty: []
@@ -58,18 +58,26 @@ var SPEC = {
         validator: validators.Timestamp
       }),
       validators.Timestamp(params, 'next', {if_empty:null}),
-      validators.Int(params, 'offset', {if_empty:0})
+      validators.Int(params, 'offset', {if_empty:0}),
+      validators.MqlId(params, 'object_type', {if_empty:null}),
+      validators.OneOf(params, 'current_tab', {
+        oneof: ['links', 'instances', 'writes'],
+        if_empty: 'links'
+      })
     ];
   },
 
   run: function(
-      id, filter, creator, historical, sort, timestamp, next, offset) {
+      linked_id, filter, creator, historical,
+      sort, timestamp, next, offset,
+      object_type, current_tab) {
     return links_q.get_links(
-      id, filter, creator, historical, sort, timestamp, next)
+      linked_id, filter, creator, historical, sort, timestamp, next)
         .then(function(r) {
           return {
             html: acre.markup.stringify(
-                links_t.links_body(id, r, historical, offset))
+                links_t.links_body(linked_id, r, historical, offset,
+                object_type, current_tab))
           };
         });
   }

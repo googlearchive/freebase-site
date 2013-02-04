@@ -30,37 +30,64 @@
  */
 
 var h = acre.require("lib/helper/helpers.sjs");
-var filters = acre.require("lib/filter/filters.sjs");
-var links = acre.require("lib/queries/links.sjs");
+var validators = acre.require('lib/validator/validators.sjs');
+var links = acre.require("links.tab");
+var apis = acre.require("lib/promise/apis.sjs");
+var freebase = apis.freebase;
+var deferred = apis.deferred;
 
 var SPEC = {
 
-  template: "property.mjt",
+  template: "links.mjt",
 
   validate: function(params) {
     return [
       params.object,
-      (function() {
-        var f = filters.validate(params, links.links_filters);
-        f[params.current_tab.key] = "";
-        f.type = o.routed_type;
-        return f;
-      })()
+      params.object_type,
+      params.current_tab,
+
+      validators.MqlId(params, 'creator', {if_empty:null}),
+      validators.StringBool(params, 'historical', {if_empty:false}),
+      validators.OneOf(params, 'sort', {
+          if_empty: '-timestamp',
+          oneof: ['timestamp', '-timestamp']
+        }),
+      validators.StringBool(params, 'fullts', {if_empty:false}),
+      validators.StringBool(params, 'fullattr', {if_empty:false}),
+      validators.MultiValue(params, 'timestamp', {
+        if_empty: null,
+        validator: validators.Timestamp
+      })
     ];
   },
 
-  run: function(object, f) {
-
+  run: function(
+      object, object_type, current_tab,
+      creator, historical, sort, fullts, fullattr, timestamp) {
     var id = object.id;
-    return {
-      id: id,
-      object: object,
-
-      // filter components
-      filters: f,
-
-      property_links: links.property_links(id, f)
+    var promises = {
+      links: links.get_links(null, [id], creator, historical, sort, timestamp)
     };
+
+    return deferred.all(promises)
+      .then(function(r) {
+
+        return h.extend({
+          id: id,
+          object: object,
+          object_type: object_type,
+          current_tab: current_tab,
+
+          linked_id: null,
+          filter: [id],
+          creator: creator,
+          historical: historical,
+          sort: sort,
+          fullts: fullts,
+          fullattr: fullattr,
+          timestamp: timestamp
+        }, r);
+      });
   }
 
 

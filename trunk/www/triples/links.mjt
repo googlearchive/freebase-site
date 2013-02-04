@@ -45,9 +45,9 @@
   var WRITES_BY_APP = _("View writes by app");
   var WRITES_BY_DATASET = _("View writes by dataset");
   var PROP_SCHEMA = _("View property schema");
-  var INSPECT_PROP = _("Inspect property");
-  var INSPECT_CREATOR = _("Inspect creator");
-  var INSPECT_ATTR = _("Inspect attribution");
+  var INSPECT_PROP = _("View property links");
+  var INSPECT_CREATOR = _("View creator links");
+  var INSPECT_ATTR = _("View attribution links");
 
   var ATTR_CREATOR = _("%s (user)");
   var ATTR_APP = _("%s (app)");
@@ -62,8 +62,8 @@
 </acre:block>
 
 <acre:block def="page_content()">
-
-  <div id="tabbar">
+  <div id="tabbar"
+       class="${th.links_mode_class(c.object_type.id, c.current_tab.key)}">
     <div id="by-creator">
       <strong>by</strong>
       <div class="pill-box" id="pill-creator-box">
@@ -124,11 +124,12 @@
         <input type="checkbox" name="fullattr" value="true" id="fullattr"
           acre:attrs="c.fullattr ? {'checked':'checked'} : {}">${_("Show full attribution")}
       </label>
+      <input id="tab" type="hidden" name="tab" />
     </div>
   </div>
 
   <div class="column links" id="links-data" style="opacity:0;">
-    ${main_links(c.id, c.links, c.historical)}
+    ${main_links(c.linked_id, c.links, c.historical)}
   </div>
 </acre:block>
 
@@ -138,7 +139,7 @@
      onclick="fb.links.add_filter('${pid}');">${pid}</a>
 </acre:block>
 
-<acre:block def="main_links(id, links, historical, offset)">
+<acre:block def="main_links(linked_id, links, historical, offset)">
   <div class="section links-section" data-id="Links">
     <div class="header">
       <h1 class="kbs">
@@ -178,12 +179,13 @@
           </tr>
         </thead>
 
-        ${links_body(id, links, historical, offset)}
+        ${links_body(linked_id, links, historical, offset, c.object_type.id, c.current_tab.key)}
 
         <tfoot>
           <tr>
             <td acre:attrs="historical ? {colspan:'8'} : {colspan:'7'}">
-              <a id="infinitescroll-next" href="${h.ajax_url('/links.ajax')}">next</a>
+              <a id="infinitescroll-next"
+                 href="${h.ajax_url('/links.ajax')}">next</a>
             </td>
           </tr>
         </tfoot>
@@ -192,7 +194,8 @@
   </div>
 </acre:block>
 
-<acre:block def="links_body(id, links, historical, offset)">
+<acre:block
+   def="links_body(linked_id, links, historical, offset, object_type, current_tab)">
   <acre:script>
     // next timestamp for inifinite scroll
     var body_attrs = {};
@@ -202,18 +205,30 @@
     offset = offset || 0;
   </acre:script>
   <tbody acre:attrs="body_attrs">
-    <acre:block for="i,link in links">
-      ${link_row(link, historical, i+offset+1)}
+    <acre:block
+       if="object_type == '/type/property' && current_tab == 'instances'">
+      ${property_instances(links, historical, offset)}
+    </acre:block>
+    <acre:block else="">
+      ${link_rows(links, historical, offset)}
     </acre:block>
   </tbody>
 </acre:block>
 
+<!!--
+   ?links
+   !!-->
+
+<acre:block def="link_rows(links, historical, offset)">
+  <acre:block for="i, link in links">
+    ${link_row(link, historical, i+offset+1)}
+  </acre:block>
+</acre:block>
+
 <acre:block def="link_row(link, historical, row_number)">
   <tr class="data-row hover-row${link.valid ? '' : ' invalid'}">
-    <acre:block if="row_number != null">
-      <td class="row-number first">${row_number}</td>
-    </acre:block>
-    ${triple(link)}
+    <td class="row-number first">${row_number}</td>
+    ${link_triple(link)}
     <td class="menu-col">${creator(link)}</td>
     <td class="menu-col">${attribution(link)}</td>
     <td>${timestamp(link)}</td>
@@ -223,21 +238,21 @@
   </tr>
 </acre:block>
 
-<acre:block def="triple(link)">
+<acre:block def="link_triple(link)">
   <acre:block if="link['me:target']">
     <acre:block if="link.master_property.reverse_property">
-      ${reverse_triple(link)}
+      ${link_triple_reverse(link)}
     </acre:block>
     <acre:block else="">
-      ${incoming_triple(link)}
+      ${link_triple_incoming(link)}
     </acre:block>
   </acre:block>
-  <acre:block else="">
-    ${outgoing_triple(link)}
+  <acre:block elif="link['me:source']">
+    ${link_triple_outgoing(link)}
   </acre:block>
 </acre:block>
 
-<acre:block def="outgoing_triple(link)">
+<acre:block def="link_triple_outgoing(link)">
   <td class="break">
     <span class="self">${link['me:source'].id}</span>
   </td>
@@ -248,7 +263,7 @@
   </td>
 </acre:block>
 
-<acre:block def="incoming_triple(link)">
+<acre:block def="link_triple_incoming(link)">
   <td class="break">
     ${topic(link.source)}
   </td>
@@ -259,17 +274,62 @@
   </td>
 </acre:block>
 
-<acre:block def="reverse_triple(link)">
+<acre:block def="link_triple_reverse(link)">
   <td class="break">
     <span class="self">${link['me:target'].id}</span>
   </td>
   <td class="menu-col">${property(link, true)}</td>
-    <td class="break">
+  <td class="break">
     ${target_value(link.target_value)}
     ${topic(link.source)}
   </td>
 </acre:block>
 
+<!!--
+   ?instances (/type/property)
+   !!-->
+
+<acre:block def="property_instances(links, historical, offset)">
+  <acre:block for="i, link in links">
+    ${property_instance_row(link, historical, i+offset+1)}
+  </acre:block>
+</acre:block>
+
+<acre:block def="property_instance_row(link, historical, row_number)">
+  <tr class="data-row hover-row${link.valid ? '' : ' invalid'}">
+    <td class="row-number first">${row_number}</td>
+    ${property_instance_triple(link)}
+    <td class="menu-col">${creator(link)}</td>
+    <td class="menu-col">${attribution(link)}</td>
+    <td>${timestamp(link)}</td>
+    <acre:block if="historical">
+      <td>${link.operation}</td>
+    </acre:block>
+  </tr>
+</acre:block>
+
+<acre:block def="property_instance_triple(link)">
+  <acre:block if="link.master_property.reverse_property">
+    <td class="break">${topic(link.target)}</td>
+    <td class="menu-col">${property(link, true, true)}</td>
+    <td class="break">
+      ${target_value(link.target_value)}
+      ${topic(link.source)}
+    </td>
+  </acre:block>
+  <acre:block else="">
+    <td class="break">${topic(link.source)}</td>
+    <td class="menu-col">${property(link, false, true)}</td>
+    <td class="break">
+      ${target_value(link.target_value)}
+      ${topic(link.target)}
+    </td>
+  </acre:block>
+</acre:block>
+
+<!!--
+   Utilities
+   !!-->
 
 <acre:block def="target_value(v)" if="v != null">
   <span class="property-value">${v.value}</span>
@@ -293,7 +353,7 @@
   </acre:block>
 </acre:block>
 
-<acre:block def="property(link, show_reverse)">
+<acre:block def="property(link, show_reverse, is_self)">
   <acre:script>
     var this_property = link.master_property.id;
     var other_property = link.master_property.reverse_property &&
@@ -310,7 +370,7 @@
         <a href="javascript:void(0)" class="more-action"></a>
       </span>
       <ul class="submenu row-menu">
-        <li class="row-menu-item">
+        <li acre:if="!is_self" class="row-menu-item">
           <a href="javascript:void(0);"
              onclick="fb.links.add_filter('${this_property}');">
             ${h.sprintf(FILTER_BY_PROP, this_property)}</a>
@@ -326,10 +386,15 @@
       </ul>
     </li>
   </ul>
-  <a class="property-value" data-id="${this_property}"
-     title="${h.sprintf(INSTANCES_BY_PROP, this_property)}"
-     href="${h.fb_url(this_property, [['instances']])}">
-    ${this_property}</a>
+  <acre:block if="is_self">
+    <span class="self">${this_property}</span>
+  </acre:block>
+  <acre:block else="">
+    <a class="property-value" data-id="${this_property}"
+       title="${h.sprintf(INSTANCES_BY_PROP, this_property)}"
+       href="${h.fb_url(this_property, [['instances']])}">
+      ${this_property}</a>
+  </acre:block>
 </acre:block>
 
 <acre:block def="timestamp(link)">
@@ -454,4 +519,11 @@
 </acre:block>
 
 
-
+<acre:block def="acre_javascript_vars()">
+  <acre:script>
+    var linked_id = c.linked_id ? JSON.stringify(c.linked_id) : 'null';
+  </acre:script>
+  <script>
+    SERVER.c.linked_id = ${linked_id};
+  </script>
+</acre:block>

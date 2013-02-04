@@ -40,6 +40,25 @@
   padding-bottom: 12px;
 }
 
+/** Disable filtering on /type/property ?instances **/
+#tabbar.instances-type-property {
+  #pill-filter-box {
+    opacity: .3;
+
+    .pill-x {
+      display: none;
+    }
+  }
+
+  #pill-filter-suggest {
+    display: none;
+  }
+
+  #recent-filters {
+    display: none;
+  }
+}
+
 .filter-options {
     font-size: 1.3em;
 }
@@ -52,6 +71,7 @@
 
 #pill-filter-box {
     margin-right: 250px;
+    margin-bottom: 12px;
 }
 
 #pill-filter-suggest {
@@ -73,10 +93,6 @@
     width: 200px;
 }
 
-
-#recent-filters {
-    padding-top: .5em;
-}
 
 /*
  ### Domain Box Styling

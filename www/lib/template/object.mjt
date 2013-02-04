@@ -525,6 +525,8 @@
 <acre:block def="acre_javascript_vars()">
   <script>
     SERVER.c.id = "${c.object.id}";
+    SERVER.c.object_type = "${c.object_type.id}";
+    SERVER.c.current_tab = "${c.current_tab.key}";
   </script>
   <acre:block if="that_exports.acre_javascript_vars">
     ${that_exports.acre_javascript_vars()}

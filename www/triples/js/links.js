@@ -32,6 +32,17 @@
 
   var links = fb.links = {
 
+    /**
+     * linked_id is the id that the current set of links are "linked" to.
+     * In other words, linked_id is either the "source" or "target"
+     * of the links. In most cases, fb.c.id IS c.linked_id but
+     * for property instances and user/attribution writes,
+     * c.linked_id is NULL since the "source" and "target" can be anything
+     */
+    linked_id: fb.c.linked_id || null,
+    object_type: fb.c.object_type || '/type/object',
+    current_tab: fb.c.current_tab || 'links',
+
     init: function() {
       // Recent filters
       $('#recent-filters-container').lrulist({
@@ -232,7 +243,7 @@
       var params = links.get_page_params();
       $.ajax($.extend(formlib.default_begin_ajax_options(), {
         url: fb.h.ajax_url('links.ajax'),
-        data: $.extend({id:fb.c.id}, params),
+        data: $.extend({linked_id: links.linked_id}, params),
         traditional: true,
         onsuccess: function(data) {
           $('#infinitescroll > tbody').replaceWith(data.result.html);
@@ -260,7 +271,7 @@
         else {
           $.ajax($.extend(formlib.default_begin_ajax_options(), {
             url: fb.h.ajax_url('links.ajax'),
-            data: {id: id},
+            data: {linked_id: id},
             traditional: true,
             onsuccess: function(data) {
               var cvt_tbody = $(data.result.html);
@@ -281,8 +292,13 @@
      * Get the url params that identify the current filter and option state.
      */
     get_page_params: function() {
+      var params = {
+        current_tab: links.current_tab,
+        object_type: links.object_type,
+        lang: fb.h.lang_code(fb.lang)
+      };
+      params[links.current_tab] = '';
       var filters = links.get_filters();
-      var params = {links:'', lang:fb.h.lang_code(fb.lang)};
       if (filters.length) {
         params.filter = filters;
       }
@@ -361,7 +377,7 @@
           return [
             a_next[0].href + '?' +
                 $.param($.extend(links.get_page_params(), {
-                  id: fb.c.id,
+                  linked_id: links.linked_id,
                   next: tbody.attr('data-next'),
                   offset: tbody.find('>tr').length
                 })) + '&page=',

@@ -116,7 +116,7 @@
       ${_('Mediators')}
     </h2>
     <table class="table table-sortable">
-      <thead class="${JSON.stringify(mediator_types)}">
+      <thead>
         <tr acre:attrs="mediator_types.length ? {}:{style:'display:none;'}">
           <th scope="col" class="column-header first"><span class="sort-icon">${_('Type')}</span></th>
           <th scope="col" class="column-header column-header-desc"><span class="sort-icon">${_('ID')}</span></th>

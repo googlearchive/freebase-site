@@ -676,7 +676,8 @@
         $.each(all_types, function(j, type) {
           $.each(type.properties, function(k, prop) {
             if (prop.id === '/type/object/type' ||
-                prop.id === '/type/object/key') {
+                prop.id === '/type/object/key' ||
+                prop.id === '/common/topic/article') {
               // Don't show name and key
               prop.section.hide();
             }
@@ -703,7 +704,12 @@
       $.each(this.domains.commons, function(i, domain) {
         $.each(domain.types, function(j, type) {
           $.each(type.properties, function(k, prop) {
-            prop.section.show();
+            if (prop.id === '/common/topic/article') {
+              prop.section.hide();
+            }
+            else {
+              prop.section.show();
+            }
           });
           type.section.show();
           type.toc.show();

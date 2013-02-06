@@ -403,7 +403,7 @@
      * @param included_types:Object - The included types of type_id.
      */
     description_html: function(suggest_data, type_id, included_types) {
-      var html = $("<div>");
+      var html = $("<p>");
       var div;
       div = $('<div><b class="incompatible-topic"></b> '
               + 'is incompatible with '

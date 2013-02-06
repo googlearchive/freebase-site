@@ -36,6 +36,7 @@ var typeloader = acre.require('lib/schema/typeloader.sjs');
 var proploader = acre.require('lib/schema/proploader.sjs');
 var topic_query = acre.require('lib/queries/topic.sjs');
 var t = acre.require('topic.mjt');
+var ph = acre.require('lib/propbox/helpers.sjs');
 var apis = acre.require('lib/promise/apis.sjs');
 var freebase = apis.freebase;
 var deferred = apis.deferred;
@@ -92,12 +93,21 @@ var SPEC = {
           property: {},
           structure: structure
         };
-        return {
+        var result = {
           // This is a domain box with one (empty) type-section
           html: acre.markup.stringify(propbox.topicbox(topic, lang)),
           // This is a toc domain with one type navigation link
           toc: acre.markup.stringify(t.toc_domain(topic, domain.id))
         };
+        var type_structure = structure.types[schema.id];
+        var is_asserted = ph.is_asserted_type(topic, type_structure);
+        var not_asserted_can_assert =
+            !(is_asserted || type_structure.never_assert);
+        if (not_asserted_can_assert) {
+          result['assert_type_modal'] =
+              acre.markup.stringify(t.assert_type_modal(topic, type_structure));
+        }
+        return result;
       });
   }
 };

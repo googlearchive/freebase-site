@@ -163,7 +163,7 @@
         <span class="inline-message">
           ${h.sprintf(TYPE_NOT_ASSERTED, type_structure.text)}
           <acre:block if="!type_structure.never_assert">
-            <a href="#"
+            <a href="#" class="assert-type"
                onclick="return propbox.add_type(this, '${type_structure.id}', ${JSON.stringify(type_structure.included_types)});">
               ${ASSERT_TYPE}
             </a>

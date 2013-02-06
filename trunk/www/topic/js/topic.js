@@ -336,10 +336,10 @@
       propbox.init_menus(domain_section, true);
       $(".nicemenu-item.edit", domain_section).show();
 
+      var type_section = domain_section.find('.type-section');
       if (topic.facet.contains(domain_id)) {
         // Just insert the type-section in the present domain-section.
         var domain = topic.facet.get(domain_id);
-        var type_section = domain_section.find('.type-section');
         domain.section.append(type_section);
         // And the new type toc in the nav under the existing domain
         domain.toc_types.append($('.toc-type', toc));
@@ -362,6 +362,33 @@
       topic.update_facet(true);
       // Goto filtered section
       $('.toc-link', pill).click();
+
+      // Assert type modal?
+      if (data.result.assert_type_modal) {
+        var form = $(data.result.assert_type_modal);
+        var event_prefix = "topic.assert_type.modal.";
+        var assert_type_options = {
+          event_prefix: event_prefix,
+          init: topic.init_assert_type_modal,
+          validate: function() { return true; },
+          submit: topic.submit_assert_type_modal,
+          form: form,
+          type_section: type_section
+        };
+        formlib.init_modal_form(assert_type_options);
+      }
+    },
+
+    init_assert_type_modal: function(options) {
+      window.formlib.enable_submit(options);
+      $('button.cancel').focus();
+    },
+
+    submit_assert_type_modal: function(options) {
+      window.formlib.cancel_modal_form(options);
+      // Go throught the propbox.add_type flow by clicking on the "Assert Type"
+      // link.
+      options.type_section.find('a.assert-type').click();
     },
 
     /**

@@ -38,6 +38,7 @@
   var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
   var propbox = acre.require("lib/propbox/propbox.mjt");
+  var form = acre.require("lib/propbox/form.mjt");
 
   var SHOW_ALL = _('Show all domains and properties');
   var SHOW_LESS = _('Show only Commons domains and asserted types');
@@ -251,4 +252,23 @@
       </acre:block>
     </ul>
   </acre:block>
+</acre:block>
+
+
+<acre:block def="assert_type_modal(topic, type_structure)">
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <span>${_("Assert this type?")}</span>
+      </h1>
+      <div class="modal-content">
+        <p>
+          ${h.sprintf(_("%s is not asserted on this topic. Assert this type now?"), type_structure.text)}
+        </p>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      ${form.submit_buttons(_("Yes"))}
+    </div>
+  </div>
 </acre:block>

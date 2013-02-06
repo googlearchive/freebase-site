@@ -163,7 +163,17 @@
         i.validate_input({validator: $.validate_input.text});
       }
       else if (c.is(".datetime")) {
-        i.validate_input({validator: $.validate_input.datetime, lang:o.lang});
+        i.validate_datetime({lang:o.lang})
+            .bind('valid.data_input', function(e, data) {
+              self.fb_select(data);
+            })
+            .bind('invalid.data_input', function() {
+              self.fb_textchange();
+            });
+        if (this.metadata && this.metadata.value) {
+          i.data('data.suggest', this.metadata);
+          this.validate();
+        }
       }
       else if (c.is(".enumerated")) {  // /freebase/type_hints/enumeration (<select>)
         i.validate_enumerated()
@@ -211,6 +221,7 @@
       // force validation
       var input = this.input;
       $.each(["$.validate_topic",
+              "$.validate_datetime",
               "$.validate_input",
               "$.validate_enumerated",
               "$.validate_boolean",
@@ -360,6 +371,75 @@
 
     _destroy: function() {
       this.input.unbind(".validate_topic");
+    },
+
+    validate: function(force) {
+      if (this.input.val() === "") {
+        this.empty();
+      }
+      else {
+        var data = this.input.data("data.suggest");
+        if (data) {
+          this.valid(data);
+        }
+        else {
+          this.invalid();
+        }
+      }
+    }
+  };
+
+  $.fn.validate_datetime = function(options) {
+    return this.each(function() {
+      var $this = $(this);
+      if (!$this.is(":text")) {
+        return;
+      }
+      var inst = $this.data("$.validate_datetime");
+      if (inst) {
+        inst._destroy();
+      }
+      inst =  new $.validate_datetime(this, options);
+      $this.data("$.validate_datetime", inst);
+    });    
+  };
+  $.validate_datetime = function(input, options) {
+    this.options = $.extend(true, {}, options);
+    this.input = $(input);
+    this.init();
+  };
+  $.validate_datetime.prototype = {
+    init: function() {
+      var self = this;
+      this.input.suggest_datetime(this.options)
+        .bind("fb-textchange.validate_datetime", function() {
+          if (self.input.val() === "") {
+             self.empty();
+           }
+           else {
+             self.invalid();
+           }
+        })
+        .bind("fb-select.validate_datetime", function(e, data) {
+          self.input.val(data.name);
+          self.validate();
+        });
+    },
+
+    invalid: function() {
+      this.input.trigger("invalid");
+    },
+
+    valid: function(data) {
+      this.input.trigger("valid", data);
+    },
+
+    empty: function() {
+      this.input.trigger("empty");
+    },
+
+    _destroy: function() {
+      this.input.unbind(".validate_datetime");
     },
 
     validate: function(force) {

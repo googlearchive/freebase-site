@@ -44,8 +44,8 @@ var SPEC = {
     return search_q.validate_search_params(params);
   },
 
-  run: function(query, type, operator, options) {
-    return search_q.search(query, type, operator, options)
+  run: function(query, any, all, should, not, options) {
+    return search_q.search(query, any, all, should, not, options)
       .then(function(r) {
         return {
           html: acre.markup.stringify(

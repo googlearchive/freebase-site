@@ -46,63 +46,100 @@
           }
         });
 
-      // Focus input when the filter box gets focus
-      $('#pill-filter-box').click(function() {
-        $('#pill-filter-suggest').focus();
+      // Init filter box(es)
+      $('.pill-box').each(function() {
+        search.init_filter_box($(this));
       });
 
-      // Initialize filter suggest input
-      var pill_suggest = $('#pill-filter-suggest')
-          .suggest($.extend({
-            scoring: 'schema'
-          }, fb.suggest_options.all('type:/type/type')))
-          .bind('fb-select', function(e, data) {
-            var input = $(this);
-            search.add_filter(data.id);
-            input.val('').trigger('textchange');
-          })
-          .focus(function() {
-            $('#pill-filter-box').addClass('focused');
-          })
-          .blur(function() {
-            $('#pill-filter-box').removeClass('focused');
-          })
-          .keydown(function(e) {
-            // Backspace in empty input removes the last filter
-            if (e.keyCode === 8 && $(this).val() === '') {
-              $('#pill-filter-box').find('.pill-x:last').click();
-            }
-          });
+      // Init pill box management (+/-)
+      // and handle options changes (checkboxes, select)
+      $('#tabbar')
+        .on('click', 'button.new-operator', search.new_filter_box)
+        .on('click', 'button.remove-operator', search.remove_filter_box)
+        .on('change', 'select', search.update_options)
+        .on('change', ':checkbox', search.udpate_options);
+      search.update_add_remove_filter_box_buttons();
 
       // Keyboard shorcut to filter 'f'
       fb.keyboard_shortcut.add('f', function() {
-        pill_suggest.focus();
-      });
-
-      // Handle options changes (checkboxes, text-input)
-      $('#tabbar-controls select').change(search.update_options);
-      $('#tabbar-controls :checkbox').change(search.update_options);
-      $('#tabbar-controls :text').keypress(function(e) {
-        if (e.keyCode === 13) {
-          search.update_options(e);
-        }
+        $('.pill-suggest:first').focus();
       });
 
       // Handle infinite scroll
       search.infinitescroll();
     },
 
+    init_filter_box: function(pill_box) {
+      pill_box.click(function() {
+        $(this).find('.pill-suggest').focus();
+      });
+
+      // Initialize filter suggest input
+      $('.pill-suggest', pill_box)
+          .suggest($.extend({
+            scoring: 'schema'
+          }, fb.suggest_options.all('type:/type/type')))
+          .bind('fb-select', function(e, data) {
+            var input = $(this);
+            search.add_filter($(this).parents('.pill-box'), data.id);
+            input.val('').trigger('textchange');
+          })
+          .focus(function() {
+            $(this).parents('.pill-box').addClass('focused');
+          })
+          .blur(function() {
+            $(this).parents('.pill-box').removeClass('focused');
+          })
+          .keydown(function(e) {
+            // Backspace in empty input removes the last filter
+            if (e.keyCode === 8 && $(this).val() === '') {
+              $(this).parents('.pill-box').find('.pill-x:last').click();
+            }
+          });
+    },
+
+    new_filter_box: function(e) {
+      var current = $(this).parents('.operator-filter');
+      var clone = $('<div class="operator-filter">').append(current.html());
+      $('.pill', clone).remove();
+      $('button', clone).css('visibility', 'visible');
+      current.after(clone);
+      search.init_filter_box(clone.find('.pill-box'));
+      $('.pill-suggest', clone).focus();
+      search.update_add_remove_filter_box_buttons();
+    },
+
+    remove_filter_box: function(e) {
+      $(this).parents('.operator-filter').remove();
+      search.update_add_remove_filter_box_buttons();
+      search.update_window_history();
+      search.update_search();
+    },
+
+    /**
+     * One filter box should always be present; you cannot remove
+     * the last filter box. Otherwise, "+" and "-" should always be available.
+     */
+    update_add_remove_filter_box_buttons: function() {
+      if ($('.operator-filter').length == 1) {
+        $('button.remove-operator').css('visibility', 'hidden');
+      }
+      else {
+        $('button.remove-operator').css('visibility', 'visible');
+      }
+    },
+
     /**
      * Add a filter pill.
      * @param {string} id The property id.
      */
-    add_filter: function(id) {
-      if (search.get_filters().indexOf(id) !== -1) {
+    add_filter: function(pill_box, id) {
+      if (search.get_filters(pill_box).indexOf(id) !== -1) {
         // already in the filter
         return;
       }
       var pill = search.pill(id);
-      $('#pill-filter-suggest').before(pill);
+      pill_box.find('.pill-suggest').before(pill);
       search.update_window_history();
       search.update_search();
     },
@@ -123,7 +160,6 @@
      */
     get_filters: function(container) {
       var filters = [];
-      container = container || $('#pill-filter-box');
       container.find('.pill:visible').each(function() {
         var val = $(this).find('.pill-value').val();
         filters.push(val);
@@ -165,14 +201,31 @@
      * Get the url params that identify the current filter and option state.
      */
     get_page_params: function() {
-      var filters = search.get_filters();
       var params = {
         query: search.query.val(),
-        lang:fb.h.lang_code(fb.lang)
+        lang: fb.h.lang_code(fb.lang)
       };
-      if (filters.length) {
-        params.type = filters;
+      var operators = {
+        'any': [],
+        'all': [],
+        'should': [],
+        'not': []
+      };
+      $('.operator-filter').each(function() {
+        var filters = search.get_filters($(this).find('.pill-box'));
+        if (filters.length) {
+          var operator = $(this).find('select[name=operator]').val();
+          if (operators[operator]) {
+            operators[operator] = operators[operator].concat(filters);
+          }
+        }
+      });
+      for (var operator in operators) {
+        if (operators[operator].length) {
+          params[operator] = operators[operator];
+        }
       }
+
       $('#tabbar-controls :input').each(function() {
         var input = $(this);
         var name = input.attr('name');

@@ -51,35 +51,47 @@
         <input type="text" id="query" name="query" value="${c.query}" />
       </div>
       <div id="search-options">
-        <div class="pill-box" id="pill-filter-box">
-          <acre:block for="type in c.type">
-            ${pill(type)}
+        <acre:script>
+          var filters = [
+            'any', c.any,
+            'all', c.all,
+            'should', c.should,
+            'not', c.not
+          ];
+        </acre:script>
+        <acre:block for="(var i=0; i<filters.length; i+=2)">
+          <acre:script>
+            var operator = filters[i];
+            var types = filters[i+1];
+          </acre:script>
+          <acre:block if="types.length">
+            <div class="operator-filter">
+              ${operator_controls(operator)}
+              <div class="pill-box">
+                <acre:block for="type in types">
+                  ${pill(type)}
+                </acre:block>
+                <input type="text" class="pill-suggest"
+                       placeholder="${_('Constrain results by type...')}" />
+              </div>
+            </div>
           </acre:block>
-          <input type="text" class="pill-suggest" id="pill-filter-suggest"
-                 placeholder="${_('Constrain results by type...')}" />
-          <span id="pill-template" class="pill-template">
-            ${pill()}
-          </span>
-        </div>
+        </acre:block>
+        <acre:block
+           if="! (c.any.length || c.all.length || c.should.length || c.not.length)">
+          <div class="operator-filter">
+            ${operator_controls('any')}
+            <div class="pill-box">
+              <input type="text" class="pill-suggest"
+                     placeholder="${_('Constrain results by type...')}" />
+            </div>
+          </div>
+        </acre:block>
+        <span id="pill-template" class="pill-template">
+          ${pill()}
+        </span>
         <div id="tabbar-controls">
           <strong>${_("Options:")}</strong>
-          <label for="operator">
-            Operator
-            <select name="operator">
-              <option value="any"
-                      acre:attrs="c.operator == 'any' ? {'selected':'selected'} : {}">
-                any</option>
-              <option value="all"
-                      acre:attrs="c.operator == 'all' ? {'selected':'selected'} : {}">
-                all</option>
-              <option value="should"
-                      acre:attrs="c.operator == 'should' ? {'selected':'selected'} : {}">
-                should</option>
-              <option value="not"
-                      acre:attrs="c.operator == 'not' ? {'selected':'selected'} : {}">
-                not</option>
-            </select>
-          </label> |
           <label for="scoring">
             Scoring
             <select name="scoring">
@@ -128,6 +140,27 @@
         </table>
       </div>
     </div>
+  </div>
+</acre:block>
+
+<acre:block def="operator_controls(operator)">
+  <div class="operator-controls">
+    <select name="operator">
+      <option value="any"
+              acre:attrs="operator == 'any' ? {'selected':'selected'} : {}">
+        any</option>
+      <option value="all"
+              acre:attrs="operator == 'all' ? {'selected':'selected'} : {}">
+        all</option>
+      <option value="should"
+              acre:attrs="operator == 'should' ? {'selected':'selected'} : {}">
+        should</option>
+      <option value="not"
+              acre:attrs="operator == 'not' ? {'selected':'selected'} : {}">
+        not</option>
+    </select>
+    <button class="new-operator">+</button>
+    <button class="remove-operator">-</button>
   </div>
 </acre:block>
 
@@ -225,7 +258,6 @@
             <dd>
               <acre:script>
                 var values = sh.flatten_search_values(notable_prop['values']);
-                console.log(values);
               </acre:script>
               <acre:block for="i,v in values" trim="1">
                 <acre:block if="i > 0">, </acre:block>

@@ -174,7 +174,7 @@
     },
 
     datetime: function(val, options) {
-      return vi.datetime.parse(val, options);
+      return vi.defaults.validator;
     },
 
     mqlkey: function(val, options) {
@@ -224,94 +224,5 @@
       }
     }
   });
-
-  $.extend(vi.datetime, {
-
-    regexp: {
-      iso:  /^(?:(-?\d{4})(?:-(\d{2})(?:-(\d{2}))?)?)?(?:T(\d{2}):(\d{2})(?::(\d{2})(.\d+)?)?((?:[+-](\d{2}):(\d{2}))|Z)?)?$/,
-
-      time:  /^T?([01][0-9]|2[0-3])(:[0-5][0-9]){0,2}$/,
-
-      bce: [
-        /^(\d+)\s*[Bb]\.*[Cc]\.*[Ee]*/,
-        /^[Bb]\.*[Cc]\.*[Ee]*\s*(\d+)/
-      ]
-    },
-    
-    /**
-     * Pre-defined Globalize formats and their equivalent iso8601 formats
-     */
-    formats: [
-      // Short Date
-      "d", "yyyy-MM-dd",
-
-      // Month/Year
-      "Y", "yyyy-MM",
-
-      // Short Time
-      "t", "HH:mm",
-
-      // Long Time
-      "T", "HH:mm:ss"
-    ], 
-
-    padyear: function(y) {
-      if (y < 10) {
-        return "000" + y;
-      }
-      else if (y < 100) {
-        return "00" + y;
-      }
-      else if (y < 1000) {
-        return "0" + y;
-      }
-      return "" + y;
-    },
-
-    parse: function(val, options) {
-      var d, i, l;
-      if (vi.datetime.regexp.iso.test(val) || 
-          vi.datetime.regexp.time.test(val)) {
-          // valid iso8601?
-          // for time, we need to strip out the "T" prefix
-          var t = val;
-          if (t.indexOf("T") === 0) {
-              t = t.substring(1);
-          }
-          return {text:val, value:t};
-      }
-       
-      // BCE year?
-      for (i=0,l=vi.datetime.regexp.bce.length; i<l; i++) {
-        var regexp = vi.datetime.regexp.bce[i];
-        var m = regexp.exec(val);
-        if (m) {
-          var y = parseInt(m[1], 10);
-          // year 0000 is 1 BCE
-          y -= 1;
-          // pad year with 0s
-          y = vi.datetime.padyear(y);
-          return {text:val, value: ("-" + y)};
-        }
-      };
-
-      // Try pre-defined Globalize Date formats
-      for (i=0,l=vi.datetime.formats.length; i<l; i+=2) {
-        d = Globalize.parseDate(val, vi.datetime.formats[i]);
-        if (d) {
-          return {text:val, value:Globalize.format(d, vi.datetime.formats[i+1])};
-        }
-      };
-
-      // Try Globalize parseDate
-      d = Globalize.parseDate(val);
-      if (d) {
-        return {text:val, value:Globalize.format(d, "S")};
-      }
-
-      throw vi.invalid("datetime", val);
-    }
-  });
-
 
 })(jQuery, window.Globalize);

@@ -108,6 +108,7 @@
       $.ajax({
         url: script_url,
         dataType: 'script',
+        cache: true,
         beforeSend: function() {
           cached.state = 1;
         },

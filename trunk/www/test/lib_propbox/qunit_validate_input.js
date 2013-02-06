@@ -49,7 +49,6 @@
     test_uri();
     test_int();
     test_float();
-    test_datetime();
   });
 
 
@@ -207,93 +206,6 @@
     }
   };
 
-  function test_datetime() {
-    module("datetime");
-
-    test("$.validate_input.datetime", function() {
-      equal(typeof $.validate_input.datetime, "function");
-    });
-
-    var valid = [
-      "2000", "2000",
-      "2000-04", "2000-04",
-      "2000-04-05", "2000-04-05",
-      "2000-04-05T23:59:59", "2000-04-05T23:59:59",
-      "12:13", "12:13",
-      "T01:02", "01:02",
-      "01:02:03", "01:02:03",
-      "T01:02:03", "01:02:03",
-      "-0000", "-0000",
-      "0000", "0000",
-      "-0011", "-0011",
-      "1 B.C.E", "-0000",
-      "10 BCE", "-0009",
-      "101 B.C.", "-0100",
-      "1000 BC", "-0999",
-      "12345 bce", "-12344",
-      "11", "11"   // 11 AM
-    ];
-
-    test("valid", function() {
-
-      for(var i=0,l=valid.length; i<l; i+=2) {
-        var val = valid[i];
-        try {
-          var result = $.validate_input.datetime(val);
-          equal(result.text, val, "result.text");
-          equal(result.value, valid[i+1], "result.value");
-        }
-        catch(ex) {
-          ok(false, ""+ex);
-        }
-      }
-    });
-
-    var invalid = [
-      "1"
-    ];
-
-    test("invalid", function() {
-
-      for(var i=0,l=invalid.length; i<l; i+=2) {
-        var val = invalid[i];
-        try {
-          var result = $.validate_input.datetime(val);
-          ok(false, "Expected invalid datetime for: " + val);
-        }
-        catch(ex) {
-          ok(true, ""+ex);
-        }
-      }
-    });
-
-
-
-    var somedate = new Date(2000, 3, 5, 11, 12, 13);
-    var formats = $.validate_input.datetime.formats;
-
-    for (var i=0,l=cultures.length; i<l; i++) {
-      (function() {
-         var culture = cultures[i];
-         test(culture, function() {
-           Globalize.culture(culture);
-           for (var j=0,k=formats.length; j<k; j+=2) {
-             var format = formats[j];
-             var iso_format = formats[j+1];
-             try {
-               var somedatestr = Globalize.format(somedate, format);
-               var parsed = $.validate_input.datetime(somedatestr);
-               var expected_value = Globalize.format(somedate, iso_format);
-               ok(parsed && parsed.value === expected_value, [somedatestr, format, iso_format, parsed.value, expected_value].join(" => "));
-             }
-             catch (ex) {
-               ok(false, [datePattern, ex].join(": "));
-             }
-           }
-         });
-       })();
-    }
-  };
 
 })(jQuery);
 

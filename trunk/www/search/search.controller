@@ -48,8 +48,8 @@ var SPEC = {
     return validate_search_params(params);
   },
 
-  run: function(query, type, operator, options) {
-    return search(query, type, operator, options);
+  run: function(query, any, all, should, not, options) {
+    return search(query, any, all, should, not, options);
   }
 };
 
@@ -58,16 +58,28 @@ function validate_search_params(params) {
     // query
     validators.String(params, 'query', {if_empty:'*'}),
 
-    // type filters
-    validators.MultiValue(params, 'type', {
+    // "any" filters
+    validators.MultiValue(params, 'any', {
       validator: validators.MqlId,
       if_empty: []
     }),
 
-    // operator for type filters
-    validators.OneOf(params, 'operator', {
-      oneof: ['any', 'all', 'should', 'not'],
-      if_empty: 'any'
+    // "all" filters
+    validators.MultiValue(params, 'all', {
+      validator: validators.MqlId,
+      if_empty: []
+    }),
+
+    // "should" filters
+    validators.MultiValue(params, 'should', {
+      validator: validators.MqlId,
+      if_empty: []
+    }),
+
+    // "not" filters
+    validators.MultiValue(params, 'not', {
+      validator: validators.MqlId,
+      if_empty: []
     }),
 
     // search params
@@ -85,7 +97,7 @@ function validate_search_params(params) {
 };
 
 
-function search(query, type, operator, options) {
+function search(query, any, all, should, not, options) {
   var params = h.extend(options, {
     filter: ['(not type:/common/document)'],
     output: '(description type notable:/client/summary name)',
@@ -100,13 +112,23 @@ function search(query, type, operator, options) {
     query = '*';
   }
   // Convert type filters and operator into proper filter syntax.
-  if (type && type.length) {
-    var type_filter = type.map(function(t) {
-      return 'type:' + t;
-    });
-    type_filter = sh.operator(operator, type_filter);
-    if (type_filter) {
-      params.filter.push(type_filter);
+  var filters = [
+    'any', any,
+    'all', all,
+    'should', should,
+    'not', not
+  ];
+  for (var i=0,l=filters.length; i<l; i+=2) {
+    var operator = filters[i];
+    var types = filters[i+1];
+    if (types && types.length) {
+      var filter_types = types.map(function(t) {
+        return 'type:' + t;
+      });
+      filter_types = sh.operator(operator, filter_types);
+      if (filter_types) {
+        params.filter.push(filter_types);
+      }
     }
   }
   // cleanup search params
@@ -136,8 +158,11 @@ function search(query, type, operator, options) {
 
       return {
         query: query,
-        type: type,
-        operator: operator,
+        any: any,
+        all: all,
+        should: should,
+        not: not,
+
         result: results,
         prefixed: params.prefixed,
         scoring: params.scoring,
@@ -148,8 +173,11 @@ function search(query, type, operator, options) {
     }, function(e) {
       return {
         query: query,
-        type: type,
-        operator: operator,
+        any: any,
+        all: all,
+        should: should,
+        not: not,
+
         result: [],
         prefixed: params.prefixed,
         scoring: params.scoring,

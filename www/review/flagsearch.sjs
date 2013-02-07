@@ -75,14 +75,13 @@ function findFlags(user, limit, voted, created, order, kind, domain, admin, curs
             baseQuery = acre.freebase.extend_query(baseQuery, kindPatch);
         }
     } else {
-        // Without kind specified show all but split flags
+        // Without kind specified show only merge and delete flags
         var allowedKinds = {
             "kind": {
                 "id": null,
                 "id|=": [
                     "/freebase/flag_kind/merge",
-                    "/freebase/flag_kind/delete",
-                    "/freebase/flag_kind/offensive"
+                    "/freebase/flag_kind/delete"
                 ]
             }
         };

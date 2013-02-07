@@ -41,7 +41,6 @@
   var form = acre.require("lib/propbox/form.mjt");
 
   var SHOW_ALL = _('Show all domains and properties');
-  var SHOW_LESS = _('Show only Commons domains and asserted types');
 </acre:script>
 
 <acre:block def="head()">
@@ -74,6 +73,14 @@
       <strong>${_("Recent filters:")}</strong>
       <span id="recent-filters-container"></span>
     </div>
+    <div id="filter-options" class="filter-options">
+      <strong>${_("Filter options:")}</strong>
+      <label for="all" class="checkbox">
+        <input type="checkbox" id="show-all" name="all"
+               acre:attrs="c.all ? {'checked':'checked'} : {}"
+               onchange="fb.topic.show_all(this.checked);">${SHOW_ALL}
+      </label>
+    </div>
   </div>
 
   <div class="column nav">
@@ -93,15 +100,6 @@
           </acre:block>
         </acre:block>
       </div>
-      <div class="nav-section" id="show-all-section">
-        <label>        
-          <input id="show-all" name="all"
-                 type="checkbox"
-                 acre:attrs="c.all ? {'checked':'checked'} : {}"
-                 onchange="fb.topic.show_all(this.checked);">
-            ${SHOW_ALL}
-        </label>
-      </div>
     </div>
   </div>
 
@@ -110,26 +108,6 @@
     <acre:block if="c.topic">
 
       ${propbox.topicbox(c.topic, i18n.lang)}
-
-      <div class="section domain domain-section show-all-section">
-        <div class="header">
-          <h1 class="kbs">
-            <span class="mark">
-              <a href="javascript:void(0);" id="show-all-link"
-                 onclick="$('#show-all').click();">
-                <span class="show-all-text"
-                      acre:attrs="c.all ? {style:'display:none;'} : {}">
-                  ${SHOW_ALL}
-                </span>
-                <span class="show-less-text"
-                      acre:attrs="c.all ? {} : {style:'display:none;'}">
-                  ${SHOW_LESS}
-                </span>
-              </a>
-            </span>
-          </h1>
-        </div>
-      </div>
 
     </acre:block>
 

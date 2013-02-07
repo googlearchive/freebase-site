@@ -83,11 +83,3 @@ function link_class(link) {
   return h.trim(h.sprintf("hover-row %s%s", valid_class(link), operation));
 };
 
-/**
- * Get the css classes that specify what kind of links we are looking at
- * depending on the "object_type" and "current_tab". For example, for
- * "?instances for /type/property" we are looking at "Property Instances".
- */
-function links_mode_class(object_type, current_tab) {
-  return (current_tab + object_type.replace(/\//g, '-')).toLowerCase();
-};

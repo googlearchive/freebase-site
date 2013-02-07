@@ -239,7 +239,7 @@ function init_rules(lib) {
           "name": _("Writes"),
           "key": "writes",
           "app": "triples",
-          "script": "writes.tab"
+          "script": "provenance.tab"
         }
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
       "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
@@ -252,7 +252,7 @@ function init_rules(lib) {
           "name": _("Writes"),
           "key": "writes",
           "app": "triples",
-          "script": "writes.tab"
+          "script": "provenance.tab"
         }
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
       "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
@@ -480,7 +480,7 @@ function init_rules(lib) {
           "name": _("Writes"),
           "key": "writes",
           "app": "triples",
-          "script": "writes.tab"
+          "script": "creator.tab"
         }
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
       "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
@@ -565,7 +565,7 @@ function init_rules(lib) {
           "name": _("Writes"),
           "key": "writes",
           "app": "triples",
-          "script": "writes.tab"
+          "script": "provenance.tab"
         }
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
       "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
@@ -578,7 +578,7 @@ function init_rules(lib) {
           "name": _("Writes"),
           "key": "writes",
           "app": "triples",
-          "script": "writes.tab"
+          "script": "creator.tab"
         }
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
       "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
@@ -648,7 +648,7 @@ function init_rules(lib) {
           "name": _("Writes"),
           "key": "writes",
           "app": "triples",
-          "script": "writes.tab",
+          "script": "provenance.tab",
           "hidden": function(object) {
             return object.type_map['/dataworld/information_source'] == null;
           }
@@ -715,7 +715,7 @@ function init_rules(lib) {
           "name": _("Writes"),
           "key": "writes",
           "app": "triples",
-          "script": "writes.tab"
+          "script": "provenance.tab"
         }
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
       "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))

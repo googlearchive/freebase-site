@@ -42,6 +42,7 @@
     linked_id: fb.c.linked_id || null,
     object_type: fb.c.object_type || '/type/object',
     current_tab: fb.c.current_tab || 'links',
+    provenance_type: fb.c.provenance_type || null,
 
     init: function() {
       // Recent filters
@@ -107,7 +108,7 @@
 
       // Handle options changes (checkboxes, text-input)
       $('.filter-options :checkbox').change(links.update_options);
-      $('.filter-options:text').keypress(function(e) {
+      $('.filter-options :text').keypress(function(e) {
         if (e.keyCode === 13) {
           links.update_options(e);
         }
@@ -240,10 +241,10 @@
     update_links: function() {
       // disable infinitescroll
       links.destroy_infinitescroll();
-      var params = links.get_page_params();
+      var params = links.get_ajax_params();
       $.ajax($.extend(formlib.default_begin_ajax_options(), {
         url: fb.h.ajax_url('links.ajax'),
-        data: $.extend({linked_id: links.linked_id}, params),
+        data: params,
         traditional: true,
         onsuccess: function(data) {
           $('#infinitescroll > tbody').replaceWith(data.result.html);
@@ -288,13 +289,124 @@
       }
     },
 
+    get_ajax_params: function() {
+      if (links.current_tab == 'instances' &&
+          links.object_type == '/type/property') {
+        // /type/property?instances
+        return links.get_ajax_params_for_property_instances_();
+      }
+      else if (links.current_tab == 'writes') {
+        if (links.object_type == '/type/user') {
+          // /type/user?writes
+          return links.get_ajax_params_for_user_writes_();
+        }
+        else if (links.object_type == '/type/attribution') {
+          // /type/attribution?writes
+          return links.get_ajax_params_for_attribution_writes_();
+        }
+        else {
+          // I.e. /dataword/information_source?writes
+          return links.get_ajax_params_for_provenance_writes_();
+        }
+      }
+      else {
+        // ?links
+        return links.get_default_ajax_params_();
+      }
+    },
+
+    get_ajax_params_for_property_instances_: function() {
+      return links.get_default_ajax_params_();
+    },
+
+    get_ajax_params_for_user_writes_ : function() {
+      return links.get_default_ajax_params_();
+    },
+
+    get_ajax_params_for_attribution_writes_ : function() {
+      return links.get_default_ajax_params_();
+    },
+
+    get_ajax_params_for_provenance_writes_ : function() {
+      var params = links.get_default_ajax_params_();
+      params.provenance = params.creator;
+      params.object_type = params.provenance_type;
+      return params;
+    },
+
+    get_ajax_params_for_writes_: function() {
+      return links.get_default_ajax_params_();
+    },
+
+    get_default_ajax_params_: function() {
+      var params = links.get_default_page_params_();
+      return $.extend(params, {
+        linked_id: links.linked_id,
+        current_tab: links.current_tab,
+        object_type: links.object_type,
+        provenance_type: links.provenance_type
+      });
+    },
+
     /**
      * Get the url params that identify the current filter and option state.
      */
     get_page_params: function() {
+      if (links.current_tab == 'instances' &&
+          links.object_type == '/type/property') {
+        // /type/property?instances
+        return links.get_page_params_for_property_instances_();
+      }
+      else if (links.current_tab == 'writes') {
+        if (links.object_type == '/type/user') {
+          // /type/user?writes
+          return links.get_page_params_for_user_writes_();
+        }
+        else if (links.object_type == '/type/attribution') {
+          // /type/attribution?writes
+          return links.get_page_params_for_attribution_writes_();
+        }
+        else {
+          // I.e. /dataword/information_source?writes
+          return links.get_page_params_for_provenance_writes_();
+        }
+      }
+      else {
+        // ?links
+        return links.get_default_page_params_();
+      }
+    },
+
+    get_page_params_for_property_instances_: function() {
+      // For property instances, we overload and disable the property filter
+      // box with the current property being viewed.
+      var params = links.get_default_page_params_();
+      delete params.filter;
+      return params;
+    },
+
+    get_page_params_for_user_writes_: function() {
+      return links.get_page_params_for_writes_();
+    },
+
+    get_page_params_for_attribution_writes_: function() {
+      return links.get_page_params_for_writes_();
+    },
+
+    get_page_params_for_provenance_writes_: function() {
+      return links.get_page_params_for_writes_();
+    },
+
+    get_page_params_for_writes_: function() {
+      // For all ?writes, we overload and disable the creator filter
+      // box with the current object being viewed (user|attribution|provenance).
+      var params = links.get_default_page_params_();
+      delete params.creator;
+      return params;
+    },
+
+    get_default_page_params_: function(){
       var params = {
-        current_tab: links.current_tab,
-        object_type: links.object_type,
         lang: fb.h.lang_code(fb.lang)
       };
       params[links.current_tab] = '';
@@ -315,15 +427,19 @@
         }
         else if (input.is(':text')) {
           var name = input.attr('name');
-          var value = params[name];
-          if (value == null) {
-            params[name] = input.val();
+          var val = input.val();
+          if (val == '') {
+            return;
+          }
+          var existing = params[name];
+          if (existing == null) {
+            params[name] = val;
           }
           else {
-            if ($.type(value) === 'string') {
-              value = params[name] = [value];
-            };
-            value.push(input.val());
+            if (!$.isArray(existing)) {
+              existing = params[name] = [existing];
+            }
+            existing.push(input.val());
           }
         }
       });
@@ -376,8 +492,7 @@
         pathParse: function() {
           return [
             a_next[0].href + '?' +
-                $.param($.extend(links.get_page_params(), {
-                  linked_id: links.linked_id,
+                $.param($.extend(links.get_ajax_params(), {
                   next: tbody.attr('data-next'),
                   offset: tbody.find('>tr').length
                 })) + '&page=',

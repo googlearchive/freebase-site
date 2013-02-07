@@ -40,27 +40,39 @@
   padding-bottom: 12px;
 }
 
-/** Disable filtering on /type/property ?instances **/
-#tabbar.instances-type-property {
-  #pill-filter-box {
-    opacity: .3;
+/** Disabled property filter for /type/property ?instances **/
+#pill-filter-box.disabled {
+    opacity: .5;
 
     .pill-x {
       display: none;
     }
-  }
 
-  #pill-filter-suggest {
-    display: none;
-  }
+    #pill-filter-suggest {
+        display: none;
+    }
 
-  #recent-filters {
-    display: none;
-  }
+    #recent-filters {
+        display: none;
+    }
+}
+
+/** Disable creator filter for ?writes **/
+#pill-creator-box.disabled {
+    opacity: .5;
+
+    .pill-x {
+      display: none;
+    }
+
+    #pill-creator-suggest {
+        display: none;
+    }
 }
 
 .filter-options {
     font-size: 1.3em;
+    margin-right: 250px;
 }
 .filter-options .sep {
     display: inline-block;
@@ -144,7 +156,10 @@
 
 .body tbody > tr.invalid {
   background: #FBEFEF;
-  text-decoration: line-through;
+
+  .row-number {
+      text-decoration: line-through;
+  }
 }
 
 .body tbody > tr:hover {

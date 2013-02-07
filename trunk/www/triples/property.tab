@@ -29,23 +29,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var h = acre.require("lib/helper/helpers.sjs");
+var h = acre.require('lib/helper/helpers.sjs');
 var validators = acre.require('lib/validator/validators.sjs');
-var links = acre.require("links.tab");
-var apis = acre.require("lib/promise/apis.sjs");
-var freebase = apis.freebase;
-var deferred = apis.deferred;
+var links = acre.require('queries.sjs');
+var deferred = acre.require('lib/promise/deferred.sjs');
 
 var SPEC = {
 
-  template: "links.mjt",
+  template: 'links.mjt',
 
   validate: function(params) {
     return [
       params.object,
       params.object_type,
       params.current_tab,
-
       validators.MqlId(params, 'creator', {if_empty:null}),
       validators.StringBool(params, 'historical', {if_empty:false}),
       validators.OneOf(params, 'sort', {
@@ -68,16 +65,13 @@ var SPEC = {
     var promises = {
       links: links.get_links(null, [id], creator, historical, sort, timestamp)
     };
-
     return deferred.all(promises)
       .then(function(r) {
-
         return h.extend({
           id: id,
           object: object,
           object_type: object_type,
           current_tab: current_tab,
-
           linked_id: null,
           filter: [id],
           creator: creator,
@@ -89,6 +83,4 @@ var SPEC = {
         }, r);
       });
   }
-
-
 };

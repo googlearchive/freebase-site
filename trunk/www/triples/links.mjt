@@ -62,9 +62,20 @@
 </acre:block>
 
 <acre:block def="page_content()">
-  <div id="tabbar"
-       class="${th.links_mode_class(c.object_type.id, c.current_tab.key)}">
-    <div id="by-creator">
+  <acre:script>
+    var creator_attrs = {};
+    var filter_attrs = {'class': 'pill-box'};
+    var show_recent_filters = true;
+    if (c.current_tab.key === 'writes') {
+      creator_attrs['class'] = 'disabled';
+    }
+    if (c.current_tab.key == 'instances' && c.object_type.id == '/type/property') {
+      filter_attrs['class'] = 'pill-box disabled';
+      show_recent_filters = false;
+    }
+  </acre:script>
+  <div id="tabbar">
+    <div id="by-creator" acre:attrs="creator_attrs">
       <strong>by</strong>
       <div class="pill-box" id="pill-creator-box">
         <acre:block if="c.creator">
@@ -79,7 +90,7 @@
         </span>
       </div>
     </div>
-    <div class="pill-box" id="pill-filter-box">
+    <div id="pill-filter-box" acre:attrs="filter_attrs">
       <acre:block for="filter in c.filter">
         ${pill(filter)}
       </acre:block>
@@ -89,10 +100,12 @@
         ${pill()}
       </span>
     </div>
-    <div id="recent-filters" class="filter-options">
-      <strong>${_("Recent filters:")}</strong>
-      <span id="recent-filters-container"></span>
-    </div>
+    <acre:block if="show_recent_filters">
+      <div id="recent-filters" class="filter-options">
+        <strong>${_("Recent filters:")}</strong>
+        <span id="recent-filters-container"></span>
+      </div>
+    </acre:block>
     <div id="filter-options" class="filter-options">
       <strong>${_("Filter options:")}</strong>
       <label for="historical" class="checkbox">
@@ -208,6 +221,17 @@
     <acre:block
        if="object_type == '/type/property' && current_tab == 'instances'">
       ${property_instances(links, historical, offset)}
+    </acre:block>
+    <acre:block
+       elif="object_type == '/type/user' && current_tab == 'writes'">
+      ${user_writes(links, historical, offset)}
+     </acre:blok>
+    <acre:block
+       elif="object_type == '/type/attribution' && current_tab == 'writes'">
+      ${attribution_writes(links, historical, offset)}
+    </acre:block>
+    <acre:block elif="current_tab == 'writes'">
+      ${provenance_writes(links, historical, offset)}
     </acre:block>
     <acre:block else="">
       ${link_rows(links, historical, offset)}
@@ -328,6 +352,83 @@
 </acre:block>
 
 <!!--
+   ?writes (/type/user)
+   !!-->
+<acre:block def="user_writes(links, historical, offset)">
+  ${creator_writes(links, historical, offset, false)}
+</acre:block>
+
+<!!--
+   ?writes (/type/attribution)
+   !!-->
+<acre:block def="attribution_writes(links, historical, offset)">
+  ${creator_writes(links, historical, offset, true)}
+</acre:block>
+
+<acre:block def="creator_writes(links, historical, offset, is_attribution)">
+  <acre:block for="i, link in links">
+    ${creator_write_row(link, historical, i+offset+1, is_attribution)}
+  </acre:block>
+</acre:block>
+
+<acre:block def="creator_write_row(link, historical, row_number, is_attribution)">
+  <tr class="data-row hover-row${link.valid ? '' : ' invalid'}">
+    <td class="row-number first">${row_number}</td>
+    ${creator_write_triple(link)}
+    <td class="menu-col">${creator(link, !is_attribution)}</td>
+    <td class="menu-col">${attribution(link, is_attribution)}</td>
+    <td>${timestamp(link)}</td>
+    <acre:block if="historical">
+      <td>${link.operation}</td>
+    </acre:block>
+  </tr>
+</acre:block>
+
+<acre:block def="creator_write_triple(link)">
+  <acre:block if="link.master_property.reverse_property">
+    <td class="break">${topic(link.target)}</td>
+    <td class="menu-col">${property(link, true)}</td>
+    <td class="break">
+      ${target_value(link.target_value)}
+      ${topic(link.source)}
+    </td>
+  </acre:block>
+  <acre:block else="">
+    <td class="break">${topic(link.source)}</td>
+    <td class="menu-col">${property(link)}</td>
+    <td class="break">
+      ${target_value(link.target_value)}
+      ${topic(link.target)}
+    </td>
+  </acre:block>
+</acre:block>
+
+<!!--
+   ?writes (/freebase/apps/acre_app,
+            /dataworld/software_tool,
+            /dataworld/mass_data_operation,
+            /dataworld/information_source)
+   !!-->
+<acre:block def="provenance_writes(links, historical, offset)">
+  <acre:block for="i, link in links">
+    ${provenance_write_row(link, historical, i+offset+1)}
+  </acre:block>
+</acre:block>
+
+<acre:block def="provenance_write_row(link, historical, row_number)">
+  <tr class="data-row hover-row${link.valid ? '' : ' invalid'}">
+    <td class="row-number first">${row_number}</td>
+    ${creator_write_triple(link)}
+    <td class="menu-col">${creator(link)}</td>
+    <td class="menu-col">${attribution(link)}</td>
+    <td>${timestamp(link)}</td>
+    <acre:block if="historical">
+      <td>${link.operation}</td>
+    </acre:block>
+  </tr>
+</acre:block>
+
+<!!--
    Utilities
    !!-->
 
@@ -406,7 +507,7 @@
   </span>
 </acre:block>
 
-<acre:block def="creator(link)">
+<acre:block def="creator(link, is_self)">
   <acre:block if="link.creator">
     <ul class="inline-menu nicemenu">
       <li class="nicemenu-item">
@@ -414,11 +515,13 @@
           <a href="javascript:void(0)" class="more-action"></a>
         </span>
         <ul class="submenu row-menu">
-          <li class="row-menu-item">
-            <a href="javascript:void(0);"
-               onclick="fb.links.update_creator('${link.creator.id}');">
-              ${h.sprintf(FILTER_BY_CREATOR, link.creator.id)}</a>
-          </li>
+          <acre:block if="!is_self">
+            <li class="row-menu-item">
+              <a href="javascript:void(0);"
+                 onclick="fb.links.update_creator('${link.creator.id}');">
+                ${h.sprintf(FILTER_BY_CREATOR, link.creator.id)}</a>
+            </li>
+          </acre:block>
           <li class="row-menu-item">
             <a href="${h.fb_url(link.creator.id, [['links']])}">
               ${h.sprintf(INSPECT_CREATOR, link.creator.id)}</a>
@@ -426,17 +529,22 @@
         </ul>
       </li>
     </ul>
-    <a class="property-value" data-id="${link.creator.id}"
-       title="${h.sprintf(WRITES_BY_CREATOR, link.creator.id)}"
-       href="${h.fb_url(link.creator.id, [['writes']])}">
-      ${link.creator.id}</a>
+    <acre:block if="is_self">
+      <span class="self">${link.creator.id}</span>
+    </acre:block>
+    <acre:block else="">
+      <a class="property-value" data-id="${link.creator.id}"
+         title="${h.sprintf(WRITES_BY_CREATOR, link.creator.id)}"
+         href="${h.fb_url(link.creator.id, [['writes']])}">
+        ${link.creator.id}</a>
+    </acre:block>
   </acre:block>
   <acre:block else="">
     <span class="empty">${NONE}</span>
   </acre:block>
 </acre:block>
 
-<acre:block def="attribution(link)">
+<acre:block def="attribution(link, is_self)">
   <acre:block if="link.attribution">
     <acre:script>
       var attr = h.get_attribution(link);
@@ -447,11 +555,13 @@
           <a href="javascript:void(0)" class="more-action"></a>
         </span>
         <ul class="submenu row-menu">
-          <li class="row-menu-item">
-            <a href="javascript:void(0);"
-               onclick="fb.links.update_creator('${link.attribution.id}');">
-              ${h.sprintf(FILTER_BY_ATTR, link.attribution.id)}</a>
-          </li>
+          <acre:block if="!is_self">
+            <li class="row-menu-item">
+              <a href="javascript:void(0);"
+                 onclick="fb.links.update_creator('${link.attribution.id}');">
+                ${h.sprintf(FILTER_BY_ATTR, link.attribution.id)}</a>
+            </li>
+          </acre:block>
           <li class="row-menu-item">
             <a href="${h.fb_url(link.attribution.id, [['links']])}">
               ${h.sprintf(INSPECT_ATTR, link.attribution.id)}</a>
@@ -459,10 +569,15 @@
         </ul>
       </li>
     </ul>
-    <a class="property-value" data-id="${link.attribution.id}"
-       title="${h.sprintf(WRITES_BY_ATTR, link.attribution.id)}"
-       href="${h.fb_url(link.attribution.id, [['writes']])}">
-      ${link.attribution.id}</a>
+    <acre:block if="is_self">
+      <span class="self">${link.attribution.id}</span>
+    </acre:block>
+    <acre:block else="">
+      <a class="property-value" data-id="${link.attribution.id}"
+         title="${h.sprintf(WRITES_BY_ATTR, link.attribution.id)}"
+         href="${h.fb_url(link.attribution.id, [['writes']])}">
+        ${link.attribution.id}</a>
+    </acre:block>
     <acre:block if="attr.creator || attr.app || attr.dataset">
       <ul class="fullattr">
         <li acre:if="attr.creator">
@@ -522,8 +637,11 @@
 <acre:block def="acre_javascript_vars()">
   <acre:script>
     var linked_id = c.linked_id ? JSON.stringify(c.linked_id) : 'null';
+    var provenance_type =
+        c.provenance_type ? JSON.stringify(c.provenance_type) : 'null';
   </acre:script>
   <script>
     SERVER.c.linked_id = ${linked_id};
+    SERVER.c.provenance_type = ${provenance_type}
   </script>
 </acre:block>

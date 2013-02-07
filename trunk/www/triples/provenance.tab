@@ -31,9 +31,18 @@
 
 var h = acre.require('lib/helper/helpers.sjs');
 var validators = acre.require('lib/validator/validators.sjs');
-var q = acre.require('queries.sjs');
+var links = acre.require('queries.sjs');
 var deferred = acre.require('lib/promise/deferred.sjs');
 
+/**
+ * Writes for:
+ * <ul>
+ *   <li>/freebase/apps/acre_app</li>
+ *   <li>/dataworld/software_tool</li>
+ *   <li>/dataworld/mass_data_operation</li>
+ *   <li>/dataworld/information_source</li>
+ * </ul>
+ */
 var SPEC = {
 
   template: 'links.mjt',
@@ -47,7 +56,6 @@ var SPEC = {
           validator: validators.MqlId,
           if_empty: []
         }),
-      validators.MqlId(params, 'creator', {if_empty:null}),
       validators.StringBool(params, 'historical', {if_empty:false}),
       validators.OneOf(params, 'sort', {
           if_empty: '-timestamp',
@@ -64,28 +72,39 @@ var SPEC = {
 
   run: function(
       object, object_type, current_tab,
-      filter, creator, historical, sort, fullts, fullattr, timestamp) {
+      filter, historical, sort, fullts, fullattr, timestamp) {
     var id = object.id;
-    var promises = {
-      links:
-          q.get_links(id, filter, creator, historical, sort, timestamp)
-    };
-    return deferred.all(promises)
-      .then(function(r) {
-        return h.extend({
-          id: id,
-          object: object,
-          object_type: object_type,
-          current_tab: current_tab,
-          linked_id: id,
-          filter: filter,
-          creator: creator,
-          historical: historical,
-          sort: sort,
-          fullts: fullts,
-          fullattr: fullattr,
-          timestamp: timestamp
-        }, r);
+    // Some provenance /dataworld/information_source are
+    // co-typed as /common/topic (i.e. /en/stanford_university).
+    // In such cases, the object_type is /common/topic. Thus we
+    // need to issue a query to get a valid provenance type.
+    return links.get_valid_provenance_type(id, object_type)
+      .then(function(provenance_type) {
+        if (!provenance_type) {
+throw "Invalid provenance " + id;
+        }
+        var promises = {
+          links: links.get_links_by_provenance(
+              id, provenance_type, filter, historical, sort, timestamp)
+        };
+        return deferred.all(promises)
+          .then(function(r) {
+            return h.extend({
+              id: id,
+              object: object,
+              object_type: object_type,
+              current_tab: current_tab,
+              provenance_type: provenance_type,
+              linked_id: null,
+              filter: filter,
+              creator: id,
+              historical: historical,
+              sort: sort,
+              fullts: fullts,
+              fullattr: fullattr,
+              timestamp: timestamp
+            }, r);
+          });
       });
   }
 };

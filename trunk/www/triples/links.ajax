@@ -31,12 +31,8 @@
 
 var h = acre.require("lib/helper/helpers.sjs");
 var validators = acre.require('lib/validator/validators.sjs');
-var links_q = acre.require('links.tab');
+var links_q = acre.require('queries.sjs');
 var links_t = acre.require('links.mjt');
-var creator_q = acre.require('lib/queries/creator.sjs');
-var apis = acre.require("lib/promise/apis.sjs");
-var freebase = apis.freebase;
-var deferred = apis.deferred;
 
 var SPEC = {
 
@@ -48,6 +44,7 @@ var SPEC = {
         if_empty: []
       }),
       validators.MqlId(params, 'creator', {if_empty:null}),
+      validators.MqlId(params, 'provenance', {if_empty:null}),
       validators.StringBool(params, 'historical', {if_empty:false}),
       validators.OneOf(params, 'sort', {
         if_empty: '-timestamp',
@@ -68,16 +65,27 @@ var SPEC = {
   },
 
   run: function(
-      linked_id, filter, creator, historical,
-      sort, timestamp, next, offset,
+      linked_id, filter, creator, provenance,
+      historical, sort, timestamp, next, offset,
       object_type, current_tab) {
-    return links_q.get_links(
-      linked_id, filter, creator, historical, sort, timestamp, next)
+    var promise = null;
+    if (provenance) {
+      // For /type/user and /type/attribution, just do the normal links query
+      // with creator.
+      promise = links_q.get_links_by_provenance(
+          provenance, object_type, filter, historical, sort, timestamp, next);
+    }
+    else {
+      // Normal links query.
+      promise = links_q.get_links(
+          linked_id, filter, creator, historical, sort, timestamp, next);
+    }
+    return promise
         .then(function(r) {
           return {
             html: acre.markup.stringify(
-                links_t.links_body(linked_id, r, historical, offset,
-                object_type, current_tab))
+              links_t.links_body(
+                  linked_id, r, historical, offset, object_type, current_tab))
           };
         });
   }

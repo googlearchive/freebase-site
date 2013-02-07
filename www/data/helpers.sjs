@@ -28,75 +28,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-;(function($, fb) {
 
+var h = acre.require("lib/helper/helpers.sjs");
+var i18n = acre.require("lib/i18n/i18n.sjs");
+var apis = acre.require("lib/promise/apis");
+var freebase = apis.freebase;
 
-  function init() {
-    // warm one domain at a time
-    warm_next();
-  };
+/**
+ * Invalidate cache of domain names for all languages if header
+ * cache-control:no-cache is present
+ */
+function invalidate_domain_cache_maybe() {
+  if (acre.request.headers['cache-control'] &&
+      acre.request.headers['cache-control'].indexOf('no-cache') !== -1) {
 
-
-  function warm_next(current) {
-    var next = null;
-    if (current) {
-      next = current.next(".warmer");
-    }
-    else {
-      next = $(".warmer:first");
-    }
-    if (next.length) {
-      warm(next);
-    }
-  };
-
-  function warm(row) {
-
-    var app_path = row.attr("data-id");
-
-    var status = $("<span>&nbsp;loading...</span>");
-
-    $.ajax({
-      url: "/_script_warmer",
-      data: {
-        app: app_path
-      },
-      dataType: "jsonp",
-      beforeSend: function() {
-        row.addClass("warmer-loading");
-        row.append(status);
-      },
-      success: function(data) {
-        var files = loaded_files(data.files || []).hide();
-        row.append(files);
-        files.slideDown(function() {
-          status.html("<span>&nbsp;loaded</span>");
-          row.addClass("warmer-success");
-        });
-      },
-      error: function() {
-        status.html("<span>&nbsp;error</span>");
-        row.addClass("warmer-error");
-      },
-      complete: function() {
-        row.removeClass("warmer-loading");
-        warm_next(row);
-      }
+    var keys = [];
+    i18n.LANGS.forEach(function(lang){
+      keys.push("domains:"+lang.key);
     });
-  };
+    acre.cache.request.removeAll(keys);
+    return true;
 
-  function loaded_files(files) {
-    var ul = $("<ul>");
-    $.each(files, function(i, f) {
-      var li = $("<li>");
-      li.append("<span>" + f.file + "</span>");
-      ul.append(li);
-    });
-    return ul;
-  };
-
-
-  $(init);
-
-
-})(jQuery, window.freebase);
+  } else {
+    return false;
+  }
+}

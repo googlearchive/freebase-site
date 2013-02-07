@@ -31,56 +31,8 @@
 
 acre.require("mock").playback(this, "./playback_queries_domain.json");
 
-var ht = acre.require("./helpers.sjs");
 var q = acre.require("label/schema/queries");
 var mql = acre.require("label/schema/mql");
-
-var self = this;
-
-test("domains", function() {
-  var result;
-  q.domains(mql.domains({"id":"/base/slamdunk",key:[]}))
-    .then(function(domains) {
-       result = domains;
-    });
-  acre.async.wait_on_results();
-  ok(result, "got domain");
-  ok(result.length === 1, "got /base/slamdunk domain");
-  result = result[0];
-  equal(result.id, "/base/slamdunk");
-  ht.assert_domain_keys(self, result);
-});
-
-test("common_domains", function() {
-  var result;
-  q.common_domains()
-    .then(function(domains) {
-      result = domains;
-    });
-  acre.async.wait_on_results();
-  ok(result && result.length, "got commons domains");
-  result.forEach(function(domain) {
-    ht.assert_domain_keys(self, domain);
-  });
-});
-
-test("user_domains", function() {
-  var result;
-  q.user_domains("/user/daepark")
-    .then(function(domains) {
-      result = domains;
-    });
-  acre.async.wait_on_results();
-  ok(result && result.length, "got user domains");
-  var slamdunk_base;
-  result.forEach(function(domain) {
-    ht.assert_domain_keys(self, domain);
-    if (domain.id === "/base/slamdunk") {
-      slamdunk_base = domain;
-    }
-  });
-  ok(slamdunk_base, "expected to find /base/slamdunk domain by /user/daepark");
-});
 
 test("load_domain minimal", function() {
 

@@ -35,7 +35,7 @@ var i18n = acre.require("i18n/i18n.sjs");
 var _ = i18n.gettext;
 
 /* default filters we need for any object */
-var OBJECT_FILTERS = [ 
+var OBJECT_FILTERS = [
     "/type/object",
     "/dataworld/gardening_hint/replaced_by",
     "/freebase/object_profile/linkcount",
@@ -53,7 +53,7 @@ var OBJECT_FILTERS = [
 /**
  * Basic freebase object information
  *
- * The returned object is used to drive object routing 
+ * The returned object is used to drive object routing
  * and the display of the object masthead.
  *
  * @param id:String
@@ -91,7 +91,7 @@ function object(id, props) {
           flag: get_first_value(topic, "!/freebase/review_flag/item"),
 
           weblinks: get_weblinks(topic)
-         
+
         };
       });
 };
@@ -145,7 +145,7 @@ function get_description(topic, tm) {
       var article = get_latest_value(topic, "/common/topic/article");
       if (article) {
         desc = get_first_value(article, "/common/document/text");
-      }        
+      }
     }
   }
   return desc;
@@ -197,7 +197,7 @@ function get_query(topic) {
 
 /**
  * User badge selection
- * 
+ *
  * @param o:Object - The object query result
  */
 function get_user_badge(topic) {
@@ -227,23 +227,7 @@ function get_user_badge(topic) {
   }
 
   return deferred.resolved(label);
-};
-
-/* Total topic count for the homepage */
-function topic_count() {
-  var q = {
-    "id": "/common/topic",
-    "/freebase/type_profile/instance_count": null
-  };
-  return freebase.mqlread(q)
-    .then(function(env) {
-      return env.result;
-    })
-    .then(function(r) {
-      return r["/freebase/type_profile/instance_count"];
-    });
-};
-
+}
 
 /**
  * Get the relevant object banner info.
@@ -339,7 +323,7 @@ function get_object_banners(obj, obj_type) {
  * @return {Array.<object>} Where each object in the array has signature:
  *     <ul>
  *       <li>{domain} string The domain name (i.e., "wikipedia.org").</li>
- *       <li>{Array.<string>} urls The urls of this domain</li> 
+ *       <li>{Array.<string>} urls The urls of this domain</li>
  *       <li>{string} favicon The domain favicon url.</li>
  *     </ul>
  */
@@ -347,7 +331,7 @@ function get_weblinks(topic) {
   var result = [];
   var official = get_values(topic, "/common/topic/official_website") || [];
   var social = get_values(topic, "/common/topic/social_media_presence") || [];
-  var equivalent = 
+  var equivalent =
       get_values(topic, "/common/topic/topic_equivalent_webpage") || [];
   var all = official.concat(social).concat(equivalent);
   var by_domains = {};
@@ -381,7 +365,7 @@ function get_weblinks(topic) {
   if (wikipedia) {
     // Since we don't have language mappings to wikipedial urls,
     // try all language codes for the current lang.
-    // For example, for /lang/iw, try 'http://iw.wikipedia.org/...' and 
+    // For example, for /lang/iw, try 'http://iw.wikipedia.org/...' and
     // 'http://he.wikipedia.org/...'.
     var lang_codes = i18n.LANGS_BY_ID[i18n.lang].key;
     var prefixes = lang_codes.map(function(l) {
@@ -399,7 +383,7 @@ function get_weblinks(topic) {
           return b < a;
         } else {
           return 1;
-        }        
+        }
       } else {
         return -1;
       }
@@ -412,7 +396,7 @@ function get_weblinks(topic) {
       return 1;
     } else {
       return b.domain < a.domain;
-    }    
+    }
   });
   return result;
 }

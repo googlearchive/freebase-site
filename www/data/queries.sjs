@@ -40,159 +40,134 @@ var freebase = apis.freebase;
 var urlfetch = apis.urlfetch;
 var deferred = apis.deferred;
 var validators = acre.require("lib/validator/validators.sjs");
+var stats = acre.require("lib/queries/stats.sjs");
 
 function types_mql(id) {
   return {
     "id": id,
-    "guid": null,
     "type": "/type/domain",
     "types": [{
       "id": null,
-      "guid": null,
       "name": i18n.mql.query.name(),
       "timestamp": null,
       "creator": null,
       "optional": true
     }]
   };
-};
+}
 
 /**
  * Domain query and for each type in the domain:
  */
 function domain(id) {
 
-  // get initial domain query
-  // including related types
   var q = types_mql(id);
-  return freebase.mqlread(q)
+
+  var promises = {};
+
+    // Get domain and filter out /base/id/topic
+  promises.domain = freebase.mqlread(q)
     .then(function(env) {
       return env.result || [];
-    })
+      })
     .then(function(domain) {
-
-      // we don't want to return /base/id/topic
       var base_common_topic_id = domain.id + "/topic";
-
-      var domain_types = [];
-      for(var i=0; i<domain.types.length; i++) {
-
-        if(domain.types[i].id !== base_common_topic_id) {
-         domain_types.push(domain.types[i]);
-        }
-      }
-      domain.types = domain_types;
-
-      // initialize promise array
-      var promises = [];
-
-      // contruct path for BDB file
-      var activity_id = "/guid/" + domain.guid.slice(1);
-
-      // get BDB summary for domain
-      promises.push(freebase.get_static("activity", activity_id, {timeout:3000})
-        .then(function(activity) {
-          return activity || {
-            edits: [],
-            total: {},
-            week: {}
-          };
-        }, function(e) {
-          return {
-            edits: [],
-            total: {},
-            week: {}
-          };
-        })
-
-        // With domain activity, do the following:
-        // 1. Add metadata activity to domain object
-        //    - total facts
-        //    - total facts last week
-        //    - total topics
-        //    - topics w/ images
-        //    - topics w/ articles
-        //    - weekly activity summary
-        // 2. Iterate through types and attach instance count
-        // 3. Add Top Contributors to domain object
-
-        .then(function(activity) {
-
-          // facts
-          domain.total_facts = activity.total.edits || 0;
-          domain.facts_last_week = activity.week.total_edits || 0;
-
-          //topics
-          domain.total_topics = activity.total['new'] || 0;
-          domain.topics_with_images = activity.has_image ? (activity.has_image / domain.total_topics) : 0;
-          domain.topics_with_articles = activity.has_image ? (activity.has_article / domain.total_topics) : 0;
-
-          // daily summary for graph output
-          // we only want the last 10 or so values
-          domain.activity_summary = activity.edits;
-          if (domain.activity_summary.length > 10) {
-            domain.activity_summary = domain.activity_summary.slice(-11, -1);
-          }
-
-          // Attach top contributors to domain object
-          // For now, we do a simple string filter to
-          // weed out bots. However, this should be
-          // added to the activity service
-
-          var users = [];
-          activity.week.users.forEach(function(user) {
-            if (valid_activity_user(user)) {
-              if (user.id.indexOf("_bot") === -1) {
-                user.display_name = user.id.split("/").pop();
-                user.percentage = (user.v / domain.facts_last_week);
-                users.push(user);
-              }
-            }
-          });
-
-          domain.top_contributors = users;
-
-          return activity;
-      }));
-
-      // Attach instance_count to domain.type[i]
-      // We have to make a separate BDB call because the "full"
-      // file does not include instance counts for mediators.
-      // this should be fixed in BDB updates.
-
-      var summary_id = "summary_/guid/" + domain.guid.slice(1);
-      promises.push(freebase.get_static("activity", summary_id, {timeout:3000})
-        .then(function(summary) {
-          return summary || {};
-        }, function(e) {
-          return {};
-        })
-
-        .then(function(summary) {
-
-          if (summary.types) {
-            domain.types.forEach(function(type) {
-              type.instance_count = summary.types[type.id] || null;
-            });
-          }
-
-          return summary;
-        }));
-
-      // TODO: this query is removed for now. Refactor with projects
-      // attach domain saved views to domain object
-
-      //promises.push(freebase_query.featured_views_by_domain(domain.id)
-      //    .then(function(views) {
-      //      domain.featured_views = views;
-      //  }));
-
-      return deferred.all(promises)
-        .then(function() {
-          return domain;
-        });
+      domain.types = domain.types.filter(function(type){
+        return type !== base_common_topic_id;
+      });
+      return domain;
     });
-};
+
+  // Get stats for specified domain
+  promises.stats = stats.get_domain_stats(id);
+
+
+  // With domain and stats, do the following:
+  // 1. Add metadata to domain object
+  //    - total facts
+  //    - total facts last week
+  //    - total topics
+  //    - topics w/ images
+  //    - topics w/ articles
+  //    - weekly activity summary
+  // 2. Iterate through types and attach instance count
+  // 3. Add Top Contributors to domain object
+  // If stats fetch failed, just return domain with defaults
+  return deferred.all(promises).then(function(result){
+    var domain = result.domain;
+    var domain_stats = result.stats || {};
+
+    // facts
+    domain.total_facts = domain_stats.triples || 0;
+
+    //topics
+    domain.total_topics = domain_stats.entities || 0;
+
+    // Stats API won't return has_image, has_article
+    // TODO: Uncomment if it does.
+    //if (domain_stats.has_image && domain_stats.has_article) {
+    //  domain.topics_with_images = domain_stats.has_image / domain.total_topics;
+    //  domain.topics_with_articles = domain_stats.has_article / domain.total_topics;
+    //} else {
+    //  domain.topics_with_images = 0;
+    //  domain.topics_with_articles = 0;
+    //}
+
+    // daily summary for graph output
+    // we only want the last 10 or so values
+    domain.activity_summary = [];
+    for (var date in domain_stats.triples_by_day) {
+      domain.activity_summary.push({
+        id: date,
+        v: domain_stats.triples_by_day[date]
+      });
+    }
+
+    domain.activity_summary.sort(function(a,b){
+      return a.id < b.id;
+    });
+    if (domain.activity_summary.length > 10) {
+      domain.activity_summary = domain.activity_summary.slice(0, 9);
+    }
+    // Get facts from last week
+    if (domain_stats.triples_7days) {
+      domain.facts_last_week = domain_stats.triples_7days;
+    } else {
+      domain.facts_last_week = 0;
+      domain.activity_summary.slice(0,6).forEach(function(fact){
+        domain.facts_last_week += fact.v;
+      });
+    }
+
+    // Attach top contributors to domain object
+    // For now, we do a simple string filter to
+    // weed out bots. However, this should be
+    // added to the activity service
+    var users = [];
+
+    // Stats API won't return user info
+    // TODO: Uncomment if it does.
+    //activity.week.users.forEach(function(user) {
+    //  if (valid_activity_user(user)) {
+    //    if (user.id.indexOf("_bot") === -1) {
+    //      user.display_name = user.id.split("/").pop();
+    //      user.percentage = (user.v / domain.facts_last_week);
+    //      users.push(user);
+    //    }
+    //  }
+    //});
+    domain.top_contributors = users;
+
+    // types
+    domain.types.forEach(function(type) {
+      if (domain_stats.nodes_by_type) {
+        type.instance_count = domain_stats.nodes_by_type[type.id] || null;
+      }
+    });
+
+    return domain;
+  });
+}
 
 /**
  * Activity is returning invalid users where user.id == "null"
@@ -205,8 +180,31 @@ function valid_activity_user(user) {
     });
   }
   return false;
-};
+}
 
+/**
+ * Return domains from memcache, if not present load them with mqlread
+ */
+function load_commons_domains() {
+  var lang = i18n.lang_code;
+  var domains = acre.cache.request.get('domains:'+lang);
+  if(!domains) {
+    var q = [{
+      id: null,
+      name: i18n.mql.query.name(),
+      type: "/type/domain",
+      "/freebase/domain_profile/category": {
+        id: "/category/commons"
+      }
+    }];
+    return freebase.mqlread(q).then(function(env){
+      domains = env.result;
+      acre.cache.request.put("domains:"+lang, domains);
+      return domains;
+    });
+  }
+  return domains;
+}
 
 /**
  * Type query
@@ -214,29 +212,30 @@ function valid_activity_user(user) {
  */
 function type(type_id, query) {
 
-  return schema.load(type_id)
+  var promises = {};
+
+  // Get Stats for given type
+  promises.activity = stats.get_type_stats(type_id)
+    .then(function(result) {
+      if (result) {
+        var summary = {};
+        summary.topic_count = result.triples;
+        summary.facts = result.nodes;
+        summary.has_article = result.has_article || 0;
+        summary.has_image = result.has_image || 0;
+        return summary;
+      } else {
+        return {};
+      }
+    }, function(err) {
+      return {};
+    });
+
+
+  // Load Type
+  promises.load_result = schema.load(type_id)
     .then(function(r) {
       var this_type = r;
-      var promises = [];
-
-      /**
-       *  Call Activity service to get Type metadata,
-       *  including instance count, etc.
-      */
-      promises.push(freebase.get_static(
-        "activity", this_type.id, {timeout:3000}).then(function(activity) {
-          if (!activity) {
-            return {};
-          }
-          var summary = {};
-          summary.topic_count = activity.total['new'];
-          summary.facts = activity.total.edits;
-          summary.has_article = activity.has_article;
-          summary.has_image = activity.has_image;
-          return summary;
-        }, function(e) {
-          return {};
-        }));
 
       // our basic collection query shape
       var q = {
@@ -262,20 +261,25 @@ function type(type_id, query) {
         extend_type_query(q, this_type);
       }
 
-      promises.push(collection.query([q]));
-
-      return deferred.all(promises)
-        .then(function([activity, collection]) {
-          return {
-            activity: activity,
-            table: collection,
-            root_type_is_mediator: this_type["/freebase/type_hints/mediator"] === true,
-            domain: this_type.domain,
-            query: query
-          };
-        });
+      return {
+        collection: collection.query([q]),
+        this_type: this_type
+      };
     });
-};
+
+
+  return deferred.all(promises)
+    .then(function(result) {
+      return {
+        activity: result.activity,
+        table: result.load_result.collection,
+        root_type_is_mediator:
+          result.load_result.this_type["/freebase/type_hints/mediator"] === true,
+        domain: result.load_result.this_type.domain,
+        query: query
+      };
+    });
+}
 
 function extend_type_query(q, type) {
   // define our current language

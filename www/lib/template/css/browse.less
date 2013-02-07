@@ -31,7 +31,7 @@
 
 
 /*
- * Masthead styling for all browse apps (/schema, /browse, etc.) 
+ * Masthead styling for all browse apps (/schema, /browse, etc.)
  * slightly different grid than our standard 2-col layout
  * --------------------------------------------------
  */
@@ -51,6 +51,7 @@
 
 #page-header .page-title {
   margin: 0;
+  position: relative;
 }
 
 #page-header h1 {
@@ -74,8 +75,19 @@
  * Topic Count Widget
  * --------------------------------------------------
  */
+
+.count-box {
+  height: 68px;
+  width: 330px;
+  overflow: auto;
+  margin: 0 auto;
+}
+
 .topics-count {
   display: inline-block;
+  position: absolute;
+  top: 0px;
+  width:320px;
   margin-top: 10px;
   padding: 5px;
   background: #3a3a3a;
@@ -83,7 +95,7 @@
     -webkit-linear-gradient(0, rgba(255,255,255,0.03) 1px, transparent 2px);
   background-size: 2px 3px, 3px 3px, 2px 2px, 2px 2px;
   background-position:-2px -2px, -2px -2px, -1px -1px, -1px -1px;
-  color: #868686;
+  color: #eee;
   text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
   line-height: 1;
   font-family: 'Allerta', Helvetica, sans-serif;
@@ -91,6 +103,7 @@
 
   .value {
     display: inline-block;
+    width: 184px;
     position: relative;
     padding: 8px 13px;
     background-color: #333;
@@ -135,30 +148,29 @@
 
     small {
       font-size: 11px;
+      color: #868686;
     }
   }
-
-
 }
 
-.topics-count:before {
+.count-box:before {
   content: "";
   display: inline-block;
   position: absolute;
   width: 16%;
   left: 16%;
-  top: 30%;
+  top: 36%;
   border-bottom: 1px solid rgba(255,255,255,0.1);
   border-top: 1px solid rgba(0,0,0,0.1);
 }
 
-.topics-count:after {
+.count-box:after {
   content: "";
   display: inline-block;
   position: absolute;
   width: 16%;
   right: 16%;
-  top: 30%;
+  top: 36%;
   border-bottom: 1px solid rgba(255,255,255,0.1);
   border-top: 1px solid rgba(0,0,0,0.1);
 }
@@ -295,7 +307,7 @@ p.intro {
      .kind {
         color: #888;
         padding-right: 5px;
-      }       
+      }
   }
 
   .aside-box {
@@ -319,7 +331,7 @@ p.intro {
     font-weight: bold;
     line-height: 25px;
   }
-  
+
 
   li ul {
     clear: left;
@@ -355,7 +367,7 @@ p.intro {
   .applist-userimage {
     white-space: nowrap;
     padding: 2px 50px 2px 2px;
-    
+
     .user-image {
       padding: 0 5px 0 0 !important;
       float: left;

@@ -117,10 +117,10 @@ function init_rules(lib) {
   // ********* CUSTOM (browse) *********
   rules["custom"] = {
     promises: [{
-      "key": "total_topics",
+      "key": "total_stats",
       "app": "lib",
-      "script": "queries/object.sjs",
-      "promise": "topic_count"
+      "script": "queries/stats.sjs",
+      "promise": "get_total_stats"
     }],
     tabs: [
       {

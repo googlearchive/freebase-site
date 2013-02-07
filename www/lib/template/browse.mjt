@@ -77,13 +77,37 @@
 <acre:block def="content_body()">
   <div id="page-header">
     <div class="page-title">
-      <span class="number topics-count">
-        <span class="value"><strong>${i18n_c.number(c.total_topics)}</strong></span>
-        <span class="extra">
-        Topics <br>
-        <small>(and counting)</small>
-        </span>
-      </span>
+      <acre:script>
+        var total_entities, total_triples;
+        if (c.total_stats &&
+            c.total_stats.entities > 0 &&
+            c.total_stats.triples > 0) {
+          total_entities = c.total_stats.entities;
+          total_triples = c.total_stats.triples;
+        }
+      </acre:script>
+      <div class="count-box">
+        <acre:block if="total_entities && total_triples">
+          <div class="number topics-count">
+            <span class="value">
+              <strong>${i18n_c.number(total_entities)}</strong>
+            </span>
+            <span class="extra">
+              Topics <br/>
+              <small>(and counting)</small>
+            </span>
+          </div>
+          <div class="number topics-count" style="display:none;">
+            <span class="value">
+              <strong>${i18n_c.number(total_triples)}</strong>
+            </span>
+            <span class="extra">
+              Facts <br/>
+              <small>(and counting)</small>
+            </span>
+          </div>
+        </acre:block>
+      </div>
       <h1>${_("A community-curated database of well-known people, places, and things")}</h1>
       <p id="sign-in-callout" class="signedout">${h.template_sprintf(_("%s with your Google account to join the community"), signin_help_text())}</p>
     </div>

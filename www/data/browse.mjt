@@ -41,9 +41,9 @@
 </acre:script>
 
 <acre:block def="head()">
-  <meta name="description" 
+  <meta name="description"
         content="Freebase is a community-curated database of well-known people, places and things.">
-  <meta name="keywords" 
+  <meta name="keywords"
         content="database, open database, shared database, facts, fact sheet, information, community,
                  discussion, semantic web, google, metaweb" >
   <meta name="robots" content="noodp">
@@ -73,48 +73,50 @@
         </form>
         <label><input type="hidden" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all" /></label>
       </div>
-          
-      <table id="browse" cellspacing="0" class="table table-sortable">
-        <thead>
-          <tr>
-            <th scope="col" class="column-header first"><span class="sort-icon">${_('Domain')}</span></th>
-            <th scope="col" class="column-header column-header-desc">${_('ID')}</th>
-            <th scope="col" class="column-header" style="text-align:right">${_("Topics")}</th>
-            <th scope="col" class="column-header">${_("Facts")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr acre:for="d in c.domains">
-            <th class="row-header odd" scope="row">
-              <acre:script>var name = i18n.display_name(d);</acre:script>
-              <a href="${h.fb_url(d.id)}" title="${h.sprintf(_('View %s'), name)}">$name</a>
-            </th>
-            <td class="key">$d.id</td>
-            <td class="topics" style="width:30%;text-align:right">
-              <div class="wrapper">
-                <acre:block if="d.topics != null">
-                  <span style="width:${d.topics.log_percent}%" class="bar"></span>
-                  <span class="value">${h.format_stat(d.topics.count)}</span>
-                </acre:block>
-                <acre:block else="">
-                  <span class="value">${UNAVAILABLE}</span>
-                </acre:block>
-              </div>
-            </td>
-            <td class="facts" style="width:30%">
-              <div class="wrapper">
-                <acre:block if="d.facts != null">
-                  <span style="width:${d.facts.log_percent}%" class="bar"></span>
-                  <span class="value">${h.format_stat(d.facts.count)}</span>
-                </acre:block>
-                <acre:block else="">
-                  <span class="value">${UNAVAILABLE}</span>
-                </acre:block>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+
+      <acre:block if="c.domains">
+        <table id="browse" cellspacing="0" class="table table-sortable">
+          <thead>
+            <tr>
+              <th scope="col" class="column-header first"><span class="sort-icon">${_('Domain')}</span></th>
+              <th scope="col" class="column-header column-header-desc">${_('ID')}</th>
+              <th scope="col" class="column-header" style="text-align:right">${_("Topics")}</th>
+              <th scope="col" class="column-header">${_("Facts")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr acre:for="d in c.domains">
+              <th class="row-header odd" scope="row">
+                <acre:script>var name = i18n.display_name(d);</acre:script>
+                <a href="${h.fb_url(d.id)}" title="${h.sprintf(_('View %s'), name)}">$name</a>
+              </th>
+              <td class="key">$d.id</td>
+              <td class="topics" style="width:30%;text-align:right">
+                <div class="wrapper">
+                  <acre:block if="d.topics != null">
+                    <span style="width:${d.topics.log_percent}%" class="bar"></span>
+                    <span class="value">${h.format_stat(d.topics.count)}</span>
+                  </acre:block>
+                  <acre:block else="">
+                    <span class="value">${UNAVAILABLE}</span>
+                  </acre:block>
+                </div>
+              </td>
+              <td class="facts" style="width:30%">
+                <div class="wrapper">
+                  <acre:block if="d.facts != null">
+                    <span style="width:${d.facts.log_percent}%" class="bar"></span>
+                    <span class="value">${h.format_stat(d.facts.count)}</span>
+                  </acre:block>
+                  <acre:block else="">
+                    <span class="value">${UNAVAILABLE}</span>
+                  </acre:block>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </acre:block>
     </section>
 
     <aside class="secondary">

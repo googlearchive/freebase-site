@@ -79,7 +79,7 @@
                 ${i18n_c.datetime(type.timestamp, [["class","published"]], 'd')}
               </td>
               <td class="odd">
-                <a href="${h.fb_url(type.creator)}">${h.id_key(type.creator)}</a> 
+                <a href="${h.fb_url(type.creator)}">${h.id_key(type.creator)}</a>
               </td>
               <td class="numeric">
                 <acre:block if="type.instance_count == null">
@@ -115,7 +115,7 @@
       <tr>
         <th class="row-header">
           <span class="metric primary">${h.format_stat(c.domain.total_facts)}</span>
-          <span class="activity-summary" data-activity="${JSON.stringify(c.domain.activity_summary)}"></span>
+          <span class="activity-summary" data-activity="${JSON.stringify(c.domain.activity_summary || [])}"></span>
           <span class="metric-byline">
             <strong class="primary">${h.format_stat(c.domain.facts_last_week)}</strong><br>
             ${_("last week")}
@@ -125,7 +125,8 @@
           <span class="metric secondary">
             ${h.format_stat(c.domain.total_topics)}
           </span>
-          <span class="metric-byline" style="margin-left:10px">
+          <span class="metric-byline" style="margin-left:10px"
+              acre:if="c.domain.topics_with_articles">
             ${h.template_sprintf(_('%s with articles'), strong_percent(c.domain.topics_with_articles))}<br/>
             ${h.template_sprintf(_('%s with images'), strong_percent(c.domain.topics_with_images))}
           </span>
@@ -136,14 +137,14 @@
            class="data-statistics">
       <tr class="secondary-header">
         <th class="row-header" colspan="2">
-          <strong>Top Contributors this week</strong> 
+          <strong>Top Contributors this week</strong>
         </th>
       </tr>
       <tr>
         <th class="row-header" colspan="2">
           <ul acre:if="c.domain.top_contributors"
             class="user-list">
-            <li acre:for="i, user in c.domain.top_contributors" 
+            <li acre:for="i, user in c.domain.top_contributors"
             acre:if="i < 6">
             ${image.user_image_medium(user)}
             <strong><a href="${h.fb_url(user.id, [['writes'], ['domain', c.id]])}">$user.display_name</a><br></strong>

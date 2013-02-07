@@ -38,67 +38,8 @@ var freebase = apis.freebase;
 var deferred = apis.deferred;
 var typeloader = acre.require("lib/schema/typeloader.sjs");
 var proploader = acre.require("lib/schema/proploader.sjs");
+var stats = acre.require("lib/queries/stats.sjs");
 
-/**
- * Get all "commons" domains. Domains with a key in "/".
- */
-function common_domains() {
-  return domains(mql.domains());
-};
-
-/**
- * Get all domains created by user_id.
- */
-function user_domains(user_id) {
-  return domains(mql.domains({optional: true, creator: user_id, key: []}));
-};
-
-/**
- * Do domains query and for each domain, get instance counts (activity bdb).
- */
-function domains(q) {
-  return freebase.mqlread(q)
-    .then(function(envelope) {
-      return envelope.result || [];
-    })
-    .then(function(domains) {
-      var summary_guids = [];
-      domains.forEach(function(d) {
-        var summary_guid = "summary_/guid/" + d.guid.substring(1);
-        summary_guids.push(summary_guid);
-      });
-      summary_guids.sort();
-      var promises = [];
-      // we request allotments of 30 summary guids since the url may be too long
-      for (var i=0,l=summary_guids.length; i<l; i+=30) {
-        var slice = summary_guids.slice(i, i+30);
-        promises.push(freebase.get_static("activity", slice, {timeout:3000})
-          .then(null, function(e) {
-             return null;
-          }));
-      }
-      return deferred.all(promises)
-        .then(function(results) {
-          var activities = {};
-          results.forEach(function(result) {
-            h.extend(activities, result);
-          });
-          return activities;
-        })
-        .then(function(activities) {
-          domains.forEach(function(domain) {
-            var activity = activities["summary_/guid/" + domain.guid.substring(1)];
-            if (activity) {
-              domain.instance_count = activity.total.t;
-            }
-          });
-          return domains;
-        });
-    })
-    .then(function(domains) {
-      return domains.sort(schema_helpers.sort_by_id);
-    });
-};
 
 function modified_domains(days, changes) {
   var q = mql.modified_domains(days);
@@ -158,125 +99,120 @@ function modified_domains(days, changes) {
  * domain query and optionally get types and their activity
  */
 function load_domain(id, lang, options) {
-    options = options || {};
-    var promises = {};
-    var q = {
-        id: id,
-        guid: null, // activity bdb uses guids
-        name: i18n.mql.text_clause(lang),
-        "/common/topic/description": i18n.mql.text_clause(lang),
-        type: "/type/domain"
-    };
-    if (options.types) {
-        // get all types
-        q.types = [{
-            optional: true,
-            id: null,
-            type: "/type/type",
-            limit: 1000
-        }];
-    }
-    return freebase.mqlread(q)
-        .then(function(env) {
-            return env.result;
-        })
-        .then(function(domain) {
-            // domain key/namespace generated from the domain id
-            var ns_key = h.id_key(id, true);
-            domain.key = {
-                namespace: ns_key[0],
-                value: ns_key[1]
-            };
-            if (options.types) {
-                var type_ids = domain.types.map(function(t) {
-                    return t.id;
-                });
-                if (type_ids.length) {
-                    promises = {
-                        types: typeloader.loads(type_ids, lang)
-                    };
-                    if (options.types_instance_count) {
-                        // load activity for each type
-                        promises.types_instance_count =
-                            freebase
-                                .get_static(
-                                  "activity",
-                                  "summary_/guid/" + domain.guid.slice(1), {
-                                    timeout: 3000
-                                  })
-                                .then(function(activity) {
-                                    if (activity && activity.types) {
-                                        domain.types.forEach(function(t) {
-                                            t.instance_count = activity.types[t.id] || 0;
-                                        });
-                                    }
-                                }, function(e) {
-                                  // no instance_count
-                                });
-                    }
-                    return deferred.all(promises)
-                        .then(function(r) {
-                            domain.types.forEach(function(t) {
-                                t = h.extend(t, r.types[t.id]);
-                            });
-                            return domain;
-                        });
-                }
-            }
-            return domain;
+  options = options || {};
+  var q = {
+    id: id,
+    name: i18n.mql.text_clause(lang),
+    "/common/topic/description": i18n.mql.text_clause(lang),
+    type: "/type/domain"
+  };
+  if (options.types) {
+    // get all types
+    q.types = [{
+      optional: true,
+      id: null,
+      type: "/type/type",
+      limit: 1000
+    }];
+  }
+
+  var promises = {};
+
+  // Load Domain and it's types
+  promises.domain = freebase.mqlread(q)
+    .then(function(env) {
+        return env.result;
+    })
+    .then(function(domain) {
+      if (options.types) {
+        var type_ids = domain.types.map(function(t) {
+          return t.id;
         });
-};
+        if (type_ids.length) {
+          // Load types and use them for extending domain.types
+          return typeloader.loads(type_ids, lang)
+            .then(function(result_types) {
+              domain.types.forEach(function(type) {
+                type = h.extend(type, result_types[type.id]);
+              });
+              return domain;
+            });
+        }
+      }
+      return domain;
+    });
+
+  // Load Stats
+  if (options.types_instance_count) {
+    promises.stats = stats.get_domain_stats(id)
+      .then(function(result){
+        return result;
+      }, function(e){
+        return null;
+      });
+  }
+
+  return deferred.all(promises).then(function(result){
+    var domain = result.domain;
+    if (result.stats) {
+      var domain_stats = result.stats;
+      domain.types.forEach(function(type) {
+        type.instance_count = domain_stats.nodes_by_type[type.id];
+      });
+    }
+    return domain;
+  });
+}
 
 /**
  * Use typeloader to load the type and optionally
  * it's instance_count.
  */
 function load_type(type_id, lang, options) {
-    options = options || {};
-    return typeloader.load(type_id, lang)
-        .then(function(type) {
-            // get the key that is in the same domain
-            var key = null;
-            type.key.every(function(k) {
-              if (k.namespace === type.domain.id) {
-                key = k;
-                return false;
-              }
-              return true;
-            });
-            if (key) {
-              type.key = key;
-            }
-            else {
-              throw new Error(
-                  h.sprintf(
-                      "Invalid type: Can't find a key for %s in domain %s",
-                      type_id, type.domain.id));
-            }
+  options = options || {};
 
-            if (options.instance_count) {
-              return freebase
-                  .get_static("activity",
-                              "summary_/guid/" + type.guid.slice(1), {
-                                  timeout: 3000
-                              })
-                      .then(function(activity) {
-                          if (activity) {
-                            type.instance_count = activity.properties["/type/object/type"] || 0;
-                          }
-                          else {
-                            type.instance_count = 0;
-                          }
-                          return type;
-                      }, function(e) {
-                        return type;
-                      });
-            }
-            else {
-              return type;
-            }
-        });
-};
+  var promises = {};
+
+  // Load Type
+  promises.type = typeloader.load(type_id, lang)
+    .then(function(type) {
+      // get the key that is in the same domain
+      var key = null;
+      type.key.every(function(k) {
+        if (k.namespace === type.domain.id) {
+          key = k;
+          return false;
+        }
+        return true;
+      });
+      if (key) {
+        type.key = key;
+      }
+      else {
+        throw new Error(
+            h.sprintf(
+                "Invalid type: Can't find a key for %s in domain %s",
+                type_id, type.domain.id));
+      }
+      return type;
+    });
+
+  // Load Stats
+  if (options.instance_count) {
+    promises.stats = stats.get_type_stats(type_id)
+      .then(function(result){
+        return result;
+      }, function(e){
+        return null;
+      });
+  }
+
+  return deferred.all(promises).then(function(result){
+    var type = result.type;
+    type.instance_count = result.stats ? result.stats.nodes : 0;
+    return type;
+  });
+}
 
 
 function load_property(prop_id, lang) {

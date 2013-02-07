@@ -134,7 +134,8 @@ var hasCharacter = /\D/;
       {name: "freeq.create_job",  options_pos: 0},
       {name: "freeq.add_task",    options_pos: 1},
       {name: "freeq.execute_job", options_pos: 1},
-      {name: "freeq.call",        options_pos: 1}
+      {name: "freeq.call",        options_pos: 1},
+      {name: "get_statistics",    options_pos: 1}
   ];
 
   freebase_apis.forEach(function(api){

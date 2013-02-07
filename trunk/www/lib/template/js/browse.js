@@ -50,7 +50,37 @@
     $("#page-header h1").css("margin-right", offset);
 
     fb.init_search();
+
+    init_count_loop();
   });
+
+  /**
+   * Do looping of topics count stats
+   */
+  function init_count_loop() {
+    var $a = $("#page-header .topics-count").first();
+    var $b = $("#page-header .topics-count").last();
+    $b.hide();
+
+    function toggle() {
+        var toShow = null;
+        var toHide = null;
+        if ($a.is(":visible")) {
+            toHide = $a;
+            toShow = $b;
+        }
+         else {
+            toHide = $b;
+            toShow = $a;
+        }
+
+        toHide.fadeOut();
+        toShow.fadeIn(function() {
+          setTimeout(toggle, 6000);
+        });
+    }
+    setTimeout(toggle, 6000);
+  }
 
   /**
    * This is the onclick handler for all nav "ajax" actions.

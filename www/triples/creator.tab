@@ -29,30 +29,61 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var validators = acre.require("lib/validator/validators.sjs");
-var links = acre.require("lib/queries/links.sjs");
-var writes = acre.require("writes.mjt");
-var filters = acre.require("lib/filter/filters.sjs");
+var h = acre.require('lib/helper/helpers.sjs');
+var validators = acre.require('lib/validator/validators.sjs');
+var links = acre.require('queries.sjs');
+var deferred = acre.require('lib/promise/deferred.sjs');
 
 var SPEC = {
 
+  template: 'links.mjt',
+
   validate: function(params) {
     return [
-      validators.MqlId(params, "id", {required:true}),
-      filters.validate(params, links.links_filters),
-      validators.Timestamp(params, "next", {required:true}),
-      validators.LangId(params, "lang", {if_empty:"/lang/en"}),
-      validators.MqlId(params, "object_type", {required:false})   // object type
+      params.object,
+      params.object_type,
+      params.current_tab,
+      validators.MultiValue(params, 'filter', {
+          validator: validators.MqlId,
+          if_empty: []
+        }),
+      validators.StringBool(params, 'historical', {if_empty:false}),
+      validators.OneOf(params, 'sort', {
+          if_empty: '-timestamp',
+          oneof: ['timestamp', '-timestamp']
+        }),
+      validators.StringBool(params, 'fullts', {if_empty:false}),
+      validators.StringBool(params, 'fullattr', {if_empty:false}),
+      validators.MultiValue(params, 'timestamp', {
+        if_empty: null,
+        validator: validators.Timestamp
+      })
     ];
   },
 
-  run: function(id, f, next, lang, object_type) {
-    return links.writes(id, object_type, f, next)
-      .then(function(result) {
-        return {
-          html: acre.markup.stringify(writes.writes_body(id, result, f, object_type))
-        };
+  run: function(
+      object, object_type, current_tab,
+      filter, historical, sort, fullts, fullattr, timestamp) {
+    var id = object.id;
+    var promises = {
+      links: links.get_links(null, filter, id, historical, sort, timestamp)
+    };
+    return deferred.all(promises)
+      .then(function(r) {
+        return h.extend({
+          id: id,
+          object: object,
+          object_type: object_type,
+          current_tab: current_tab,
+          linked_id: null,
+          filter: filter,
+          creator: id,
+          historical: historical,
+          sort: sort,
+          fullts: fullts,
+          fullattr: fullattr,
+          timestamp: timestamp
+        }, r);
       });
   }
 };
-

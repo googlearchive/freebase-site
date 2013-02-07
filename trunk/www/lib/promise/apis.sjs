@@ -164,7 +164,7 @@ var hasCharacter = /\D/;
           // We are not at leaf, create a structure
           var member = root[name];
           if(!member) {
-            root[name] = {};
+            member = root[name] = {};
           }
           root = member;
         }

@@ -74,12 +74,17 @@
         incompatible_types: fb.incompatible_types
       });
 
-      topic.update_facet();
-
       // Initialize toggle-types menu collapse/expand
       if ($.localstore('types_expanded')) {
         topic.toggle_types($('#types-toggle > a'));
       }
+
+      // Initialize show-all
+      if ($.localstore('topic.show_all')) {
+        $('#show-all').attr('checked', 'checked');
+      }
+
+      topic.update_facet();
 
       // Initialize filter suggest input
       var pill_suggest = $('#pill-filter-suggest')
@@ -406,22 +411,11 @@
       if (filters.length) {
         topic.facet.filter(filters);
         fb.disable(show_all);
-        $('.show-all-section').hide();
       }
       else {
         var checked = show_all.is(':checked');
         topic.facet.show_all(checked);
         fb.enable(show_all);
-        // Update show all text
-        if (checked) {
-          $('.show-all-text').hide();
-          $('.show-less-text').show();
-        }
-        else {
-          $('.show-all-text').show();
-          $('.show-less-text').hide();
-        }
-        $('.show-all-section').show();
       }
       if (update_history) {
         topic.update_window_history(filters);
@@ -447,6 +441,7 @@
      * Show all domains and properties checkbox
      */
     show_all: function(checked) {
+      $.localstore('topic.show_all', checked == true, false);
       topic.update_facet(true);
       return false;
     },

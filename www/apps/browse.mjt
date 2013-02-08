@@ -48,7 +48,7 @@
 </acre:block>
 
 <acre:block def="page_content()">
-  <div id="content-wrapper">
+  <div id="content-wrapper" class="clear">
     <section role="main" id="content-main">
       <div class="table-header">
         <div class="button-group">

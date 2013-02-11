@@ -29,13 +29,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var i18n = acre.require("lib/i18n/i18n.sjs");
-var apis = acre.require("lib/promise/apis.sjs");
-var freebase = apis.freebase;
-var deferred = apis.deferred;
 var validators = acre.require("lib/validator/validators.sjs");
-var queries = acre.require("queries.sjs");
-var editcomponents = acre.require("editcomponents.mjt");
+var t = acre.require("keys.mjt");
 var has_permission = acre.require("lib/permission/queries.sjs").has_permission;
 
 /**
@@ -62,28 +57,26 @@ var SPEC = {
     },
 
     run: function(s, p, namespace, value, user_id, lang) {
-        // does user_id have permission to edit both s and namespace?
-        return has_permission([s, namespace], user_id)
+        var to_check = namespace;
+        if (p == '/type/namespace/keys') {
+          to_check = s;
+        }
+        // does user_id have permission to edit THE namespace?
+        return has_permission([to_check], user_id)
             .then(function(r) {
-                if (r[s] && r[namespace]) {
+                if (r[to_check]) {
                     return {
-                        html: acre.markup.stringify(editcomponents.delete_key_form(s, p, namespace, value, lang))
+                        html: acre.markup.stringify(
+                            t.edit_key_form(s, p, namespace, value, lang))
                     };
                 }
                 else {
-                    // user does not have permission on s and/or namespace
-                    var not_permitted = [];
-                    [s, namespace].forEach(function(id) {
-                        if (!r[s]) {
-                            not_permitted.push(s);
-                        }
-                    });
+                    // user does not have permission on namespace
                     return {
-                        html: acre.markup.stringify(editcomponents.edit_key_not_permitted_form(not_permitted, lang))
+                        html: acre.markup.stringify(
+                            t.edit_key_not_permitted_form())
                     };
                 }
             });
     }
 };
-
-

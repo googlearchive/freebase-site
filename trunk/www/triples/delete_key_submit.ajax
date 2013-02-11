@@ -28,42 +28,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+var validators = acre.require("lib/validator/validators.sjs");
+var apis = acre.require("lib/promise/apis.sjs");
+var freebase = apis.freebase;
 
-var h = acre.require("lib/helper/helpers.sjs");
-var q = acre.require("label/sameas/queries.sjs");
+/**
+ * key add form
+ */
+var SPEC = {
 
-acre.require("mock").playback(this, "./playback_queries.json");
+    method: "POST",
 
-function assert_key(keys, object, namespace, value) {
-  for (var i=0,l=keys.length; i<l; i++) {
-    var k = keys[i];
-    if (k.target.id === object &&
-        k.source.id === namespace && 
-        k.target_value.value === value) {
-      return true;
+    auth: true,
+
+    validate: function(params) {
+        return [
+            validators.MqlId(params, "s", {required:true}), // subject id
+            validators.OneOf(params, "p", {                 // property id
+                required: true, 
+                oneof: ["/type/object/key", "/type/namespace/keys"]
+            }), 
+            validators.MqlId(params, "namespace", {required:true}),
+            validators.MqlKey(params, "value", {required:true}),
+            validators.LangId(params, "lang", {if_empty:"/lang/en"})  // lang
+        ];
+    },
+
+    run: function(s, p, namespace, value, lang) {       
+        var q = {id:s};
+        q[p] = {
+            namespace: namespace,
+            value: value,
+            connect: "delete"
+        };
+        return freebase.mqlwrite(q)
+            .then(function(env) {
+                return env.result;
+            });
     }
-  }
-  return false;
 };
-
-test("get_type_namespace_keys", function() {
-  var keys;
-  q.get_type_namespace_keys("/film")
-    .then(function(r) {
-      keys = r;
-    });
-  acre.async.wait_on_results();
-  ok(h.isArray(keys) && keys.length, "Got keys");
-  ok(assert_key(keys, "/film/film", "/film", "film"));
-});
-
-test("get_type_object_key", function() {
-  var keys;
-  q.get_type_object_key("/film")
-    .then(function(r) {
-      keys = r;
-    });
-  acre.async.wait_on_results();
-  ok(h.isArray(keys) && keys.length, "Got keys");
-  ok(assert_key(keys, "/film", "/", "film"));
-});

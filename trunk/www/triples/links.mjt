@@ -34,7 +34,6 @@
   var h = acre.require("lib/helper/helpers.sjs");
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var _ = i18n.gettext;
-  var th = acre.require("helpers.sjs");
 
   var FILTER_BY_PROP = _("Filter by property");
   var FILTER_BY_CREATOR = _("Filter by creator");
@@ -63,93 +62,36 @@
 
 <acre:block def="page_content()">
   <acre:script>
-    var creator_attrs = {};
-    var filter_attrs = {'class': 'pill-box'};
+    var disable_creator = false;
+    var disable_filter = false;
     var show_recent_filters = true;
     if (c.current_tab.key === 'writes') {
-      creator_attrs['class'] = 'disabled';
+      disable_creator = true;
     }
     if (c.current_tab.key == 'instances' && c.object_type.id == '/type/property') {
-      filter_attrs['class'] = 'pill-box disabled';
+      disable_filter = true;
       show_recent_filters = false;
     }
   </acre:script>
   <div id="tabbar">
-    <div id="by-creator" acre:attrs="creator_attrs">
+    <div id="by-creator">
       <strong>by</strong>
-      <div class="pill-box" id="pill-creator-box">
-        <acre:block if="c.creator">
-          ${pill_creator(c.creator, null, 'fb.links.update_creator();')}
-        </acre:block>
-        <input acre:attrs="c.creator ? {style:'visibility:hidden;'} : {}"
-               type="text" class="pill-suggest" id="pill-creator-suggest"
-               placeholder="${_('creator or attribution...')}"
-               value="${c.creator || ''}">
-        <span id="pill-creator-template" class="pill-template">
-          ${pill_creator()}
-        </span>
-      </div>
+      ${creator_filter_box(c.creator, disable_creator)}
     </div>
-    <div id="pill-filter-box" acre:attrs="filter_attrs">
-      <acre:block for="filter in c.filter">
-        ${pill(filter)}
-      </acre:block>
-      <input type="text" class="pill-suggest" id="pill-filter-suggest"
-             placeholder="${_('View specific properties...')}">
-      <span id="pill-template" class="pill-template">
-        ${pill()}
-      </span>
-    </div>
+    ${filter_box(c.filter, disable_filter)}
     <acre:block if="show_recent_filters">
       <div id="recent-filters" class="filter-options">
         <strong>${_("Recent filters:")}</strong>
         <span id="recent-filters-container"></span>
       </div>
     </acre:block>
-    <div id="filter-options" class="filter-options">
-      <strong>${_("Filter options:")}</strong>
-      <label for="historical" class="checkbox">
-        <input type="checkbox" name="historical" value="true"
-               acre:attrs="c.historical ? {'checked':'checked'} : {}">${_("Include deleted links")}
-      </label><span class="sep">|</span>
-      <label for="timestamp">
-        ${_("Timestamp")}
-        <input type="text" name="timestamp" id="timestamp-from"
-               placeholder="${_('YYYY-MM-DD...')}"
-               value="${c.timestamp && c.timestamp.length ? c.timestamp[0] : ''}">
-        ${_("to")}
-        <input type="text" name="timestamp" id="timestamp-to"
-               placeholder="${_('YYYY-MM-DD...')}"
-               value="${c.timestamp && c.timestamp.length === 2 ? c.timestamp[1] : ''}">
-      </label>
-    </div>
-    <div id="view-options" class="filter-options">
-      <strong>${_("View options:")}</strong>
-      <label for="sort" class="checkbox">
-        <input type="checkbox" name="sort" value="timestamp"
-               acre:attrs="c.sort == 'timestamp' ? {'checked':'checked'} : {}">${_("Sort oldest to newest")}
-      </label><span class="sep">|</span>
-      <label for="fullts" class="checkbox">
-        <input type="checkbox" name="fullts" value="true" id="fullts"
-          acre:attrs="c.fullts ? {'checked':'checked'} : {}">${_("Show full timestamp")}
-      </label><span class="sep">|</span>
-      <label for="fullattr" class="checkbox">
-        <input type="checkbox" name="fullattr" value="true" id="fullattr"
-          acre:attrs="c.fullattr ? {'checked':'checked'} : {}">${_("Show full attribution")}
-      </label>
-      <input id="tab" type="hidden" name="tab" />
-    </div>
+    ${filter_options(c.historical, c.timestamp)}
+    ${view_options(c.sort, c.fullts, c.fullattr)}
   </div>
 
   <div class="column links" id="links-data" style="opacity:0;">
     ${main_links(c.linked_id, c.links, c.historical)}
   </div>
-</acre:block>
-
-<acre:block def="common_filter(pid)">
-  <a href="javascript:void(0);" title="${h.sprintf(FILTER_BY_PROP, pid)}"
-     data-id="${pid}"
-     onclick="fb.links.add_filter('${pid}');">${pid}</a>
 </acre:block>
 
 <acre:block def="main_links(linked_id, links, historical, offset)">
@@ -429,7 +371,90 @@
 </acre:block>
 
 <!!--
-   Utilities
+   Filter components
+   !!-->
+
+<acre:block def="creator_filter_box(creator, disabled)">
+  <div id="pill-creator-box" class="pill-box${disabled ? ' disabled' : ''}">
+    <acre:block if="creator">
+      ${pill(creator, 'fb.links_helpers.remove_creator()')}
+    </acre:block>
+    <input acre:attrs="creator ? {style:'visibility:hidden;'} : {}"
+           type="text" class="pill-suggest" id="pill-creator-suggest"
+           placeholder="${_('creator or attribution...')}"
+           value="${creator || ''}">
+      <span id="pill-creator-template" class="pill-template">
+        ${pill(null, 'fb.links_helpers.remove_creator()')}
+      </span>
+  </div>
+</acre:block>
+
+<acre:block def="filter_box(filters, disabled)">
+  <div id="pill-filter-box" class="pill-box${disabled ? ' disabled' : ''}">
+    <acre:block for="filter in filters">
+      ${pill(filter)}
+    </acre:block>
+    <input type="text" class="pill-suggest" id="pill-filter-suggest"
+           placeholder="${_('View specific properties...')}">
+      <span id="pill-template" class="pill-template">
+        ${pill()}
+      </span>
+  </div>
+</acre:block>
+
+<acre:block def="pill(filter_id, onclick_remove)">
+  <acre:script>
+    filter_id = filter_id || '';
+    onclick_remove = onclick_remove || 'fb.links_helpers.remove_filter(this)';
+  </acre:script>
+  <span class="pill">
+    <a href="#${filter_id}" class="pill-text toc-link">${filter_id}</a>
+    <input class="pill-value" type="hidden" name="filter" value="${filter_id}" />
+    <a href="javascript:void(0);" class="pill-x"
+       onclick="${onclick_remove}">x</a>
+  </span>
+</acre:block>
+
+<acre:block def="filter_options(historical, timestamp)">
+  <div id="filter-options" class="filter-options">
+    <strong>${_("Filter options:")}</strong>
+    <label for="historical" class="checkbox">
+      <input type="checkbox" name="historical" value="true"
+             acre:attrs="historical ? {'checked':'checked'} : {}">${_("Include deleted links")}
+    </label><span class="sep">|</span>
+    <label for="timestamp">
+      ${_("Timestamp")}
+      <input type="text" name="timestamp" id="timestamp-from"
+             placeholder="${_('YYYY-MM-DD...')}"
+             value="${timestamp && timestamp.length ? timestamp[0] : ''}"/>
+      ${_("to")}
+      <input type="text" name="timestamp" id="timestamp-to"
+             placeholder="${_('YYYY-MM-DD...')}"
+             value="${timestamp && timestamp.length === 2 ? timestamp[1] : ''}"/>
+    </label>
+  </div>
+</acre:block>
+
+<acre:block def="view_options(sort, fullts, fullattr)">
+  <div id="view-options" class="filter-options">
+    <strong>${_("View options:")}</strong>
+    <label for="sort" class="checkbox">
+      <input type="checkbox" name="sort" value="timestamp"
+             acre:attrs="sort == 'timestamp' ? {'checked':'checked'} : {}">${_("Sort oldest to newest")}
+    </label><span class="sep">|</span>
+    <label for="fullts" class="checkbox">
+      <input type="checkbox" name="fullts" value="true" id="fullts"
+             acre:attrs="fullts ? {'checked':'checked'} : {}">${_("Show full timestamp")}
+    </label><span class="sep">|</span>
+    <label for="fullattr" class="checkbox">
+      <input type="checkbox" name="fullattr" value="true" id="fullattr"
+             acre:attrs="fullattr ? {'checked':'checked'} : {}">${_("Show full attribution")}
+    </label>
+  </div>
+</acre:block>
+
+<!!--
+   Link display components
    !!-->
 
 <acre:block def="target_value(v)" if="v != null">
@@ -449,7 +474,7 @@
   </acre:block>
   <acre:block if="t['cvt:type']">
     <a href="javascript:void(0);"
-       onclick="fb.links.toggle_cvt(this, '${id}')"
+       onclick="fb.links_helpers.toggle_cvt(this, '${id}')"
        class="cvt">${CVT}</a>
   </acre:block>
 </acre:block>
@@ -473,7 +498,7 @@
       <ul class="submenu row-menu">
         <li acre:if="!is_self" class="row-menu-item">
           <a href="javascript:void(0);"
-             onclick="fb.links.add_filter('${this_property}');">
+             onclick="fb.links_helpers.add_filter('${this_property}');">
             ${h.sprintf(FILTER_BY_PROP, this_property)}</a>
         </li>
         <li class="row-menu-item">
@@ -518,7 +543,7 @@
           <acre:block if="!is_self">
             <li class="row-menu-item">
               <a href="javascript:void(0);"
-                 onclick="fb.links.update_creator('${link.creator.id}');">
+                 onclick="fb.links_helpers.update_creator('${link.creator.id}');">
                 ${h.sprintf(FILTER_BY_CREATOR, link.creator.id)}</a>
             </li>
           </acre:block>
@@ -558,7 +583,7 @@
           <acre:block if="!is_self">
             <li class="row-menu-item">
               <a href="javascript:void(0);"
-                 onclick="fb.links.update_creator('${link.attribution.id}');">
+                 onclick="fb.links_helpers.update_creator('${link.attribution.id}');">
                 ${h.sprintf(FILTER_BY_ATTR, link.attribution.id)}</a>
             </li>
           </acre:block>
@@ -604,23 +629,6 @@
   <acre:block else="">
     <span class="empty">${NONE}</span>
   </acre:block>
-</acre:block>
-
-<acre:block def="pill(filter_id, onclick_remove)">
-  <acre:script>
-    filter_id = filter_id || '';
-    onclick_remove = onclick_remove || 'fb.links.remove_filter(this)';
-  </acre:script>
-  <span class="pill">
-    <a href="#${filter_id}" class="pill-text toc-link">${filter_id}</a>
-    <input class="pill-value" type="hidden" name="filter" value="${filter_id}" />
-    <a href="javascript:void(0);" class="pill-x"
-       onclick="${onclick_remove}">x</a>
-  </span>
-</acre:block>
-
-<acre:block def="pill_creator(creator_id)">
-  ${pill(creator_id, 'fb.links.remove_creator(this);')}
 </acre:block>
 
 <acre:block def="footer_script()">

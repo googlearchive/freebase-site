@@ -29,14 +29,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var i18n = acre.require("lib/i18n/i18n.sjs");
-var apis = acre.require("lib/promise/apis.sjs");
-var freebase = apis.freebase;
-var deferred = apis.deferred;
 var validators = acre.require("lib/validator/validators.sjs");
-var queries = acre.require("queries.sjs");
-var editcomponents = acre.require("editcomponents.mjt");
-var has_permission = acre.require("lib/permission/queries.sjs").has_permission;
+var t = acre.require("keys.mjt");
 
 /**
  * add key form
@@ -49,39 +43,18 @@ var SPEC = {
 
     validate: function(params) {
         return [
-            validators.MqlId(params, "s", {required:true}),
+            validators.MqlId(params, "id", {required:true}),
             validators.OneOf(params, "p", {                 // property id
-                required: true, 
+                required: true,
                 oneof: ["/type/object/key", "/type/namespace/keys"]
-            }), 
-            validators.MqlId(params, "namespace", {required:true}),
-            validators.MqlKey(params, "value", {required:true}),
-            params.auth_user.id,
-            validators.LangId(params, "lang", {if_empty:"/lang/en"})  // lang
+            }),
+            validators.LangId(params, "lang", {if_empty:"/lang/en"})
         ];
     },
 
-    run: function(s, p, namespace, value, user_id, lang) {
-        // does user_id have permission to edit both s and namespace?
-        return has_permission([s, namespace], user_id)
-            .then(function(r) {
-                if (r[s] && r[namespace]) {
-                    return {
-                        html: acre.markup.stringify(editcomponents.edit_key_form(s, p, namespace, value, lang))
-                    };
-                }
-                else {
-                    // user does not have permission on s and/or namespace
-                    var not_permitted = [];
-                    [s, namespace].forEach(function(id) {
-                        if (!r[s]) {
-                            not_permitted.push(s);
-                        }
-                    });
-                    return {
-                        html: acre.markup.stringify(editcomponents.edit_key_not_permitted_form(not_permitted, lang))
-                    };
-                }
-            });
+    run: function(id, p, lang) {
+        return {
+            html: acre.markup.stringify(t.add_key_form(id, p, lang))
+        };
     }
 };

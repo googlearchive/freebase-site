@@ -1,0 +1,335 @@
+/*
+ * Copyright 2013, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+acre.require("mock").playback(this, "./playback_queries.json");
+
+var q = acre.require('label/triples/queries.sjs');
+var h = acre.require('lib/helper/helpers.sjs');
+
+test('get_links', function() {
+  var links;
+  q.get_links('/m/03_x5t')
+    .then(function(r) {
+      links = r;
+    });
+  acre.async.wait_on_results();
+  ok(links && links.length, 'Got links');
+  assert_links_(links, linked_id_assertion_('/m/03_x5t'), '/m/03_x5t');
+});
+
+test('get_links_by_property', function() {
+  var links;
+  q.get_links('/m/02mjmr', ['/people/person/date_of_birth'])
+    .then(function(r) {
+      links = r;
+    });
+  acre.async.wait_on_results();
+  ok(links && links.length, 'Got links');
+  assert_links_(
+      links, [
+        filtered_assertion_('/people/person/date_of_birth'),
+        linked_id_assertion_('/m/02mjmr')
+      ], '/people/person/date_of_birth');
+});
+
+test('get_links_by_property_reverse_property', function() {
+  var links;
+  q.get_links('/m/02mjmr', ['/type/object/key'])
+    .then(function(r) {
+      links = r;
+    });
+  acre.async.wait_on_results();
+  ok(links && links.length, 'Got links');
+  assert_links_(
+      links, [
+        filtered_assertion_('/type/object/key')
+      ], '/type/object/key');
+});
+
+test('get_links_by_creator', function() {
+  var links;
+  q.get_links('/m/02mjmr', null, '/user/emariemoura')
+    .then(function(r) {
+      links = r;
+    });
+  acre.async.wait_on_results();
+  ok(links && links.length, 'Got links');
+  assert_links_(
+      links, creator_assertion_('/user/emariemoura'), '/user/emariemoura');
+});
+
+test('get_links_historical', function() {
+  var links;
+  q.get_links('/m/02mjmr', null, null, true)
+    .then(function(r) {
+      links = r;
+    });
+  acre.async.wait_on_results();
+  ok(links && links.length, 'Got links');
+  ok(!links.every(function(link) {
+      return link.valid == true;
+  }));
+});
+
+test('get_links_sort \'timestamp\'', function() {
+  var links;
+  q.get_links('/m/02mjmr', null, null, null, 'timestamp')
+    .then(function(r) {
+      links = r;
+    });
+  acre.async.wait_on_results();
+  ok(links && links.length, 'Got links');
+  var sorted = true;
+  for (var i=0,l=links.length; (i+1) < l; i++) {
+    var a = links[i];
+    var b = links[i+1];
+    if (b.timestamp <= a.timestamp) {
+      sorted = false;
+      break;
+    }
+  }
+  if (sorted) {
+    ok(true, 'Sorted by \'timestamp\'');
+  }
+  else {
+    ok(false, 'Not sorted by \'timestamp\'');
+  }
+});
+
+test('get_links_sort \'-timestamp\'', function() {
+  var links;
+  q.get_links('/m/02mjmr', null, null, null, '-timestamp')
+    .then(function(r) {
+      links = r;
+    });
+  acre.async.wait_on_results();
+  ok(links && links.length, 'Got links');
+  var sorted = true;
+  for (var i=0,l=links.length; (i+1) < l; i++) {
+    var a = links[i];
+    var b = links[i+1];
+    if (b.timestamp >= a.timestamp) {
+      sorted = false;
+      break;
+    }
+  }
+  if (sorted) {
+    ok(true, 'Sorted by \'-timestamp\'');
+  }
+  else {
+    ok(false, 'Not sorted by \'-timestamp\'');
+  }
+});
+
+test('get_links_by_timestamp', function() {
+  var links;
+  q.get_links('/m/02mjmr', null, null, null, null, '2013-01-24')
+    .then(function(r) {
+      links = r;
+    });
+  acre.async.wait_on_results();
+  ok(links && links.length, 'Got links');
+  var in_range = true;
+  for (var i=0,l=links.length; i < l; i++) {
+    var a = links[i];
+    if (a.timestamp < '2013-01-24') {
+      in_range = false;
+      break;
+    }
+  }
+  if (in_range) {
+    ok(true);
+  }
+  else {
+    ok(false);
+  }
+});
+
+test('get_links_by_timestamp_exact', function() {
+  var links;
+  q.get_links('/m/02mjmr', null, null, null, null, '2013-01-31T21:33:18.0005Z')
+    .then(function(r) {
+      links = r;
+    });
+  acre.async.wait_on_results();
+  ok(links && links.length == 1, 'Got links');
+  equal(links[0].timestamp, '2013-01-31T21:33:18.0005Z');
+});
+
+test('get_links_by_timestamp_range', function() {
+  var links;
+  q.get_links('/m/02mjmr', null, null, null, null, ['2013-01-24', '2013-02'])
+    .then(function(r) {
+      links = r;
+    });
+  acre.async.wait_on_results();
+  ok(links && links.length, 'Got links');
+  var in_range = true;
+  for (var i=0,l=links.length; i < l; i++) {
+    var a = links[i];
+    if (a.timestamp > '2013-02' || a.timestamp < '2013-01-24') {
+      in_range = false;
+      break;
+    }
+  }
+  if (in_range) {
+    ok(true);
+  }
+  else {
+    ok(false);
+  }
+});
+
+
+test('get_property_instances', function() {
+  var links;
+  q.get_links(null, '/government/us_president/presidency_number')
+    .then(function(r) {
+      links = r;
+    });
+  acre.async.wait_on_results();
+  ok(links && links.length, 'Got links');
+  assert_links_(
+      links, [
+        filtered_assertion_('/government/us_president/presidency_number')
+      ], '/government/us_president/presidency_number');
+});
+
+test('get_reverse_property_instances', function() {
+  var links;
+  q.get_links(null, '/film/actor/film')
+    .then(function(r) {
+      links = r;
+    });
+  acre.async.wait_on_results();
+  ok(links && links.length, 'Got links');
+  assert_links_(
+      links, [
+        filtered_assertion_('/film/actor/film')
+      ], '/film/actor/film');
+});
+
+test('get_user_writes', function() {
+  var links;
+  q.get_links(null, null, '/user/jon')
+    .then(function(r) {
+      links = r;
+    });
+  acre.async.wait_on_results();
+  ok(links && links.length, 'Got links');
+  assert_links_(
+      links, [
+        creator_assertion_('/user/jon')
+      ], '/user/jon');
+});
+
+test('get_attribution_writes', function() {
+  var links;
+  q.get_links(null, null, '/user/book_bot/attr/145')
+    .then(function(r) {
+      links = r;
+    });
+  acre.async.wait_on_results();
+  ok(links && links.length, 'Got links');
+  assert_links_(
+      links, [
+        attribution_assertion_('/user/book_bot/attr/145')
+      ], '/user/book_bot/attr/145');
+});
+
+test('get_links_by_provenance', function() {
+  var links;
+  q.get_links_by_provenance('/en/stanford_university')
+    .then(function(r) {
+      links = r;
+    });
+  acre.async.wait_on_results();
+  ok(links && links.length, 'Got links');
+  assert_links_(
+      links, [
+        provenance_assertion_('/en/stanford_university')
+      ], '/en/stanford_university');
+});
+
+function assert_links_(links, assertions, success_msg, error_msg) {
+  if (!h.isArray(assertions)) {
+    assertions = [assertions];
+  }
+  for (var i=0,l=links.length; i<l; i++) {
+    var link = links[i];
+    for (var j=0,l2=assertions.length; j<l2; j++) {
+      var assertion = assertions[j];
+      if (!assertion(link)) {
+        ok(false, error_msg);
+        return;
+      }
+    }
+  }
+  ok(true, success_msg);
+  return;
+}
+
+function linked_id_assertion_(linked_id) {
+  return function(link) {
+    return (link['me:source'] && link['me:source'].id == linked_id) ||
+      (link['me:target'] && link['me:target'].id == linked_id);
+  };
+}
+
+function filtered_assertion_(pids) {
+  if (!h.isArray(pids)) {
+    pids = [pids];
+  }
+  return function(link) {
+    return (link.master_property.reverse_property &&
+        pids.indexOf(link.master_property.reverse_property.id) != -1) ||
+        pids.indexOf(link.master_property.id) != -1;
+  };
+}
+
+function creator_assertion_(creator) {
+  return function(link) {
+    return (link.creator.id == creator);
+  };
+}
+
+function attribution_assertion_(attr) {
+  return function(link) {
+    return (link.attribution.id == attr);
+  };
+}
+
+function provenance_assertion_(provenance) {
+  return function(link) {
+    var attr = h.get_attribution(link);
+    return (attr.app  && attr.app.id == provenance) ||
+        (attr.dataset && attr.dataset.id == provenance);
+  };
+}

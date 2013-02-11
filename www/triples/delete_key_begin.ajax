@@ -29,106 +29,56 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-.nav.column {
-  position: absolute;
-  width: 230px;
-  margin-right: 20px;
-  margin-top: -7px;
-}
+var validators = acre.require("lib/validator/validators.sjs");
+var t = acre.require("keys.mjt");
+var has_permission = acre.require("lib/permission/queries.sjs").has_permission;
 
-.column.keys {
-  margin-top: 30px;
-}
-
-.column .section {
-  margin-left: 250px;
-}
-
-.data-row{
-  .wrapper {
-    position: relative;
-    display: inline-block;
-    padding-right: 45px;
-  }
-}
-
-.filter-title {
-  font-weight: bold;
-  font-size: 12px;
-  margin-bottom: 7px;
-}
-
-tr .combo-menu {
-  top: -5px;
-}
-
-
-/*
- * These should be in global.
- * Also, see schema.less for duplication
+/**
+ * delete key form
  */
-.form-field .key-status {
-  position: absolute;
-  right: 0;
-  top: 57%;
-}
+var SPEC = {
 
-.key-status {
-  display: inline-block;
-  width: 16px;
-  text-indent: -9999px;
-}
+  method: "GET",
 
-.key-status.invalid,
-.key-status.valid {
-  background: url(lib/template/img/ui-icons.png) no-repeat;
-}
+  auth: true,
 
-.key-status.loading {
-  background: url(lib/template/img/loader-snake-small-grey.gif) no-repeat;
-}
+  validate: function(params) {
+    return [
+      validators.MqlId(params, "s", {required:true}),
+      validators.OneOf(params, "p", {                 // property id
+                         required: true, 
+                         oneof: ["/type/object/key", "/type/namespace/keys"]
+                       }), 
+      validators.MqlId(params, "namespace", {required:true}),
+      validators.MqlKey(params, "value", {required:true}),
+      params.auth_user.id,
+      validators.LangId(params, "lang", {if_empty:"/lang/en"})  // lang
+    ];
+  },
 
-.key-status.invalid {
-  background-position: 0 -440px;
-}
+  run: function(s, p, namespace, value, user_id, lang) {
+    var to_check = namespace;
+      if (p == '/type/namespace/keys') {
+      to_check = s;
+    }
+    // does user_id have permission to THE namespace?
+    return has_permission([to_check], user_id)
+      .then(function(r) {
+              if (r[to_check]) {
+                return {
+                  html: acre.markup.stringify(
+                      t.delete_key_form(s, p, namespace, value, lang))
+                };
+              }
+              else {
+                // user does not have permission on THE namespace
+                return {
+                  html: acre.markup.stringify(
+                      t.edit_key_not_permitted_form())
+                };
+              }
+            });
+  }
+};
 
-.key-status.valid {
-  background-position: 0 -420px;
-}
 
-.section .button-group {
-  float: right;
-  margin-top: -7px;
-}
-
-tr.invalid th,
-tr.invalid td {
-  opacity: 0.7;
-  text-decoration: line-through;
-}
-
-tr.invalid th:first-child,
-tr.invalid td:last-child {
-  text-decoration: none;
-}
-
-tr.invalid:hover th,
-tr.invalid:hover td {
-  opacity: 1;
-  text-decoration: none;
-}
-
-#keys.two-column {
-    display: inline-block;
-    white-space: nowrap;
-}
-#keys.two-column #type-object-key,
-#keys.two-column #type-namespace-keys {
-    float: left;
-    min-width: 600px;
-    display: inline-block;
-}
-
-#keys.two-column #type-object-key {
-    margin-left: 20px;
-}

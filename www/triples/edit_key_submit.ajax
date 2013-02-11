@@ -31,12 +31,10 @@
 var i18n = acre.require("lib/i18n/i18n.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
 var queries = acre.require("queries.sjs");
-var editcomponents = acre.require("editcomponents.mjt");
 var apis = acre.require("lib/promise/apis.sjs");
 var freebase = apis.freebase;
 var deferred = apis.deferred;
-var t = acre.require("sameas.mjt");
-var creator = acre.require("lib/queries/creator.sjs");
+var t = acre.require("keys.mjt");
 
 /**
  * key add form
@@ -89,23 +87,22 @@ var SPEC = {
                 .then(function(env) {
                     promise = null;
                     if (p === "/type/namespace/keys") {
-                        promise = queries.get_type_namespace_keys(s, {}, null, lang, {
-                            "f:target": {id: namespace},
-                            "f:target_value": {value: value}
-                        });
+                        promise = queries.get_key_link(
+                            s, namespace, value, lang);
                     }
                     else {
-                        promise = queries.get_type_object_key(s, {}, null, lang, {
-                            "f:source": {id: namespace},
-                            "f:target_value": {value: value}
-                        });
+                        promise = queries.get_key_link(
+                            namespace, s, value, lang);
                     }
                     return promise.then(function(key) {
                         return {
-                            html: acre.markup.stringify(t.keys_body(s, key, {}, p === "/type/namespace/keys"))
+                            html: acre.markup.stringify(t.key_row(s, p, key))
                         };
                     });
                 });
             });
     }
 };
+
+
+

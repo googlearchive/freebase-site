@@ -4,5 +4,5 @@
   "lib/template/js/jquery.infinitescroll.js",
   "lib/template/js/jquery.lrulist.js",
   "js/links_helpers.js",
-  "js/links.js"
+  "js/keys.js"
 ]

@@ -85,7 +85,7 @@
           action = $(".nicemenu:first .submenu:first a:first", this);
         }
         var href = action.attr("href");
-        if (href=="#" || href.indexOf("javascript:void(0)")==0) {
+        if (href && (href=="#" || href.indexOf("javascript:void(0)")==0)) {
           $(action).click();
         }
       });

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012, Google Inc.
+ * Copyright 2013, Google Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,33 +29,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var validators = acre.require("lib/validator/validators.sjs");
-var editcomponents = acre.require("editcomponents.mjt");
-var freebase = acre.require("lib/promise/apis.sjs").freebase;
+var h = acre.require("lib/helper/helpers.sjs");
+var validators = acre.require('lib/validator/validators.sjs');
+var q = acre.require('queries.sjs');
+var t = acre.require('keys.mjt');
 
-/**
- * add key form
- */
 var SPEC = {
 
-    method: "GET",
+  validate: function(params) {
+    return [
+      validators.MqlId(params, "id", {if_empty:null, if_invalid:null}),
+      validators.OneOf(params, "property", {                 // property id
+          required: true,
+          oneof: ["/type/object/key", "/type/namespace/keys"]
+      }),
+      validators.MqlId(params, 'creator', {if_empty:null}),
+      validators.StringBool(params, 'historical', {if_empty:false}),
+      validators.OneOf(params, 'sort', {
+        if_empty: '-timestamp',
+        oneof: ['timestamp', '-timestamp']
+      }),
+      validators.MultiValue(params, 'timestamp', {
+        if_empty: null,
+        validator: validators.Timestamp
+      }),
+      validators.Timestamp(params, 'next', {if_empty:null}),
+      validators.Int(params, 'offset', {if_empty:0})
+    ];
+  },
 
-    auth: true,
-
-    validate: function(params) {
-        return [
-            validators.MqlId(params, "id", {required:true}),
-            validators.OneOf(params, "p", {                 // property id
-                required: true,
-                oneof: ["/type/object/key", "/type/namespace/keys"]
-            }),
-            validators.LangId(params, "lang", {if_empty:"/lang/en"})
-        ];
-    },
-
-    run: function(id, p, lang) {
+  run: function(
+      id, property, creator, historical, sort, timestamp, next, offset) {
+    return q.get_links(
+        id, [property], creator, historical, sort, timestamp, next)
+      .then(function(keys) {
         return {
-            html: acre.markup.stringify(editcomponents.add_key_form(id, p, lang))
+          html: acre.markup.stringify(
+              t.keys_body(id, property, keys, historical, offset))
         };
-    }
+      });
+  }
 };
+

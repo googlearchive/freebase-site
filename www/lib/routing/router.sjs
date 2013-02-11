@@ -82,7 +82,6 @@ function init_rules(lib) {
     "query":      "//query" + codebase,
     "review":     "//review" + codebase,
     "search":     "//search" + codebase,
-    "sameas":     "//sameas" + codebase,
     "sample":     "//sample" + codebase,
     "schema":     "//schema" + codebase,
     "topic":      "//topic" + codebase,
@@ -197,10 +196,20 @@ function init_rules(lib) {
       "more": true
     },
     {
+      "name": _("Namespace"),
+      "key": "ns",
+      "app": "triples",
+      "script": "namespace.tab",
+      "hidden": function(object) {
+        return object.type_map['/type/namespace'] == null;
+      },
+      "more": true
+    },
+    {
       "name": _("Keys"),
       "key": "keys",
-      "app": "sameas",
-      "script": "sameas.tab",
+      "app": "triples",
+      "script": "keys.tab",
       "more": true
     },
     {
@@ -517,8 +526,8 @@ function init_rules(lib) {
         {
           "name": _("Keys"),
           "key": "keys",
-          "app": "sameas",
-          "script": "sameas.tab"
+          "app": "triples",
+          "script": "keys.tab"
         },
         {
           "name": _("Links"),
@@ -588,30 +597,12 @@ function init_rules(lib) {
       "type": "/type/namespace",
       "tabs": [
         {
-          "name": _("Keys"),
-          "key": "keys",
-          "app": "sameas",
-          "script": "sameas.tab"
-        },
-        {
-          "name": _("Properties"),
-          "key": "props",
-          "app": "topic",
-          "script": "topic.tab"
-        },
-        {
-          "name": _("I18n"),
-          "key": "i18n",
-          "app": "i18n",
-          "script": "i18n.tab"
-        },
-        {
-          "name": _("Links"),
-          "key": "links",
+          "name": _("Namespace"),
+          "key": "ns",
           "app": "triples",
-          "script": "links.tab"
+          "script": "namespace.tab"
         }
-      ],
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
       "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
     },
     {
@@ -635,8 +626,8 @@ function init_rules(lib) {
         {
           "name": _("Keys"),
           "key": "keys",
-          "app": "sameas",
-          "script": "sameas.tab"
+          "app": "triples",
+          "script": "keys.tab"
         },
         {
           "name": _("Links"),
@@ -745,8 +736,8 @@ function init_rules(lib) {
         {
           "name": _("Keys"),
           "key": "keys",
-          "app": "sameas",
-          "script": "sameas.tab"
+          "app": "triples",
+          "script": "keys.tab"
         }
       ],
       "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
@@ -776,8 +767,8 @@ function init_rules(lib) {
         {
           "name": _("Keys"),
           "key": "keys",
-          "app": "sameas",
-          "script": "sameas.tab"
+          "app": "triples",
+          "script": "keys.tab"
         }
       ],
       "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
@@ -807,8 +798,8 @@ function init_rules(lib) {
         {
           "name": _("Keys"),
           "key": "keys",
-          "app": "sameas",
-          "script": "sameas.tab"
+          "app": "triples",
+          "script": "keys.tab"
         }
       ],
       "gear": [].concat(h.extend(true, [], DEFAULT_GEAR))
@@ -832,8 +823,8 @@ function init_rules(lib) {
         {
           "name": _("Keys"),
           "key": "keys",
-          "app": "sameas",
-          "script": "sameas.tab"
+          "app": "triples",
+          "script": "keys.tab"
         },
         {
           "name": _("Links"),

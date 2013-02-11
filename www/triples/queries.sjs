@@ -176,6 +176,9 @@ function get_valid_provenance_type(provenance_id, provenance_type) {
 function get_links_(
     linked_id, pids, creator, provenance, historical, sort, timestamp ,next) {
   var d = null;
+  if (pids && !h.isArray(pids)) {
+    pids = [pids];
+  }
   if (pids && pids.length) {
     d = get_properties_(pids)
       .then(function(props) {
@@ -449,7 +452,7 @@ function apply_filter_(
         acre.freebase.extend_query(query, {
           'filter:timestamp': timestamp[0]
         });
-      }
+       }
       else {
         // otherwise get everything earlier than this timestamp
         acre.freebase.extend_query(query, {
@@ -544,3 +547,32 @@ function get_object_clause_(optional) {
   return clause;
 }
 
+
+function get_key_link(namespace_id, object_id, value, lang) {
+  var q = {
+    type: '/type/link',
+    master_property: {
+      id: '/type/namespace/keys'
+    },
+    source: {
+      id: namespace_id,
+      mid: null
+    },
+    target_value: {
+      value: value
+    },
+    target: {
+      id: object_id,
+      mid: null
+    },
+    timestamp: null,
+    valid: true,
+    optional: true
+  };
+  // standard creator/attribution query
+  creator_q.extend(q);
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return env.result;
+    });
+}

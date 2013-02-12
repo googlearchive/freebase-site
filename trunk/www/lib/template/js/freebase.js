@@ -543,14 +543,28 @@
       /**
        *  suggest option for site search
        */
-      search: function() {
+      search: function(topic_only) {
         var o = $.extend({}, fb.suggest_options.service_defaults, {
           status: null,
           parent: "#site-search-box",
           align: "right",
-          filter: '(not type:/common/document)',
-          soft: true
+          filter: ['(not type:/common/document)'],
+          soft: true,
+          nomatch: {
+            title: "No suggested matches",
+            heading: "Tips on getting better suggestions:",
+            tips: [
+              "Enter more or fewer characters",
+              "Add words related to your original search",
+              "Try alternate spellings",
+              "Check your spelling",
+              "Toggle checkbox to include non-topics"
+            ]
+          }
         });
+        if (topic_only) {
+          o.filter.push('(any type:/common/topic)');
+        }
         return o;
       },
 
@@ -667,15 +681,46 @@
    * init freebase site header search box (suggest)
    */
   $(function() {
-    var search = $("#SearchBox .SearchBox-input,#fb-search-input");
+    var search = $("#fb-search-input");
     var search_container = $("#fb-search");
-    var root = fb.acre.freebase.site_host;
-    // Get rid of devel and port to use the legacy python client in development
+    var search_label = $("#site-search-label");
 
-    search.suggest(fb.suggest_options.search());
+    function init_search() {
+      var topic_only = $.localstore('fb-search-topic-only') !== false;
+      search.suggest(fb.suggest_options.search(topic_only));
+    };
 
-    var search_label = $("#site-search-label"),
-    search_suggest = $("#site-search-box .fbs-pane");
+    var search_topic_option = $('#site-search-topic-option')
+      .mousedown(function() {
+        search.data('dont_hide', true);
+      })
+      .mouseup(function() {
+        search.data('dont_hide', false);
+      })
+    var topic_checkbox = $(':checkbox', search_topic_option)
+      .change(function() {        
+        var checked = $(this).is(':checked');
+        $.localstore('fb-search-topic-only', !checked);
+        init_search();
+        search.focus().trigger('textchange');
+      });
+
+    if ($.localstore('fb-search-topic-only') === false) {
+      topic_checkbox.attr('checked', 'checked');
+    }
+    init_search();
+
+    var search_suggest = $("#site-search-box .fbs-pane");
+
+    function search_blur_delay() {
+      if (!search.data('dont_hide')) {
+        if (!search_suggest.is(":visible") && search_label.is(":visible")) {
+          search_topic_option.hide();
+          $('#site-search-label').slideUp("fast");
+          search_container.removeClass("active");
+        }
+      }
+    };
 
     search
       .bind("fb-select", function(e, data) {
@@ -688,42 +733,45 @@
         return false;
       })
       .bind("fb-pane-show", function(e, data) {
-        search_label.html("<span>Select an item from the list</span>").removeClass("loading");
+        search_label.html("<span>Select an item from the list</span>")
+            .removeClass("loading");
+        search_topic_option.show();
       })
       .bind("fb-textchange", function (e, data) {
         if ($.trim(search.val()) === "") {
-          search_label.html("<span>Start typing to get some suggestions</span>").removeClass("loading");
+          search_label.html("<span>Start typing to get some suggestions</span>")
+              .removeClass("loading");
         }
         else {
           search_label.html("<span>Searching...</span>").addClass("loading");
         }
+        search_topic_option.hide();
       })
       .bind("fb-error", function() {
-        search_label.html("<span>Sorry, something went wrong. Please try again later</span>").removeClass("loading");
+        search_label.html(
+            "<span>Sorry, something went wrong. Please try again later</span>")
+            .removeClass("loading");
+        search_topic_option.hide();
       })
-      .focus(function(e) {
+      .focus(function(e) {        
         if (!search_label.is(":visible")) {
           $('#site-search-label').slideDown("fast");
           search_container.addClass("active");
         }
       })
       .blur(function(e) {
-        if (!search_suggest.is(":visible") && search_label.is(":visible")) {
-          $('#site-search-label').slideUp("fast");
-          search_container.removeClass("active");
-        }
+        setTimeout(search_blur_delay, 0);
       });
 
-      $('.SearchBox-form').submit(function(e) {
-        /* Do not allow form to be submitted without content */
-        if ($.trim($("#fb-search-input").val()).length == 0){
-          return false;
-        }
-        else{
-          return true;
-        }
-      });
+    search.parent('form').submit(function(e) {
+      var topic_only = !topic_checkbox.is(':checked');
+      if (topic_only) {
+        $(this).append(
+          '<input type="hidden" name="any" value="/common/topic">');
+      }
+      return true;
     });
+  });
 
   /**
    * enable/disable and html element

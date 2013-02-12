@@ -32,50 +32,50 @@
 var ImageEditor;
 
 (function(){
-    
+
     ImageEditor = function(options) {
         var self  = this;
-        
+
         this.supports_mime_type_change = false;
-        
+
         this.ui_element = document.createElement('div');
         if (options.cssClassName) { self.ui_element.className = options.cssClassName; }
-        
+
         this.file       = options.file;
         this.readOnly   = options.readOnly;
-        
+
         if (options.onChange) {
             this.on_change   = options.onChange;
         }
     };
-    
+
     ImageEditor.t_load = function(file, state) {
         var editor_config               = EDITORS.ImageEditor.config;
-        editor_config.readOnly          = !file.is_writable();        
+        editor_config.readOnly          = !file.is_writable();
         editor_config.onChange          = function(undos, redos) {
           file.trigger_editor_event('change', [undos, redos]);
         };
-        
+
         var editor = new ImageEditor(editor_config);
         editor.file = file;
-        
+
         $(file.get_element()).append(editor.ui_element);
         if (state) { editor.set_state(state); }
-        
+
         return mjt.Succeed(editor);
     };
-    
+
     ImageEditor.prototype.destroy = function() {
         var editor = this;
         $(editor.ui_element).remove();
         editor = null;
     };
-    
+
     ImageEditor.prototype.show = function(prefs) {
         var self = this;
         var uploadprompt = 'Upload an image';
         self._prefs = prefs;
-        
+
         $(self.ui_element).empty();
         this.file.set_dirty("content", false);
 
@@ -83,10 +83,13 @@ var ImageEditor;
           uploadprompt = 'Replace this image';
         }
 
-        if (!self.readOnly) {
+        // TODO: Remove false if we have Image upload API
+        if (false && !self.readOnly) {
             self.form_element = $('<form class="image-upload"><label for="image-browse">' + uploadprompt + ':</label> <input id="image-browse" type="file" name="file" size="40"></form>');
             $(self.form_element).change(self.on_change);
             $(self.ui_element).append(self.form_element);
+        } else {
+            $(self.ui_element).append('<p class="image-upload">Uploading of new images is not currently supported.</p>');
         }
 
         var filename = self.file.get_name();
@@ -104,24 +107,24 @@ var ImageEditor;
                 $('<a href="' + host + '/' + filename + '">download file</a>').appendTo(this.ui_element);
             }
         }
-        
-        $(self.ui_element).append('<div class="image-attribution"><img src="' + 
-            fb.h.reentrant_url("/static", "img/freebase-cc-by-61x23.png") + 
-            ' alt="Freebase CC-BY" width="61" height="23" /><p>All images included in Acre apps are released under ' + 
+
+        $(self.ui_element).append('<div class="image-attribution"><img src="' +
+            fb.h.reentrant_url("/static", "img/freebase-cc-by-61x23.png") +
+            ' alt="Freebase CC-BY" width="61" height="23" /><p>All images included in Acre apps are released under ' +
             '<a href="http://creativecommons.org/licenses/by/3.0/">CC-BY</a>.</p></div>');
         $(this.ui_element).show();
     };
-    
+
     ImageEditor.prototype.refresh = ImageEditor.prototype.show;
-    
+
     ImageEditor.prototype.hide = function() {
         $(this.ui_element).hide();
     };
-    
+
     ImageEditor.prototype.get_state = function() {
         return {form: this.form_element};
     };
-    
+
     ImageEditor.prototype.set_state = function(obj) {
         if (obj.revision) {
             this.file.set_revision(obj.revision);
@@ -131,7 +134,7 @@ var ImageEditor;
         return;
     };
 
-    
+
 })();
 
 EDITORS.ImageEditor = {

@@ -1,0 +1,230 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+ul.bar-graph {
+  list-style: none;
+  margin: 0;
+}
+
+#content li.bar-graph-item {
+  margin-bottom: 1px;
+  line-height: 1;
+  padding: 0;
+  font-size: 11px;
+  .rounded_corners();
+}
+
+.bar-graph-item-name,
+.bar-graph-values,
+.bar-graph-value {
+  float: left;
+}
+
+.bar-graph-item-name,
+.bar-graph-value b {
+  padding: 0.4em 0.5em;
+}
+
+.bar-graph-item-name {
+  width: 26%;
+  margin-right: 4%;
+  padding-right: 0;
+  padding-left: 0;
+  text-align: right;
+}
+
+.bar-graph-values .index {
+  -webkit-animation-duration:0.2s;
+  -webkit-animation-iteration-count:1;
+  -webkit-animation-timing-function:ease-out;
+}
+
+.bar-graph-value {
+  color: #fff;
+  text-shadow: 0 0 2px #999;
+  min-width: 20px;
+  text-align: right;
+}
+
+.bar-graph-value b {
+  display: inline-block;
+}
+
+.bar-graph-value.incoming {
+  background: #aaa;
+  .rounded_corners_leftside(2px);
+}
+
+.bar-graph-value.outgoing {
+  background: #999;
+  .rounded_corners_rightside(2px);
+}
+
+.bar-graph-item a {
+  display: block;
+  color: #666;
+  border-left: 2px solid transparent;
+}
+
+.bar-graph-item a:hover {
+  border-color: @link_blue;
+  text-decoration: none;
+}
+
+table.bar-graph {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.bar-graph tr {
+  .transition(all, 0.2s);
+}
+
+.bar-graph tr:hover {
+  background: #eee;
+}
+
+.bar-graph th,
+.bar-graph td {
+  border-bottom: 1px solid #ececec;
+  font-size: 11px;
+}
+
+.bar-graph tr:hover,
+.bar-graph th:hover,
+.bar-graph-label:hover,
+.bar-graph-label a:hover {
+  cursor: pointer;
+}
+
+.bar-graph-label {
+  display: block;
+  position: relative;
+  width: 80%;
+  padding: 3px 5px;
+  text-align: left;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  -webkit-transform:translate3d(0,0,0);
+}
+
+.bar-graph-label a {
+  display: block;
+  position: relative;
+  z-index: 10;
+  .transition(all, 0.2s, ease-in-out, 0.0s);
+}
+
+.bar-graph-row:hover > th > .bar-graph-label > a {
+  text-decoration: none;
+  .translate(5px, 0);
+  cursor: pointer;
+} 
+
+.bar-graph-label .index {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  top: 0;
+  background: #ddd;
+  .transition(all, 0.2s, linear);
+}
+
+.module:hover .index {
+  background: #c9e3f5;
+}
+
+.bar-graph-label:hover .index {
+  background: #a9e9fb;
+}
+
+
+#content .bar-graph td.value {
+  text-align: right;
+}
+
+.filter-item {
+  display: block;
+  font-size: 11px;
+  padding: 3px 5px;
+  .linear_gradient(#7d87ac, #6f7997);
+}
+
+.filter-item .remove-filter {
+  float: right;
+  margin-top: 2px;
+  line-height: 1;
+  padding: 0 2px;
+  font-family: monospace;
+  border: 1px solid #57617c;
+  .linear_gradient(#7d87ac, #6f7997);
+}
+
+.filter-item, 
+.filter-item a {
+  color: #fff
+}
+
+.filter-chart a:hover {
+  text-decoration: none;
+  cursor: default;
+}
+
+.filter-chart a.remove-filter {
+  cursor: pointer;
+}
+
+.filter-sub-item,
+.filter-sub-sub-item {
+  display: block;
+  margin: 5px 0;
+  font-size: 11px;
+  padding-left: 25px;
+  background: url(template/img/filter-level-indicator.png) no-repeat 5px 0;
+}
+
+.filter-sub-sub-item {
+  margin-left: 20px;
+}
+
+.filter-form-trigger {
+  display: block;
+  font-size: 12px;
+  padding-left: 5px;
+  margin-top: 5px;
+}
+
+.all-data-toggle {
+  font-size: 11px;
+  margin-top: 5px;
+}

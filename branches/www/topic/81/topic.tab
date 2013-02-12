@@ -1,0 +1,179 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+var h = acre.require('lib/helper/helpers.sjs');
+var i18n = acre.require('lib/i18n/i18n.sjs');
+var validators = acre.require('lib/validator/validators.sjs');
+var apis = acre.require('lib/promise/apis.sjs');
+var deferred = apis.deferred;
+var freebase = apis.freebase;
+var topic_api = acre.require('lib/queries/topic.sjs');
+var typeloader = acre.require('lib/schema/typeloader.sjs');
+
+var SPEC = {
+
+  template: 'topic.mjt',
+
+  validate: function(params) {
+    return [
+      params.object,
+      validators.MultiValue(params, 'filter', {
+        validator: validators.MqlId,
+        if_empty: []
+      }),
+      validators.StringBool(params, 'all', {if_empty:false})
+    ];
+  },
+
+  run: function(object, filter, all) {
+    var id = object.id;
+
+    var topic_options = {
+        linkcount: object.linkcount,
+        lang: i18n.lang,
+        domain: 'all'
+    };
+
+    return topic_api.topic_structure(object.id, topic_options)
+      .then(function(result) {
+        var structure = result.structure;
+        // Load filters not already included in the topic result by inspecting
+        // the topic structure['domains|types|properties'];
+        var not_loaded = [];
+        filter.forEach(function(f) {
+          if (!structure.domains[f] &&
+              !structure.types[f] &&
+              !structure.properties[f]) {
+            not_loaded.push(f);
+          }
+        });
+        var d = null;
+        if (not_loaded.length) {
+          // Prevent DoS by limiting the number filters (to 10) that are not
+          // already associated with a topic since we need to load their
+          // schemas in memory.
+          not_loaded = not_loaded.slice(0, 10);
+          d = load_filters_(result, not_loaded, i18n.lang);
+        }
+        else {
+          d = deferred.resolved(result);
+        }
+        return d
+          .then(function(topic_structure) {
+            return {
+              id: object.id,
+              filter: filter,
+              all: all,
+              object: object,
+              topic: topic_structure
+            };
+          });
+      });
+  }
+};
+
+/**
+ * Load filters that are not part of the original topic result.
+ * @param {object} topic The topic api result.
+ * @param {Array.<string>} filter The list of filter ids.
+ * @param {string} lang The preferred language.
+ */
+function load_filters_(topic, filter, lang) {
+  // We need to look up what type each filter is.
+  // For now, ignore domain filters in this step.
+  // This is consistent with what happens in the client
+  // when trying to filter on a domain that is not already associated
+  // with the current topic.
+  // We only care about /type/type and /type/property filters.
+  // For /type/property filters, we will load the parent type and all of it's
+  // sibling properties.
+  var q = [{
+    id: null,
+    'id|=': filter,
+    type: {
+      id: null,
+      'id|=': ['/type/type', '/type/property'] // ignore '/type/domain'
+    },
+    '/type/property/schema': {
+      id: null,
+      optional: true
+    }
+  }];
+  return freebase.mqlread(q)
+    .then(function(env) {
+      var types = [];
+      var seen = {};
+      env.result.forEach(function(f) {
+        var type = f.id;
+        if (f.type.id === '/type/property') {
+          // Load the property's schema (type)
+          type = f['/type/property/schema'].id;
+        }
+        if (!seen[type]) {
+          types.push(type);
+          seen[type] = true;
+        }
+      });
+      if (types.length) {
+        return typeloader.loads(types, lang)
+          .then(function(typeloader_result) {
+            var structure2 = topic_api.get_structure(typeloader_result, lang);
+            // Merge structure2 into original topic structure
+            var structure = topic.structure;
+
+            // Don't clobber existing domains. Just add the new
+            // type to its type list.
+            structure2.order.forEach(function(domain_id) {
+              var domain = structure.domains[domain_id];
+              var domain2 = structure2.domains[domain_id];
+              if (domain) {
+                domain2.types.forEach(function(type_id) {
+                  domain.types.push(type_id);
+                });
+              }
+              else {
+                structure.order.unshift(domain_id);
+                structure.domains[domain_id] = domain2;
+              }
+            });
+
+            // We can safely extend existing types and properties
+            // since they are new.
+            h.extend(structure.types, structure2.types);
+            h.extend(structure.properties, structure2.properties);
+
+            return topic;
+          });
+      }
+      else {
+        return topic;
+      }
+    });
+}

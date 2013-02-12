@@ -1,0 +1,159 @@
+/*
+* Copyright 2012, Google Inc.
+* All rights reserved.
+*
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions are
+* met:
+*
+*     * Redistributions of source code must retain the above copyright
+* notice, this list of conditions and the following disclaimer.
+*     * Redistributions in binary form must reproduce the above
+* copyright notice, this list of conditions and the following disclaimer
+* in the documentation and/or other materials provided with the
+* distribution.
+*     * Neither the name of Google Inc. nor the names of its
+* contributors may be used to endorse or promote products derived from
+* this software without specific prior written permission.
+*
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+* A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+* LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+* DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+* THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+* OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+<acre:script>
+    var c = this.exports.c = {};
+    var helper = acre.require("lib/helper/helpers.sjs");
+    var i18n = acre.require("lib/i18n/i18n.sjs");
+    var i18n_c = acre.require("lib/i18n/components.mjt");
+    var _ = i18n.gettext;
+
+    var SHOW_TOP_X_USERS = 10;
+    var FIND_FLAGS_BY_DOMAIN = _('Vote on flags by domain:');    
+    var WEEKLY_FLAG_CHART_TITLE = _('Top Weekly Flag Contributors');
+    var WEEKLY_VOTE_CHART_TITLE = _('Top Weekly Vote Contributors');
+    var USER = _('user');
+    var FLAGS = _('flags');
+    var VOTES = _('votes');
+    var UNDERSTAND = _("Understand review tasks");    
+    var WHAT_ARE_REVIEW_TASKS = _("What are review tasks?");
+    var REVIEW_TASKS_ABOUT = _("Whenever a topic is flagged for delete or merge, it is reviewed by other members of the community. This review process helps prevent accidental or malicious deletion of topics, but it relies on members of the community to help out and vote on topics.");    
+    var HELP_IMPROVE = _("Help Improve Freebase");
+    var REVIEW_LINK_ASIDE = _("Review topics that have been marked for merge or delete.");
+    var VOTE_NOW = _("Vote now!");
+    var WHAT_IS_REVIEW_QUEUE = _("What is the review queue?");
+    var REVIEW_QUEUE_ABOUT = _("The review queue is where all topics which are flagged for delete or merge end up to be reviewed by other members of the community. The review queue also provides a number of filtering options to ease the reviewing process such as domain and flag kind filtering.");
+    var BROWSE_BY_DOMAIN = _("Browse Flags by Domain");
+    var BROWSE_BY_DOMAIN_INFO = _("Are you an expert of a particular field? Help improve Freebase by voting on flags in a specific domain.");
+</acre:script>
+
+<acre:block def="head()">
+    <link rel="stylesheet" type="text/css" href="browse.mf.css" />       
+</acre:block>
+
+<acre:block def="page_content()">
+    <div id="content-wrapper">        
+        <section id="content-main" role="main">            
+            <div id="graph-wrapper">   
+                <div id="placeholder" style="width:800px;height:300px;margin:0 auto;"></div>
+            </div>            
+            <div class="spacer"></div>
+            <div style="overflow:hidden;">
+                <div class="left-half">
+                    <div class="table-header">
+                        <h1>${WEEKLY_FLAG_CHART_TITLE}</h1>
+                    </div>
+                    <table class="table applist">
+                        <thead>                      
+                            <tr>
+                                <th class="column-header" colspan="2">${USER}</th>
+                                <th class="column-header">${FLAGS}</th>
+                            </tr>
+                        </thead>
+                        <acre:block for="user in c.topFlagCreators.splice(0, SHOW_TOP_X_USERS)">
+                            <tr>
+                                <td><img src="${acre.freebase.imgurl(user.id, 30, 30, 'fillcrop')}"/></td>
+                                <td><a href="${user.id}">${user.id}</a></td>
+                                <td>${i18n_c.number(user.v)}</td>
+                            </tr>
+                        </acre:block>
+                    </table>
+                </div>
+                <div class="right-half">
+                    <div class="table-header">
+                        <h1>${WEEKLY_VOTE_CHART_TITLE}</h1>
+                    </div>
+                    <table class="table applist">
+                        <thead>                      
+                            <tr>
+                                <th class="column-header" colspan="2">${USER}</th>
+                                <th class="column-header">${VOTES}</th>
+                            </tr>
+                        </thead>                         
+                        <acre:block for="user in c.topVoteCreators.splice(0, SHOW_TOP_X_USERS)">
+                            <tr>
+                                <td><img src="${acre.freebase.imgurl(user.id, 30, 30, 'fillcrop')}"/></td>
+                                <td><a href="${user.id}">${user.id}</a></td>
+                                <td>${i18n_c.number(user.v)}</td>
+                            </tr>
+                        </acre:block>
+                   </table>
+                </div>
+            </div>
+        </section>
+        <aside class="secondary">
+            <section class="wrapper">
+                <h3 class="primary">
+                    <span> ${UNDERSTAND} </span>
+                </h3>
+                <div class="sub-section">
+                    <h4>${WHAT_ARE_REVIEW_TASKS}</h4>
+                    <p> ${REVIEW_TASKS_ABOUT}</p>
+                </div>
+                <div class="sub-section">
+                    <h4>${HELP_IMPROVE}</h4>
+                    <p> ${REVIEW_LINK_ASIDE}</p>
+                    <a class="more" href="${helper.fb_url('/review')}">
+                        ${VOTE_NOW}
+                    </a>
+                </div>
+                <div class="sub-section">
+                    <h4>${WHAT_IS_REVIEW_QUEUE}</h4>
+                    <p>${REVIEW_QUEUE_ABOUT}</p>
+                </div>
+                <div class="sub-section">
+                    <h4>${BROWSE_BY_DOMAIN}</h4>
+                    <p>${BROWSE_BY_DOMAIN_INFO}</p>
+                    <div class="search-box" id="aside-search" >                    
+                        <form method="get">
+                            <fieldset>
+                                <input type="text" name="id" class="text-input" id="review-search" placeholder="${FIND_FLAGS_BY_DOMAIN}" />
+                            </fieldset>
+                        </form>
+                        <label>
+                            <input type="hidden" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all"/>
+                        </label>                  
+                    </div>
+                </div>
+            </section>
+        </aside>       
+    </div>
+</acre:block>
+
+<acre:block def="footer_script()">   
+  <script type="text/javascript" src="browse.mf.js" />
+</acre:block>
+
+<acre:block def="acre_javascript_vars()">
+  <script>
+    SERVER.c = ${JSON.stringify(c)};
+  </script>  
+</acre:block>

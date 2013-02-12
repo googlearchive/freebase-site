@@ -33,11 +33,29 @@
     padding: 15px;
 }
 
-.operator-controls {
-    float: right;
-    position: relative;
-    top: 6px;
+.operator-filter{
+    width: 100%;
+    float:left;
+    overflow:hidden; /* instead of clearfix div */
+    clear: both;
 }
+.operator-controls{
+    float:right;
+}
+.operator-select{
+    float:left;
+}
+.pill-box{
+    overflow: hidden;
+}
+
+.operator-select {
+    margin: 8px 6px 0 0;
+}
+.operator-controls {
+    margin: 6px 0 0 6px;
+}
+
 
 .remove-operator {
     visibility: hidden;
@@ -45,8 +63,6 @@
 
 #search-options .pill-box {
     box-shadow: none;
-    margin-right: 140px;
-    padding-left: 10px;
 
     .pill-suggest {
         width: 325px;
@@ -54,6 +70,7 @@
 }
 
 #tabbar-controls {
+    clear: both;
     font-size: 1.3em;
     padding-top: .5em;
 }

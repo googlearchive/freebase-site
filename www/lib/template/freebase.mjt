@@ -219,6 +219,9 @@
       </form>
       <div id="site-search-box"></div>
       <div id="site-search-label"><span>${_("Start typing to get some suggestions")}</span></div>
+      <div id="site-search-topic-option">
+        <label><input type="checkbox" name="type" value="/common/topic">Include non-topics</label>
+      </div>
     </div>
     <!!-- Global Nav Links-->
     <ul class="clear search" id="nav-global">

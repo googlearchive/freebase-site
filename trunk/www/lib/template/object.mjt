@@ -168,26 +168,28 @@
       <acre:script>
         var label = c.object_type.name;
         var classname = 'object-label ';
-        classname += label === 'Topic' ? 'img' : 'no-img';
+        var show_img = (c.object_type.id == '/common/topic' 
+            || c.object_type.id == '/type/user');
+        var img_class =  show_img ? 'img' : 'no-img';
       </acre:script>
-      <div class="$classname">
+      <div class="${classname} ${img_class}">
         ${object_label()}
         <div id="image" acre:if="c.show_image">
           <acre:block if="c.object.image">
           <acre:script>
             var options = {
-              maxheight: 53,
-              maxwidth: 53,
+              maxheight: 125,
+              maxwidth: 125,
               mode: 'fillcropmid',
               pad: 2
             };
           </acre:script>
-            ${image.image_thumb(c.object.id, 50, options)}
+            ${image.image_thumb(c.object.id, 125, options)}
           </acre:block>
         </div>
       </div>
 
-      <div class="page-title">
+      <div class="page-title ${img_class}">
 
         <!!-- Object Attribution !!-->
         <span class="creation-timestamp">
@@ -384,12 +386,12 @@
     qs = h.fb_url("", params).substring(2);
   </acre:script>
   <ul class="tab-nav">
-    <acre:block for="tab in c.tabs">
+    <acre:block for="i, tab in c.tabs">
       <acre:script>
         var url = "?" + tab.key + (qs.length ? "&" + qs : "");
         var current = (tab.key === c.current_tab.key);
       </acre:script>
-      <li>
+      <li class="main-tab">
         <a acre:if="current" href="#" onclick="return false;" class="current"><span>${_(tab.name)}</span></a>
         <a acre:else="" href="${url}"><span>${_(tab.name)}</span></a>
       </li>

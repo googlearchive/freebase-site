@@ -62,7 +62,8 @@
       input
         .data_input({
           lang: fb.lang,
-          suggest_impl: fb.suggest_options
+          suggest_impl: fb.suggest_options,
+          strict: true
         })
         .bind("valid", function() {
           formlib.enable_submit(options);

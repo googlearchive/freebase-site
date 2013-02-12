@@ -132,17 +132,18 @@
         if (o.suggest_impl) {
           suggest_options =
             o.suggest_impl.instance(
-                type, true, self.metadata && self.metadata.lang || o.lang);
+                type, true, self.metadata && self.metadata.lang || o.lang,
+                o.strict);
         }
         var included_types = null;
         if (o.structure && self.options.incompatible_types) {
-          // structure and incompatible_types 
+          // structure and incompatible_types
           // are required for incompatible check
           included_types = o.structure.expected_type.included_types;
-          suggest_options = 
+          suggest_options =
             self.options.incompatible_types.suggest_options(
               type, included_types, suggest_options);
-        }        
+        }
         i.validate_topic($.extend({
             incompatible_types: self.options.incompatible_types,
             expected_type: type,
@@ -325,8 +326,8 @@
      * To enable this, $.validate_topic must have been initialized with options
      * containing "expected_type" type id and "incompatible_types" implementation.
      * (@see lib/incompatible_types/incompatible-types.js)
-     * 
-     * If either of these options are not specified, 
+     *
+     * If either of these options are not specified,
      * then this check will automatically make the data "valid".
      */
     incompatible_types_check: function(data) {
@@ -355,7 +356,7 @@
     },
 
     /**
-     * @param incompatible_types:Object (optional) - 
+     * @param incompatible_types:Object (optional) -
      * @see lib/incompatible_types/incompatible_types.js
      */
     valid: function(data) {
@@ -401,7 +402,7 @@
       }
       inst =  new $.validate_datetime(this, options);
       $this.data("$.validate_datetime", inst);
-    });    
+    });
   };
   $.validate_datetime = function(input, options) {
     this.options = $.extend(true, {}, options);
@@ -639,7 +640,7 @@
       this.key_value_input = key_value_input;
       // this.input is the "primary" input that will trigger the
       // valid, invalid, empty events
-      this.input = this.key_namespace_input; 
+      this.input = this.key_namespace_input;
       this.init();
   };
 
@@ -651,7 +652,7 @@
               if (this.key_value_input.attr("name") != "/type/namespace/keys") {
                   suggest_options = this.options.suggest_impl.instance("/type/namespace");
               } else {
-                  // we want the default freebase-site suggest options like 
+                  // we want the default freebase-site suggest options like
                   // search service url, api key, current language, etc.
                   suggest_options = $.extend({}, this.options.suggest_impl.service_defaults);
               }

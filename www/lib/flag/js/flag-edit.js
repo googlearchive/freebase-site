@@ -89,7 +89,16 @@
       ajax_options.data[data.name] = data.id;
       $.ajax($.extend(ajax_options, {
         onsuccess: function(data) {
-          window.location.reload(true);
+          if(data && data.result) {
+            if (data.result.info) {
+              formlib.status_info(data.result.info);
+            } else if (data.result.error) {
+              formlib.status_error(data.result.error);
+            }
+          } else {
+            formlib.status_error("Oops! Something went wrong. Please try again.");
+          }
+          formlib.cancel_modal_form(options);
         }
       }));
     },
@@ -111,7 +120,16 @@
         url: fb.h.ajax_url("lib/flag/flag_submit.ajax"),
         data: {id:fb.c.id, kind:kind},
         onsuccess: function(data) {
-          window.location.reload(true);
+
+          if(data && data.result) {
+            if (data.result.info) {
+              formlib.status_info(data.result.info);
+            } else if (data.result.error) {
+              formlib.status_error(data.result.error);
+            }
+          } else {
+            formlib.status_error("Oops! Something went wrong. Please try again.");
+          }
         }
       }));
     },

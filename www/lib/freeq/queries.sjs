@@ -128,8 +128,8 @@ function execute_job(job_id) {
 /**
  * Merges two topics
  * @param  {string=} job_id   ID of Job to add task to (optional)
- * @param  {!string} target_id MID of a target
- * @param  {!string} source_id MID of a source
+ * @param  {!string} target_id MID of a target to merge to - will remain
+ * @param  {!string} source_id MID of a source to merge from - will be deleted
  * @param  {boolean=} execute True if the job should
  *     be automatically executed (optional)
  * @return {lib.promise.deferred.Deferred} A promise for adding a task

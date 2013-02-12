@@ -168,6 +168,7 @@ var hasCharacter = /\D/;
             member = root[name] = {};
           }
           root = member;
+          return true;
         }
       });
   });

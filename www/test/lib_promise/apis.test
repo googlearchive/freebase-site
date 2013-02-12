@@ -57,7 +57,7 @@ test("urlfetch_success", function() {
 
 test("urlfetch_redirects", function() {
   // Make sure that we are following redirects on async urlfetchs
-  var redirect_url = acre.request.app_url + "/test_lib_promise/home_redirector";
+  var redirect_url = acre.request.app_url + "/test/lib_promise/home_redirector";
   urlfetch(redirect_url)
     .then(function(result) {
       ok(result.body, "Make sure that we returned a result");
@@ -132,22 +132,6 @@ test("mqlread_success", function() {
   acre.async.wait_on_results();
 });
 
-test("get_static", function() {
-  // We should get back results from this bdb call
-  var known = {
-    "/music/artist": 1,
-    "/music/composer": 1
-  };
-  freebase.get_static("notable_types_2", "/en/bob_dylan")
-    .then(function(envelope) {
-      ok(known[envelope.types[0].t], "Should return the expected notable type");
-    }, function(error) {
-      ok(false, "get_static shouldn't return an error: "+error);
-    });
-
-  acre.async.wait_on_results();
-});
-
 test("get_topic_multi", function() {
     var result;
     var ids = ["/en/bob_dylan", "/en/blade_runner"];
@@ -162,4 +146,9 @@ test("get_topic_multi", function() {
     equal(result.length, 2);
     equal(result[0].id, "/en/bob_dylan");
     equal(result[1].id, "/en/blade_runner");
+});
+
+test("api_namespaces", function() {
+    equal(typeof freebase.freeq, "object");
+    equal(typeof freebase.freeq.create_job, "function");
 });

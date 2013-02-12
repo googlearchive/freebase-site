@@ -247,7 +247,7 @@
       var close = null;
       var timer = null;
       var last_level = null;
-                   
+
       function _hide() {
           if (page_state) {
               page_state.slideUp(300);
@@ -274,7 +274,7 @@
                   page_state.removeClass(t);
               });
               page_state.addClass(log_type);
-              status_msg.text(str);                  
+              status_msg.text(str);
               last_level = log_type;
               window.clearTimeout(timer);
               if (sticky) {
@@ -320,7 +320,7 @@
           },
           /**
            * A safe way to include <a> links into the status message:
-           * 
+           *
            * fb.status.sprintf('warning', 'click on %s or %s', 'me1', me1_click_handler, 'me2', me2_click_handler);
            */
           sprintf: function(logtype, str/**, a1, a1_onclick, a2, a2_onclick, ... */) {
@@ -339,7 +339,7 @@
                       msg.append(a);
                   }
                   var s = _show(logtype, "", null, true);
-                  status_msg.empty().append(msg);                  
+                  status_msg.empty().append(msg);
                   return s;
               }
               else {
@@ -557,7 +557,7 @@
       /**
        * Used when linking to an existing topic
        */
-      instance: function(type, create_new, lang) {
+      instance: function(type, create_new, lang, strict) {
         var filters = [
           "type:" + type
         ];
@@ -578,8 +578,8 @@
         var is_system_type = fb.h.is_metaweb_system_type(type);
 
         var o = null;
-        if (is_system_type) {
-          // use "any" for metaweb system types
+        if (is_system_type || strict) {
+          // use "any" for metaweb system types or strict is TRUE
           o = fb.suggest_options.any.apply(null, filters);
         }
         else {
@@ -885,13 +885,13 @@
 
       cache: {},
 
-      search_url: fb.h.fb_googleapis_url() + 
+      search_url: fb.h.fb_googleapis_url() +
           "/search?filter=(all mid:${id})&" +
-          "output=(notable:/client/summary description type)&key=" + 
-          fb.acre.freebase.api_key + 
+          "output=(notable:/client/summary description type)&key=" +
+          fb.acre.freebase.api_key +
           "&lang=" + fb.suggest_lang.lang(),
 
-      image_url: fb.h.fb_googleapis_url() + 
+      image_url: fb.h.fb_googleapis_url() +
         "/image${id}?maxwidth=75&errorid=/freebase/no_image_png&key=" +
         fb.acre.freebase.api_key,
 
@@ -982,7 +982,7 @@
         range.moveToElementText(text);
         range.select();
       } else if (window.getSelection) { //all others
-        var selection = window.getSelection();        
+        var selection = window.getSelection();
         var range = document.createRange();
         range.selectNodeContents(text);
         selection.removeAllRanges();

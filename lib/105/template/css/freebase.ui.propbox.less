@@ -1,0 +1,617 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+
+/*
+----------------------------
+  ### LESS mixins/variables
+----------------------------
+*/
+
+@gutter-value: 15px;
+@hover-bg: darken(#f1f2f3, 1%);
+
+.edit-row-style() {
+  border: 0;
+  padding: 3px 0;
+}
+
+/*
+---------------------------
+  ### Data Handling
+----------------------------
+
+ * ### Data Lists
+ *
+ * The .data-list class is used anytime we output propbox data
+ * This includes unique values, images, etc.
+*/
+
+.data-list {
+  list-style: none;
+
+  li {
+    font-size: 1.2em;
+    line-height: 1;
+    padding: 0 @gutter-value;
+
+    .wrapper {
+      position: relative;
+      display: inline-block;
+      padding: 5px 5px 5px 0;
+    }
+  }
+
+  .edit-row-submit,
+  .edit-row {
+    clear: left;
+    padding-left: @gutter-value;
+  }
+
+  .edit-row,
+  .add-row,
+  .row-msg,
+  .edit-row-submit {
+    .edit-row-style();
+    &:hover {
+      background-color: rgba(0,0,0,0.02);
+    }
+  }
+
+  .add-row .form-field {
+    padding-left: @gutter-value;
+  }
+}
+
+/*
+ * ### Data Tables
+ *
+ * The .data-table class should be used
+ * for non-simple property data (eg. Mediator or CVT)
+ *
+ * NOTE: .data-list is output *inside* .data-table.
+ * They are always used together.
+*/
+
+
+.data-table tr.edit-row-submitting > :first-child,
+.data-list li.edit-row-submitting {
+  background: #F1F2F3 url(template/img/horizontal-loader.gif) no-repeat left top;
+}
+
+li.new-row,
+tr.new-row * {
+  background-color: #ABF1AB !important;
+}
+
+.data-table {
+  width: 100%;
+
+  th.first,
+  td.first {
+    padding-left: @gutter-value;
+  }
+
+  thead {
+    th,
+    td {
+      font-size: 11px;
+      font-weight: bold;
+      color: #444;
+      padding: 5px 0;
+      vertical-align: bottom;
+    }
+  }
+
+  tbody {
+    tr.edit-row th,
+    tr.edit-row td,
+    tr.edit-row-submit th,
+    tr.edit-row-submit td {
+      .edit-row-style();
+    }
+
+    th,
+    td {
+      vertical-align: top;
+      padding: 0 3px 0 0;
+    }
+
+    tr.empty-row td {
+      border: none;
+    }
+
+    tr {
+      td.first,
+      tr th.first {
+        padding-left: @gutter-value;
+      }
+
+      th:first-child li {
+        padding-left: @gutter-value;
+      }
+    }
+
+    tr.edit-row {
+      th,
+      td {
+        padding-top: 10px;
+        padding-right: @gutter-value;
+      }
+
+      th:first-child .data-input,
+      td:first-child .data-input {
+        margin-left: @gutter-value;
+      }
+    }
+
+  }
+
+  .alt th,
+  .alt td {
+    background: #ecedef;
+  }
+
+  .data-list li,
+  .empty-property {
+    padding: 0;
+  }
+}
+
+.data-table tbody tr.row-msg td,
+.data-list .row-msg,
+.data-list .row-msg:hover {
+  background: darken(#f1f2f3, 5%);
+}
+
+.data-list .edit-row-submit,
+.data-list .row-msg,
+.edit-row td:first-child,
+.data-table tbody tr.row-msg td:first-child,
+.data-table tbody tr.edit-row-submit td:first-child {
+  padding-left: @gutter-value;
+}
+
+.empty-property {
+  line-height: 1;
+  padding: 0 0 5px 0;
+  color: #ccc;
+}
+
+.message-section {
+  line-height: 1;
+}
+
+.inline-message {
+  background: @msg_blue;
+  display: inline-block;
+  padding: 8px 0px;
+  width: 100%;
+  margin-bottom: 4px;
+  font-size: 12px;
+  text-align: center;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+  .rounded_corners_bottom (5px);
+  .diagonal_stripes_left (12px);
+}
+
+.empty-result {
+  margin: 1.5em;
+}
+
+.empty-result p {
+  font-size: 14px;
+}
+
+.magicbox-template {
+  display: none;
+  margin-top: 10px;
+}
+
+.row-msg {
+  td {
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+  .close-msg {
+    float: right;
+  }
+  .undo {
+    padding-left:5px;
+
+    .divider {
+      padding-left: 3px;
+      padding-right: 3px;
+    }
+  }
+}
+
+/*
+ * Image styling within propbox
+ *
+ * NOTE: size of the image should be handled by
+ * our default image components. These styles should
+ * only provide the visual aesthetics of images within
+ * propbox, not the dimensions. However, a max-width is
+ * applied to the images to enable flexible scaling when
+ * needed
+ */
+
+.data-table th.image,
+.data-table td.image {
+  padding: 0 20px 5px;
+  text-align: center;
+}
+
+
+
+.data-list img {
+  margin: 0 auto;
+  max-width: 100%;
+  border: 1px solid #ececec;
+  padding: 1px;
+  .box_shadow();
+}
+
+.image li .wrapper {
+  padding: 5px 0 6px;
+}
+
+
+/*
+ * Article styling within propbox
+ *
+ * This is really rudimentary right.
+ * TODO: revisit when we can show articles
+ * natively in propbox without having to do
+ * a special call ont he topic page.
+ */
+.data-table tbody .article {
+  max-width: 350px;
+}
+
+
+/*
+ * This is the styling for hierarchical probbox data.
+ * We currently only use this when outputting Domain/Type
+ * information along with property data.
+ *
+ * Some of these styles are a little sticky as much of them
+ * pertain topic page styling verses true generic output
+ * of propbox.
+ *
+ */
+.foobar {
+  position: relative;
+  line-height: 1;
+  .key {
+    font-weight: normal;
+  }
+}
+
+.sub-foobar {
+  font-size: 12px;
+  line-height: 1;
+  padding-right: @gutter-value;
+  border-bottom: 1px solid #e8e8e8;
+
+  .more {
+    float: right;
+    position: relative;
+    overflow: hidden;
+    margin: 8px 0 0 0;
+    opacity: 0.6;
+    background: url(template/img/ui-icons.png) no-repeat right -610px;
+    height: 14px;
+    padding-right: 155px;
+
+    span {
+      position: absolute;
+      top: 30px;
+      font-weight: normal;
+      color: #777;
+      .transition(all, 0.3s, ease-in-out);
+    }
+
+  }
+
+  .property-state {
+    color: #AAA;
+    font-weight: normal;
+  }
+
+  &:hover {
+    .more {
+      opacity: 1;
+      &:hover {
+        text-decoration: none;
+        background-position: right -634px;
+      }
+    }
+    a span {
+      top: 0;
+    }
+  }
+
+  a:hover span {
+    color: #5a5a5a;
+  }
+}
+
+.header-label {
+  display: inline-block;
+  .transition(all);
+}
+
+.header-label .lock {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    position: relative;
+    top: 1px;
+    background: url(template/img/ui-icons.png) no-repeat 0px -1585px;
+}
+
+/*
+ * Remove from here and un-comment
+ * from freebase.ui.table.less if all
+ * table backgrounds converted to white
+ */
+.hover-row:hover {
+  outline: solid 1px #e8ebee;
+}
+
+.header-label .menu-trigger {
+  display: inline-block;
+  color: #666;
+  padding: 7px 25px 7px 0;
+}
+
+.section:hover .header-label .menu-trigger {
+  background: url(template/img/ui-icons.png) no-repeat right -679px;
+  display: none;
+}
+
+.foobar:hover .menu-trigger,
+.sub-foobar:hover .menu-trigger {
+  background-position: right -713px;
+}
+
+
+
+/*
+ * Inline Propbox Edit Controls
+ *
+ * NOTE:
+ *
+ * A lot of this is duplicated in
+ * schema/schema.less
+ * We need to refactor
+ */
+
+.edit-form .form-label {
+  display: block;
+  margin-bottom: 7px;
+}
+
+.edit-form .data-input {
+  margin-bottom: 10px;
+}
+
+.add-row .fb-input,
+.edit-row .fb-input {
+  width: 16em;
+}
+
+.edit-row .form-field {
+  margin-left: @gutter-value;
+}
+
+table .edit-row .form-field {
+  margin-left: 0;
+}
+
+td.vert-form-fields .form-field {
+  display: block;
+  float: none !important;
+}
+
+/*
+ * Handle overflow gracefully in webkit browsers
+ */
+.data-section {
+  /*overflow-x: auto;*/
+  /*overflow-y: hidden;*/
+
+  .more {
+    line-height: 1;
+    padding: 5px 5px 5px 15px;
+    border-top: 1px solid #eee;
+  }
+}
+
+.data-section::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+  background: white;
+}
+.data-section::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+.data-section::-webkit-scrollbar-thumb:vertical {
+  border-left: 6px solid white;
+  border-right: 4px solid white;
+}
+.data-section::-webkit-scrollbar-thumb:horizontal {
+  border-top: 6px solid white;
+  border-bottom: 4px solid white;
+}
+.data-section:hover::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, .1);
+}
+.data-section::-webkit-scrollbar-thumb:horizontal:hover,
+.data-section::-webkit-scrollbar-thumb:vertical:hover {
+  background: rgba(0, 0, 0, .15);
+}
+.data-section::-webkit-scrollbar-track-piece:vertical:start {
+  margin-top: 4px;
+}
+.data-section::-webkit-scrollbar-track-piece:horizontal:start {
+  margin-left: 4px;
+}
+
+
+/*
+  ### Keyboard Shortcuts
+*/
+
+tr.kbs.current,
+h1.kbs.current {
+  background-image: none;
+}
+
+.kbs.current .mark,
+li.kbs.current,
+tr.kbs.current td:first-child {
+  background-image: url(template/img/ui-icons.png);
+  background-repeat: no-repeat;
+  background-position: 5px -814px;
+}
+
+h1 .mark,
+h2 .mark,
+div .mark {
+  display: inline-block;
+  padding-left: @gutter-value;
+}
+
+h2.kbs.current .mark,
+div.kbs.current .mark {
+  background-position: 5px -812px;
+}
+
+.editing .empty-row {
+  position: absolute;
+  opacity: 0;
+}
+
+.type-section {
+    padding-bottom: 20px;
+}
+
+a.type-section-delete {
+    float: right;
+    margin: 8px;
+    color: whitesmoke;
+}
+a.type-section-delete:hover {
+    text-decoration: none;
+    color: white;
+}
+
+.type-label,
+.property-label {
+    display: inline-block;
+    padding: 7px 7px 7px 1px;
+}
+
+.type-label a {
+  color: whitesmoke;
+  font-weight: normal;
+}
+
+.property-label a {
+    font-size: 16px;
+    color: #393939;
+}
+
+.property-modify {
+  display: inline-block;
+  position: relative;
+  top: -2px;
+  padding: 1px 4px 2px 4px;
+  text-align: center;
+  background-color: #FFD02F;
+  .rounded_corners(7px);
+
+  a {
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+  }
+
+  a:after {
+    content: "+";
+  }
+}
+
+.property-modify.locked {
+  background-color: #e8ebee;
+}
+
+.data-row-requires-permission .nicemenu {
+    visibility: hidden !important;
+}
+
+.data-row-requires-authority .outer-menu .headmenu {
+    background:  #e8ebee url(template/img/ui-icons.png) no-repeat 4px -1585px;
+}
+.data-row-requires-authority .outer-menu .headmenu .more-action {
+    border: 0;
+}
+
+.sub-foobar .outer-menu {
+  height: 30px;
+  width: 30px;
+  left: -30px;
+}
+
+.data-row .outer-menu {
+  top: -1px;
+  height: 21px;
+  width: 30px;
+  left: -45px;
+}
+
+.edit-row-submit .cvt-cotypes {
+    padding-left: 12px;
+}
+
+a.schema-id {
+    font-size: .8em;
+    padding-left: .5em;
+    color: rgba(0,0,0,0.3);
+}
+
+a.prop-id {
+    padding-right: .5em;
+    font-size: 1.1em;
+}

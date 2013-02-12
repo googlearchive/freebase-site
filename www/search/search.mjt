@@ -66,7 +66,8 @@
           </acre:script>
           <acre:block if="types.length">
             <div class="operator-filter">
-              ${operator_controls(operator)}
+              ${operator_controls()}
+              ${operator_select(operator)}
               <div class="pill-box">
                 <acre:block for="type in types">
                   ${pill(type)}
@@ -80,7 +81,8 @@
         <acre:block
            if="! (c.any.length || c.all.length || c.should.length || c.not.length)">
           <div class="operator-filter">
-            ${operator_controls('any')}
+            ${operator_controls()}
+            ${operator_select('any')}
             <div class="pill-box">
               <input type="text" class="pill-suggest"
                      placeholder="${_('Constrain results by type...')}" />
@@ -143,22 +145,25 @@
   </div>
 </acre:block>
 
-<acre:block def="operator_controls(operator)">
+<acre:block def="operator_select(operator)">
+  <select class="operator-select" name="operator">
+    <option value="any"
+            acre:attrs="operator == 'any' ? {'selected':'selected'} : {}">
+      any</option>
+    <option value="all"
+            acre:attrs="operator == 'all' ? {'selected':'selected'} : {}">
+      all</option>
+    <option value="should"
+            acre:attrs="operator == 'should' ? {'selected':'selected'} : {}">
+      should</option>
+    <option value="not"
+            acre:attrs="operator == 'not' ? {'selected':'selected'} : {}">
+      not</option>
+  </select>
+</acre:block>
+
+<acre:block def="operator_controls()">
   <div class="operator-controls">
-    <select name="operator">
-      <option value="any"
-              acre:attrs="operator == 'any' ? {'selected':'selected'} : {}">
-        any</option>
-      <option value="all"
-              acre:attrs="operator == 'all' ? {'selected':'selected'} : {}">
-        all</option>
-      <option value="should"
-              acre:attrs="operator == 'should' ? {'selected':'selected'} : {}">
-        should</option>
-      <option value="not"
-              acre:attrs="operator == 'not' ? {'selected':'selected'} : {}">
-        not</option>
-    </select>
     <button class="new-operator">+</button>
     <button class="remove-operator">-</button>
   </div>

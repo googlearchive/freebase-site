@@ -31,6 +31,7 @@
 
 var h = acre.require('helper/helpers.sjs');
 var apis = acre.require("promise/apis");
+var freeq = acre.require("freeq/queries.sjs");
 var freebase = apis.freebase;
 var deferred = apis.deferred;
 
@@ -52,24 +53,28 @@ function flag(id) {
     .then(function(env) {
       return env.result;
     });
-};
+}
 
 function create(user, kind, id1/**, id2, ..., id_N **/) {
-    
-    kind = KINDS[kind];
-    if (!kind) {
-        throw "Kind must be one of merge|split|delete|offensive";
+
+    var id_kind = KINDS[kind];
+    if (!id_kind) {
+        return {
+           error: "Kind must be one of merge|split|delete|offensive"
+        };
     }
     var ids = Array.prototype.slice.call(arguments, 2);
     // TODO: assert ids.length > 0
     if (!ids.length) {
-        throw "A review flag requires at least one item";
+        return {
+            error: "A review flag requires at least one item"
+        };
     }
-  
+
     // ***** Auto delete/merge *****//
 
     // Can auto delete or merge if user is owner of losing topic
-    // and its link count < 100
+    // and its link count < 50
     var promises = [];
     var itemOptions = {
         "filter": [
@@ -81,38 +86,62 @@ function create(user, kind, id1/**, id2, ..., id_N **/) {
         promises.push(freebase.get_topic(id, itemOptions));
     });
     return deferred.all(promises).then(function(results) {
-        var losingItem;
+        // TODO(pmikota): Check whether the creator is also creator of all links
+        var losingItem, winningItem;
         var autoMergeDelete = false;
         for(var i = 0, l = results.length; i < l; i++) {
             var result = results[i];
-            var creator = h.get_first_value(result, '/type/object/attribution');           
+            var creator = h.get_first_value(result, '/type/object/attribution');
+
             if (creator && creator.id === user.id) {
                 var linkcount = h.link_count(result);
-                if (linkcount !== -1 && linkcount < 100) {
-                    autoMergeDelete = true;
-                    losingItem = result.id;
+                if (linkcount !== -1 && linkcount < 50) {
+                    if (kind === "merge") {
+                        // First Assign Losing Item and then Winning Item
+                        if (losingItem) {
+                            winningItem = result.id;
+                            autoMergeDelete = true;
+                        } else {
+                            losingItem = result.id;
+                        }
+                    } else if (kind === "delete") {
+                        losingItem = result.id;
+                        autoMergeDelete = true;
+                    }
                 }
             }
         }
 
-        // REMOVE THIS ONCE FREEQ IS READY
-        autoMergeDelete = false;
-        if (autoMergeDelete && (ids.length === 1 || ids.length === 2)) {
-        
-            // We can do auto merge or delete, do freeq stuff
-            // At this point, losingItem is the mid of the topic to be deleted
-            // or the losing item in a merge.
+        if (autoMergeDelete &&
+            (kind === "merge" || kind === "delete") &&
+            (ids.length < 3)) {
 
-            // DO FREEQ STUFF HERE AND REMOVE THE ABOVE STATEMENT  
+            var promise = null;
+
+            // Enable writeuser for accessing FreeQ
+            h.enable_writeuser();
+            if(kind === "merge") {
+                promise = freeq.merge_topics(null, winningItem, losingItem, true);
+            } else if(kind === "delete") {
+                promise = freeq.delete_topic(null, losingItem, true);
+            } else {
+                return {
+                  error: "Auto merge/delete failed, please try again."
+                };
+            }
+            promise.then(function(result){
+              return {
+                info: "This object has been deleted/merged."
+              };
+            });
 
         } else {
-
             // Can't auto merge or delete, flag it
             var q = {
                 id: null,
                 type: "/freebase/review_flag",
                 kind: {
-                    id: kind
+                    id: id_kind
                 },
                 item: [],
                 create: "unless_exists"
@@ -121,11 +150,13 @@ function create(user, kind, id1/**, id2, ..., id_N **/) {
                 q.item.push({id:id});
             });
             return freebase.mqlwrite(q).then(function(env) {
-                return env.result;
+              return {
+                  info: "This object has been flagged and sent for review."
+              };
             });
         }
-    });  
-};
+    });
+}
 
 function undo(flag_id) {
   return flag(flag_id)
@@ -155,4 +186,4 @@ function undo(flag_id) {
       }
       return f;
     });
-};
+}

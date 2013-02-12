@@ -412,14 +412,14 @@
         $.ajax($.extend(formlib.default_submit_ajax_options({ 'form': voteForm }), {
             url: fb.h.ajax_url('vote.ajax'),
             success: function(data) {
-                fb.status.info(data.result.result);
+                formlib.status_info(data.result.result);
                 $(voteForm).find('button').addClass('cancel');
                 $(voteForm).find('button').removeClass('save');
                 $(voteForm).siblings('.vote-form').find('button').addClass('save');
                 $(voteForm).siblings('.vote-form').find('button').removeClass('cancel');
             },
             error: function(data) {
-                fb.status.error(data.result, true);
+                formlib.status_error(data.result, true);
             }
         }));
     }

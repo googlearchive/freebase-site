@@ -598,6 +598,26 @@
        return ajax_options;
      },
 
+    /**
+     * Show status in next tick, so it won't get cleared in this one
+     */
+     status_doing: function(msg, sticky) {
+      setTimeout(function(){ status.doing(msg, sticky); });
+     },
+     status_info: function(msg, sticky) {
+       setTimeout(function(){ status.info(msg, sticky); });
+     },
+     status_warning: function(msg, sticky) {
+       setTimeout(function(){ status.warning(msg, sticky); });
+     },
+     status_success: function(msg, sticky) {
+       setTimeout(function(){ status.success(msg, sticky); });
+     },
+     status_error: function(msg, sticky) {
+       setTimeout(function(){ status.error(msg, sticky); });
+     },
+
+
      default_submit_ajax_options: function(options) {
        options = options || {};
        var ajax_options = $.extend(formlib._default_ajax_options("POST"), options.ajax, {

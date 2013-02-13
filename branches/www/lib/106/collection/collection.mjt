@@ -1,0 +1,241 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+<acre:script>
+  var h = acre.require("helper/helpers.sjs");
+  var i18n = acre.require("i18n/i18n.sjs");
+  var i18n_c = acre.require("i18n/components.mjt");
+  var _ = i18n.gettext;
+  var image = acre.require("template/imagecomponents.mjt");
+  var pb = acre.require("propbox/propbox.mjt");
+  var hc = acre.require("collection/helpers.sjs");
+  var EDIT = _("Edit");
+  var form = acre.require("propbox/form.mjt");
+</acre:script>
+
+<!--
+  Collection template
+!-->
+<acre:block def="collection(prop_structures, data, query, cursor)">
+  <acre:script>
+    var table = hc.to_table_structure(prop_structures, data, i18n.lang);
+    var metadata = {prop_structures:prop_structures};
+  </acre:script>
+  <table cellspacing="0" class="data-table ${JSON.stringify(metadata)}" id="infinitescroll" data-next="${cursor}">
+    ${collection_head(table.head)}
+    ${collection_body(table.body)}
+    <tfoot acre:if="cursor">
+      <tr>
+        <td>
+          <a id="infinitescroll-next"
+             href="${h.ajax_url(acre.resolve('collection/infinitescroll.ajax'), [['query', JSON.stringify(query)]])}">
+             next</a>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+</acre:block>
+
+<acre:block def="collection_head(head)">
+  <thead>
+    <acre:block for="x, row in head">
+      <tr>
+        <acre:block for="y, cell in row">
+          <acre:script>
+            if (cell.column === 0) {
+              cell.attrs["class"].push("first");
+            }
+            cell.attrs["class"] = cell.attrs["class"].join(" ");
+          </acre:script>
+          <th acre:attrs="cell.attrs">
+            <span class="property-header">
+              ${cell.structure.text}
+            </span>
+          </th>
+        </acre:block>
+      </tr>
+    </acre:block>
+  </thead>
+</acre:block>
+
+<acre:block def="collection_body(body)">
+  <acre:block for="tbody in body">
+    <tbody class="data-row" data-id="${tbody.value.id}">
+      <acre:block for="x,row in tbody">
+        <tr>
+          <acre:block for="y, cell in row">
+            <acre:script>
+              if (cell.column === 0) {
+                cell.attrs["class"].push("first");
+              }
+              cell.attrs["class"] = cell.attrs["class"].join(" ");
+            </acre:script>
+            <td acre:attrs="cell.attrs">
+              <acre:block if="cell.structure.id === '/type/object/id'">
+                <span class="wrapper">
+                  <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
+                  <a title="${tbody.value.id}" class="property-value"
+                     href="${h.fb_url(true, tbody.value.id)}"
+                     data-id="${tbody.value.id}">${tbody.value.id}</a>
+               </span>
+              </acre:block>
+              <acre:block if="cell.value">
+                <acre:block if="cell.structure.id === '/type/object/name'">
+                  <ul class="data-list">
+                    <li>
+                      <span class="wrapper">
+                        <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
+                        <a title="${cell.value.id}" class="property-value"
+                           href="${h.fb_url(true, cell.value.id)}"
+                           data-id="${cell.value.id}">${cell.value.text}</a>
+                        ${i18n_c.lang_code(cell.value.lang, i18n.lang)}
+                      </span>
+                    </li>
+                  </ul>
+                </acre:block>
+                <acre:block else="">
+                  <ul class="data-list">
+                    <li>
+                      <span class="wrapper">
+                        <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
+                        ${pb.value(tbody.value, cell.structure, cell.value, i18n.lang)}
+                      </span>
+                    </li>
+                  </ul>
+                </acre:block>
+              </acre:block>
+              <acre:block elif="cell.images">
+                <ul class="data-list">
+                  <li>
+                    <span class="wrapper">
+                      <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
+                      ${pb.value(tbody.value, cell.structure, tbody.value, i18n.lang)}
+                    </span>
+                  </li>
+                </ul>
+              </acre:block>
+              <acre:block elif="cell.docs">
+                <ul class="data-list">
+                  <li>
+                    <span class="wrapper">
+                      <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
+                      <p acre:if="cell.docs.length" class="load-blurb" data-id="${cell.docs[0].id}"></p>
+                    </span>
+                  </li>
+                </ul>
+              </acre:block>
+              <acre:block else="">
+                <ul class="data-list">
+                  <li>
+                    <span class="wrapper">
+                      <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
+                      <span class="property-value">&nbsp;</span>
+                    </span>
+                  </li>
+                </ul>
+              </acre:block>
+            </td>
+          </acre:block>
+        </tr>
+      </acre:block>
+    </tbody>
+  </acre:block>
+</acre:block>
+
+
+<acre:block def="row_menu()">
+  <ul class="combo-menu nicemenu">
+    <li class="nicemenu-item">
+      <span class="headmenu">
+        <a href="#" onclick="return false;" class="default-action edit-action">edit</a>
+        <a href="javascript:void(0)" class="more-action">menu</a>
+      </span>
+      <ul class="submenu row-menu">
+        <li class="row-menu-item"><a href="#" onclick="return fb.collection.row_edit(this);">${EDIT}</a></li>
+      </ul>
+    </li>
+  </ul>
+</acre:block>
+
+
+<acre:block def="row_edit_form(topic, prop_structures, prop_values, lang, nav)">
+  <acre:block if="nav">
+    ${row_edit_form_content(topic, prop_structures, prop_values, lang)}
+  </acre:block>
+  <acre:block else="">
+    <div class="modal" id="propbox-edit-dialog">
+      ${row_edit_form_content(topic, prop_structures, prop_values, lang)}
+      <div class="modal-buttons">
+        ${form.submit_buttons(null, _("Close"))}
+      </div>
+    </div>
+  </acre:block>
+</acre:block>
+
+<acre:block def="row_edit_form_content(topic, prop_structures, prop_values, lang)">
+  <div class="modal-inner${topic.mediator ? ' mediator' : ''}">
+    <div class="pagination">
+      <a href="javascript:void(0);" style="visibility:hidden;" class="modal-nav modal-nav-prev">&laquo;${_("prev")}</a>
+      <a href="javascript:void(0);" style="visibility:hidden;" class="modal-nav modal-nav-next">${_("next")}&raquo;</a>
+    </div>
+    <h1 class="modal-title clear">
+      <acre:script>
+        var options = {
+          mode: 'fillcropmid'
+        }
+      </acre:script>
+      ${image.image_thumb(topic.id, 30, options)}
+      <span class="wrapper">
+        <span class="modal-nav-title">
+          ${i18n.display_name(topic)}
+        </span>
+        <acre:block if="!topic.mediator">
+          <ul class="combo-menu nicemenu">
+            <li class="nicemenu-item">
+              <span class="headmenu">
+                <a href="javascript:void(0)" class="more-action">menu</a>
+              </span>
+              <ul class="submenu row-menu">
+                <li class="row-menu-item">
+                  <a href="${h.fb_url(topic.id, [['i18n']])}">${_("Edit localized...")}</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </acre:block>
+      </span>
+    </h1>
+    <div class="modal-content">
+      <acre:block for="i,prop_structure in prop_structures">
+        ${pb.propbox(topic, prop_structure, prop_values[i], lang)}
+      </acre:block>
+    </div>
+  </div>
+</acre:block>

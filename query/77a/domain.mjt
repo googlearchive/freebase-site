@@ -1,0 +1,83 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+  var components = acre.require("lib/template/components.mjt");
+  var image = acre.require("lib/template/imagecomponents.mjt");
+</acre:script>
+
+<acre:block def="page_content()">
+  <h2 class="table-title">
+    ${_('Editor\'s queries')}
+  </h2>
+  ${query_table(c.editor_queries)}
+  
+  <h2 class="table-title">
+    ${_('User\'s queries')}
+  </h2>
+  ${query_table(c.user_queries)}
+</acre:block>
+
+<acre:block def="query_table(queries)">
+  <table cellspacing="0" class="table table-sortable">
+    <thead>
+      <tr>
+        <th scope="col" class="column-header">${_('Query')}</th>
+        <th scope="col" class="column-header">${_('Creator')}</th>
+        <th scope="col" class="column-header">${_('Created')}</th>
+        <th scope="col" class="column-header">${_('Type')}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr acre:for="q in queries">
+        <th class="row-header odd" scope="row">
+          <a href="${h.fb_url(q.id)}">${i18n.display_name(q)}</a>
+        </th>
+        <td class="even">
+          ${image.user_image_tiny(q.creator)}
+          ${components.creator_link(q.creator)}
+        </td>
+        <td class="odd">${h.relative_date(q.timestamp)}</td>
+        <th class="row-header even" scope="row">
+          <acre:block if="q.type">
+            <a href="${h.fb_url(q.type.id)}">${i18n.display_name(q.type)}</a>
+          </acre:block>
+          <acre:block else="">-</acre:block>
+        </th>
+      </tr>
+    </tbody>
+  </table>
+</acre:block>

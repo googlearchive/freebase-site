@@ -1,0 +1,125 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};  
+  var h = acre.require("lib/helper/helpers.sjs");
+  var sh = acre.require("helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var _ = i18n.gettext;
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="schema.mf.css" />
+</acre:block>
+
+<acre:block def="tag_a(href, text)">
+  <a href="${href}">${text || href}</a>
+</acre:block>
+
+<acre:block def="page_content()">
+  <table class="skeleton">
+    <tbody>
+      <tr>
+        <td class="subject" rowspan="2">
+          <a href="${h.fb_url(c.property.schema.id, [['schema']])}">${c.property.schema.id}</a>
+        </td>
+        <td class="predicate">
+          <span class="current-prop">
+            ${i18n.display_name(c.property)}
+            <span class="attribute" acre:if="!c.property.master_property">${_("master")}</span>
+            <span class="attribute" acre:if="c.property.unique">${_("unique")}</span>
+          </span>
+        </td> 
+        <td class="object" rowspan="2">
+          <a href="${h.fb_url(c.property.expected_type.id, [['schema']])}">
+            ${c.property.expected_type.id}
+          </a>
+          <acre:block if="c.property.expected_type['/freebase/type_hints/mediator']">
+            <span class="attribute">${_("mediator")}</span>
+          </acre:block>
+          <acre:block if="c.property.expected_type['/freebase/type_hints/enumeration']">
+            <span class="attribute">${_("enumerated")}</span>
+          </acre:block>            
+          <acre:block if="c.property.expected_type.id  === '/type/enumeration' && c.property.enumeration">
+            <span class="attribute">${c.property.enumeration.id}</span>
+          </acre:block>    
+          <span class="attribute" acre:if="c.property.unit">${c.property.unit['/freebase/unit_profile/abbreviation']}</a>
+        </td>
+      </tr>
+      <tr>
+        <td acre:if="c.property.reverse_property" class="rev_predicate">
+          <a href="${h.fb_url(c.property.reverse_property.id, [['schema']])}">${c.property.reverse_property.id}</a>     
+        </td>
+        <td acre:elif="c.property.master_property" class="rev_predicate">
+          <a href="${h.fb_url(c.property.master_property.id, [['schema']])}">${c.property.master_property.id}</a>  
+          <span class="attribute">${_("master")}</span>
+        </td>
+       <td acre:else="">&nbsp;</td>
+      </tr>
+    </tbody>
+  </table>
+  <table class="table">
+    <thead>
+      <th class="numeric column-header" scope="column">${_("Expected Type")}</th>
+      <th class="numeric column-header" scope="column">${_("Disambiguating")}</th>
+      <th class="numeric column-header" scope="column">${_("Unique")}</th>
+      <th class="numeric column-header" scope="column">${_("Hidden")}</th>
+      <th class="numeric column-header" scope="column" acre:if="c.property_reverse">${_("Reverse")}</th>
+    </thead>
+    <tbody>
+      <td class="numeric odd">
+        <a href="${h.fb_url(c.property.expected_type.id, [['schema']])}">$c.property.expected_type.id</a>
+      </td>
+      <td class="numeric even">
+        <span acre:if="c.property['/freebase/property_hints/disambiguator'] === true">${_("True")}</span>
+        <span acre:else="">${_("False")}</span>
+      </td>
+      <td class="numeric odd">
+        <span acre:if="c.property.unique === true">${_("True")}</span>
+        <span acre:else="">${_("False")}</span>
+      </td>
+      <td class="numeric even">
+        <span acre:if="c.property['/freebase/property_hints/display_none'] === true">${_("True")}</span>
+        <span acre:else="">${_("False")}</span>
+      </td>
+      <td class="numeric odd" acre:if="c.property_reverse">
+        <a href="${h.fb_url(c.property.reverse_property.id, [['schema']])}">${c.property.reverse_property.id}</a>
+      </td>          
+    </tbody>
+  </table>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="schema.mf.js"></script>
+</acre:block>
+
+

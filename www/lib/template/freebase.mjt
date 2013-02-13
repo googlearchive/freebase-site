@@ -315,7 +315,12 @@
     var globalize_bundles = acre.get_metadata("//bundles." + acre.current_script.app.host);
     var app_bundles = null;
     try {
+      /**
+       * TODO(daepark): This results in an appfetch to googlecode
+       * if the bundle is not present on local disk.
+       *
       app_bundles = acre.get_metadata("//bundles." + acre.request.script.app.host);
+       */
     }
     catch (ex) {
       // some apps do not have a bundle

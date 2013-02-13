@@ -8,27 +8,26 @@ var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
 var environment_rules = {
 
     "labels" : {
-        "lib": "//104a.lib.www.tags.svn.freebase-site.googlecode.dev",
+        "lib": "//105b.lib.www.tags.svn.freebase-site.googlecode.dev",
         "default" : "//default.dev",
 
-        "account": "//77a.account" + tags_codebase,
-        "appeditor": "//78a.appeditor" + tags_codebase,
-        "apps": "//79a.apps" + tags_codebase,
-        "create": "//74a.create" + tags_codebase,
-        "data": "//75a.data" + tags_codebase,
-        "formbuilder": "//21a.formbuilder" + tags_codebase,
-        "i18n": "//21a.i18n" + tags_codebase,
-        "mdo": "//55a.mdo" + tags_codebase,
-        "policies": "//77a.policies" + tags_codebase,
-        "query": "//74a.query" + tags_codebase,
-        "review": "//56a.review" + tags_codebase,
-        "sameas": "//75a.sameas" + tags_codebase,
-        "sample": "//76a.sample" + tags_codebase,
-        "schema": "//82a.schema" + tags_codebase,
-        "search": "//5a.search" + tags_codebase,
-        "topic": "//80a.topic" + tags_codebase,
-        "triples": "//76a.triples" + tags_codebase,
-        "users": "//54a.users" + tags_codebase
+        "account": "//78b.account" + tags_codebase,
+        "appeditor": "//79b.appeditor" + tags_codebase,
+        "apps": "//80b.apps" + tags_codebase,
+        "create": "//75b.create" + tags_codebase,
+        "data": "//76b.data" + tags_codebase,
+        "formbuilder": "//22b.formbuilder" + tags_codebase,
+        "i18n": "//22b.i18n" + tags_codebase,
+        "mdo": "//56b.mdo" + tags_codebase,
+        "policies": "//78b.policies" + tags_codebase,
+        "query": "//75b.query" + tags_codebase,
+        "review": "//57b.review" + tags_codebase,
+        "sample": "//77a.sample" + tags_codebase,
+        "schema": "//83a.schema" + tags_codebase,
+        "search": "//6a.search" + tags_codebase,
+        "topic": "//81a.topic" + tags_codebase,
+        "triples": "//77a.triples" + tags_codebase,
+        "users": "//55a.users" + tags_codebase
 
     },
 

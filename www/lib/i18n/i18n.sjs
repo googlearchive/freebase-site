@@ -292,7 +292,12 @@ function gettext(msgid) {
   if (last_bundle_app != acre.request.script.app.host) {
       var app = null;
       try {
+          /**
+           * TODO(daepark): This results in an appfetch to googlecode
+           * if the bundle is not present on local disk.
+           *
           app = acre.get_metadata("//bundles." + acre.request.script.app.host);
+           **/
       }
       catch (ex) {
           // some apps do not have a bundle

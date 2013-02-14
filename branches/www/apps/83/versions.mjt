@@ -1,0 +1,104 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+</acre:script>
+
+<acre:block def="page_content()">
+  <acre:block if="c.hosts && c.hosts.length">
+    <h2 class="table-title">
+      ${_('Released to: ')}
+      <acre:block for="i, h in c.hosts" trim="">
+        <acre:block if="i">, </acre:block>
+        <a href="http://$h.host">http://$h.host</a>
+      </acre:block>
+    </h2>
+  </acre:block>
+  <acre:block if="c.parent && c.parent.id !== '/freebase/apps/seed'">
+    <h2 class="table-title">
+      ${_('Is a clone of: ')}
+      <a href="${h.fb_url(c.parent.id)}">$c.parent.id</a>
+    </h2>
+  </acre:block>
+  <acre:block if="c.children && c.children.length">
+    <h2 class="table-title">
+      ${_('Has been cloned by: ')}
+      <acre:block for="i, child in c.children" trim="">
+        <acre:block if="i">, </acre:block>
+        <a href="${h.fb_url(child.id)}">$child.id</a>
+      </acre:block>
+    </h2>
+  </acre:block>
+  <table cellspacing="0" class="table table-sortable">
+    <thead>
+      <tr>
+        <th scope="col" class="column-header">${_('Version')}</th>
+        <th scope="col" class="column-header">${_('Released')}</th>
+        <th scope="col" class="column-header"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th class="row-header odd" scope="row">
+          <a href="http://${c.host + '.' + c.acre_host}">
+            ${_('Current')}
+          </a>
+        </th>
+        <td class="even">-</td>
+        <td class="odd">
+          <a href="${h.fb_url('/appeditor/#!path=//' + c.host)}">
+            View Source
+          </a>
+        </td>
+      </tr>
+      <tr acre:for="v in c.all_versions">
+        <th class="row-header odd" scope="row">
+          <a href="http://${v.name + '.' + c.host + '.' + c.acre_host}">
+            $v.name
+          </a>
+        </th>
+        <td class="even">
+          ${h.relative_date(acre.freebase.date_from_iso(v.as_of_time))}
+        </td>
+        <td class="odd">
+          <a href="${h.fb_url('/appeditor/#!path=//' + v.name + '.' + c.host)}">
+            View Source
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</acre:block>

@@ -1,0 +1,184 @@
+/*------------------------------------------------------------
+
+    MIXINS
+    
+    These are global mixins that should be used
+    for common CSS patterns (eg. CSS3 properties that require
+    multiple browser vendor prefixes).
+    
+    For documentation on using mixins:
+    http://lesscss.org/docs
+
+------------------------------------------------------------*/
+
+
+/*
+  ### Global Color Palette
+*/
+
+@pale_orange: #fa6;    /* Our primary color of orange */
+@link_blue  : #1170a3;   /* Color for all standard site links */
+@msg_yellow : hsl(51,100%,88%); /* Use for warning messages or *strong* page alerts */
+@msg_green  : #e4f3db; /* Use for success messages */
+@msg_red    : #fce2db; /* Use for error messages */
+@msg_blue   : #e5f2fb; /* Use for general notice or *weak* page alerts */
+
+
+@freebase_orange: #f71;/* Freebase orange. Really only should be used for logo */
+@strong_yellow : #fcce17; /* Use for warning messages or *strong* page alerts */
+/*
+  ### BORDER TREATMENTS
+*/
+.rounded_corners (@radius: 5px) {
+    -moz-border-radius: @radius;
+    -webkit-border-radius: @radius;
+    border-radius: @radius;
+}
+
+.rounded_corners_leftside (@radius: 5px) {
+    -webkit-border-bottom-left-radius: @radius;
+    -moz-border-radius-bottomleft: @radius;
+    border-bottom-left-radius: @radius;
+    -webkit-border-top-left-radius: @radius;
+    -moz-border-radius-topleft: @radius;
+    border-top-left-radius: @radius;
+}
+
+.rounded_corners_rightside (@radius: 5px) {
+    -webkit-border-bottom-right-radius: @radius;
+    -moz-border-radius-bottomright: @radius;
+    border-bottom-right-radius: @radius;
+    -webkit-border-top-right-radius: @radius;
+    -moz-border-radius-topright: @radius;
+    border-top-right-radius: @radius;
+}
+
+.rounded_corners_top (@radius: 5px) {
+    -webkit-border-top-left-radius: @radius;
+    -moz-border-radius-topleft: @radius;
+    border-top-left-radius: @radius;
+    -webkit-border-top-right-radius: @radius;
+    -moz-border-radius-topright: @radius;
+    border-top-right-radius: @radius;
+}
+
+
+.rounded_corners_bottom (@radius: 5px) {
+    -webkit-border-bottom-left-radius: @radius;
+    -moz-border-radius-bottomleft: @radius;
+    border-bottom-left-radius: @radius;
+    -webkit-border-bottom-right-radius: @radius;
+    -moz-border-radius-bottomright: @radius;
+    border-bottom-right-radius: @radius;
+}
+
+/*
+  ### SHADOWS
+*/
+
+.box_shadow (@h: 0px, @v: 0px, @blur: 3px, @color: #aaa) {
+    -webkit-box-shadow: @h @v @blur @color;
+    -moz-box-shadow: @h @v @blur @color;
+    box-shadow: @h @v @blur @color;
+}
+
+
+.inset_box_shadow (@h: 0px, @v: 0px, @blur: 3px, @color: #aaa) {
+    -webkit-box-shadow: inset @h @v @blur @color;
+    -moz-box-shadow: inset @h @v @blur @color;
+    box-shadow: inset @h @v @blur @color;
+}
+
+/*
+  ### GRADIENTS
+*/
+
+.linear_gradient(@start: #efefef, @end: #dcdcdc, @mode: repeat) {
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(@start), to(@end));
+    background-image: -webkit-linear-gradient(@start, @end);
+    background-image: -moz-linear-gradient(0% 55% 90deg,@end, @start);
+    background-repeat: @mode;
+}
+
+/*
+  ### CSS TRANSITIONS
+*/
+
+.transition(@property: all, @duration: 0.3s, @mode: linear, @delay: 0s) {
+    -webkit-transition: @property @duration @mode @delay;
+    -moz-transition: @property @duration @mode @delay;
+    -o-transition: @property @duration @mode @delay;
+    transition: @property @duration @mode @delay;
+}
+
+
+/*
+  ### CSS COLUMNS
+*/
+
+.column_count(@count: 1) {
+  -webkit-column-count: @count;
+  -moz-column-count: @count;
+  -o-column-count: @count;
+  column-count: @count;
+}
+
+/*
+ * CSS Diagonal Stripes
+ */
+
+.diagonal_stripes_left(@size: 4px) {
+  background-size: @size @size;
+  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .3) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .3) 50%, rgba(255, 255, 255, .3) 75%, transparent 75%, transparent);
+  background-image: -moz-linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
+  background-image: -ms-linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
+  background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
+  background-image: linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
+  background-repeat: repeat;
+}
+
+
+/*
+  ### CSS TRANSFORMS
+
+  Note: css transforms are not additive. Therefore, you cannot do something like the following:
+
+  .foo {
+    .translate();
+    .skew();
+  }
+
+  You must declare all css transforms in a single statement:
+
+  .bar {
+    -webkit-transform: translate(2px, 0) skew(5deg);
+  }
+
+  Unforunately, LessCSS doesn't currently allow you to pass
+  arrays in mixins, so if you need more than one css transform
+  for an single interaction, you cannot use mixins.
+*/
+
+.translate(@x: 5px, @y: 0px) {
+  -webkit-transform: translate(@x, @y);
+  -moz-transform: translate(@x, @y);
+  -o-transform: translate(@x, @y);
+  -ms-transform: translate(@x, @y);
+  transform: translate(@x, @y);
+}
+
+.rotate(@degree: 0deg) {
+  -webkit-transform: rotate(@degree);
+  -moz-transform: rotate(@degree);
+  -o-transform: rotate(@degree);
+  -ms-transform: rotate(@degree);
+  transform: rotate(@degree);
+}
+
+.scale(@x: 1, @y: 1) {
+  -webkit-transform: rotate(@x,@y);
+  -moz-transform: rotate(@x,@y);
+  -o-transform: rotate(@x,@y);
+  -ms-transform: rotate(@x,@y);
+  transform: rotate(@x,@y);
+}

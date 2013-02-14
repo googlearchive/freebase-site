@@ -33,7 +33,8 @@
   $.fn.validate_input = function (options) {
     return this.each(function() {
       var $this = $(this);
-      if (!$this.is(":text")) {
+      if (! ($this.is(":text") || $this.is("textarea"))) {
+        console.warn('$.fn.validate_input: Unknown input', this);
         return;
       }
       var inst = $this.data("$.validate_input");
@@ -68,7 +69,7 @@
           self.textchange(e);
         })
         .bind("keypress.validate_input", function(e) {
-          if (e.keyCode === 13) {
+          if (!$(this).is('textarea') && e.keyCode === 13) {
             self.validate(true);
           }
         })

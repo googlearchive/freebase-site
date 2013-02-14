@@ -402,7 +402,13 @@
     <acre:script>
       var attrs = h.extend({}, microdata.value(prop_structure, prop_value));
       attrs["class"] = "property-value";
-      attrs["data-value"] = prop_value.value;
+      if (ect != '/type/text' && ect != '/type/rawstring' &&
+          ect != '/type/uri' && ect != '/type/key') {
+        // We can't store the above values in the data-value attribute
+        // since they may contain non-alphanumeric characters that get
+        // escaped by the templates.
+        attrs["data-value"] = prop_value.value;
+      }
     </acre:script>
     <acre:block if="ect === '/type/datetime'">
       ${i18n_c.datetime(prop_value.value, attrs)}
@@ -416,11 +422,8 @@
     <acre:block elif="ect === '/type/uri'">
       <acre:script>
         attrs.target = "_blank";
-        // we want to insert href and data-value directly
-        // so it does not get escaped
-        delete attrs.data-value;
       </acre:script>
-      <a href="${prop_value.value}" acre:attrs="attrs" data-value="${prop_value.value}">${prop_value.text}</a>
+      <a href="${prop_value.value}" acre:attrs="attrs">${prop_value.text}</a>
     </acre:block>
     <acre:block elif="ect === '/type/key'">
       <acre:script>
@@ -445,13 +448,8 @@
       <a href="${h.fb_url(true, object_id)}" acre:attrs="attrs">${prop_value.text}</a>
     </acre:block>
     <acre:block else="">
-      <acre:block if="prop_structure.id === '/common/topic/description'">
-        <span acre:attrs="attrs">${prop_value.value}</span>
-      </acre:block>
-      <acre:block else="">
-        <span acre:attrs="attrs">${prop_value.text}</span>
-      </acre:block>
-      <acre:block if="ect === '/type/text' && prop_value.lang">
+      <span acre:attrs="attrs">${prop_value.value}</span>
+      <acre:block if="ect == '/type/text' && prop_value.lang">
         ${i18n_c.lang_code(prop_value.lang, lang)}
       </acre:block>
     </acre:block>
@@ -814,6 +812,12 @@ propbox edit forms
     <span class="data-input ${type} ${JSON.stringify(data)}">
       <input class="fb-input" type="text" name="${name}"
              acre:attrs="prop_value ? {value:i18n.format_datetime(prop_value.value)} : {}"/>
+    </span>
+  </acre:block>
+  <acre:block elif="name == '/common/topic/description'">
+    <span class="data-input textarea ${JSON.stringify(data)}">
+      <textarea class="fb-input"
+                name="/common/topic/description">${prop_value ? prop_value.value : ''}</textarea>
     </span>
   </acre:block>
   <acre:block else="">

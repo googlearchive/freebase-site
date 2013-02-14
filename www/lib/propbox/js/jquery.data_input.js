@@ -116,7 +116,8 @@
           self.container.trigger("empty");
         })
         .bind("keypress.data_input", function(e) {
-          if (e.keyCode === 13 && !e.isDefaultPrevented()) { // enter
+          if (e.keyCode === 13 && !e.isDefaultPrevented() &&
+              !self.input.is('textarea')) { // enter
             self.container.trigger("submit");
           }
         })
@@ -160,7 +161,7 @@
           this.validate();
         }
       }
-      else if (c.is(".text")) {
+      else if (c.is(".text") || c.is(".textarea")) {
         i.validate_input({validator: $.validate_input.text});
       }
       else if (c.is(".datetime")) {
@@ -237,7 +238,7 @@
 
     reset: function() {
       this.container.removeData("data");
-      if (this.input.is(":text")) {
+      if (this.input.is(":text") || this.input.is('textarea')) {
         this.input.val("");
       }
       else if (this.input.is("select")) {

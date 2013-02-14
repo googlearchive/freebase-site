@@ -46,6 +46,7 @@ standalone. However, it can be extended with the
 following classes for additional context:
 
   - .text
+  - .textarea
   - .datetime
   - .uri
   - .int
@@ -77,6 +78,7 @@ but can (and should) be tailored to your app.
 }
 
 .data-input.text,
+.data-input.textarea,
 .data-input.datetime,
 .data-input.uri,
 .data-input.int,
@@ -127,12 +129,19 @@ but can (and should) be tailored to your app.
 /*
 ### text inputs
 */
-.data-input.text {
+.data-input.text,
+.data-input.textarea {
   background-position: right -931px;
 }
 
-.data-input.text.error {
+.data-input.text.error,
+.data-input.textarea.error {
   background-position: right -968px;
+}
+
+.data-input.textarea textarea {
+  width: 284px;
+  height: 80px;
 }
 
 /*

@@ -325,9 +325,13 @@ function mqlread_clause(prop_structure, prop_value, lang, namespace, options) {
       }
     }
     else if (ect.id === "/type/key") {
-        clause.namespace = namespace || null;
+      clause.namespace = namespace || null;
     }
-    clause.value = literal_validator(ect.id)(prop_value, {if_empty:null});
+    clause.value = literal_validator(ect.id)(
+        prop_value, {
+          if_empty: null,
+          if_invalid: prop_value
+        });
   }
   else {
     clause.id = prop_value;

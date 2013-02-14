@@ -44,6 +44,12 @@ var CONNECTED = {
   "present": 1
 };
 
+var CONNECT = {
+  'insert': 1,
+  'update': 1,
+  'replace': 1
+};
+
 /**
  * prop add form
  */
@@ -86,8 +92,22 @@ var SPEC = {
               if (!clause.connect || CONNECTED[clause.connect]) {
                 var ect = prop_structure.expected_type.id;
                 if (h.is_literal_type(ect)) {
-                  object_value = clause.value;
-                  // TODO: assert clause.lang === lang
+                  /**
+                   * TODO(daepark) - We can't use clause.value since
+                   * mqlwrite is reporting '&' as '&amp;' because html_escape
+                   * is on by default (internal bug filed).
+                   * For now use the supplied value from params.o
+                   *
+                   * object_value = clause.value;
+                   * // TODO(daepark): assert clause.lang === lang
+                   */
+                  o.every(function(clause) {
+                    if (CONNECT[clause.connect]) {
+                      object_value = clause.value;
+                      return false;
+                    }
+                    return true;
+                  });
                 }
                 else {
                   object_value = clause.id;

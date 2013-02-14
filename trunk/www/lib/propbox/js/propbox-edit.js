@@ -183,7 +183,8 @@
       }
       else {
         var prop_value = $(".property-value:first", prop_row);
-        value = prop_value.attr("data-value") || prop_value.attr("data-id") || prop_value.attr("datetime");
+        value = prop_value.attr("data-value") || prop_value.attr("data-id") ||
+          prop_value.attr("datetime") || prop_value.text();
         namespace = prop_value.attr("data-namespace");
       }
       $.ajax($.extend(formlib.default_begin_ajax_options(), {
@@ -289,6 +290,12 @@
         return;
       }
 
+      if (!o.length) {
+        // Nothing to submit
+        options.edit_row.trigger(options.event_prefix + "cancel");
+        return;
+      }
+
       $.ajax($.extend(ajax_options, {
         onsuccess: function(data) {
           var new_row = $(data.result.html);
@@ -313,7 +320,8 @@
       }
       else {
         var prop_value = $(".property-value:first", prop_row);
-        value = prop_value.attr("data-value") || prop_value.attr("data-id") || prop_value.attr("datetime");
+        value = prop_value.attr("data-value") || prop_value.attr("data-id") ||
+          prop_value.attr("datetime") || prop_value.text();
         namespace = prop_value.attr("data-namespace");
       }
       var submit_data = {

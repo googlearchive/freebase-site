@@ -720,7 +720,18 @@
           search_container.removeClass("active");
         }
       }
-    };
+    }
+
+    function get_best_id(data){
+      var id = data.id;
+      if (id.indexOf('/en/') == 0) {
+        return data.mid || id;
+      } else if (data.notable && fb.h.is_metaweb_system_type(data.notable.id)) {
+        return id;
+      } else {
+        return data.mid || id;
+      }
+    }
 
     search
       .bind("fb-select", function(e, data) {
@@ -729,7 +740,8 @@
         $(this).siblings("input[type=hidden]").each(function() {
             params[this.name] = this.value;
         });
-        window.location = fb.h.fb_url(data.id, params);
+        var id = get_best_id(data);
+        window.location.href = fb.h.fb_url(id, params);
         return false;
       })
       .bind("fb-pane-show", function(e, data) {

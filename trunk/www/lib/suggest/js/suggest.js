@@ -1815,9 +1815,13 @@
         id = data['mid'];
         image = flyout_image_url.replace(/\$\{id\}/g, id);
       }
+      var description_src = 'freebase';
       var description = get_value(
           data, ['output', 'description', 'wikipedia'], true);
-      if (! (description && description.length)) {
+      if (description && description.length) {
+        description_src = 'wikipedia';
+      }
+      else {
         description = get_value(
             data, ['output', 'description', 'freebase'], true);
       }
@@ -1863,7 +1867,11 @@
               .append(document.createTextNode(prop[1])));
           });
       if (description) {
-        content.append($('<p class="fbs-topic-article">').text(description));
+        content.append(
+            $('<p class="fbs-topic-article">')
+                .append($('<em class="fbs-citation">')
+                    .text('[' + description_src + '] '))
+                .append(document.createTextNode(description)));
       }
       if (image) {
         content.children().addClass('fbs-flyout-image-true');

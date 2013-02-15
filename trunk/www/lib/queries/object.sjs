@@ -140,7 +140,18 @@ function get_description(topic, tm) {
       }
     }
   } else {
-    desc = get_first_value(topic, "/common/topic/description");
+    // Prefer wikipedia descriptions
+    var values = get_values(topic, "/common/topic/description");
+    values.every(function(value) {
+      if (h.is_wikipedia_description(value)) {
+        desc = value;
+        return false;
+      }
+      return true;
+    });
+    if (!desc && values.length) {
+      desc = values[0];
+    }
     if (!desc) {
       var article = get_latest_value(topic, "/common/topic/article");
       if (article) {

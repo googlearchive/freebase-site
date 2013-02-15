@@ -35,6 +35,7 @@
   var _ = i18n.gettext;
   // microdata helpers
   var microdata = acre.require("helper/microdata.sjs");
+  var components = acre.require("template/components.mjt");
   var ph = acre.require("propbox/helpers.sjs");
   var image = acre.require("template/imagecomponents.mjt");
   var form = acre.require("propbox/form.mjt");
@@ -397,6 +398,7 @@
 <acre:block def="value(id, prop_structure, prop_value, lang)">
   <acre:script>
     var ect = prop_structure.expected_type.id;
+    var citation = h.get_citation(prop_value);
   </acre:script>
   <acre:block if="h.is_literal_type(ect)">
     <acre:script>
@@ -483,6 +485,9 @@
         ${i18n_c.lang_code(prop_value.lang, lang)}
       </acre:block>
     </acre:block>
+  </acre:block>
+  <acre:block if="citation">
+    ${components.citation(citation)}
   </acre:block>
 </acre:block>
 

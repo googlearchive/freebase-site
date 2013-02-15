@@ -32,7 +32,6 @@
 var topscope = this.__proto__;
 
 var h = acre.require("helper/helpers.sjs");
-var fh = acre.require("filter/helpers.sjs");
 var service_lib = acre.require("handlers/service_lib.sjs");
 var controller = acre.require("handlers/controller_handler.sjs");
 
@@ -115,8 +114,7 @@ function main(rule, object) {
     nav_keys: rule.nav_keys || [],
     gear: rule.gear || [],
     banners: rule.banners || [],
-    show_image: rule.show_image,
-    filters: fh.global_filters(acre.request.params)
+    show_image: rule.show_image
   };
 
   // extend object type (global) promises

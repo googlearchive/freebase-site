@@ -306,19 +306,6 @@ test("validators.Timestamp", timestamp_test, function() {
 });
 
 
-var datejs_test = {
-  valid: ["today", "yesterday", "now", "2009/11/05", "2009-1-1"].concat(timestamp_test.valid.map(function(v){ return v[0]; }))
-};
-
-test("validators.Datejs", datejs_test, function() {
-  datejs_test.valid.forEach(function(val) {
-    var d = validators.Datejs(val);
-    ok(d, "validate datejs string: " + d);
-    ok(validators.Timestamp(d, {if_invalid:null}), "valid iso8601");
-  });
-});
-
-
 var int_test = {
   valid: [
     0, 0,
@@ -514,20 +501,6 @@ test("MultiValue", function() {
                              [true, true, true, true, true,
                               false, false, false, false, false, false]);
 
-  try {
-    validators.MultiValue(["today", "yesterday", "bad date", {bad:"date"}],
-                          {validator:validators.Datejs});
-    ok(false, "expected invalid exception");
-  }
-  catch (e if e instanceof validators.Invalid) {
-    ok(true, "got expected invalid exception: " + e);
-  }
-
-  same(validators.MultiValue(["today", "yesterday", "bad date", {bad:"date"}], {validator:validators.Datejs, if_invalid:null}),
-    [validators.Datejs("today"), validators.Datejs("yesterday")]);
-
-  same(validators.MultiValue(["today", "yesterday", "bad date", {bad:"date"}], {validator:validators.Datejs, if_invalid:null, allow_null:true}),
-    [validators.Datejs("today"), validators.Datejs("yesterday"), null, null]);
 });
 
 test("Json", function() {

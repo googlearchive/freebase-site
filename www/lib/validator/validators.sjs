@@ -30,7 +30,6 @@
  */
 var h = acre.require("helper/helpers.sjs");
 var i18n = acre.require("i18n/i18n.sjs");
-var datejs = acre.require("datejs/date.sjs");
 
 var Class = {
   factory: function(clazz, clazz_args) {
@@ -605,38 +604,6 @@ Validator.factory(scope, "Datetime", {
         return this.invalid(this.key, val, "is not a valid datetime string");
     }
 });
-
-
-/**
- * Accepts any (or specific) datejs format
- */
-Validator.factory(scope, "Datejs", {
-  "defaults": {
-    date: false   // if TRUE convert to date,
-                  // else converted to ISO8601 (yyyy-MM-ddTHH:mm:ss)
-  },
-  "string": function(val, options) {
-    var date = null;
-    try {
-      date = datejs.Date.parse(val);
-    }
-    catch (ex) {
-      date = null;
-    }
-    if (date) {
-        if (options.date) {
-            return date;
-        }
-        else {
-            return date.toString("yyyy-MM-ddTHH:mm:ss").replace(/T00\:00\:00$/, "");
-        }
-    }
-    else {
-        return Timestamp(val, options);
-    }
-  }
-});
-
 
 /**
  * Integer

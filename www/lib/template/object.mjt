@@ -36,6 +36,7 @@
 <acre:script>
   var c = this.exports.c = {};
   var h = acre.require("helper/helpers.sjs");
+  var validators = acre.require("validator/validators.sjs");
   var i18n = acre.require("i18n/i18n.sjs");
   var i18n_c = acre.require("i18n/components.mjt");
   var _ = i18n.gettext;
@@ -46,7 +47,6 @@
   var self= this;
   var this_exports = this.exports;
   var that_exports;
-  var fh = acre.require("filter/helpers.sjs");
 
   var exec = function (o, scope) {
     var ifexec = true;
@@ -120,7 +120,9 @@
 <acre:block def="body(exports)">  
   <!!-- over-ride default body to add "embed" class !!-->
   <acre:script>
-    var embed = c.filters.embed ? " embed" : "";
+    var embed = validators.StringBool(
+      acre.request.params.embed, {if_empty:false});
+    embed = embed ? " embed" : "";
   </acre:script>
   <!--[if IE 8 ]><body class="ie8${embed}"><![endif]-->
   <!--[if IE 7 ]><body class="ie7${embed}"><![endif]-->
@@ -383,15 +385,10 @@
 </acre:block>
 
 <acre:block def="nav_tabs()">
-  <acre:script>
-    var params = fh.global_filters(c.filters);
-    // use fb_url to get lang param
-    qs = h.fb_url("", params).substring(2);
-  </acre:script>
   <ul class="tab-nav">
     <acre:block for="i, tab in c.tabs">
       <acre:script>
-        var url = "?" + tab.key + (qs.length ? "&" + qs : "");
+        var url = "?" + tab.key;
         var current = (tab.key === c.current_tab.key);
       </acre:script>
       <li class="main-tab">
@@ -408,7 +405,7 @@
           <ul class="row-menu submenu left object-settings">
             <acre:block for="tab in c.more_tabs">
               <acre:script>
-                var url = "?" + tab.key + (qs.length ? "&" + qs : "");
+                var url = "?" + tab.key;
                 var current = (tab.key === c.current_tab.key);
               </acre:script>
               <li>

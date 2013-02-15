@@ -45,7 +45,7 @@
   var self= this;
   var this_exports = this.exports;
   var that_exports;
-  var fh = acre.require("filter/helpers.sjs");
+
 </acre:script>
 
 <acre:block def="page(exports)">
@@ -129,11 +129,6 @@
 </acre:block>
 
 <acre:block def="nav_tabs()">
-  <acre:script>
-    var params = fh.global_filters(c.filters);
-    // use fb_url to get lang param
-    qs = h.fb_url("", params).substring(2);
-  </acre:script>
   <ul class="tab-nav">
     <acre:block for="tab in c.tabs">
       <acre:script>

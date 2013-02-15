@@ -1861,3 +1861,38 @@ function get_markdown_converter(sanitized) {
   var Markdown = acre.require("markdown/markdown.sjs").Markdown;
   return (sanitized === false) ? new Markdown.Converter() : Markdown.getSanitizingConverter();
 };
+
+
+// ---------- CITATIONS --------------------
+
+/**
+ * Is the description returned by the Topic API from wikipedia?
+ */
+function is_wikipedia_description(desc) {
+  /**
+   * Wikipedia descriptions have citations:
+   * <code>
+   * creator: "/user/wikirecon_bot",
+   * project: "wikirecon",
+   * dataset: "/m/0kj4zz_",
+   * citation: {
+   *   provider: "Wikipedia Descriptions",
+   *   uri: "http://en.wikipedia.org/wiki/Bob_Dylan"
+   * }
+   * </code>
+   */
+  return desc.citation && desc.citation.provider == 'Wikipedia Descriptions' ||
+      desc.creator == '/user/wikirecon_bot' ||
+      desc.project == 'wikirecon' ||
+      desc.dataset == '/m/0kj4zz_';
+}
+
+/**
+ * Get the citation information for a value object (from the Topic API).
+ */
+function get_citation(obj) {
+  if (obj.citation) {
+    return obj.citation;
+  }
+  return null;
+}

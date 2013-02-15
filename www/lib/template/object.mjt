@@ -338,9 +338,13 @@
               <acre:script>
                 var d = c.object.description;
                 var less = d.text !== d.value;
+                var citation = h.get_citation(d);
               </acre:script>
               <p class="blurb" id="max-blurb">
                 ${d.value}
+                <acre:block if="citation">
+                  ${components.citation(citation)}
+                </acre:block>
                 <a acre:if="less" href="#" title="${_('Show less')}" 
                    id="less-blurb">[ - ]</a>
               </p>
@@ -349,7 +353,6 @@
                 <a href="#" title="${_('Show more')}" 
                    id="more-blurb">[ + ]</a>
               </p>
-              <!-- TODO: show citation text -->
             </acre:block>
           </div>
         </div>

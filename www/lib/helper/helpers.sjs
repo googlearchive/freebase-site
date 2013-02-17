@@ -1216,27 +1216,8 @@ var i18n = acre.require("i18n/i18n.sjs");
  * Relative date relative to current time
  */
 function relative_date(d) {
-  var c = new Date();
-
-  var  _ = i18n.gettext;
-
-  var delta = c.getTime() - d.getTime();
-  var dY = Math.floor(delta / (365 * 24 * 60 * 60 * 1000));
-  if (dY > 0) { return dY === 1? _("1 year ago")   : sprintf(_("%s years ago"), dY); }
-
-  var dM = Math.floor(delta / (30 * 24 * 60 * 60 * 1000));
-  if (dM > 0)   { return dM === 1? _("1 month ago")  : sprintf(_("%s months ago"), dM); }
-
-  var dD = Math.floor(delta / (24 * 60 * 60 * 1000));
-  if (dD > 0)   { return dD === 1? _("1 day ago")    : sprintf(_("%s days ago"), dD); }
-
-  var dH = Math.floor(delta / (60 * 60 * 1000));
-  if (dH > 0)   { return dH === 1? _("1 hour ago")   : sprintf(_("%s hours ago"), dH); }
-
-  var dN = Math.floor(delta / (60 * 1000));
-  if (dN > 0)   { return dN === 1? _("1 minute ago") : sprintf(_("%s minutes ago"), dN); }
-  else if (dN == 0)  { return _("less than a minute ago"); }
-  else /*(dN < 0)*/   { return _("in the future???"); }
+  var moment = acre.require('moment/moment.sjs');
+  return moment.moment(d).fromNow();
 };
 
 

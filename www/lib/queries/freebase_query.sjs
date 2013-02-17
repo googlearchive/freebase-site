@@ -30,7 +30,6 @@
  */
 
 var i18n = acre.require("i18n/i18n.sjs");
-var datejs = acre.require("helper/helpers.sjs");
 var apis = acre.require("promise/apis.sjs");
 var deferred = apis.deferred;
 var freebase = apis.freebase;
@@ -162,7 +161,6 @@ function user_queries_mql(user) {
 };
 
 function recent_queries_mql(days) {
-  var timestamp = acre.freebase.date_to_iso(datejs.Date.today().addDays(-days));
   var q = [{
     "id": null,
     "name": i18n.mql.query.name(),

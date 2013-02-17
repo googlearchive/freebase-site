@@ -1628,6 +1628,15 @@ function proxy_image_url(url) {
   return PROXY_IMAGE_PREFIX + url + PROXY_IMAGE_SUFFIX;
 }
 
+
+/**
+ * Freebase RDF endpoint.
+ */
+var RDF_URL = 'http://rdf.freebase.com/rdf/';
+function rdf_url(id) {
+  return RDF_URL + id.replace(/\//g, '.').substring(1);
+}
+
 // -----Functions for routing -----
 
 

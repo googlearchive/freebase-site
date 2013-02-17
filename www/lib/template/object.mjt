@@ -97,6 +97,9 @@
 <acre:block def="head()">
   <!-- canonical url -->
   <link rel="canonical" href="${h.fb_url(true, c.object.id)}" />
+  <!-- rdf -->
+  <link rel="alternate" type="application/turtle" 
+        href="${h.rdf_url(c.object.id)}">
   <!-- Update address bar if ID changed in object router -->
   <script acre:if="c.object && acre.request.path_info !== c.object.id">
     (function() {

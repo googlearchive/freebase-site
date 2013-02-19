@@ -1,0 +1,440 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var h = acre.require("helper/helpers.sjs");
+  if (h.is_client()) {
+    h.set_cache_policy('public');
+  }
+  var i18n = acre.require("i18n/i18n.sjs");
+  var i18n_c = acre.require("i18n/components.mjt");
+  var _ = i18n.gettext;
+  var incompatible_components = acre.require("incompatible_types/components.mjt")
+  acre.response.set_header_default("Vary", "Accept-Language");
+</acre:script>
+
+<acre:block def="page(exports)">
+  <acre:script>
+    acre.response.set_header('content-type', 'text/html');
+  </acre:script>
+  <!DOCTYPE html>
+  <html lang="en" dir="ltr" class="no-js">
+    <head>
+      <meta charset="utf-8" />
+      <title acre:if="exports.title">Freebase - ${exports.title()}</title>
+      <title acre:else="">Freebase</title>
+
+      <!-- acre variables useful for client-side javascript -->
+      ${acre_javascript_vars(exports)}
+
+      <link rel="stylesheet" type="text/css" href="suggest/suggest.mf.css" />
+      <!!--
+         Modernizr must be served from document head.
+         
+      -->
+      <script src="template/modernizr.mf.js"></script>
+
+      <!!--
+         Global freebase css you want highly cached across multiple pages.
+         For page specific css, define in exports.head
+        -->
+      <acre:block if="exports.freebase_css">
+        ${exports.freebase_css()}
+      </acre:block>
+      <acre:block else="">
+        <!-- freebase.mf.css -->
+        <link rel="stylesheet" type="text/css" href="template/freebase.mf.css" />
+      </acre:block>
+       <!!--
+       /**
+        * .edit is a global class used for initializing
+        * buttons that require user authorization.
+        * they start out hidden and are shown via javascript
+        * once the user has been authorized.
+        * this at the end since some css can override if in freebase.css
+        **/
+        !!-->
+      <style type="text/css">
+        .signedin, .signedout, .edit, .no-edit, .edit-perm {
+          display: none;
+        }
+      </style>
+
+      <acre:block if="h.is_production()">
+        <script>${acre.include("googleanalytics.js")}</script>
+      </acre:block>
+
+      <!-- any additional head content (i.e., css, js, etc.)-->
+      <acre:block if="exports.head">
+        ${exports.head(exports)}
+      </acre:block>
+    </head>
+    
+    <acre:block if="exports.body">
+      ${exports.body(exports)}
+    </acre:block>
+    <acre:block else="">
+      <!--[if IE 8 ]><body class="ie8"><![endif]-->
+      <!--[if IE 7 ]><body class="ie7"><![endif]-->
+      <!--[if IE 6 ]><body class="ie6"><![endif]-->
+      <!--[if !IE]>--><body class=""><!--<![endif]-->
+        ${inner_body(exports)}
+      </body>
+    </acre:block>
+  </html>
+</acre:block>
+
+<acre:block def="inner_body(exports)">
+  <!!-- for status messages !!-->
+  <span class="notice" id="page-state">
+    <a href="" class="close-msg">close</a>
+    <pre class="status-msg"></pre>
+  </span>
+
+  <!!-- header !!-->
+  <acre:block if="exports.header">
+    ${exports.header(exports)}
+  </acre:block>
+  <acre:block else="">
+    ${header(exports)}
+  </acre:block>
+  
+  <!!-- content !!-->
+  <acre:block if="exports.content">
+    ${exports.content(exports)}
+  </acre:block>
+  <acre:block else="">
+    ${content(exports)}
+  </acre:block>
+  
+  <!!-- footer !!-->
+  <acre:block if="exports.footer">
+    ${exports.footer(exports)}
+  </acre:block>
+  <acre:block else="">
+    ${footer(exports)}
+  </acre:block>
+
+  <!!-- footer_script !!-->
+  ${footer_script(exports)}
+</acre:block>
+
+<acre:block def="header(exports)">
+<header role="banner" id="header">
+  <acre:block if="exports.nav_utils">
+    ${exports.nav_utils()}
+  </acre:block>
+  <acre:block else="">
+    <div id="nav-utilities" class="clear">
+      <div class="nav-user-controls" id="signedin" style="display:none;">
+        <acre:block if="exports.nav_user_signedin">
+          ${exports.nav_user_signedin()}
+        </acre:block>
+        <acre:block else="">
+          <div id="nav-username">
+            <a href="${h.fb_url('/')}" class="trigger" title="View your profile">${_("You")}</a>
+          </div>
+          <div id="user-controls">
+            <ul>
+              <li>
+                <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?schema'">${_("Schema")}</a>
+              </li>
+              <li>
+                <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?queries'">${_("Queries")}</a>
+              </li>
+              <li>
+                <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?apps'">${_("Apps")}</a>
+              </li>
+            </ul>
+            <a href="${h.account_url('signout')}" title="Sign out of Freebase" rel="nofollow" id="nav-signout">Sign Out</a>
+          </div>
+        </acre:block>        
+      </div>
+      <div class="nav-user-controls anonymous" id="signedout" style="display:none;">
+        <acre:block if="exports.nav_user_signedout">
+          ${exports.nav_user_signedout()}
+        </acre:block>
+        <acre:block else="">
+          <a href="${h.account_url('signin')}" title="Sign in to your Freebase account" 
+             id="fb-signin-link"
+             rel="nofollow">Sign In or Sign Up</a>
+        </acre:block>
+      </div>
+      ${i18n_c.lang_select()}
+    </div>
+  </acre:block>
+  <acre:block if="exports.logo">
+    ${exports.logo()}
+  </acre:block>
+  <acre:block else="">
+    <!!-- Freebase logo -->
+    <a href="${h.fb_url()}">
+      <img alt="${_('Freebase logo')}"
+           id="fb-logo"
+           acre:attrs="h.is_production() ? {src: h.static_url(acre.resolve('template/img/freebase-logo-production.png'))} : {src: h.static_url(acre.resolve('template/img/freebase-logo-sandbox.png'))}"
+           border="0" height="21" width="120" />
+    </a>
+  </acre:block>
+  <acre:block if="exports.header_nav">
+    ${exports.header_nav()}
+  </acre:block>
+  <acre:block else="">
+    <!!-- Freebase Suggest -->
+    <div id="fb-search">
+      <form action="${h.fb_url('/search')}" method="GET">
+        <input type="text"
+               id="fb-search-input"
+               name="query"
+               autocomplete="off"
+               placeholder="Find&hellip;" />
+        ${fb_search_input_params(exports)}
+      </form>
+      <div id="site-search-box"></div>
+      <div id="site-search-label"><span>${_("Start typing to get some suggestions")}</span></div>
+      <div id="site-search-topic-option">
+        <label><input type="checkbox" name="type" value="/common/topic">Include non-topics</label>
+      </div>
+    </div>
+    <!!-- Global Nav Links-->
+    <ul class="clear search" id="nav-global">
+      <li><a href="/browse">${_("Browse")}</a></li>
+      <li><a href="/query">${_("Query")}</a></li>
+      <li>
+        <a href="${h.wiki_url()}"
+          title="Give help and get help adding data to Freebase">
+          ${_("Help")}
+        </a>
+      </li>
+    </ul>
+  </acre:block>
+  <div id="breadcrumb" acre:if="exports.breadcrumb">
+    ${exports.breadcrumb()}
+  </div>
+</header>
+</acre:block>
+
+<acre:block def="content(exports)">
+  <div id="content" class="clear">
+    <acre:block if="exports.content_body">${exports.content_body()}</acre:block>
+  </div>
+</acre:block>
+
+<acre:block def="footer(exports, attrs)">
+  <div id="footer" class="clear" acre:attrs="attrs ? attrs : {}">
+    <div id="copyright">
+      <a href="http://www.google.com/" rel="nofollow">
+        &#169; <script> document.write(new Date().getFullYear());</script>
+        <img src="template/img/google-logo.png" alt="Google" width="62" height="23" />
+      </a>
+      <a title="${acre.request.script.path}" href="/appeditor#!path=${acre.request.script.path}" id="sourcelink">${_("View Source")}</a>
+      &nbsp;
+      <a href="#" onclick="window.location.reload(true); return false;" id="cachelink">${_("Clear Cache")}</a>
+    </div>
+    <acre:block if="exports.footer_nav">
+      ${exports.footer_nav()}
+    </acre:block>
+    <acre:block else="">
+      <ul id="nav-footer" class="clear">
+        <li class="nav-footer-item">
+          <a href="${h.fb_url('/policies/tos')}"
+             rel="nofollow"
+             title="View the Freebase Terms of Service">${_("Terms of Service")}</a>
+        </li>
+        <li class="nav-footer-item">
+          <a href="${h.fb_url('/policies/attribution')}"
+             rel="nofollow"
+             title="View the Freebase Licensing Policy">${_("How to Attribute to Freebase")}</a>
+        </li>
+        <li class="nav-footer-item">
+          <a href="http://www.google.com/tools/feedback/intl/en/error.html" onclick="
+          try{
+            var data = {
+              'fb-dateline': jQuery.cookie('fb-dateline')
+            };
+            userfeedback.api.startFeedback({
+              productId: '68931',
+              disableScrolling: false
+            }, data);
+            return false;
+          }catch(e){}">${_("Feedback")}</a>
+        </li>
+      </ul>
+    </acre:block>
+  </div>
+  <div id="fb-topic-hover-pane" class="fbs-reset fbs-flyout-pane"></div>
+  ${incompatible_components.overlay_dialog()}  
+  ${incompatible_components.inline_dialog()}
+</acre:block>
+
+
+<acre:block def="footer_script(exports)">
+  <!!-- jquery -->
+  <script src="${h.lib_base_url('jquery')}/jquery.min.js"></script>
+
+  <!!-- freebase.mf.js -->
+  <acre:block if="exports.freebase_js">
+    ${exports.freebase_js()}
+  </acre:block>
+  <script acre:else="" src="template/freebase.mf.js"></script>
+  <!!-- Globalize cultures and bundles -->
+  <acre:script>
+    /**
+     * We lib/globalize/cultures, lib/bundles, and requested app's metadata
+     * to see if we need to include culture/bundle files for the current language.
+     */
+    // globalize cultures/bundles are their own "app" and not included in lib
+    var globalize_cultures = acre.get_metadata("//cultures.globalize." + acre.current_script.app.host);
+    var globalize_bundles = acre.get_metadata("//bundles." + acre.current_script.app.host);
+    var app_bundles = null;
+    try {
+      /**
+       * TODO(daepark): This results in an appfetch to googlecode
+       * if the bundle is not present on local disk.
+       *
+      app_bundles = acre.get_metadata("//bundles." + acre.request.script.app.host);
+       */
+    }
+    catch (ex) {
+      // some apps do not have a bundle
+    }
+    var culture_code = i18n.get_globalize_culture_lang_code();
+    var culture = "globalize.culture." + culture_code + ".js";
+    var bundle = "globalize.bundle." + culture_code + ".js";
+  </acre:script>
+  <acre:block if="globalize_cultures.files[culture]">
+    <script src="${h.static_url(globalize_cultures.path + '/' + culture)}"></script>
+  </acre:block>
+  <acre:block if="globalize_bundles.files[bundle]">
+    <script src="${h.static_url(globalize_bundles.path + '/' + bundle)}"></script>
+  </acre:block>
+  <acre:block if="acre.current_script.app.path != acre.request.script.app.path && app_bundles && app_bundles.files[bundle]">
+    <script src="${h.static_url(app_bundles.path + '/' + bundle)}"></script>
+  </acre:block>
+  <!!--TODO(culbertson): compile feedback with freebase.mf.js--!>
+  <script>
+    // Set default Globalize.culture
+    Globalize.culture('${culture_code}');
+    (function() { // Protect global namespace
+      var prefix = ('https:' == document.location.protocol) ? 'https://ssl' : 'http://www';
+      var script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = prefix + '.gstatic.com/feedback/api.js';
+      document.body.appendChild(script);
+    })();
+  </script>
+  <acre:block if="exports.footer_script">${exports.footer_script()}</acre:block>
+</acre:block>
+
+<!-- add any acre variables you wanted passed to client-side -->
+<acre:block def="acre_javascript_vars(exports)">
+
+  <acre:script>
+    // Fetch the client-side googleapis.com api key if we are using those APIs. 
+    // This is needed for Suggest to make requests. 
+    var api_key = '';
+    if (acre.freebase.googleapis_url) { 
+      api_key = acre.keystore.get('googleapis_client_side');
+      if (api_key && api_key.length > 1) { 
+            api_key = api_key[0];
+       }
+     }
+
+    var SERVER = {
+      acre: {
+        freebase: {
+          service_url: acre.freebase.service_url,
+          site_host: acre.freebase.site_host,
+          googleapis_url: acre.freebase.googleapis_url,
+          api_key: api_key
+        },
+        request: {
+          app_url: acre.request.app_url,
+          server_name: acre.request.server_name,
+          server_port: acre.request.server_port,
+          script: {
+            app: {
+              path: acre.request.script.app.path
+            }
+          }
+        },
+        current_script: {
+          app: {
+            path: acre.current_script.app.path
+          }
+        },
+        metadata: {}
+      },
+      lang: i18n.mql_lang,
+      c: {},
+      dateline: null,
+      tid: null
+    };
+    var md = acre.get_metadata();
+    ["libs"].forEach(function(k) {
+      SERVER.acre.metadata[k] = md[k];
+    });
+    if (acre.request.cookies && acre.request.cookies["fb-dateline"]) {
+      SERVER.dateline = acre.request.cookies["fb-dateline"];
+    }
+    if (acre.request.headers['x-metaweb-tid']) {
+      SERVER.tid = acre.request.headers['x-metaweb-tid'];
+    }
+  </acre:script>
+  <script>
+    window.SERVER = ${JSON.stringify(SERVER)};
+    // expose acre.freebase.imgurl for client js
+    window.SERVER.acre.freebase.imgurl = function(id, maxwidth, maxheight, mode, pad, errorid) {
+       var base_url = "${acre.freebase.imgurl('')}".split("?")[0] + id;
+       var params = {maxwidth:maxwidth, maxheight:maxheight, mode:mode};
+       if (pad != null) params.pad = pad;
+       if (errorid != null) params.errorid = errorid;
+       return base_url + "?" + $.param(params);
+     };
+     
+     // inline JS that needs to run before page-render
+     ${acre.include("template/freebase-inline.mf.js")}
+  </script>
+  <acre:block if="exports.acre_javascript_vars">
+    ${exports.acre_javascript_vars()}
+  </acre:block>
+</acre:block>
+
+<!--
+  You can add additional <input type="hidden"> elements that will be
+  appended as query parameters when navigating to a selected topic
+  from the main freebase suggest input box
+-->
+<acre:block def="fb_search_input_params(exports)">
+  <input acre:if="i18n.lang !== '/lang/en'" type="hidden" name="lang" value="${i18n.lang}"/>
+  <acre:block if="exports.fb_search_input_params">
+    ${exports.fb_search_input_params()}
+  </acre:block>
+</acre:block>

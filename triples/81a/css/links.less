@@ -1,0 +1,292 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+/*
+ ### Page Structure
+*/
+#page-content {
+  position: relative;
+  padding-left: 40px;
+}
+
+#tabbar {
+  padding-bottom: 12px;
+}
+
+.pill-box.disabled {
+    opacity: .5;
+
+    .pill-x {
+        display: none;
+    }
+
+    .pill-suggest {
+        display: none;
+    }
+}
+
+.filter-options {
+    font-size: 1.3em;
+    margin-right: 250px;
+}
+.filter-options .sep {
+    display: inline-block;
+    font-weight: bold;
+    margin: 0 4px 0 4px;
+}
+
+
+#pill-filter-box {
+    margin-right: 250px;
+    margin-bottom: 12px;
+}
+
+#pill-filter-suggest {
+    width: 325px;
+}
+
+#by-creator {
+  float: right;
+  width: 240px;
+  padding-left: 10px;
+  white-space: nowrap;
+}
+#pill-creator-box {
+    display: inline-block;
+    margin-left: 10px;
+    width: 210px;
+}
+#pill-creator-suggest {
+    width: 200px;
+}
+
+
+/*
+ ### Domain Box Styling
+*/
+.links-section {
+  font-size: 1.2em;
+  position: relative;
+  margin-bottom: 40px;
+
+  &:after {
+    z-index: -1;
+    content: "";
+    display: block;
+    position: absolute; top: 15px;
+    width: 100%; height: 10px;
+    border-top: 1px solid #D4DDE3;
+    border-left: 1px solid #D4DDE3;
+    box-shadow: inset 1px 1px 1px 0 white;
+  }
+
+  .header {
+    font-size: 1.8em;
+    font-weight: normal;
+    margin-bottom: 10px;
+
+    .links-title {
+      display: inline-block;
+      background-color: #e8ebee;
+      padding: 0 6px;
+      margin-left: -6px;
+
+      .prop-id {
+          font-size: 16px;
+      }
+    }
+
+    .status {
+      float: right;
+      margin-right: 25px;
+      font-size: 11px;
+      color: #aaa;
+      background-color: #e8ebee;
+      border-left: solid 6px #e8ebee;
+      padding: 0 6px 0 16px;
+    }
+
+    .links-name {
+      color: rgb(128, 160, 178) !important;
+    }
+  }
+}
+
+.body {
+  margin: 0 0 20px;
+  background: #fff;
+  box-shadow: 0 0 0 4px #e1e4e6;
+  padding: 0 15px 20px;
+}
+
+.body tbody > tr {
+  border-top: 1px solid #EEE;
+}
+
+.body tbody > tr.invalid {
+  background: #FBEFEF;
+
+  .row-number {
+      text-decoration: line-through;
+
+      .wrapper {
+          text-decoration: line-through;
+      }
+  }
+}
+
+.body tbody > tr:hover {
+  outline: solid 1px #E8EBEE;
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.body tbody > tr.invalid:hover {
+  background-color: #F8E0E0;
+}
+
+.body td {
+  white-space:nowrap;
+}
+
+.body {
+    td, th {
+        padding-left: 10px !important;
+    }
+    .first {
+        padding-left: 0 !important;
+    }
+    th.menu-col .property-header,
+    td.menu-col .empty {
+        padding-left: 12px;
+    }
+}
+
+td.desc {
+  max-width: 80%;
+  white-space: normal !important;
+}
+
+td.break {
+  max-width: 200px;
+  white-space: normal !important;
+  word-break: break-all !important;
+}
+
+.lang,
+.unit,
+.cvt,
+.name,
+.empty,
+.self {
+  word-break: normal !important;
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.time {
+  word-break: normal !important;
+  color: rgba(0, 0, 0, 0.3) !important;
+}
+
+a.cvt {
+  display: inline-block;
+  padding-right: 20px;
+  text-decoration: none;
+}
+.data-row:hover a.cvt {
+  background: url("/static/lib.www.trunk.svn.freebase-site.googlecode.dev/template/img/ui-icons.png") no-repeat right -558px;
+}
+.data-row:hover a.cvt:hover {
+  background: url("/static/lib.www.trunk.svn.freebase-site.googlecode.dev/template/img/ui-icons.png") no-repeat right -585px;
+}
+
+.data-row:hover a.cvt.expanded,
+a.cvt.expanded {
+  background: url("/static/lib.www.trunk.svn.freebase-site.googlecode.dev/template/img/ui-icons.png") no-repeat right -503px;
+}
+
+.data-row:hover a.cvt.expanded:hover,
+a.cvt.expanded:hover {
+  background-position: right -530px;
+}
+
+.cvt-row {
+  background: rgba(0, 0, 0, 0.1);
+
+  .nicemenu {
+    visibility: hidden !important;
+  }
+}
+
+.data-row {
+    .inline-menu {
+        display: inline-block;
+        visibility: hidden;
+    }
+    .inline-menu.active {
+        visibility: visible;
+    }
+    .inline-menu .more-action {
+        display: inline-block;
+        line-height: 1;
+        background: url(lib/template/img/ui-icons.png) no-repeat left -688px;
+        padding: 5px;
+    }
+    .inline-menu .more-action:hover,
+    .inline-menu.active .more-action {
+        background-position: left -722px;
+    }
+}
+
+.fullts,
+.fullattr {
+    display: none;
+}
+.fullattr {
+    padding-left: 12px;
+    list-style: none;
+}
+
+
+.data-row:hover {
+    .inline-menu {
+        visibility: visible;
+    }
+}
+
+.wrapper {
+  position: relative;
+  display: inline-block;
+  padding-left: 8px;
+}
+
+/** override outermenu positioning **/
+.data-row .outer-menu {
+  left: -36px;
+}

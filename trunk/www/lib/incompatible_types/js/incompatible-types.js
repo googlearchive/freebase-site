@@ -185,7 +185,8 @@
       var types = [type_id].concat(included_types || []);
       var options = {
         filter: '(all mid:' + id + ')',
-        output: it.search_output_(types, true)
+        output: it.search_output_(types, true),
+        key: fb.acre.freebase.api_key
       };
       $.ajax({
         url: fb.h.fb_googleapis_url('/search', options),

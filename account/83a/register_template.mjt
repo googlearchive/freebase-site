@@ -1,0 +1,148 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var h = acre.require("lib/helper/helpers.sjs");
+  var c = this.exports.c = {};
+</acre:script>
+
+<acre:block def="title()">
+  Register for Freebase
+</acre:block>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="account.mf.css" />
+</acre:block>
+
+<acre:block def="content_body()">
+  <acre:script>
+    // allow account creation only on '.freebase.com'
+    var fb_site = h.endsWith(acre.request.server_name, ".freebase.com");
+  </acre:script>
+  <div id="page-content">
+    <div id="registration" class="module">
+      <div id="register-accordion">
+        <acre:block if="fb_site">
+          ${create_account_pane()}
+          ${claim_account_pane()}
+        </acre:block>
+        <acre:block else="">
+          ${disabled_creation_pane()}
+        </acre:block>
+      </div>
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="disabled_creation_pane()">
+  <h2 class="current">Account Creation Disabled</h2>
+  <div class="pane">
+    <p>
+      <i>
+        You cannot register a new account or connect to a freebase account on
+        this site. Please visit
+        <a href="https://dev.freebase.com/account/signin">dev.freebase.com</a>
+        to do so.
+      </i>
+    </p>
+  </div>
+</acre:block>
+
+<acre:block def="create_account_pane()">
+  <h2 class="current">Create New Account</h2>
+  <div class="pane">
+    <form name="account-create"
+          method="post"
+          action="${h.ajax_url('/register_create_submit')}">
+      <fieldset>
+        <label for="username">
+          Now you just need to pick a Freebase username.
+        </label>
+        <div class="form-field clear">
+          <input name="username" class="input-standard" id="username"
+                 type="text" spellcheck="false">
+          <script type="text/javascript">
+            document.getElementById("username").select();
+          </script>
+          <span class="input-help">
+            Pick something unique. No spaces or special characters allowed.
+          </span>
+          <span class="input-error"></span>
+        </div>
+      </fieldset>
+
+      <p>By clicking the "Create Account" button below, you are agreeing to the
+        <a target="_blank" href="/policies/tos">Freebase Terms of Service</a>
+        and to receive email announcements about changes to
+        the Freebase service.
+      </p>
+
+      <button class="submit button button-primary" name="create" type="submit">
+        Create Account
+      </button>
+    </form>
+  </div>
+</acre:block>
+
+<acre:block def="claim_account_pane()">
+  <h2 class="current">Connect to Existing Account</h2>
+  <div class="pane">
+      <form name="account-claim"
+            method="post"
+            action="${h.ajax_url('/register_claim_submit')}">
+        <fieldset>
+          <label for="username">
+            Enter Freebase username to connect to your Google account.
+          </label>
+          <div class="form-field clear">
+            <input name="username" id="username" class="input-standard"
+                   type="text" spellcheck="false">
+            <script type="text/javascript">
+              document.getElementById("username").select();
+            </script>
+            <span class="input-help"></span>
+            <span class="input-error"></span>
+          </div>
+        </fieldset>
+
+        <p>You will receive an e-mail to the address you originally
+        associated with this account</p>
+
+        <button class="submit button button-primary" name="claim" type="submit">
+          Connect to Existing Account
+        </button>
+      </form>
+  </div>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="register.mf.js"></script>
+</acre:block>

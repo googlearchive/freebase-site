@@ -64,7 +64,7 @@ function decompose_id(id) {
     return {
       key : {
         value: key,
-        namespace: decompose_id(path)                
+        namespace: decompose_id(path)
       }
     }
   } else {
@@ -182,7 +182,7 @@ function get_freebase_store() {
       'status' : status,
       'b:status' : {
         'name' : 'Deprecated',
-        'optional' : 'forbidden'  
+        'optional' : 'forbidden'
       },
       'index' : null,
       'sort' : 'index'
@@ -205,7 +205,7 @@ function get_freebase_store() {
           plural_name: dt.plural_name,
           supported_mime_types: dt.allowed_media_types,
           description: dt.short_description
-        };        
+        };
       });
       return handlers;
     });
@@ -252,8 +252,8 @@ function list_user_apps(user, include_filenames) {
       }
     }
   };
-    
-  if (include_filenames) { 
+
+  if (include_filenames) {
     q["/type/namespace/keys"] = [{
       "sort" : "value",
       "optional" : true,
@@ -289,7 +289,7 @@ function list_user_apps(user, include_filenames) {
         apps.push(app);
       }
 
-      return apps;        
+      return apps;
     });
 }
 
@@ -314,8 +314,8 @@ function check_permission(versionid, user) {
 
   return freebase.mqlread(permission_query)
     .then(function(env) {
-      if (env.result === null) { 
-        throw "User does not have permission to register a host for this app"; 
+      if (env.result === null) {
+        throw "User does not have permission to register a host for this app";
       } else {
         return env;
       }
@@ -361,7 +361,7 @@ function validate_host(host, user) {
     promise = get_extended_user_info()
       .then(function(user) {
         if (!user.is_staff) {
-          throw "Host must be at least 5 characters";        
+          throw "Host must be at least 5 characters";
         }
       })
   }
@@ -377,7 +377,7 @@ function validate_host(host, user) {
           result = check_host;
           result.message = "Already in use by " + check_host.name + ".  Switch to this app?";
         } else {
-          result.message = "Available"; 
+          result.message = "Available";
         }
         return result;
       });
@@ -439,7 +439,7 @@ function create_app_query(app_guid) {
           name : null,
           my_full_name : null
         }]
-      }]   
+      }]
     },
     '/type/domain/owners': {
       id: null,
@@ -541,7 +541,7 @@ function _format_app_query_results(appinfo, just_files) {
   // files
   r.files = {};
   appinfo['/type/namespace/keys'].forEach(function(entry){
-    var doc = entry.namespace;                             // the file metadata from the graph   
+    var doc = entry.namespace;                             // the file metadata from the graph
     if (doc.permission !== appinfo.permission.id) return;  // skip files with permissions that don't match app's
 
     var key = entry.value;
@@ -558,7 +558,7 @@ function _format_app_query_results(appinfo, just_files) {
     file.content_hash   = doc['/common/document/content'] ? doc['/common/document/content'].blob_id : null;
     file.content_length = doc['/common/document/content'] ? doc['/common/document/content'].length : null;
     file.based_on       = doc.based_on;
-    
+
     r.files[key] = file;
   });
 
@@ -577,14 +577,14 @@ function make_graph_app(md, just_files) {
   // touch graph first to make sure we get the latest
   return freebase.touch()
     .then(function() {
-      
+
       var env = {};
 
       if (md.as_of) { env.as_of_time = fix_timestamp(md.as_of); }
 
       return freebase.mqlread(create_app_query(md.guid), env)
         .then(function(env) {
-          
+
           var leaf = env.result;
           if (!leaf) { bad_appid(md.id); }
 
@@ -600,11 +600,11 @@ function make_graph_app(md, just_files) {
             versioned               : true
           };
           return ret;
-          
+
         })
         .then(function(ret) {
           if (just_files) return ret;
-          
+
           return get_app_versions(validators.AcreResource(ret.id))
             .then(function(versions) {
               ret.listed          = versions.listed;
@@ -613,9 +613,9 @@ function make_graph_app(md, just_files) {
               ret.all_versions    = versions.versions;
               return ret;
             });
-            
+
         });
-        
+
     });
 }
 
@@ -654,7 +654,7 @@ function get_app (resource, just_files, timestamp) {
         return env.result;
       });
   }
-  
+
   function add_resource_info(ret) {
     ret.acre_host = resource.acre_host;
     ret.repository.appeditor_service_base = resource.appeditor_service_base;
@@ -671,7 +671,7 @@ function get_app (resource, just_files, timestamp) {
       });
   } else {
     if (!md) { bad_appid(resource.appid); }
-    
+
     switch (md.source) {
       case "freebase" :
         return make_graph_app(md, just_files)
@@ -679,7 +679,7 @@ function get_app (resource, just_files, timestamp) {
             return add_resource_info(ret);
           });
         break;
-      default : 
+      default :
         return deferred.resolved()
           .then(function() {
             return make_disk_app(md);
@@ -689,14 +689,14 @@ function get_app (resource, just_files, timestamp) {
             return add_resource_info(ret);
           });
         break;
-    }    
+    }
   }
 }
 
 function get_app_status(resource) {
   return freebase.touch()
     .then(function() {
-      
+
       return get_user_info()
         .then(function(user) {
           var ret = {
@@ -710,12 +710,12 @@ function get_app_status(resource) {
               return ret;
             });
         });
-      
+
     });
 }
 
 function prepare_clone_app(appid) {
-  
+
   function add_text_revision(file, text) {
     return freebase.upload(text, file.content_type)
       .then(function(env) {
@@ -766,9 +766,9 @@ function prepare_clone_app(appid) {
   function local_get_file(file) {
     // Same acre server (so shared cache)... probably on-disk
     var source = acre.get_source(file.path);
-    
-    var promise = (typeof source === "string") ? 
-                    add_text_revision(file, source) : 
+
+    var promise = (typeof source === "string") ?
+                    add_text_revision(file, source) :
                     add_binary_revision(file, resource.url);
 
     return promise
@@ -777,7 +777,7 @@ function prepare_clone_app(appid) {
         return file;
       });
   };
-  
+
   return get_app(validators.AcreResource(appid), true)
     .then(function(app) {
       var promises = [];
@@ -803,7 +803,7 @@ function prepare_clone_app(appid) {
 
 function copy_files(from, to_id) {
   var init = deferred.resolved();
-  
+
   if (typeof from === "string") {
     init = prepare_clone_app(from)
       .then(function(result) {
@@ -836,7 +836,7 @@ function copy_files(from, to_id) {
           create: 'unconditional',
           name: {
             value : file.name,
-            lang : '/lang/en'  
+            lang : '/lang/en'
           },
           type: ['/freebase/apps/acre_doc','/common/document']
         }
@@ -874,18 +874,18 @@ function create_app(resource, name, clone, extra_group, user) {
   var appid_segs = appid.split('/');
   var app_key = appid_segs.pop();
   var app_root = appid_segs.join('/');
-  
+
   validators.AcreAppKey(app_key);
 
   return freebase.mqlread({id:appid, type:'/freebase/apps/acre_app'})
     .then(function(env) {
       if (env.result) throw "An app with that ID already exists";
-      
+
       // let's do the most expensive part first so if
       // we fail, we don't have a half-created app
       return prepare_clone_app(clone.appid || "//release.seed.apps.freebase.dev")
         .then(function(clone_app) {
-          
+
           // create the permission group
           if (!name) { name = app_key; }
 
@@ -897,7 +897,7 @@ function create_app(resource, name, clone, extra_group, user) {
           return freebase.create_group("Owners of " + name + " app", options)
             .then(function(env) {
               var group = env.result;
-              
+
               // make it an app
               var create_q = {
                 create : 'unless_exists',
@@ -921,7 +921,7 @@ function create_app(resource, name, clone, extra_group, user) {
                   connect : "update"
                 }
               };
-              
+
               return freebase.mqlwrite(create_q, {use_permission_of : group.mid})
                 .then(function(env) {
                   return copy_files(clone_app, appid);
@@ -952,7 +952,7 @@ function move_app(resource, to_resource) {
     })
     .then(function(app) {
       var app_guid = app.guid;
-      
+
       return freebase.mqlwrite({
           guid : app_guid,
           type : '/freebase/apps/acre_app',
@@ -970,7 +970,7 @@ function move_app(resource, to_resource) {
           return {
             appid : to_appid
           };
-          
+
         });
     });
 }
@@ -1013,7 +1013,7 @@ function set_app_properties(resource, name, listed, homepage, description, artic
             "value" : listed,
             "connect" : "update"
           };
-          ret.listed = listed;   
+          ret.listed = listed;
         }
       }
 
@@ -1043,8 +1043,8 @@ function set_app_properties(resource, name, listed, homepage, description, artic
       }
 
       var promises = [];
-      
-      if (do_write) { 
+
+      if (do_write) {
         promises.push(freebase.mqlwrite(write));
       }
 
@@ -1087,7 +1087,7 @@ function set_app_properties(resource, name, listed, homepage, description, artic
                 })
                 .then(function(env) {
                   app.article = {};
-                  app.article.id = docwrite.result['/common/topic/article'].id;                  
+                  app.article.id = docwrite.result['/common/topic/article'].id;
                 });
               }
               return promise.then(function() {
@@ -1118,8 +1118,8 @@ function delete_app(resource) {
         var p = delete_all_hosts(resource, app.hosts)
           .then(function(undeleted_hosts) {
             if (undeleted_hosts.length) {
-              throw ("/service/delete_app/undeletable_hosts", 
-                "Cannot delete this app as it is released to non-standard hosts.  Please remove them manually first.", 
+              throw ("/service/delete_app/undeletable_hosts",
+                "Cannot delete this app as it is released to non-standard hosts.  Please remove them manually first.",
                 undeleted_hosts,
                 "400 Bad Request");
             }
@@ -1171,7 +1171,7 @@ var published_regex = /([^.]*)\.freebaseapps\.com$/;
 
 function get_app_versions(resource) {
   var appid = resource.appid;
-    
+
   function process_hosts(obj, version) {
 
     function _parse_host(obj, host) {
@@ -1200,7 +1200,7 @@ function get_app_versions(resource) {
 
     return hosts;
   }
-    
+
   var q = {
     "id": appid,
     "/freebase/apps/acre_app_version/acre_app" : {
@@ -1226,7 +1226,7 @@ function get_app_versions(resource) {
       "namespace" : {
           "guid" : null
       },
-      "optional" : true  
+      "optional" : true
     },
     "two:key": [{
       "value":    null,
@@ -1331,11 +1331,11 @@ function get_app_versions(resource) {
       }
     }]
   };
-  
+
   return freebase.mqlread(q)
     .then(function(env) {
       var links = env.result;
-      if (links == null) { 
+      if (links == null) {
         throw "appid does not exist";
       }
 
@@ -1378,7 +1378,7 @@ function get_app_versions(resource) {
         result.release = links['release:/type/namespace/keys'].namespace.key.value;
       }
 
-      // HACK - need to know whether the release key exists, 
+      // HACK - need to know whether the release key exists,
       // even if not correctly associated with a version
       if (links['release_key:/type/namespace/keys'] && !result.release) {
         result.release_key_exists = links['release_key:/type/namespace/keys'].namespace.guid;
@@ -1413,7 +1413,7 @@ function create_app_version(resource, key, timestamp, service_url) {
       return freebase.mqlwrite(create_q, {use_permission_of: appid})
         .then(function(env) {
           var version_guid = env.result.guid;
-          
+
           // Get existing properties
           return freebase.mqlread({
             guid : version_guid,
@@ -1422,7 +1422,7 @@ function create_app_version(resource, key, timestamp, service_url) {
             as_of_time : null
             }).then(function(env) {
               var version = env.result;
-              
+
               // Now update its properties
               var update_q = {
                 guid: version_guid,
@@ -1443,7 +1443,7 @@ function create_app_version(resource, key, timestamp, service_url) {
                 };
               }
 
-              if (typeof service_url !== 'undefined') {   
+              if (typeof service_url !== 'undefined') {
                 if (/^http:/.test(service_url)) {
                   update_q.service_url = {
                     value   : service_url,
@@ -1466,7 +1466,7 @@ function create_app_version(resource, key, timestamp, service_url) {
 function delete_app_version(resource, key) {
     var appid = resource.appid;
     var id = appid + '/' + key;
-    
+
     var q = {
         id: id,
         type: '/freebase/apps/acre_app_version',
@@ -1480,12 +1480,14 @@ function delete_app_version(resource, key) {
             connect     : 'delete'
         }
     };
-    
+
     return freebase.mqlwrite(q, {use_permission_of: appid});
 }
 
 function set_app_release(resource, version) {
   var appid = resource.appid;
+
+  h.enable_writeuser();
 
   // Lets make absolutely sure we're working off the latest state of the graph
   return freebase.touch()
@@ -1507,13 +1509,13 @@ function set_app_release(resource, version) {
             var hostid = hostpath + '/' + ar.splice(1, ar.length).reverse().join('/');
             var val = host.host.split('.')[0];
 
-            var old_versionid = (host.version !== 'current') ? appid + '/' + host.version : appid;        
+            var old_versionid = (host.version !== 'current') ? appid + '/' + host.version : appid;
             delete_write.push({
               id : old_versionid,
               key : {
                 value : val,
                 namespace : hostid,
-                connect : 'delete'                
+                connect : 'delete'
               }
             });
 
@@ -1525,11 +1527,11 @@ function set_app_release(resource, version) {
                 key : {
                   value : val,
                   namespace : hostid,
-                  connect : 'insert'                
+                  connect : 'insert'
                 }
               });
             }
-          }    
+          }
 
           // now let's do some damaage...
           var deletes = [];
@@ -1557,7 +1559,7 @@ function set_app_release(resource, version) {
 
           return deferred.all(deletes, true)
             .then(function() {
-              
+
               var adds = [];
 
               // add hosts to new version
@@ -1594,7 +1596,7 @@ function register_host(resource, hostname, user) {
   // Lets make absolutely sure we're working off the latest state of the graph
   return freebase.touch()
     .then(function() {
-      
+
       var promises = {
         check_host : validate_host(hostname, user),
         app: get_app_versions(resource)
@@ -1602,7 +1604,7 @@ function register_host(resource, hostname, user) {
 
       return deferred.all(promises, true)
         .then(function(r) {
-          
+
           var app = r.app;
           var prev_app = r.check_host.id || null;
           var versionid = app.release ? appid + '/' + app.release : appid;
@@ -1612,9 +1614,9 @@ function register_host(resource, hostname, user) {
           // since we're using special write_user permissions for this
           return check_permission(versionid, user)
             .then(function() {
-              
+
               var deletes = [];
-              
+
               // if this host was already in use by another app, delete it
               if (prev_app) {
                 var delete_prev_app = {
@@ -1625,7 +1627,7 @@ function register_host(resource, hostname, user) {
                     connect : 'delete'
                   }
                 };
-                // Sign with a write user (appeditoruser) 
+                // Sign with a write user (appeditoruser)
                 // since it's a protected namespace
                 deletes.push(freebase.mqlwrite(delete_prev_app, null, {"http_sign" : "keystore"}));
               }
@@ -1635,9 +1637,9 @@ function register_host(resource, hostname, user) {
 
               return deferred.all(deletes, true)
                 .then(function() {
-                  
+
                   var adds = [];
-                  
+
                   // finally, add the new host
                   var add_new_host = {
                     id : versionid,
@@ -1647,7 +1649,7 @@ function register_host(resource, hostname, user) {
                       connect : 'insert'
                     }
                   };
-                  // Sign with a write user (appeditoruser) 
+                  // Sign with a write user (appeditoruser)
                   // since it's a protected namespace
                   adds.push(freebase.mqlwrite(add_new_host, null, {"http_sign" : "keystore"}));
 
@@ -1668,7 +1670,7 @@ function register_host(resource, hostname, user) {
 
                     adds.push(freebase.mqlwrite(listing_write));
                   }
-                  
+
                   return deferred.all(adds, true);
                 });
             });
@@ -1682,9 +1684,11 @@ function delete_all_hosts(resource, hosts) {
   var delete_old_hosts = [];
   var undeleted_hosts = [];
 
+  h.enable_writeuser();
+
   for each (host in hosts) {
     var re = published_regex.exec(host.host);
-    if (re) { 
+    if (re) {
       var hostid = (host.version == 'current') ? appid : appid + '/' + host.version;
       delete_old_hosts.push({
         id : hostid,
@@ -1705,7 +1709,7 @@ function delete_all_hosts(resource, hosts) {
     // credentials are used instead of the user's
     promise = freebase.mqlwrite(delete_old_hosts, null, {"http_sign" : "keystore"});
   }
-  
+
   return promise
     .then(function() {
       return undeleted_hosts;
@@ -1773,7 +1777,7 @@ function set_app_writeuser(resource, enable, user) {
         'connect' : mql_action
       }
     }).then(function() {
-      return { 
+      return {
         appid : appid,
         write_user : (enable ? user.name : null)
       };
@@ -1788,7 +1792,7 @@ function keystore_fetch(resource, form) {
       method  : "POST",
       content : acre.form.encode(form)
     }).then(function(env) {
-      return { 
+      return {
         appid : resource.appid,
         keys : env.result
       }
@@ -1805,7 +1809,7 @@ function add_key(resource, name, key, secret) {
   return keystore_fetch(resource, {
     action:  "add",
     name:    name,
-    token:   key, 
+    token:   key,
     secret:  secret
   });
 }
@@ -1859,9 +1863,9 @@ function get_file(resource, timestamp) {
       };
 
       file.fileid = file.app.appid + "/" + filekey;
-      
+
       if (!file.content_id) return file;
-      
+
       return get_file_revision(resource, file.content_id)
         .then(function(content) {
           if (content.text) { file.text = content.text; }
@@ -1874,9 +1878,9 @@ function get_file(resource, timestamp) {
 function get_file_revision(resource, revision) {
   var ret = {
     fileid : resource.id,
-    revision : revision        
+    revision : revision
   };
-  
+
   if (resource) {
     // it's remote... go get it
     if (resource && (resource.service_url !== acre.freebase.service_url)) {
@@ -1972,8 +1976,8 @@ function create_file(resource, name, handler, based_on) {
   }
 
   // link to original if based on another document
-  if (based_on) { 
-    w['/freebase/apps/acre_doc/based_on'] = { 
+  if (based_on) {
+    w['/freebase/apps/acre_doc/based_on'] = {
       id: based_on.id,
       connect: 'insert'
     };
@@ -2024,7 +2028,7 @@ function delete_app_files(app, files) {
 function delete_app_file(resource, name) {
   return get_app(resource, false)
     .then(function(app) {
-      
+
       return delete_app_files(app, [name])
         .then(function() {
           delete app.files[acre.freebase.mqlkey_quote(name)];
@@ -2040,10 +2044,10 @@ function delete_app_file(resource, name) {
 function delete_app_all_files(resource) {
   return get_app(resource)
     .then(function(app) {
-      
+
       return delete_app_files(app)
         .then(function() {
-          
+
           return {
               appid : appid,
               files : []
@@ -2074,7 +2078,7 @@ function rename_file(resource, name) {
             value : acre.freebase.mqlkey_quote(name),
           }
         }).then(function(env) {
-          
+
           return freebase.mqlwrite({
               guid : file.guid,
               type : '/freebase/apps/acre_doc',
@@ -2084,7 +2088,7 @@ function rename_file(resource, name) {
                 value : file_key
               }
             }).then(function(env) {
-              
+
               return {
                 fileid : file.fileid,
                 name : name
@@ -2116,7 +2120,7 @@ function save_file_binary(resource, form_request, revision, name, based_on) {
       if (name) {
         promises.push(rename_file(resource, name));
       }
-      
+
       return deferred.all(promises, true);
     },function(e) {
       // file doesn't exist, so create it
@@ -2130,10 +2134,10 @@ function save_file_binary(resource, form_request, revision, name, based_on) {
         license : '/common/license/cc_attribution_30'   // all images must be set to CC-BY to render at original size
       };
 
-      if (revision) { 
+      if (revision) {
         args.content = revision;
       }
-      
+
       var url = acre.form.build_url(acre.freebase.service_url + "/api/service/form_upload_image", args);
       var headers = {
         'content-type' : form_request.headers['content-type']
@@ -2184,7 +2188,7 @@ function save_file_text(r, text, content_type, revision, name, acre_handler, bas
       }
     });
   }
-  
+
   var content_type = content_type || 'text/plain';
 
   var args = {
@@ -2193,7 +2197,7 @@ function save_file_text(r, text, content_type, revision, name, acre_handler, bas
 
   var promises = [];
   // shortcut... if revision present, assume file already exists
-  if (revision) { 
+  if (revision) {
     args.content = revision;
 
     if (acre_handler) {
@@ -2213,7 +2217,7 @@ function save_file_text(r, text, content_type, revision, name, acre_handler, bas
         } else if (acre_handler) {
           return _set_handler();
         } else {
-          return file;              
+          return file;
         }
       }));
   }
@@ -2221,7 +2225,7 @@ function save_file_text(r, text, content_type, revision, name, acre_handler, bas
   return deferred.all(promises, true)
     .then(function() {
       var promises = [];
-      
+
       var result = {
         fileid       : r.id
       };
@@ -2230,7 +2234,7 @@ function save_file_text(r, text, content_type, revision, name, acre_handler, bas
         promises.push(rename_file(r, name));
       }
 
-      
+
       if (text && text.length) {
         var p2 = freebase.upload(text, content_type, args)
           .then(function(env) {
@@ -2246,7 +2250,7 @@ function save_file_text(r, text, content_type, revision, name, acre_handler, bas
                   var diff = lib_patch.diff_lines(old_file.text, text);
 
                   throw new ServiceError("400 Bad Request", "/api/status/error/upload/content_mismatch", {
-                    message : "Saved version of this file has changed since it was loaded.", 
+                    message : "Saved version of this file has changed since it was loaded.",
                     code    : "/api/status/error/upload/content_mismatch",
                     info    : {
                       diff: diff
@@ -2256,7 +2260,7 @@ function save_file_text(r, text, content_type, revision, name, acre_handler, bas
             }
             throw e;
           });
-          
+
           promises.push(p2);
         }
 
@@ -2330,7 +2334,7 @@ function get_history(resource, limit, for_app, exclude_user) {
       "exclude:attribution" : {
         "id" : "/user/" + exclude_user,
         "optional" : "forbidden"
-      } 
+      }
     });
   }
 
@@ -2339,7 +2343,7 @@ function get_history(resource, limit, for_app, exclude_user) {
       var list = [];
       for each (var rev in env.result) {
         var revision = {};
-        if (for_app) { 
+        if (for_app) {
           revision.file = rev.source.key.value;
         }
         revision.revision = rev.target.id;
@@ -2350,7 +2354,7 @@ function get_history(resource, limit, for_app, exclude_user) {
         var attribution;
         if (rev.attribution.creator.id == "/user/user_administrator")
         attribution = { id: rev.attribution.id, name: rev.attribution.name }
-        else 
+        else
         attribution = { id: rev.attribution.creator.id, name: rev.attribution.creator.name }
         revision.attribution = attribution;
         list.push(revision);
@@ -2414,7 +2418,7 @@ function diff_apps(resource1, resource2, timestamp1, timestamp2) {
             };
           } else {
             ret.files[guid_map[file2.guid]].file2 = file2;
-          }   
+          }
         }
       }
 
@@ -2427,7 +2431,7 @@ function diff_file(file1, file2, timestamp1, timestamp2) {
       file1 : file1 ? get_file(file1, timestamp1) : null,
       file2 : file2 ? get_file(file2, timestamp2) : null
     }, true).then(function(ret) {
-      
+
       // If no files, don't do a diff
       if (!ret.file1 && !ret.file2) {
         return ret;
@@ -2448,7 +2452,7 @@ function diff_file(file1, file2, timestamp1, timestamp2) {
 
       ret.diff = get_lib_patch().diff_lines(text2,text1);
 
-      return ret;      
+      return ret;
     });
 };
 
@@ -2479,7 +2483,7 @@ function find_common_revision(file1, file2) {
       }
     }]
   };
-  
+
   return freebase.mqlread(q)
     .then(function(env) {
       return env.result ? env.result.id : null;
@@ -2489,7 +2493,7 @@ function find_common_revision(file1, file2) {
 
 function merge_files(target_resource, source_resource) {
   var source, target, ancestor;
-  
+
   function _encode_patch_text(text) {
     // return encodeURI(text).replace(/\x0/g, '%00').replace(/%20/g, ' ');
     return text;
@@ -2508,7 +2512,7 @@ function merge_files(target_resource, source_resource) {
       _throw_patch_conflict(message);
     }
   }
-  
+
   function _throw_patch_conflict(msg, info) {
     var error = new ServiceError("400 Bad Request", null, {
       message : msg,
@@ -2523,7 +2527,7 @@ function merge_files(target_resource, source_resource) {
 
     throw error;
   }
-  
+
   return deferred.all({
       source: source_resource ? get_file(source_resource) : null,
       target: target_resource ? get_file(target_resource) : null
@@ -2531,7 +2535,7 @@ function merge_files(target_resource, source_resource) {
       var lib_patch = get_lib_patch();
       source = ret.source;
       target = ret.target;
-      
+
       /*
       *  Easy cases first:
       */
@@ -2573,7 +2577,7 @@ function merge_files(target_resource, source_resource) {
       *  Both files exist, let's compare revisions
       */
 
-      // no change in content        
+      // no change in content
       if (source.content_id === target.content_id) {
         return _check_metadata_change("No content changes")
       }
@@ -2581,7 +2585,7 @@ function merge_files(target_resource, source_resource) {
       // check for common ancestor revision between the files
       return find_common_revision(source_resource, target_resource)
         .then(function(ancestor_rev) {
-          
+
           // no new changes, so don't provide diff
           if (ancestor_rev === source.content_id) {
             // make sure the revert doesn't happen client-side
@@ -2629,25 +2633,25 @@ function merge_files(target_resource, source_resource) {
                   str += _encode_patch_text(lib_patch.diff_text2(conflict.diffs));
                   str += "\n";
 
-                  conflict_text += str;    
+                  conflict_text += str;
                   ret.patch.conflict = true;
                 }
               }
 
               if (conflict_text.length) {
-                ret.patch.text = 
-                "*------- CONFLICTS ------*\n" + 
-                conflict_text + 
-                "*----- END CONFLICTS ----*\n\n\n" + 
+                ret.patch.text =
+                "*------- CONFLICTS ------*\n" +
+                conflict_text +
+                "*----- END CONFLICTS ----*\n\n\n" +
                 ret.patch.text;
               }
 
-              ret.diff = lib_patch.diff_lines(target.text, ret.patch.text);    
+              ret.diff = lib_patch.diff_lines(target.text, ret.patch.text);
 
               delete source.text;
               delete target.text;
               return ret;
-              
+
             });
         });
     });

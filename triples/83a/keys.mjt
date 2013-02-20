@@ -1,0 +1,381 @@
+<!!--
+ Copyright 2013, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var _ = i18n.gettext;
+  var t = acre.require("links.mjt");
+  var form = acre.require("lib/propbox/form.mjt");
+
+  var EDIT = _("Edit key");
+  var DELETE = _("Delete key");
+  var INSPECT = _("Inspect key");
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="links.mf.css" />
+</acre:block>
+
+<acre:block def="page_content()">
+  <div id="tabbar">
+    <div id="by-creator">
+      <strong>by</strong>
+      ${t.creator_filter_box(c.creator)}
+    </div>
+    ${t.filter_box([c.property], true)}
+    ${t.filter_options(c.historical, c.timestamp)}
+    ${t.view_options(c.sort, c.fullts, c.fullattr)}
+  </div>
+
+  <div class="column links" id="links-data" style="opacity:0;">
+    <div class="section links-section" data-id="Links">
+      <div class="header">
+        <span class="status edit">
+          <a href="javascript:void(0);" id="create-key" class="button primary"
+             onclick="fb.keys.add_key();">
+            ${_("Create new")}
+          </a>
+        </span>
+        <h1 class="kbs">
+          <span class="mark">
+            <span class="links-title">
+              <a href="javascript:void(0);"
+                 class="schema-name links-name" name="Links">
+                ${_("Keys")}
+              </a>
+              <a class="schema-id prop-id"
+                 href="${h.fb_url(c.id, [['links'], ['filter', c.property]])}">
+                ${c.property}
+              </a>
+            </span>
+          </span>
+        </h1>
+      </div>
+      <div class="body">
+        <table class="data-table" id="infinitescroll">
+          <thead>
+            <tr>
+              <th class="first">
+                <span class="property-header">&nbsp;</span></th>
+              <th>
+                <span class="property-header">${_("value")}</span></th>
+              <th>
+                <span class="property-header" acre:trim="1">
+                  <acre:block if="c.property == '/type/namespace/keys'" trim="1">
+                    ${_("object")}
+                  </acre:block>
+                  <acre:block else="" trim="1">
+                    ${_("namespace")}
+                  </acre:block>
+                </span>
+              </th>
+              <th class="menu-col">
+                <span class="property-header">${_("creator")}</span></th>
+              <th class="menu-col">
+                <span class="property-header">${_("attribution")}</span></th>
+              <th>
+                <span class="property-header">${_("timestamp")}</span></th>
+              <acre:block if="c.historical">
+                <th>
+                  <span class="property-header operation-header">
+                    ${_("operation")}</span></th>
+              </acre:block>
+            </tr>
+          </thead>
+
+          ${keys_body(c.id, c.property, c.links, c.historical)}
+
+          <tfoot>
+            <tr>
+              <td colspan="4">
+                <a id="infinitescroll-next"
+                   href="${h.ajax_url('/keys.ajax')}">next</a>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</acre:block>
+
+<!!--
+   @param {String} property Either '/type/object/key' or '/type/namespace/keys'
+   !!-->
+<acre:block def="keys_body(id, property, links, historical, offset)">
+  <acre:script>
+    // next timestamp for inifinite scroll
+    var body_attrs = {};
+    if (links.length >= 100) {
+      body_attrs['data-next'] = links[links.length-1].timestamp;
+    }
+    offset = offset || 0;
+  </acre:script>
+  <tbody acre:attrs="body_attrs">
+    <acre:block for="i, link in links">
+      ${key_row(id, property, link, historical, i+offset+1)}
+    </acre:block>
+  </tbody>
+</acre:block>
+
+<acre:block def="key_row(id, property, link, historical, row_number)">
+  <acre:script>
+    var value = link.target_value.value;
+    var decoded = acre.freebase.mqlkey_unquote(value);
+  </acre:script>
+  <tr class="data-row hover-row${link.valid ? '' : ' invalid'}">
+    <td class="row-number first">
+      <span class="wrapper">
+        <acre:block if="link.valid">
+          ${key_menu(id, property, link)}
+        </acre:block>
+        <acre:block if="row_number">
+          ${row_number}
+        </acre:block>
+        <acre:block else="">-</acre:block>
+      </span>
+    </td>
+    <td class="break">
+      <span class="mid key-value" data-value="${value}">${value}</span>
+      <acre:block if="value != decoded">
+        <span class="self">
+          (<span class="mid">${decoded}</span>)
+        </span>
+      </acre:block>
+    </td>
+    <td class="break">
+      <acre:block if="property == '/type/namespace/keys'">
+        <a class="property-value key-namespace" data-id="${link.target.mid}"
+           href="${h.fb_url(link.target.mid, [['links']])}">${link.target.mid}</a>
+        <span class="name">${i18n.display_name(link.target, "")}</span>
+      </acre:block>
+      <acre:block else="">
+        <a class="property-value key-namespace" data-id="${link.source.id}"
+           href="${h.fb_url(link.source.id, [['ns']])}">${link.source.id}</a>
+        <span class="name">${i18n.display_name(link.source, "")}</span>
+      </acre:block>
+    </td>
+    <td class="menu-col">${t.creator(link)}</td>
+    <td class="menu-col">${t.attribution(link)}</td>
+    <td>${t.timestamp(link)}</td>
+    <acre:block if="historical">
+      <td>${link.operation}</td>
+    </acre:block>
+  </tr>
+</acre:block>
+
+<acre:block def="key_menu(id, property, link)">
+  <ul class="outer-menu nicemenu">
+    <li class="nicemenu-item">
+      <span class="headmenu">
+        <a href="javascript:void(0)" class="more-action"></a>
+      </span>
+      <ul class="submenu row-menu">
+        <li class="row-menu-item">
+          <a href="javascript:void(0);"
+             onclick="return fb.keys.edit_key(this);">${EDIT}</a></li>
+        <li class="row-menu-item">
+          <a href="javascript:void(0);"
+             onclick="return fb.keys.delete_key(this);">${DELETE}</a></li>
+        <li class="row-menu-item">
+          <a href="${h.fb_url(id, [['links'], ['filter', property]])}">
+            ${INSPECT}</a></li>
+      </ul>
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="keys.mf.js"></script>
+  <script>
+    $(function() {
+      // Prevent flickering because some filtering is done client-side
+      $('#links-data').animate({opacity:1}, 'fast');
+    });
+  </script>
+</acre:block>
+
+
+<!!--
+   Editing key forms
+   !!-->
+
+<acre:block def="add_key_form(id, p, lang)">
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        ${modal_help_toggle()}
+        <span>${_('Create a new key')}</span>
+      </h1>
+      <div class="modal-content">
+        ${modal_help()}
+        <div class="form-group clear">
+          <div class="form-row">
+            <acre:block if="p === '/type/namespace/keys'">
+              <label class="form-label form-label-object">${_('object')}</label>
+            </acre:block>
+            <acre:block else="">
+              <label class="form-label form-label-namespace">${_('namespace')}</label>
+            </acre:block>
+            <input class="text-input" type="text" name="namespace"/>
+          </div>
+          <div class="form-row">
+            <label class="form-label" for="domain-key">
+              ${_('key')}
+            </label>
+            <input class="text-input" type="text" name="value"/>
+            <span class="key-status"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <input type="hidden" name="s" value="${id}"/>
+      <input type="hidden" name="p" value="${p}"/>
+      <input type="hidden" name="lang" value="${lang}"/>
+      ${form.submit_buttons()}
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="modal_help()">
+  <div class="modal-help">
+    <h2 class="modal-help-title">${_('What are keys?')}</h2>
+    <p>${_('Every key exists in a namespace (directory) and the hierarchy of namespaces and associated keys forms a path which uniquely identifies a single graph node.')}</p>
+    <p>
+      <a href="http://wiki.freebase.com/wiki/Keys" target="_blank">${_("Read more")} &raquo;</a>
+    </p>
+  </div>
+</acre:block>
+
+<acre:block def="modal_help_toggle()">
+  <a href="javascript:void(0);" class="modal-help-toggle">[ + ] Show Help</a>
+</acre:block>
+
+<acre:block def="edit_key_form(id, p, namespace, value, lang)">
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        ${modal_help_toggle()}
+        <span>${_('Edit key')}</span>
+      </h1>
+      <div class="modal-content">
+        ${modal_help()}
+        <div class="form-group clear">
+          <div class="form-row">
+            <acre:block if="p === '/type/namespace/keys'">
+              <label class="form-label form-label-object">${_('object')}</label>
+            </acre:block>
+            <acre:block else="">
+              <label class="form-label form-label-namespace">${_('namespace')}</label>
+            </acre:block>
+            <input class="text-input" type="text" name="namespace"
+                   value="${namespace}" disabled="disabled"/>
+          </div>
+          <div class="form-row">
+            <label class="form-label" for="domain-key">
+              ${_('key')}
+            </label>
+            <input class="text-input" type="text" name="value" value="${value}"/>
+            <span class="key-status"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <input type="hidden" name="s" value="${id}"/>
+      <input type="hidden" name="p" value="${p}"/>
+      <input type="hidden" name="replace" value="${value}"/>
+      <input type="hidden" name="lang" value="${lang}"/>
+      ${form.submit_buttons()}
+    </div>
+  </div>
+</acre:block>
+
+
+<acre:block def="edit_key_not_permitted_form()">
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <span>${_('Edit key not permitted')}</span>
+      </h1>
+      <div class="modal-content">
+        <div class="form-group clear">
+          <div class="form-row">
+            <p>
+              ${_("You do not have permission to edit this key. Please contact the key namespace administrator(s).")}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      ${form.cancel_button()}
+    </div>
+  </div>
+</acre:block>
+
+
+<acre:block def="delete_key_form(id, property, namespace, value, lang)">
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <span>${_('Delete key')}</span>
+      </h1>
+      <div class="modal-content">
+        <div class="form-group clear">
+          <div class="form-row">
+            <p>
+              ${_("Are you sure you want to delete this key?")}
+              ${_("This cannot be undone.")}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <input type="hidden" name="s" value="${id}"/>
+      <input type="hidden" name="p" value="${property}"/>
+      <input type="hidden" name="namespace" value="${namespace}"/>
+      <input type="hidden" name="value" value="${value}"/>
+      <input type="hidden" name="lang" value="${lang}"/>
+      ${form.submit_buttons(_("Delete"))}
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="acre_javascript_vars()">
+  <script>
+    SERVER.c.property = ${JSON.stringify(c.property || '/type/object/keys')};
+  </script>
+</acre:block>

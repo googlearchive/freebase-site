@@ -1,0 +1,238 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+
+/*
+
+Styling for form elements that allow data entry
+on Freebase topics.
+
+Given the markup pattern:
+
+<span class="data-input">
+  <input type="text" class="fb-input" />
+</span>
+
+.data-input is a generic class that can be used
+standalone. However, it can be extended with the 
+following classes for additional context:
+
+  - .text
+  - .textarea
+  - .datetime
+  - .uri
+  - .int
+  - .float
+
+Example:
+
+<span class="data-input">
+  <input type="text" class="fb-input datetime" />
+</span>
+
+Doing so will provide visual icons to help communicate to
+the user the expected data format (or Type) for a given input.
+
+Note, due to rendering inconsistencies in Webkit browsers
+using display: inline-block, an explicit width must be
+set on .fb-input. A default width of 100px is assigned,
+but can (and should) be tailored to your app.
+ 
+*/
+
+.data-input {
+  display: inline-block;
+  color: #999;
+  background: #e1e2e3;
+  border: 2px solid #e1e2e3;
+  .rounded_corners(3px);
+  .transition(all);
+}
+
+.data-input.text,
+.data-input.textarea,
+.data-input.datetime,
+.data-input.uri,
+.data-input.int,
+.data-input.float,
+.data-input.topic,
+.data-input.enumerated {
+  background-image: url(template/img/ui-icons.png);
+  background-repeat: no-repeat;
+  padding-right: 23px;
+}
+
+.data-input.focus {
+  .box_shadow(0,0,6px, #61D7F7);
+}
+
+.fb-input {
+  width: 100px;
+  height: 15px;
+  padding: 4px 7px;
+  border: 0;
+  border-top: 1px solid #fff;
+  .linear_gradient(#f1f2f3, #fff);
+}
+
+.fb-input:focus {
+  color: #666;
+  background: #fff;
+}
+
+.data-input.valid .fb-input {
+  font-weight: bold;
+  color: #222;
+}
+
+.data-input.error {
+  background-color: #d66819;
+  border-color: #d66819;
+}
+
+.data-input.error .fb-input {
+  color: #666;
+}
+
+.data-input.disabled {
+  opacity: 0.5;
+}
+
+/*
+### text inputs
+*/
+.data-input.text,
+.data-input.textarea {
+  background-position: right -931px;
+}
+
+.data-input.text.error,
+.data-input.textarea.error {
+  background-position: right -968px;
+}
+
+.data-input.textarea textarea {
+  width: 284px;
+  height: 80px;
+}
+
+/*
+### datetime Inputs
+*/
+.data-input.datetime {
+  background-position: right -1009px;
+}
+
+.data-input.datetime.error {
+  background-position: right -1052px;
+}
+
+/*
+### Integer/Float inputs
+*/
+.data-input.int,
+.data-input.float {
+  background-position: right -1094px;
+}
+.data-input.int.error,
+.data-input.float.error {
+  background-position: right -1136px;
+}
+
+/*
+### URI inputs
+*/
+.data-input.uri {
+  background-position: right -1175px;
+}
+.data-input.uri.error {
+  background-position: right -1218px;
+}
+
+/*
+### Topic inputs
+*/
+.data-input.topic {
+  background-position: right -1259px;
+}
+.data-input.topic.error {
+  background-position: right -1300px;
+}
+
+/*
+### Enumerated inputs
+*/
+.data-input.enumerated {
+  background-position: right -1342px;
+}
+.data-input.enumerated.error {
+  background-position: right -1385px;
+}
+
+/*
+### Boolean inputs
+*/
+.fb-boolean-input {
+  float: left;
+  margin: 0 7px 0 0;
+}
+
+.data-input label {
+  float: left;
+  position: relative;
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+  color: #666;
+  padding: 6px 10px;
+  border-right: 1px solid #d1d2d3;
+  border: 1px solid #c1c2c3;
+  .linear_gradient();
+}
+
+.data-input label:hover {
+  cursor: pointer;
+  z-index: 1;
+}
+
+.data-input label.selected {
+  color: #333;
+  .linear_gradient(#d1d2d3,#f1f2f3);
+}
+
+.data-input:focus {
+  .box_shadow(0,0,6px, #61D7F7);
+}
+
+.data-input label:first-child {
+  border-right: 0;
+}

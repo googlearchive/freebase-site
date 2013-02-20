@@ -1,0 +1,82 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+var validators = acre.require("lib/validator/validators.sjs");
+var t = acre.require("keys.mjt");
+var has_permission = acre.require("lib/permission/queries.sjs").has_permission;
+
+/**
+ * add key form
+ */
+var SPEC = {
+
+    method: "GET",
+
+    auth: true,
+
+    validate: function(params) {
+        return [
+            validators.MqlId(params, "s", {required:true}),
+            validators.OneOf(params, "p", {                 // property id
+                required: true, 
+                oneof: ["/type/object/key", "/type/namespace/keys"]
+            }), 
+            validators.MqlId(params, "namespace", {required:true}),
+            validators.MqlKey(params, "value", {required:true}),
+            params.auth_user.id,
+            validators.LangId(params, "lang", {if_empty:"/lang/en"})  // lang
+        ];
+    },
+
+    run: function(s, p, namespace, value, user_id, lang) {
+        var to_check = namespace;
+        if (p == '/type/namespace/keys') {
+          to_check = s;
+        }
+        // does user_id have permission to edit THE namespace?
+        return has_permission([to_check], user_id)
+            .then(function(r) {
+                if (r[to_check]) {
+                    return {
+                        html: acre.markup.stringify(
+                            t.edit_key_form(s, p, namespace, value, lang))
+                    };
+                }
+                else {
+                    // user does not have permission on namespace
+                    return {
+                        html: acre.markup.stringify(
+                            t.edit_key_not_permitted_form())
+                    };
+                }
+            });
+    }
+};

@@ -1,0 +1,173 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var sh = acre.require("helpers.sjs");
+  var dc = acre.require("domain_components");
+  var image = acre.require("lib/template/imagecomponents");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="schema.mf.css" />
+</acre:block>
+
+<acre:block def="page_content()">
+   <div class="section">
+     <acre:script>
+       var all_types = c.domain.types.slice().sort(sh.sort_by_id);
+       var regular_types = [];
+       var mediator_types = [];
+       all_types.forEach(function(t) {
+         if (t["/freebase/type_hints/mediator"]) {
+           mediator_types.push(t);
+         }
+         else {
+           regular_types.push(t);
+         }
+       });
+     </acre:script>
+
+     <!-- Types -->
+     <div class="table-header">
+       <h2 class="table-title">
+         <a href="http://wiki.freebase.com/wiki/Types" rel="help external" title="${_('Read help article')}" class="help-link">${_('What are Types?')}</a>
+         ${_('Types')}
+      </h2>
+     </div>
+     <table class="table table-sortable" cellspacing="0">
+       <thead>
+         <tr acre:attrs="regular_types.length ? {}:{style:'display:none;'}">
+           <th scope="col" class="column-header first"><span class="sort-icon">${_('Type')}</span></th>
+           <th scope="col" class="column-header column-header-desc"><span class="sort-icon">${_('ID')}</span></th>
+           <th scope="col" class="column-header {sorter: 'number'}"><span class="sort-icon">${_('# of Properties')}</span></th>
+           <th scope="col" class="column-header numeric {sorter: 'number'}"><span class="sort-icon">${_('# of Instances')}</span></th>
+           <th class="column-header description" scope="col"><span class="sort-icon">${_('Description')}</span></th>
+         </tr>
+         <tr acre:attrs="regular_types.length ? {style:'display:none;'}:{}">
+           <th colspan="5" class="table-empty-column" scope="col">
+             <div class="edit table-empty-msg">
+               <a href="javascript:void(0)" class="table-empty-trigger">${_('Use Types to')}&hellip;</a>
+               <div class="table-empty-text">
+                 <p>       
+                   <strong>${_("Describe any person, place, or concept.")}</strong>
+                   ${h.template_sprintf(_("This is the most common type in Freebase and is used to describe an %s relationship between topics (eg. San Francisco %s city)"), tag_strong(tag_em("is a")))}
+                 </p>
+                 <p><a href="http://wiki.freebase.com/wiki/Types" rel="external help">${_('Learn more')} &raquo;</a></p> 
+               </div>
+             </div>
+             <h3 class="table-empty-title">${_("This domain doesn't have any Types.")}</h3>
+           </th>
+         </tr>
+       </thead>
+       <tbody>
+         <acre:block for="i,type in regular_types">
+           ${dc.domain_type_row(type)}
+         </acre:block>
+       </tbody>
+       <tfoot class="table-edit edit">
+         <tr>
+           <td colspan="5">
+             <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_type, ['${c.domain.id}', false], this);">
+               <span class="add-icon">${_('Add New')}</span>
+             </a>
+           </td>
+         </tr>
+       </tfoot>
+     </table> 
+   </div>
+
+  <!-- Mediators -->
+  <div class="section">
+    <h2 class="table-title">
+      <a href="http://wiki.freebase.com/wiki/Compound_Value_Type" title="${_('Read help article')}" rel="help external" class="help-link">${_('What are Mediators?')}</a>
+      ${_('Mediators')}
+    </h2>
+    <table class="table table-sortable">
+      <thead>
+        <tr acre:attrs="mediator_types.length ? {}:{style:'display:none;'}">
+          <th scope="col" class="column-header first"><span class="sort-icon">${_('Type')}</span></th>
+          <th scope="col" class="column-header column-header-desc"><span class="sort-icon">${_('ID')}</span></th>
+          <th scope="col" class="column-header {sorter: 'number'}"><span class="sort-icon">${_('# of Properties')}</span></th>
+          <th scope="col" class="column-header {sorter: 'number'}"><span class="sort-icon">${_('# of Instances')}</span></th>
+          <th scope="col" class="column-header description"><span class="sort-icon">${_('Description')}</span></th>
+        </tr>
+        <tr acre:attrs="mediator_types.length ? {style:'display:none;'}:{}">
+          <th colspan="5" class="table-empty-column" scope="col">
+             <div class="edit table-empty-msg">
+               <a href="javascript:void(0)" class="table-empty-trigger">${_('Use Mediators to')}&hellip;</a>
+               <div class="table-empty-text">
+                 <p>
+                 <strong>${_("Describe the relationship between two or more Types.")}</strong>
+                 ${_("For example, the film performance Mediator in Film describes the relationship between a movie, an actor, and a character.")}
+                 ${_("We use film performance  to assert that Heath Ledger played the character of The Joker in the film The Dark Knight.")}
+                 </p>
+                 <p><a href="http://wiki.freebase.com/wiki/Types" rel="external help">${_('Learn more')} &raquo;</a></p> 
+               </div>
+             </div>
+            <h3 class="table-empty-title">${_("This domain doesn't have any Mediators.")}</h3>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <acre:block for="i,type in mediator_types">
+          ${dc.domain_type_row(type)}
+        </acre:block>
+      </tbody>
+      <tfoot class="table-edit edit">
+        <tr>
+          <td colspan="5">
+            <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_type, ['${c.domain.id}', true], this);">
+              <span class="add-icon">${_('Add New')}</span>
+            </a>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="domain.mf.js"></script>
+</acre:block>
+
+
+<acre:block def="tag_strong(value)">
+  <strong>${value}</strong>
+</acre:block>
+
+<acre:block def="tag_em(value)">
+  <em>${value}</em>
+</acre:block>

@@ -1,0 +1,385 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var h = acre.require("helper/helpers.sjs");
+  var i18n = acre.require("i18n/i18n.sjs");
+  var _ = i18n.gettext;
+  var i18n_c = acre.require("i18n/components.mjt");
+  var form = acre.require("propbox/form.mjt");
+</acre:script>
+
+<acre:block def="create_domain_form(lang)">
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <a href="javascript:void(0);" class="modal-help-toggle">[ + ] Show Help</a>
+        <span>${_('Create a new domain')}</span>
+      </h1>
+      <div class="modal-content">
+        <div class="modal-help">
+          <h2 class="modal-help-title">${_('What are domains?')}</h2>
+          <p>${_('Creating a domain is generally the first step in building a data model. A useful way to think of a Domain is as the bucket in which you create your Types, as they provide a common namespace in which you build your schema.')}</p> 
+          <p>
+            <a href="http://wiki.freebase.com/wiki/Domain" target="_blank">${_("Read more")} &raquo;</a>
+          </p>
+        </div>
+        <div class="form-group clear">
+          <div class="form-row form-row-inline">
+            <label class="form-label" for="domain-name">${_('Name')}</label>
+            <input class="text-input" type="text" name="name" value=""/>
+            <span class="form-note">${_('You can change this at any time')}</span>
+          </div>
+          <div class="form-row form-row-inline">
+            <label class="form-label" for="domain-key">
+              ${_('Key')}
+              <span class="key">/base/</span>
+            </label>
+            <input class="text-input" type="text" name="key" value=""/>
+            <span class="key-status"></span>
+            <span class="form-note">
+              ${_('Five or more alphanumeric characters. No spaces. This cannot be changed.')}
+            </span>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">${_('Description')}</label>
+          <textarea class="textarea" name="description" 
+                    rows="3" 
+                    placeholder="${_('Provide a brief description to help Freebase users find your domain and help contribute.')}"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <input type="hidden" name="lang" value="${lang}"/>
+      ${form.submit_buttons()}
+    </div>
+  </div>
+</acre:block>
+
+
+<acre:block def="delete_domain_form(info, lang)">
+  <acre:script>
+    var can_delete = true;
+  </acre:script>
+
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <span>${_('Delete Domain')} <span class="key">${info.id}</span></span>
+      </h1>
+      <div class="modal-content">
+        <acre:block if="!info.has_permission">
+          <acre:script>
+            can_delete = false;
+          </acre:script>
+          <div class="form-group clear">
+            <p>
+              ${_("You do not have permission to delete this Domain.")}
+              ${_("Please contact the Domain administrator(s).")}
+            </p>
+          </div>
+        </acre:block>
+
+        <acre:block else="">
+          <acre:block if="info.types.length">
+            <acre:script>
+              can_delete = false;
+            </acre:script>
+            <div class="form-group clear">
+              <p>
+                ${_("You must first delete all Types associated with this Domain: ")}
+                ${info.types.join(", ")}
+              </p>
+            </div>
+          </acre:block>
+          
+          <acre:block if="info['not_permitted:key'].length">
+            <acre:script>
+              can_delete = false;
+              var namespaces = info['not_permitted:key'].map(function(k) {
+                return k.namespace;
+              });
+            </acre:script>
+            <div class="form-group clear">
+              <p>
+                ${_("You do not have permission to delete this Domain from the following Namespace(s): ")}
+                ${namespace.join(", ")}
+                ${_("Please contact the Namespace administrator(s).")}
+              </p>
+            </div>
+          </acre:block>
+        </acre:block>
+
+        <acre:block if="can_delete">
+          <div class="form-group clear">
+            <h3>${_("Are you sure you want to delete this Domain?")}</h3>
+            <p>${_('This cannot be undone.')}</p>
+          </div>
+        </acre:block>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <input type="hidden" name="id" value="${info.id}"/>
+      <input type="hidden" name="lang" value="${lang}"/>
+      <input acre:if="can_delete" type="hidden" name="force" value="true"/>
+      ${form.submit_buttons(_("Delete"))}
+    </div>
+  </div>
+</acre:block>
+
+
+
+<acre:block def="delete_type_form(info, lang)">
+  <acre:script>
+    var can_delete = true;
+  </acre:script>
+
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <span>${_('Delete Type')} <span class="key">${info.id}</span></span>
+      </h1>
+      <div class="modal-content">
+
+        <acre:block if="!info.has_permission">
+          <acre:script>
+            can_delete = false;
+          </acre:script>
+          <div class="form-group clear">
+            <p>
+              ${_("You do not have permission to delete this Type.")}
+              ${_("Please contact the Domain administrator(s)")}
+            </p>
+          </div>
+        </acre:block>
+
+        <acre:block else="">
+          <acre:block if="info.properties > 0">
+            <acre:script>
+              can_delete = false;
+            </acre:script>
+            <div class="form-group clear">
+              <p>
+                ${h.template_sprintf(_("You must first delete all Properties in this Type: %s"), external_link(i18n_c.number(info.properties), h.fb_url(info.id, [["schema"]])))}
+              </p>
+            </div>
+          </acre:block>
+
+          <acre:block if="info.instance > 0">
+            <acre:script>
+              can_delete = false;
+            </acre:script>
+            <div class="form-group clear">
+              <p>
+                ${h.template_sprintf(_("You must first un-type all instances of this Type: %s"), external_link(i18n_c.number(info.instance), h.fb_url(info.id, [["instances"]])))}
+              </p>
+            </div>
+          </acre:block>
+
+          <acre:block if="info.expected_by > 0">
+            <acre:script>
+              can_delete = false;
+            </acre:script>
+            <div class="form-group clear">
+              <p>
+                <acre:script>
+                  var q = {
+                    id: info.id,
+                    "/type/type/expected_by": [{
+                      id: null
+                    }]
+                  };
+                </acre:script>
+                ${h.template_sprintf(_("You must first resolve all Properties expecting this Type: %s"), external_link(i18n_c.number(info.expected_by), h.fb_url("/query", [["q",JSON.stringify(q)], [["autorun",1]]])))}
+              </p>
+            </div>
+          </acre:block>
+
+          <acre:block if="info.included_by > 0">
+            <acre:script>
+              can_delete = false;
+            </acre:script>
+            <div class="form-group clear">
+              <p>
+                <acre:script>
+                  var q = {
+                    id: info.id,
+                    "!/freebase/type_hints/included_types": [{
+                      id: null
+                    }]
+                  };
+                </acre:script>
+                ${h.template_sprintf(_("You must first resolve all Types including this Type: %s"), external_link(i18n_c.number(info.included_by), h.fb_url("/query", [["q",JSON.stringify(q)], [["autorun",1]]])))}
+              </p>
+            </div>
+          </acre:block>
+
+          <acre:block if="info['not_permitted:key'].length">
+            <acre:script>
+              can_delete = false;
+              var namespaces = info['not_permitted:key'].map(function(k) {
+                 return k.namespace;
+              });
+            </acre:script>
+            <div class="form-group clear">
+              <p>
+                ${_("You do not have permission to delete this Type from the following Namespace(s): ")}
+                ${namespace.join(", ")}
+                ${_("Please contact the Namespace administrator(s).")}
+              </p>
+            </div>
+          </acre:block>
+        </acre:block>
+
+        <acre:block if="can_delete">
+          <div class="form-group clear">
+            <h3>${_("Are you sure you want to delete this Type?")}</h3>
+            <p>${_('This cannot be undone.')}</p>
+          </div>
+        </acre:block>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <input type="hidden" name="id" value="${info.id}"/>
+      <input type="hidden" name="lang" value="${lang}"/>
+      <input acre:if="can_delete" type="hidden" name="force" value="true"/>
+      ${form.submit_buttons(_("Delete"))}
+    </div>
+  </div>
+</acre:block>
+
+
+
+<acre:block def="delete_property_form(info, lang)">
+  <acre:script>
+    var can_delete = true;
+  </acre:script>
+
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <span>${_('Delete Property')} <span class="key">${info.id}</span></span>
+      </h1>
+      <div class="modal-content">
+
+        <acre:block if="!info.has_permission">
+          <acre:script>
+            can_delete = false;
+          </acre:script>
+          <div class="form-group clear">
+            <p>
+              ${_("You do not have permission to delete this Property.")}
+              ${_("Please contact the Domain administrator(s)")}
+            </p>
+          </div>
+        </acre:block>
+
+        <acre:block else="">
+          <acre:block if="info.links > 0">
+            <acre:script>
+              can_delete = false;
+            </acre:script>
+            <div class="form-group clear">
+              <p>
+                ${h.template_sprintf(_("You must first delete all links using this Property: %s"), external_link(i18n_c.number(info.links), h.fb_url(info.id, [["instances"]])))}
+              </p>
+            </div>
+          </acre:block>
+
+          <acre:block if="info.reverse_property">
+            <acre:script>
+              can_delete = false;
+            </acre:script>
+            <div class="form-group clear">
+              <p>
+                ${h.template_sprintf(_("You must first remove the reverse_property of this Property: %s"), external_link(i18n_c.number(info.reverse_property), h.fb_url(info.reverse_property, [["schema"]])))}
+              </p>
+            </div>
+          </acre:block>
+
+          <acre:block if="info.delegated_by > 0">
+            <acre:script>
+              can_delete = false;
+            </acre:script>
+            <div class="form-group clear">
+              <p>
+                <acre:script>
+                  var q = {
+                    id: info.id,
+                    "!/type/property/delegated": [{
+                      id: null
+                    }]
+                  };
+                </acre:script>
+                ${h.template_sprintf(_("You must first remove all Properties delegating to this Property: %s"), external_link(i18n_c.number(info.delegated_by), h.fb_url("/query", [["q",JSON.stringify(q)], [["autorun",1]]])))}
+              </p>
+            </div>
+          </acre:block>
+
+          <acre:block if="info['not_permitted:key'].length">
+            <acre:script>
+              can_delete = false;
+              var namespaces = info['not_permitted:key'].map(function(k) {
+                 return k.namespace;
+              });
+            </acre:script>
+            <div class="form-group clear">
+              <p>
+                ${_("You do not have permission to delete this Property from the following Namespace(s): ")}
+                ${namespace.join(", ")}
+                ${_("Please contact the Namespace administrator(s).")}
+              </p>
+            </div>
+          </acre:block>
+        </acre:block>
+
+        <acre:block if="can_delete">
+          <div class="form-group clear">
+            <h3>${_("Are you sure you want to delete this Property?")}</h3>
+            <p>${_('This cannot be undone.')}</p>
+          </div>
+        </acre:block>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <input type="hidden" name="id" value="${info.id}"/>
+      <input type="hidden" name="lang" value="${lang}"/>
+      <input acre:if="can_delete" type="hidden" name="force" value="true"/>
+      ${form.submit_buttons(_("Delete"))}
+    </div>
+  </div>
+</acre:block>
+
+
+<acre:block def="external_link(text, href)">
+  <a href="${href}" target="_blank">${text}</a>
+</acre:block>

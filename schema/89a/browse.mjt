@@ -1,0 +1,146 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+  var components = acre.require("lib/template/components.mjt");
+  var image = acre.require("lib/template/imagecomponents.mjt");
+</acre:script>
+
+<acre:block def="page_content()">
+  <div id="content-wrapper" class="clear">
+    <section id="content-main" role="main">
+      <h1>
+        ${_('Recent schema changes')}
+      </h1>
+      <table cellspacing="0" class="table">
+        <thead>
+          <tr>
+            <th scope="col" class="column-header first">${_('Domain')}</th>
+            <th scope="col" class="column-header">${_('ID')}</th>
+            <th scope="col" class="column-header">${_('Changes')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr acre:for="d in c.domains">
+            <th class="row-header odd" scope="row">
+              <acre:script>var name = i18n.display_name(d);</acre:script>
+              <a href="${h.fb_url(d.id, [['schema','']])}" title="${h.sprintf(_('View %s'), name)}">$name</a>
+            </th>
+            <td class="even">$d.id</td>
+            <td class="odd">
+              <ul>
+                <li acre:for="user in d.users">
+                  ${image.user_image_tiny(user)}
+                  ${components.creator_link(user.id)}
+                  ${_("added:")}
+                  <ul>
+                    <li acre:for="change in user.changes">
+                      <acre:script>
+                        var pname = i18n.display_name(change.property);
+                        var tname = i18n.display_name(change.type);
+                      </acre:script>
+                      <a href="${h.fb_url(change.property.id, [['schema','']])}" title="${h.sprintf(_('View %s'), pname)}">$pname</a>
+                      ${_('to')}
+                      <a href="${h.fb_url(change.type.id, [['schema','']])}" title="${h.sprintf(_('View %s'), tname)}">$tname</a>
+                      ${i18n_c.relative_date(change.timestamp)}
+                    </li>
+                  </ul>
+                </li>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    <aside class="secondary">
+      <div class="wrapper">
+        <h3><span>${_('What is Schema?')}</span></h3>
+        <div class="sub-section">
+          <p>${_('Schema describes how data is stuctured in Freebase, expressed through Domains, Types and Properties.')}</p>
+          <h4>
+            <a href="http://wiki.freebase.com/wiki/Domain">${_('Domains')}</a>
+          </h4>
+          <p>${_("Set a common namespace (eg. 'Media'). Within Domains, you create&hellip;")}</p>
+          <h4>
+            <a href="http://wiki.freebase.com/wiki/Type">${_('Types')}</a>
+          </h4>
+          <p>${_("which define a particular kind of person, place, or thing (eg. 'Author'). Types contain&hellip;")}</p>
+          <h4>
+            <a href="http://wiki.freebase.com/wiki/Property">${_('Properties')}</a>
+          </h4>
+          <p>${_("which define the unique qualities of that Type (eg. 'Works Written').")}</p>
+          <h4><strong>${_("Here's an example:")}</strong></h4>
+          <p>${h.template_sprintf(_("We know that %s wrote the play %s. We describe this in Freebase as such:"), shakespeare_help_text(), hamlet_help_text())}</p>
+          <div class="aside-box">
+            <h4>
+              ${_('William Shakespeare')}
+            </h4>
+            <table cellspacing="0" class="schema-example">
+              <tbody>
+                <tr>
+                  <td class="is-a">${_('is a')}</td>
+                  <td class="kind">${_('type')}</td>
+                  <td><a href="${h.fb_url('/book/author')}">${_('Author')}</a></td>
+                </tr>
+                <tr class="middle">
+                  <td class="has-a">${_('has a')}</td>
+                  <td class="kind">${_('property')}</td>
+                  <td><a href="${h.fb_url('/schema/people/person/date_of_birth')}">${_('Works Written')}</a></td>
+                </tr>
+                <tr>
+                  <td class="has-a">${_('with a')}</td>
+                  <td class="kind">${_('value')}</td>
+                  <td><a href="${h.fb_url('/m/03j9w')}">${_('Hamlet')}</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>${h.template_sprintf(_("To learn more about how our schema works, visit our %s."), schema_help_link())}</p>
+        </div>
+      </div>
+    </aside>
+  </div>
+</acre:block>
+
+<acre:block def="shakespeare_help_text()">
+<a href="${h.fb_url('/en/shakespeare')}">${_("William Shakespeare")}</a>
+</acre:block>
+<acre:block def="hamlet_help_text()">
+<a href="${h.fb_url('/m/03j9w')}">${_("Hamlet")}</a>
+</acre:block>
+
+<acre:block def="schema_help_link()">
+<a href="http://wiki.freebase.com/Schema">${_("help center")}</a>
+</acre:block>

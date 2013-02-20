@@ -1,0 +1,318 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var h = acre.require("lib/helper/helpers.sjs");
+  var sh = acre.require("helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var _ = i18n.gettext;
+
+  var previous = null;
+  var previous_global = null;
+
+  var EDIT_PROPERTY = _('Edit property');
+  var DELETE_PROPERTY = _('Delete property');
+  var INSPECT_PROPERTY = _('Property links');
+  var BUILD_QUERY = _('Build query');
+</acre:script>
+
+<acre:block def="type_property_row(prop, type_id)">
+  <tr class="data-row hover-row">
+    <th scope="row" class="row-header odd">
+      <span class="wrapper">
+        <a href="${h.fb_url(prop.id, [['schema']])}">${i18n.display_name(prop)}</a>
+        ${prop_menu(prop)}
+      </span>
+    </th>
+    <td class="even">$prop.id</td>
+    <td class="odd">
+      <acre:block if="prop.expected_type">
+        <a href="${h.fb_url(prop.expected_type.id, [['schema']])}">
+          $prop.expected_type.id
+        </a>
+        ${other_prop(prop)}
+        <acre:script>
+          var meta = [];
+          if (prop.expected_type['/freebase/type_hints/deprecated']) {
+            meta.push(acre.markup.stringify(prop_meta(_('This type is deprecated'), _('deprecated'))));
+          }
+          if (prop.expected_type['/freebase/type_hints/mediator']) {
+            meta.push(acre.markup.stringify(prop_meta(_('This is a Mediator'), _('mediator'))));
+          }
+          if (prop.expected_type['/freebase/type_hints/enumeration']) {
+            meta.push(acre.markup.stringify(prop_meta(_('This is an Enumerated Type'), _('enumerated'))));
+          }
+          if (prop.expected_type['/freebase/type_hints/never_assert']) {
+            meta.push(acre.markup.stringify(prop_meta(_('This type is never asserted on a topic'), _('never_assert'))));
+          }
+          if (prop.expected_type.id === '/type/enumeration' && prop.enumeration) {
+            meta.push(acre.markup.stringify(prop_meta(_('Namespace'), prop.enumeration.id)));
+          }
+        </acre:script>
+        <acre:block if="meta.length">
+          ${acre.markup.bless(meta.join(", "))}
+        </acre:block>        
+      </acre:block>
+      <span acre:if="prop.unit" class="measurement-unit">${prop.unit["/freebase/unit_profile/abbreviation"]}</span>
+    </td>
+    <td class="even description">
+      <acre:script>
+        var desc = i18n.display_text(prop, "", "/common/topic/description");
+      </acre:script>
+      <p acre:if="desc">${desc}</p>
+      <acre:script>
+        var meta = [];
+        if (prop['/freebase/property_hints/deprecated']) {
+          meta.push(acre.markup.stringify(prop_meta(_('This property is deprecated'), _('deprecated'))));
+        }
+        if (prop.delegated) {
+          meta.push(acre.markup.stringify(prop_meta(h.sprintf(_('This property is delegated to %s'), prop.delegated.id), _('delegated'))));
+        }
+        if (prop.master_property) {
+          meta.push(acre.markup.stringify(prop_meta(_('This is a reverse property'), _('reverse'))));
+        }
+        if (prop.reverse_property) {
+          meta.push(acre.markup.stringify(prop_meta(_('This is a master property'), _('master'))));
+        }
+        if (prop.unique) {
+          meta.push(acre.markup.stringify(prop_meta(_('This property can only have a single value'), _('unique'))));
+        }
+        if (prop['/freebase/property_hints/disambiguator']) {
+          meta.push(acre.markup.stringify(prop_meta(_('This property is a disambiguator'), _('disambiguating'))));
+        }
+        if (prop['/freebase/property_hints/display_none']) {
+          meta.push(acre.markup.stringify(prop_meta(_('This property is hidden by default'), _('hidden'))));
+        }
+        if (prop['emql:type']) {
+          meta.push(acre.markup.stringify(prop_meta(_('This property is a mql extension'), _('emql'))));
+        }
+      </acre:script>
+      <acre:block if="meta.length">
+        ${acre.markup.bless(meta.join(", "))}
+      </acre:block>      
+   </td>
+  </tr>
+</acre:block>
+
+<acre:block def="prop_meta(title, label)" trim="">
+  <span class="property-meta ect-role" acre:trim="">
+    <abbr title="${title}">${label}</abbr>
+  </span>
+</acre:block>
+
+<acre:block def="other_prop(prop)">        
+  <acre:block if="prop.master_property || prop.reverse_property">
+    <acre:script>
+      var title = "";
+      if (prop.master_property) {
+        title = h.sprintf(
+          _("%s is the REVERSE PROPERY of %s"), prop.id, prop.master_property.id);
+      }
+      else {
+        title = h.sprintf(
+          _("%s is the MASTER PROPERTY of %s"), prop.id, prop.reverse_property.id);
+      }
+    </acre:script>
+    <span class="return-link-trigger" title="${title}"></span>
+  </acre:block>
+</acre:block>
+
+<!-- Native Properties markup pattern -->
+<acre:block def="native_properties(properties, type_id)">
+  <tbody>
+    <tr acre:attrs="properties.length ? {}:{style:'display:none;'}">
+      <th scope="col" class="column-header first">${_('Property')}</th>
+      <th class="column-header">${_('ID')}</th>
+      <th class="column-header">${_('Expected Type')}</th>
+      <th class="column-header description">${_('Description')}</th>
+    </tr>
+    <tr acre:attrs="properties.length ? {style:'display:none;'}:{}">
+      <th colspan="5" class="table-empty-column" scope="col">
+        <h3 class="table-empty-title">${_("This type doesn't have any properties")}</h3>
+      </th>
+    </tr>
+    <acre:block for="prop in properties" class="data-row hover-row">
+      ${type_property_row(prop, type_id)}
+    </acre:block>
+  </tbody>
+</acre:block>
+
+<!-- enumerated topics -->
+<acre:block def="enumerated_topic_row(topic, type_id)">
+  <tr class="data-row hover-row">
+    <th class="row-header first odd">
+      <span class="wrapper">
+        <a href="${h.fb_url(topic.id)}" title="${topic.id}">
+          ${topic.name ? topic.name.text : topic.id}
+        </a>
+        ${enum_topic_menu(topic, type_id)}
+      </span>
+    </th>
+    <td class="even">
+      <acre:script>
+        var desc = topic.description ? topic.description.text : null;
+      </acre:script>
+      <p>${h.ellipsify(desc, 80, '')}</p>
+    </td>
+  </tr>
+</acre:block>
+
+<!-- Included Types markup pattern -->
+<acre:block def="included_type_thead(type_id, included_type, expanded)">
+  <thead>
+    <tr>
+      <th class="tbody-header ${expanded ? 'expanded' : ''}" colspan="4"
+         data-url="${h.ajax_url('/get_type_properties.ajax', [['id',included_type],['lang',i18n.lang]])}">
+        <a href="#" class="edit" onclick="return freebase.dispatch(event, freebase.schema.type.delete_included_type, ['${type_id}', '${included_type}'], this);"><span>${_('delete')}</span></a>
+        <span class="tbody-header-title"><a href="${h.fb_url(included_type, [['schema']])}"> ${included_type}</a></span>
+      </th>
+    </tr>
+  </thead>
+</acre:block>
+
+<!-- Incoming Properties markup pattern -->
+<acre:block def="incoming_props_thead(name, expanded, data_url)">
+  <thead>
+    <tr>
+      <th class="tbody-header ${expanded ? 'expanded' : ''}" colspan="4"
+          data-url="${data_url ? data_url : ''}">
+        <span class="tbody-header-title ${expanded ? 'expanded' : ''}">$name</span>
+     </th>
+    </tr>
+  </thead>
+</acre:block>
+
+<acre:block def="incoming_props_tbody(props)">
+  <tbody>
+    <tr>
+      <th class="column-header first" scope="col">${_('Originating Type')}</th>
+      <th class="column-header" scope="col">${_('Property')}</th>
+    </tr>
+    <tr acre:for="prop in props" class="data-row hover-row">
+      <td class="odd">
+        <span class="wrapper">
+          <a href="${h.fb_url(prop.schema.id, [['schema']])}">
+            ${i18n.display_name(prop.schema)}
+          </a>
+          ${other_prop(prop)}
+          <acre:script>
+            var other_property = prop.master_property || prop.reverse_property;
+          </acre:script>
+          ${incoming_prop_menu1(prop, other_property)}
+        </span>
+        <div class="key">$prop.schema.id</div>
+      </td>
+      <td class="even">
+        <span class="wrapper">
+          <a href="${h.fb_url(prop.id, [['schema']])}">${i18n.display_name(prop)}</a>
+          <acre:script>
+            var other_property = prop.master_property || prop.reverse_property;
+          </acre:script>
+          ${incoming_prop_menu2(prop, other_property)}
+        </span>
+        <div class="key">$prop.id</div>
+      </td>
+    </tr>
+  </tbody>
+</acre:block>
+
+<acre:block def="tag_strong(value)">
+  <strong>${value}</strong>
+</acre:block>
+
+<acre:block def="prop_menu(prop)">
+  <ul class="combo-menu nicemenu">
+    <li class="nicemenu-item">
+      <span class="headmenu">
+        <a href="javascript:void(0);" class="more-action">menu</a>
+      </span>
+      <ul class="submenu row-menu">
+        <li class="row-menu-item edit">
+          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.edit_property, ['${prop.id}'], this);"><span class="edit-icon">${EDIT_PROPERTY}</span></a>
+        </li>
+        <li class="row-menu-item edit">
+          <a href="${h.static_url('lib/schema/schema.mf.js')}" class="icon-link" onclick="return freebase.nav_get_script(this, 'schema.delete_property_begin', ['${prop.id}']);"><span class="delete-icon">${DELETE_PROPERTY}</span></a>
+        </li>
+        <li class="row-menu-item"><a href="${h.fb_url(prop.id, [['instances']])}">${INSPECT_PROPERTY}</a></li>
+        <li class="row-menu-item last">
+          <a href="${h.build_query_url(null, prop.schema.id, prop.id)}">${BUILD_QUERY}</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="enum_topic_menu(topic, type_id)">
+  <ul class="combo-menu nicemenu">
+    <li class="nicemenu-item">
+      <span class="headmenu">
+        <a href="javascript:void(0);" class="more-action">menu</a>
+      </span>
+      <ul class="submenu row-menu">      
+        <li class="row-menu-item edit">
+          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.delete_instance, ['${topic.id}','${type_id}'], this);"><span class="delete-icon">${_('Remove topic')}</span></a>
+        </li>
+        <li class="row-menu-item"><a href="${h.fb_url(topic.id)}" title="${topic.id}">${_('View topic')}</a></li>
+     </ul>
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="incoming_prop_menu1(prop, other_property)">
+  <ul class="combo-menu nicemenu">
+    <li class="nicemenu-item">
+      <span class="headmenu">
+        <a href="javascript:void(0);" class="more-action">menu</a>
+      </span>
+      <ul class="submenu row-menu">
+        <li acre:if="!other_property" class="row-menu-item edit">
+          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.reverse_property, ['${prop.expected_type}','${prop.id}'], this);"><span class="create-return-link-icon">${_('Create return link')}</span></a>
+        </li>
+        <li class="row-menu-item"><a href="${h.fb_url(prop.schema.id, [['schema']])}">${_('View type schema')}</a></li>
+        <li class="row-menu-item last"><a href="${h.build_query_url(null, prop.schema.id, prop.id)}">${_('Build query')}</a></li>
+      </ul>
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="incoming_prop_menu2(prop, other_property)">
+  <ul class="combo-menu nicemenu">
+    <li class="nicemenu-item">
+      <span class="headmenu">
+        <a href="javascript:void(0);" class="more-action">menu</a>
+      </span>
+      <ul class="submenu row-menu">
+        <li class="row-menu-item"><a href="${h.fb_url(prop.id, [['schema']])}">${_('View property details')}</a></li>
+        <li class="row-menu-item last"><a href="#">${_('Build query')}</a></li>
+      </ul>
+    </li>
+  </ul>
+</acre:block>

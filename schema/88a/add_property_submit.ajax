@@ -1,0 +1,151 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+var validators = acre.require("lib/validator/validators.sjs");
+var queries = acre.require("queries.sjs");
+var components = acre.require("type_components.mjt");
+var deferred = acre.require("lib/promise/deferred.sjs");
+var freebase = acre.require("lib/promise/apis.sjs").freebase;
+var create_property = acre.require("create_property.sjs").create_property;
+var create_type = acre.require("create_type.sjs").create_type;
+var schema_helpers = acre.require("helpers.sjs");
+
+/**
+ * add property form
+ */
+var SPEC = {
+
+  method: "POST",
+
+  auth: true,
+
+  validate: function(params) {
+    var ect = validators.MqlId(params, "expected_type", {if_empty:null});
+    var ect_new = validators.String(params, "expected_type_new", {if_empty:null});
+    if (!(ect || ect_new)) {
+      throw new validators.Invalid("expected_type or expected_type_new is required");
+    }
+    var enumeration = null;
+    if (ect === "/type/enumeration") {
+      // enumerated ns required if /type/enumeration
+      enumeration = validators.MqlId(params, "enumeration", {required:true});
+    }
+    return [
+      validators.MqlId(params, "type", {required:true}),           // type id
+      validators.String(params, "name", {required:true}),          // property name
+      validators.PropertyKey(params, "key", {required:true}),      // property key
+      ect,                                                         // property expected type
+      validators.String(params, "description", {if_empty:null}),   // property description
+      validators.MqlId(params, "unit", {if_empty:null}),                // unit
+      validators.StringBool(params, "disambiguator", {if_empty:false}), // disambiguator?
+      validators.StringBool(params, "unique", {if_empty:false}),        // unique?
+      validators.StringBool(params, "hidden", {if_empty:false}),        // hidden?
+      validators.MqlId(params, "master_property", {if_empty:null}),
+
+      validators.LangId(params, "lang", {if_empty:"/lang/en"}),    // name,description lang
+      ect_new,                                                     // new ect name
+      enumeration
+    ];
+  },
+
+  run: function(type, name, key, expected_type, description,
+                unit, disambiguator, unique, hidden,
+                master_property, lang,
+                expected_type_new, enumeration) {
+    var promise;
+    if (!expected_type && expected_type_new) {
+      // do we need to create a new expected type?
+      promise = create_sibling_type(type, expected_type_new, lang)
+        .then(function(created) {
+          expected_type = created.id;
+          return true;
+        });
+    }
+    else {
+      promise = deferred.resolved(true);
+    }
+    return promise
+      .then(function(ect) {
+        if (expected_type === "/type/enumeration" && enumeration) {
+          return queries.ensure_namespace(enumeration)
+            .then(function(namespace_id) {
+              enumeration = namespace_id;
+              return true;
+            });
+        }
+        else {
+          return true;
+        }
+      })
+      .then(function() {
+        return create_property({
+          type: type,
+          name: name,
+          key: key,
+          expected_type: expected_type,
+          description: description,
+          unit: unit,
+          disambiguator: disambiguator,
+          unique: unique,
+          hidden: hidden,
+          master_property: master_property,
+          lang: lang,
+          enumeration: enumeration
+        })
+        .then(function(created) {
+          return queries.load_property(created.id, lang, {article:true});
+        })
+        .then(function(prop) {
+          return {
+            html: acre.markup.stringify(components.type_property_row(prop))
+          };
+        });
+      });
+  }
+};
+
+
+function create_sibling_type(type, name, lang) {
+  return freebase.mqlread({id:type, "/type/type/domain":null})
+    .then(function(env) {
+      return (env.result || {})["/type/type/domain"];
+    })
+    .then(function(domain) {
+      if (!domain) {
+        throw "Can not create a new sibling type of " + type + " - not a valid type.";
+      }
+      return create_type({
+        domain: domain,
+        name: name,
+        key: schema_helpers.generate_type_key(name),
+        lang: lang
+      });
+    });
+};

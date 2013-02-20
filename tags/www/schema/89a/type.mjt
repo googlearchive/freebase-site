@@ -1,0 +1,163 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var schema_h = acre.require("helpers.sjs");
+  var tc = acre.require("type_components");
+  var sh = acre.require("helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="schema.mf.css" />
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="type.mf.js"></script>
+</acre:block>
+
+<acre:block def="a_tag(text, url)">
+  <a href="${url}">${text}</a>
+</acre:block>
+
+<acre:block def="page_content()">  
+  <!-- Table View -->
+  <div class="mode">
+    <div acre:if="c.type['/freebase/type_hints/enumeration']" class="section" id="topics-table">
+      <h2 class="table-title">
+        <a class="help-link" href="http://wiki.freebase.com/wiki/Enumerated_type" rel="help external" title="${_('Read help article')}">${_('What Are Enumerated Types?')}</a>
+        ${_('Topics')}
+      </h2>
+      <table cellspacing="0" class="table">
+        <thead>
+          <tr acre:attrs="c.type.instance.length ? {} : {style:'display:none;'}">
+            <th class="column-header first">${_('Name')}</th>
+            <th class="column-header">${_('Description')}</th>
+          </tr>
+          <tr acre:attrs="c.type.instance.length ? {style:'display:none;'} : {}">
+            <th colspan="2" class="table-empty-column" scope="col">
+              <p>${_('This type has no Topics')}</p>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <acre:block for="i,topic in c.type.instance">
+            ${tc.enumerated_topic_row(topic, c.type.id)}
+          </acre:block>
+        </tbody>
+        <tfoot class="table-edit edit">
+          <tr>
+            <td colspan="2">
+              <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.add_instance, ['${c.type.id}'], this);"><span class="add-icon">${_('Add New')}</span></a>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- Native Props Table -->
+    <div class="section" id="type-table">
+      <h2 class="table-title">
+        <a class="help-link" href="http://wiki.freebase.com/wiki/Property" rel="help external" title="${_('Read help article')}">${_('What are Properties?')}</a>
+        ${_('Properties')}
+      </h2>
+      <table class="table" cellspacing="0">
+
+        ${tc.native_properties(c.type.properties, c.type.id)}
+
+        <tfoot class="table-edit edit">
+          <tr>
+            <td colspan="5">
+              <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.add_property, ['${c.type.id}'], this);">
+                <span class="add-icon">${_('Add New')}</span>
+              </a>
+              <a acre:attrs="c.type.properties.length > 1 ? {} : {style:'display:none'}" 
+                 href="#" class="icon-link reorder-link" 
+                 onclick="return freebase.dispatch(event, freebase.schema.type.reorder_property, ['${c.type.id}'], this);">
+                <span class="reorder-icon">${_('Reorder')}</span>
+              </a>
+           </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div> 
+
+   <!-- Included Types Table -->      
+    <div class="section">
+      <h2 class="table-title">
+        <a class="help-link" href="http://wiki.freebase.com/wiki/Included_Type" rel="help external" title="${_('Read help article')}">${_('What are Included Types?')}</a>
+        ${_('Included Types')}
+      </h2>
+      <table class="table" cellspacing="0" id="included-types-table">
+        <acre:block for="type in c.type['/freebase/type_hints/included_types']">
+          ${tc.included_type_thead(c.type.id, type)}
+        </acre:block>
+        <thead acre:attrs="c.type['/freebase/type_hints/included_types'].length ? {style:'display:none;'}:{}">
+          <tr>
+            <th colspan="4" class="table-empty-column" scope="col">
+              <h3 class="table-empty-title">${_("This type doesn't have any included types.")}</h3>
+            </th>
+          </tr>
+        </thead>
+        <tfoot class="table-edit edit">
+          <tr>
+            <td colspan="4">
+              <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.add_included_type, ['${c.type.id}'], this);">
+                <span class="add-icon">${_('Include another type')}</span>
+              </a>
+            </td>
+          </tr>
+        </tfoot>
+     </table>      
+    </div>
+ 
+    <!-- Incoming Properties Table -->
+    <div class="section" acre:if="c.type.incoming.domain.length || c.type.incoming.commons || c.type.incoming.bases">
+      <h2 class="table-title">${_('Incoming Properties')}</h2>
+      <table class="table" cellspacing="0" id="incoming-properties-table">
+        <acre:block if="c.type.incoming.domain.length">
+          ${tc.incoming_props_thead(i18n.display_name(c.type.domain), true)}
+          ${tc.incoming_props_tbody(c.type.incoming.domain)}
+       </acre:block>
+        <acre:block if="c.type.incoming.commons">
+          ${tc.incoming_props_thead(_("Commons"), false, h.ajax_url("/get_incoming_from_commons", [['id',c.type.id],['exclude_domain',c.type.domain.id]]))}
+       </acre:block>
+        <acre:block if="c.type.incoming.bases">
+          ${tc.incoming_props_thead(_("Bases"), false, h.ajax_url("/get_incoming_from_bases", [['id',c.type.id],['exclude_domain',c.type.domain.id]]))}
+      </table>
+   </div>   
+  </div>     
+
+</acre:block>

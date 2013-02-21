@@ -1,0 +1,380 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+
+/*
+ * Masthead styling for all browse apps (/schema, /browse, etc.)
+ * slightly different grid than our standard 2-col layout
+ * --------------------------------------------------
+ */
+#content-wrapper {
+  padding-right: 290px;
+}
+
+.secondary {
+  width: 290px;
+  margin-right: -290px;
+}
+
+#page-header {
+  text-align: center;
+  position: relative;
+}
+
+#page-header .page-title {
+  margin: 0;
+  position: relative;
+}
+
+#page-header h1 {
+  color: #86bfdf;
+  font-size: 22px;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.8);
+  margin: 15px 0;
+  line-height: 1;
+}
+
+#sign-in-callout {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+#sign-in-callout a {
+  color: #f90;
+}
+
+/*
+ * Topic Count Widget
+ * --------------------------------------------------
+ */
+
+.count-box {
+  height: 68px;
+  width: 330px;
+  overflow: auto;
+  margin: 0 auto;
+}
+
+.topics-count {
+  position: absolute;
+  top: 0px;
+  width:320px;
+  margin-top: 10px;
+  padding: 5px;
+  background: #3a3a3a;
+  background-image: -webkit-linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    -webkit-linear-gradient(0, rgba(255,255,255,0.03) 1px, transparent 2px);
+  background-size: 2px 3px, 3px 3px, 2px 2px, 2px 2px;
+  background-position:-2px -2px, -2px -2px, -1px -1px, -1px -1px;
+  color: #eee;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+  line-height: 1;
+  font-family: 'Allerta', Helvetica, sans-serif;
+  .box_shadow(0, 1px, 2px, rgba(0,0,0,0.55);
+
+  .value {
+    display: inline-block;
+    width: 184px;
+    position: relative;
+    padding: 8px 13px;
+    background-color: #333;
+    background-image: -o-linear-gradient(bottom, rgb(51,51,51) 33%, rgb(69,69,69) 50%, rgb(51,51,51) 84%);
+    background-image: -moz-linear-gradient(bottom, rgb(51,51,51) 33%, rgb(69,69,69) 50%, rgb(51,51,51) 84%);
+    background-image: -ms-linear-gradient(bottom, rgb(51,51,51) 33%, rgb(69,69,69) 50%, rgb(51,51,51) 84%);
+    background-image: -webkit-linear-gradient(bottom, rgb(51,51,51) 33%, rgb(69,69,69) 50%, rgb(51,51,51) 84%);
+    background-image: linear-gradient(bottom, rgb(51,51,51) 33%, rgb(69,69,69) 50%, rgb(51,51,51) 84%);
+    -webkit-box-shadow: inset 1px 1px 1px #000;
+    -moz-box-shadow: inset 1px 1px 1px #000;
+    -o-box-shadow: inset 1px 1px 1px #000;
+    -ms-box-shadow: inset 1px 1px 1px #000;
+    box-shadow: inset 0 0 5px #111;
+    .rounded_corners();
+  }
+
+  .value strong {
+    position: relative;
+    z-index: 1;
+    font-size: 29px;
+    font-weight: normal;
+    color: #fff;
+    text-shadow: 0 1px 2px #000;
+  }
+
+  .value:after {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 1px;
+    right: 1px;
+    top: 50%;
+    border-top: 1px solid #3c3c3c;
+    border-bottom: 1px solid #545454;
+  }
+
+  .extra {
+    display: inline-block;
+    padding: 0 10px;
+    line-height: 1.4;
+    font-size: 12px;
+
+    small {
+      font-size: 11px;
+      color: #868686;
+    }
+  }
+}
+
+.count-box:before {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  width: 16%;
+  left: 16%;
+  top: 36%;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.count-box:after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  width: 16%;
+  right: 16%;
+  top: 36%;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+section[role=main] h1 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-left: 15px; /* match table indent */
+  margin-bottom: 10px;
+  line-height: 1;
+  text-shadow: 1px 2px 0 rgba(255,255,255,0.8);
+}
+
+p.intro {
+  font-size: 14px;
+  margin-left: 15px;
+}
+
+#domain-search {
+  margin: 10px 6px;
+}
+
+#domain-search input {
+  font-size: 14px;
+  padding: 5px;
+  min-width: 280px;
+}
+
+.secondary {
+
+  .wrapper {
+    background: #fff;
+    color: #333;
+    margin: 0 0 0 40px;
+    padding-top: 10px;
+  }
+
+  .newsletter .wrapper {
+    background: #c5c9cc;
+    padding: 10px 15px;
+  }
+
+  .newsletter form {
+    margin-bottom: 7px;
+  }
+
+  .newsletter input {
+    opacity: 0.7;
+    border: 1px solid rgba(0,0,0,0.3);
+    font-size: 12px;
+    padding: 7px 3px;
+    .rounded_corners;
+    .transition;
+  }
+
+  .newsletter input:focus {
+    opacity: 1;
+  }
+
+  h3 {
+    position: relative;
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 1;
+    text-shadow: 1px 2px 0 rgba(255,255,255,0.8);
+    margin: 0 10% 10px -1px;
+    border: 1px solid #ffcd04;
+    .linear_gradient(#ffdf67, #ffcd04);
+    .box_shadow(-1px, 2px, 3px, rgba(0,0,0,0.2));
+  }
+
+  // create right arrow element
+  h3:after {
+    content: "";
+    position: absolute;
+    right: -1px;
+    top: -1px;
+    width: 0;
+    height: 0;
+    border-top: 14px solid transparent;
+    border-bottom: 14px solid transparent;
+    border-right: 10px solid #fff;
+  }
+
+  h3 span {
+    display: block;
+    padding: 7px 15px;
+    border-top: 1px solid rgba(255,255,255,0.6);
+  }
+
+  h4 {
+    color: #333;
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 1;
+    margin-bottom: 7px;
+    text-shadow: 1px 2px 0 rgba(255,255,255,0.8);
+  }
+
+  p {
+    margin-bottom: 10px;
+  }
+
+  .more {
+    font-size: 12px;
+  }
+
+  .sub-section {
+    padding: 10px 15px;
+    border-bottom: 1px solid #e5e6e7;
+  }
+
+  .schema-example {
+    width: 100%;
+    font-size: 12px;
+
+    td {
+      line-height: 25px;
+    }
+
+    .middle td {
+      border-top: 1px solid #e5e6e7;
+      border-bottom: 1px solid #e5e6e7;
+    }
+
+    .is-a,
+    .has-a {
+      text-align: right;
+      font-weight: bold;
+      padding-right: 10px;
+     }
+
+     .kind {
+        color: #888;
+        padding-right: 5px;
+      }
+  }
+
+  .aside-box {
+    margin-bottom: 10px;
+   }
+}
+
+.table {
+
+  li {
+    list-style: none;
+  }
+
+  .user-image {
+    float: left;
+    margin-right: 5px;
+  }
+
+  .creator{
+    display: inline-block;
+    font-weight: bold;
+    line-height: 25px;
+  }
+
+
+  li ul {
+    clear: left;
+    margin-left: 29px;
+    margin-bottom: 10px;
+  }
+
+  li ul li {
+    font-size: 11px;
+  }
+
+  time {
+    color: #858585;
+  }
+}
+
+.table.applist {
+  .applist-version {
+    padding: 0 .5em;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: #999;
+  }
+
+  .applist-details {
+    font-size: 0.9em;
+  }
+
+  .app-title {
+    font-weight: bold;
+  }
+
+  .applist-userimage {
+    white-space: nowrap;
+    padding: 2px 50px 2px 2px;
+
+    .user-image {
+      padding: 0 5px 0 0 !important;
+      float: left;
+    }
+  }
+}
+
+.odd ul li strong {
+  display: inline-block;
+  min-width: 60px;
+}

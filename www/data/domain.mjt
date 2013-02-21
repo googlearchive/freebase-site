@@ -44,16 +44,18 @@
 
 <acre:block def="page_content()">
 <!-- Types -->
-<div class="section wrapper">
+<div class="left wrapper">
   <div class="views">
-    <div class="table-title-wrapper clear">
-      <h2 class="table-title">
-        ${h.template_sprintf(_("Explore %s by Type"), i18n.display_name(c.object))}
-      </h2>
-    </div>
     <div class="panes">
-      <div id="types" class="pane">
-        <table cellspacing="0" class="table-sortable table" acre:if="c.domain.types.length">
+      <div id="types" class="section pane">
+        <h1 class="section-header">
+          <span class="section-title">
+            <span class="section-name">
+              ${h.template_sprintf(_("Explore %s by Type"), i18n.display_name(c.object))}
+            </span>
+          </span>
+        </h1>
+        <table cellspacing="0" class="table big table-sortable" acre:if="c.domain.types.length">
           <thead>
             <tr>
               <th class="column-header first {sorter: 'ignoreCase'}">
@@ -72,13 +74,13 @@
           </thead>
           <tbody>
             <tr acre:for="type in c.domain.types">
-              <th class="row-header odd">
+              <th class="row-header first">
                 <a href="${h.fb_url(type.id, [['schema']])}">${i18n.display_name(type)}</a>
               </th>
               <td class="">
                 ${i18n_c.datetime(type.timestamp, [["class","published"]], 'd')}
               </td>
-              <td class="odd">
+              <td>
                 <a href="${h.fb_url(type.creator)}">${h.id_key(type.creator)}</a>
               </td>
               <td class="numeric">
@@ -102,8 +104,14 @@
     </div>
   </div>
 </div>
-<div class="column object-activity">
-  <h2 class="table-title">${_("Data Summary")}</h2>
+<div class="section column object-activity">
+   <h1 class="section-header">
+    <span class="section-title">
+      <span class="section-name">
+        ${_("Data Summary")}
+      </span>
+    </span>
+  </h1>
   <table cellspacing="0" class="table">
     <thead>
       <tr>

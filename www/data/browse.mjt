@@ -62,8 +62,15 @@
 
 <acre:block def="page_content()">
   <div id="content-wrapper" class="clear">
-    <section id="content-main" class="clear" role="main">
-      <h1>Explore Freebase Data</h1>
+    <section id="content-main" class="section">
+      <h1 class="section-header">
+        <span class="section-title">
+          <span class="section-name">
+            ${_('Explore Freebase Data')}
+          </span>
+        </span>
+      </h1>
+      <!--
       <p class="intro">${_("Freebase is organized by Domains, which provide a common namespace for annotating Topics. Facts are asserted through Schema (Types &amp; Properties)")}</p>
       <div class="search-box" id="domain-search">
         <form id="domain-search-form" method="get">
@@ -73,9 +80,9 @@
         </form>
         <label><input type="hidden" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all" /></label>
       </div>
-
+      -->
       <acre:block if="c.domains">
-        <table id="browse" cellspacing="0" class="table table-sortable">
+        <table id="browse" cellspacing="0" class="table big table-sortable">
           <thead>
             <tr>
               <th scope="col" class="column-header first"><span class="sort-icon">${_('Domain')}</span></th>
@@ -86,7 +93,7 @@
           </thead>
           <tbody>
             <tr acre:for="d in c.domains">
-              <th class="row-header odd" scope="row">
+              <th class="row-header first" scope="row">
                 <acre:script>var name = i18n.display_name(d);</acre:script>
                 <a href="${h.fb_url(d.id)}" title="${h.sprintf(_('View %s'), name)}">$name</a>
               </th>

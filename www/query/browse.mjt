@@ -74,15 +74,19 @@
 <acre:block def="page_content()">
   <div id="content-wrapper" class="clear">
     <section role="main" id="content-main">
-      <div class="table-header">
-        <div class="button-group">
-          <a class="button primary edit" href="${h.fb_url('/queryeditor')}">${_("Create a new query")}</a>
-        </div>
-        <h1>
-          ${_('Recently updated queries')}
-        </h1>
-      </div>
-      <table cellspacing="0" class="table">
+      <h1 class="section-header">
+        <span class="section-right">
+          <a class="button primary edit" href="${h.fb_url('/queryeditor')}">
+            ${_("Create a new query")}
+          </a>
+        </span>
+        <span class="section-title">
+          <span class="section-name">
+            ${_('Recently updated queries')}
+          </span>
+        </span>
+      </h1>
+      <table cellspacing="0" class="table big">
         <thead>
           <tr>
             <th scope="col" class="column-header first">${_('Query')}</th>
@@ -93,22 +97,22 @@
         </thead>
         <tbody>
           <tr acre:for="q in c.queries">
-            <th class="row-header odd" scope="row">
+            <th class="row-header first" scope="row">
               <a href="${h.fb_url(q.id)}">${i18n.display_name(q)}</a>
             </th>
-            <td class="even" scope="row">
+            <td scope="row">
               <acre:block if="q.type">
                 <a href="${h.fb_url(q.type.id)}">${i18n.display_name(q.type)}</a>
               </acre:block>
               <acre:block else="">-</acre:block>
             </td>
-            <td class="odd" scope="row">
+            <td scope="row">
               <acre:block if="q.domain">
                 <a href="${h.fb_url(q.domain.id,[['queries']])}">${i18n.display_name(q.domain)}</a>
               </acre:block>
               <acre:block else="">-</acre:block>
             </td>
-            <td class="even">
+            <td>
               ${image.user_image_tiny(q.creator)}
               ${components.creator_link(q.creator)}
               ${i18n_c.relative_date(q.timestamp)}

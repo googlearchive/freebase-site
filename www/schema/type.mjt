@@ -56,10 +56,18 @@
   <!-- Table View -->
   <div class="mode">
     <div acre:if="c.type['/freebase/type_hints/enumeration']" class="section" id="topics-table">
-      <h2 class="table-title">
-        <a class="help-link" href="http://wiki.freebase.com/wiki/Enumerated_type" rel="help external" title="${_('Read help article')}">${_('What Are Enumerated Types?')}</a>
-        ${_('Topics')}
-      </h2>
+      <h1 class="section-header">
+        <span class="section-right">
+          <a class="help-link" href="http://wiki.freebase.com/wiki/Enumerated_type" rel="help external" title="${_('Read help article')}">
+            ${_('What Are Enumerated Types?')}
+          </a>
+        </span>
+        <span class="section-title">
+          <span class="section-name">
+            ${_('Topics')}
+          </span>
+        </span>
+      </h1>
       <table cellspacing="0" class="table">
         <thead>
           <tr acre:attrs="c.type.instance.length ? {} : {style:'display:none;'}">
@@ -89,14 +97,20 @@
 
     <!-- Native Props Table -->
     <div class="section" id="type-table">
-      <h2 class="table-title">
-        <a class="help-link" href="http://wiki.freebase.com/wiki/Property" rel="help external" title="${_('Read help article')}">${_('What are Properties?')}</a>
-        ${_('Properties')}
-      </h2>
+      <h1 class="section-header">
+        <span class="section-right">
+          <a class="help-link" href="http://wiki.freebase.com/wiki/Property" rel="help external" title="${_('Read help article')}">
+            ${_('What are Properties?')}
+          </a>
+        </span>
+        <span class="section-title">
+          <span class="section-name">
+            ${_('Properties')}
+          </span>
+        </span>
+      </h1>
       <table class="table" cellspacing="0">
-
         ${tc.native_properties(c.type.properties, c.type.id)}
-
         <tfoot class="table-edit edit">
           <tr>
             <td colspan="5">
@@ -116,10 +130,18 @@
 
    <!-- Included Types Table -->      
     <div class="section">
-      <h2 class="table-title">
-        <a class="help-link" href="http://wiki.freebase.com/wiki/Included_Type" rel="help external" title="${_('Read help article')}">${_('What are Included Types?')}</a>
-        ${_('Included Types')}
-      </h2>
+      <h1 class="section-header">
+        <span class="section-right">
+          <a class="help-link" href="http://wiki.freebase.com/wiki/Included_Type" rel="help external" title="${_('Read help article')}">
+            ${_('What are Included Types?')}
+          </a>
+        </span>
+        <span class="section-title">
+          <span class="section-name">
+            ${_('Included Types')}
+          </span>
+        </span>
+      </h1>
       <table class="table" cellspacing="0" id="included-types-table">
         <acre:block for="type in c.type['/freebase/type_hints/included_types']">
           ${tc.included_type_thead(c.type.id, type)}
@@ -145,7 +167,13 @@
  
     <!-- Incoming Properties Table -->
     <div class="section" acre:if="c.type.incoming.domain.length || c.type.incoming.commons || c.type.incoming.bases">
-      <h2 class="table-title">${_('Incoming Properties')}</h2>
+      <h1 class="section-header">
+        <span class="section-title">
+          <span class="section-name">
+            ${_('Incoming Properties')}
+          </span>
+        </span>
+      </h1>
       <table class="table" cellspacing="0" id="incoming-properties-table">
         <acre:block if="c.type.incoming.domain.length">
           ${tc.incoming_props_thead(i18n.display_name(c.type.domain), true)}

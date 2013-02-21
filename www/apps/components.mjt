@@ -36,7 +36,7 @@
 </acre:script>
 
 <acre:block def="render_app_list(apps)">
-<table class="table applist table-sortable" cellspacing="0">
+<table class="table big applist table-sortable" cellspacing="0">
   <thead>
     <tr>
       <th scope="col" class="column-header first {sorter: 'ignoreCase'}"><span class="sort-icon">App</span></th>
@@ -46,7 +46,7 @@
   </thead>
   <tbody>
     <tr acre:for="app in apps">
-      <th class="row-header odd first" scope="row">
+      <td class="row-header first" scope="row">
         <h3 class="app-title">
           <a href="${h.fb_url(app.id)}">$app.name</a>
           <span acre:if="app.acre && app.acre.version" class="applist-version">
@@ -56,8 +56,8 @@
         <p class="applist-details truncate" acre:if="app.description">
         $app.description
         </p>
-      </th>
-      <td class="even">
+      </td>
+      <td>
         <div class="authors" acre:if="app.authors.length">
           <acre:script>
           var f = app.authors[0];
@@ -67,7 +67,7 @@
           <acre:block if="num > 0"><div class="applist-details">and $num other<acre:block if="num > 1">s</acre:block></div></acre:block>
         </div>
       </td>
-      <td class="odd applist-userimage">
+      <td class="applist-userimage">
         <acre:block if="app.modified">
         <acre:block if="app.modified_by">${image.user_image_small(app.modified_by)} 
         by <a href="${h.fb_url(app.modified_by.id, [['apps']])}">$app.modified_by.name</a></acre:block>

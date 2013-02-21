@@ -41,11 +41,15 @@
 
 <acre:block def="page_content()">
   <div id="content-wrapper" class="clear">
-    <section id="content-main" role="main">
-      <h1>
-        ${_('Recent schema changes')}
+    <section id="content-main" role="main" class="section">
+      <h1 class="section-header">
+        <span class="section-title">
+          <span class="section-name">
+            ${_('Recent schema changes')}
+          </span>
+        </span>
       </h1>
-      <table cellspacing="0" class="table">
+      <table cellspacing="0" class="table big">
         <thead>
           <tr>
             <th scope="col" class="column-header first">${_('Domain')}</th>
@@ -55,12 +59,12 @@
         </thead>
         <tbody>
           <tr acre:for="d in c.domains">
-            <th class="row-header odd" scope="row">
+            <th class="row-header first" scope="row">
               <acre:script>var name = i18n.display_name(d);</acre:script>
               <a href="${h.fb_url(d.id, [['schema','']])}" title="${h.sprintf(_('View %s'), name)}">$name</a>
             </th>
-            <td class="even">$d.id</td>
-            <td class="odd">
+            <td>$d.id</td>
+            <td>
               <ul>
                 <li acre:for="user in d.users">
                   ${image.user_image_tiny(user)}

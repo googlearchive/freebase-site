@@ -102,22 +102,21 @@
 <acre:block def="domainbox(topic, domain_structure, lang)">
   <div class="section domain domain-section" data-id="${domain_structure.id}">
     <div class="header">
-      <acre:script>
-        var domain_type = h.is_commons_domain(domain_structure) ? "commons" : "user";
-      </acre:script>
-      <span class="status $domain_type">
-        ${h.is_commons_domain(domain_structure) ? FREEBASE_COMMONS : USER_DOMAIN}
-      </span>
-      <h1 class="kbs">
-        <span class="mark">
-          <span class="domain-title">
-            <a title="${domain_structure.id}" href="javascript:void(0);"
-               class="schema-name domain-name"
-               name="${domain_structure.id}">${domain_structure.text}</a>
-            <a class="schema-id domain-id"
-               href="${h.fb_url(domain_structure.id, [['schema']])}">
-              ${domain_structure.id}</a>
-          </span>
+      <h1 class="section-header kbs">
+        <acre:script>
+          var domain_type = h.is_commons_domain(domain_structure) ? "commons" : "user";
+        </acre:script>
+        <span class="section-right status $domain_type">
+          ${h.is_commons_domain(domain_structure) ? FREEBASE_COMMONS : USER_DOMAIN}
+        </span>
+        <span class="mark"></span>
+        <span class="section-title">
+          <a title="${domain_structure.id}" href="javascript:void(0);"
+             class="schema-name section-name"
+             name="${domain_structure.id}">${domain_structure.text}</a>
+          <a class="schema-id domain-id"
+             href="${h.fb_url(domain_structure.id, [['schema']])}">
+            ${domain_structure.id}</a>
         </span>
       </h1>
     </div>
@@ -143,7 +142,8 @@
     <div class="header">
       <h2 class="foobar kbs hover-row">
         <span class="header-label">
-          <span class="wrapper mark">
+          <span class="wrapper">
+            <span class="mark"></span>
             <span class="type-label">
               <a name="${type_structure.id}" href="javascript:void(0);"
                  class="schema-name type-name">${type_structure.text}</a>
@@ -498,7 +498,7 @@
     var lock = prop_structure.authorities == null &&
         prop_structure.requires_permission === true;
   </acre:script>
-  <span class="wrapper mark">
+  <span class="wrapper">
     <ul class="outer-menu nicemenu">
       <li class="inline-menu-item nicemenu-item">
         <span class="headmenu">
@@ -533,6 +533,7 @@
         </ul>
       </li>
     </ul>
+    <span class="mark"></span>
     <span class="property-label">
       <a name="${prop_structure.id}" href="javascript:void(0);"
          class="schema-name prop-name">${prop_structure.text}</a>

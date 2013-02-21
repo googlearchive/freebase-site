@@ -49,15 +49,19 @@
 
 <acre:block def="page_content()">
   <div id="content-wrapper" class="clear">
-    <section role="main" id="content-main">
-      <div class="table-header">
-        <div class="button-group">
-          <a class="button primary edit" href="${h.fb_url('/appeditor#create=app')}">${_("Create a new app")}</a>
-        </div>
-        <h1>
-          ${_('Recently released apps')}
-        </h1>
-      </div>
+    <section role="main" id="content-main" class="section">
+      <h1 class="section-header">
+        <span class="section-right">
+          <a class="button primary edit" href="${h.fb_url('/appeditor#create=app')}">
+            ${_("Create a new app")}
+          </a>
+        </span>
+        <span class="section-title">
+          <span class="section-name">
+            ${_('Recently released apps')}
+          </span>
+        </span>
+      </h1>
       <acre:block if="c.apps.length">
         ${ac.render_app_list(c.apps)}
       </acre:block>

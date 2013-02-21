@@ -44,53 +44,67 @@
   
   <!!-- Domains user is an admin of -->
   <acre:block if="c.owned_domains && c.owned_domains.length">
-    <div class="table-header">
-      <div class="button-group edit">
-        <a href="#" id="create-domain" class="button primary">${_("Create new")}</a>
-      </div>
-      <h2 class="table-title">${h.template_sprintf(_("%s owns %s domains"), i18n.display_name(c.object), i18n_c.number(c.owned_domains.length))}</h2>
+    <div class="section">
+      <h1 class="section-header">
+        <span class="section-right">
+          <a href="#" id="create-domain" class="button primary">${_("Create new")}</a>
+        </span>
+        <span class="section-title">
+          <span class="section-name">
+            ${h.template_sprintf(_("%s owns %s domains"), i18n.display_name(c.object), i18n_c.number(c.owned_domains.length))}
+          </span>
+        </span>
+      </h1>
+      <table cellspacing="0" class="table big table-sortable">
+        <thead>
+          <tr>
+            <th class="column-header first {sorter: 'ignoreCase'}" scope="column"><span class="sort-icon">${_("Name")}</span></th>
+            <th class="column-header {sorter: 'datetime'}" scope="column"><span class="sort-icon">${_("Since")}</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr acre:for="domain in c.owned_domains">
+            <th class="row-header first">
+              <a href="${h.fb_url(domain.id)}">${i18n.display_name(domain)}</a>
+            </th>
+            <td>
+              ${i18n_c.datetime(domain['/type/domain/owners']['member']['link']['timestamp'], [["class","published"]], 'd')}
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <table cellspacing="0" class="table table-sortable">
-      <thead>
-        <tr>
-          <th class="column-header first {sorter: 'ignoreCase'}" scope="column"><span class="sort-icon">${_("Name")}</span></th>
-          <th class="column-header {sorter: 'datetime'}" scope="column"><span class="sort-icon">${_("Since")}</span></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr acre:for="domain in c.owned_domains">
-          <th class="row-header odd first">
-            <a href="${h.fb_url(domain.id)}">${i18n.display_name(domain)}</a>
-          </th>
-          <td>
-            ${i18n_c.datetime(domain['/type/domain/owners']['member']['link']['timestamp'], [["class","published"]], 'd')}
-          </td>
-        </tr>
-      </tbody>
-    </table>
   </acre:block>
 
   <!!-- Domains user is watching -->
   <acre:block if="c.watched_domains && c.watched_domains.length">
-    <h2 class="table-title">${h.template_sprintf(_("%s is watching %s domains"), i18n.display_name(c.object), i18n_c.number(c.watched_domains.length))}</h2>
-    <table cellspacing="0" class="table table-sortable">
-      <thead>
-        <tr>
-          <th class="column-header first {sorter: 'ignoreCase'}" scope="column"><span class="sort-icon">${_("Name")}</span></th>
-          <th class="column-header {sorter: 'datetime'}" scope="column"><span class="sort-icon">${_("Since")}</span></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr  acre:for="domain in c.watched_domains">
-          <th class="row-header odd first">
-            <a href="${h.fb_url(domain.id)}">${i18n.display_name(domain)}</a>
-          </th>
-          <td>
-            ${i18n_c.datetime(domain['!/freebase/user_profile/favorite_domains']['link']['timestamp'], [["class","published"]], 'd')}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="section">
+      <h1 class="section-header">
+        <span class="section-title">
+          <span class="section-name">
+            ${h.template_sprintf(_("%s is watching %s domains"), i18n.display_name(c.object), i18n_c.number(c.watched_domains.length))}
+          </span>
+        </span>
+      </h1>
+      <table cellspacing="0" class="table big table-sortable">
+        <thead>
+          <tr>
+            <th class="column-header first {sorter: 'ignoreCase'}" scope="column"><span class="sort-icon">${_("Name")}</span></th>
+            <th class="column-header {sorter: 'datetime'}" scope="column"><span class="sort-icon">${_("Since")}</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr  acre:for="domain in c.watched_domains">
+            <th class="row-header odd first">
+              <a href="${h.fb_url(domain.id)}">${i18n.display_name(domain)}</a>
+            </th>
+            <td>
+              ${i18n_c.datetime(domain['!/freebase/user_profile/favorite_domains']['link']['timestamp'], [["class","published"]], 'd')}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </acre:block>
 </acre:block>
 

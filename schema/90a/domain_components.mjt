@@ -1,0 +1,111 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var h = acre.require("lib/helper/helpers.sjs");
+  var sh = acre.require("helpers");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+  var EDIT_TYPE = _('Edit type');
+  var DELETE_TYPE = _('Delete type');
+  var INSPECT_TYPE = _('Inspect Type');
+  var BROWSE_INSTANCES = _('Browse all instances');
+</acre:script>
+
+<!-- Domain Regular Types markup pattern -->
+<acre:block def="domain_type_row(type)">
+  <tr class="data-row hover-row">
+    <th class="odd row-header" scope="row">
+      <span class="wrapper">
+        <a href="${h.fb_url(type.id, [['schema']])}">${i18n.display_name(type, "")}</a>
+        ${type_menu(type)}
+      </span>
+    </th>
+    <td class="even">$type.id</td>
+    <td class="odd numeric">${i18n_c.number(type.properties && type.properties.length || 0)}</td>
+    <td class="even numeric">
+      <a href="${h.build_query_url(null, type.id)}">
+        ${type.instance_count != null ? i18n_c.number(type.instance_count) : "-"}
+      </a>
+    </td>
+    <td class="odd description">
+      <acre:script>
+        var desc = i18n.display_text(type, "", "/common/topic/description");
+      </acre:script>
+      <p acre:if="desc">${desc}</p>
+      <acre:script>
+        var meta = [];
+        if (type['/freebase/type_hints/enumeration']) {
+          meta.push(acre.markup.stringify(type_meta(_('This ia an enumerated type where the list of instances is specified by an administrator of the type.'), _('enumerated'))));
+        }
+        if (type['/freebase/type_hints/deprecated']) {
+          meta.push(acre.markup.stringify(type_meta(_('This type is deprecated'), _('deprecated'))));
+        }
+        if (type['/freebase/type_hints/never_assert']) {
+          meta.push(acre.markup.stringify(type_meta(_('This type should never be asserted on a topic'), _('never assert'))));
+        }
+      </acre:script>
+      <acre:block if="meta.length">
+        ${acre.markup.bless(meta.join(", "))}
+      </acre:block>
+    </td>
+  </tr>
+</acre:block>
+
+<acre:block def="type_meta(title, label)" trim="">
+  <span class="property-meta ect-role" acre:trim="">
+    <abbr title="${title}">${label}</abbr>
+  </span>
+</acre:block>
+
+
+<acre:block def="type_menu(type)">
+  <ul class="combo-menu nicemenu">
+    <li class="nicemenu-item">
+      <span class="headmenu">
+        <a href="javascript:void(0);" class="more-action">menu</a>
+      </span>
+      <ul class="submenu row-menu">
+        <li class="row-menu-item edit">
+          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.edit_type, ['${type.id}'], this);"><span class="edit-icon">${EDIT_TYPE}</span></a>
+        </li>
+        <li class="row-menu-item edit">
+          <a href="${h.static_url('lib/schema/schema.mf.js')}" class="icon-link" onclick="return freebase.nav_get_script(this, 'schema.delete_type_begin', ['${type.id}']);"><span class="delete-icon">${DELETE_TYPE}</span></a>
+        </li>
+        <li class="row-menu-item"><a href="${h.fb_url(type.id, [['links']])}">${INSPECT_TYPE}</a></li>
+        <li class="row-menu-item">
+          <a href="${h.build_query_url(null, type.id)}">${BROWSE_INSTANCES}</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</acre:block>

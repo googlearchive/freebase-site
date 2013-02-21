@@ -59,56 +59,57 @@
 
   <div class="column links" id="links-data" style="opacity:0;">
     <div class="section links-section" data-id="Links">
-      <div class="header">
-        <span class="status edit">
+      <h1 class="section-header">
+        <span class="section-right edit">
           <a href="javascript:void(0);" id="create-key" class="button primary"
              onclick="fb.keys.add_key();">
             ${_("Create new")}
           </a>
         </span>
-        <h1 class="kbs">
-          <span class="mark">
-            <span class="links-title">
-              <a href="javascript:void(0);"
-                 class="schema-name links-name" name="Links">
-                ${_("Keys")}
-              </a>
-              <a class="schema-id prop-id"
-                 href="${h.fb_url(c.id, [['links'], ['filter', c.property]])}">
-                ${c.property}
-              </a>
-            </span>
-          </span>
-        </h1>
-      </div>
+        <span class="section-title">
+          <a href="javascript:void(0);"
+              class="section-name" name="Links">
+              ${_("Keys")}
+          </a>
+          <a class="schema-id"
+             href="${h.fb_url(c.id, [['links'], ['filter', c.property]])}">
+            ${c.property}
+          </a>
+        </span>
+      </h1>
       <div class="body">
-        <table class="data-table" id="infinitescroll">
+        <table class="table data-table" id="infinitescroll">
           <thead>
             <tr>
               <th class="first">
-                <span class="property-header">&nbsp;</span></th>
+                <span>&nbsp;</span></th>
               <th>
-                <span class="property-header">${_("value")}</span></th>
+                <span>${_("Value")}</span></th>
               <th>
-                <span class="property-header" acre:trim="1">
+                <span acre:trim="1">
                   <acre:block if="c.property == '/type/namespace/keys'" trim="1">
-                    ${_("object")}
+                    ${_("Object")}
                   </acre:block>
                   <acre:block else="" trim="1">
-                    ${_("namespace")}
+                    ${_("Namespace")}
                   </acre:block>
                 </span>
               </th>
               <th class="menu-col">
-                <span class="property-header">${_("creator")}</span></th>
+                ${_("Creator")}
+              </th>
               <th class="menu-col">
-                <span class="property-header">${_("attribution")}</span></th>
+                ${_("Attribution")}
+              </th>
               <th>
-                <span class="property-header">${_("timestamp")}</span></th>
+                ${_("Timestamp")}
+              </th>
               <acre:block if="c.historical">
                 <th>
-                  <span class="property-header operation-header">
-                    ${_("operation")}</span></th>
+                  <span class="operation-header">
+                    ${_("Operation")}
+                  </span>
+                </th>
               </acre:block>
             </tr>
           </thead>

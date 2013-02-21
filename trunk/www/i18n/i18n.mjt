@@ -49,44 +49,52 @@
 </acre:block>
 
 <acre:block def="page_content()">
-  <h2 class="table-title clear">${_('Names')}</h2>
-  <table class="table table-sortable" id="i18n-table">
-    <thead>
-      <tr>
-        <th class="column-header first {sorter: 'string'}" scope="col">
-          <span class="sort-icon">${_("Name")}</span>
-        </th>
-        <th class="column-header {sorter: 'string'}" scope="col">
-          <span class="sort-icon">${_("Language")}</span>
-        </th>
-        <th class="column-header {sorter: 'string'}" scope="col">
-          <span class="sort-icon">${_("Code")}</span>
-        </th>
-        <th class="column-header {sorter: 'string'}" scope="col">
-          <span class="sort-icon">${_("Timestamp")}</span>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <acre:block for="lang_code in i18n.LANG_TIERS">
-        <acre:script>
-          var name = c.names[lang_code];
-          var lang = i18n.LANGS_BY_CODE[lang_code];
-        </acre:script>
-        <acre:block if="name">
-          ${name_row(name, lang_code)}
+  <div class="section">
+    <h1 class="section-header">
+      <span class="section-title">
+        <span class="section-name">
+          ${_('Names')}
+        </span>
+      </span>
+    </h1>
+    <table class="table table-sortable" id="i18n-table">
+      <thead>
+        <tr>
+          <th class="column-header first {sorter: 'string'}" scope="col">
+            <span class="sort-icon">${_("Name")}</span>
+          </th>
+          <th class="column-header {sorter: 'string'}" scope="col">
+            <span class="sort-icon">${_("Language")}</span>
+          </th>
+          <th class="column-header {sorter: 'string'}" scope="col">
+            <span class="sort-icon">${_("Code")}</span>
+          </th>
+          <th class="column-header {sorter: 'string'}" scope="col">
+            <span class="sort-icon">${_("Timestamp")}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <acre:block for="lang_code in i18n.LANG_TIERS">
+          <acre:script>
+            var name = c.names[lang_code];
+            var lang = i18n.LANGS_BY_CODE[lang_code];
+          </acre:script>
+          <acre:block if="name">
+            ${name_row(name, lang_code)}
+          </acre:block>
+          <acre:block else="">
+            ${empty_name_row(lang_code, lang.id)}
+          </acre:block>
         </acre:block>
-        <acre:block else="">
-          ${empty_name_row(lang_code, lang.id)}
-        </acre:block>
-      </acre:block>
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+  </div>
 </acre:block>
 
 <acre:block def="name_row(name, lang_code)">
   <tr class="data-row hover-row">
-    <td class="row-header odd" scope="row">
+    <td class="row-header first" scope="row">
       <span class="wrapper">
         ${name_menu(name, lang_code)}
         <span class="literal-value literal-value-text property-value">
@@ -94,13 +102,13 @@
         </span>
       </span>
     </td>
-    <td class="even">
+    <td>
       ${i18n.LANGS_BY_CODE[lang_code].name}
     </td>
-    <td class="odd">
+    <td>
       ${lang_code}
     </td>
-    <td class="even">
+    <td>
       <acre:block if="name.link">
         ${name.link.timestamp}
       </acre:block>
@@ -127,19 +135,19 @@
 
 <acre:block def="empty_name_row(lang_code, lang_id)">
   <tr class="data-row hover-row">
-    <td class="row-header odd" scope="row">
+    <td class="row-header first" scope="row">
       <span class="wrapper missing"
             ondblclick="return fb.i18n_tab.add_name(this, '${lang_id}');">
         ${MISSING}
       </span>
     </td>
-    <td class="even">
+    <td>
       ${i18n.LANGS_BY_CODE[lang_code].name}
     </td>
-    <td class="odd">
+    <td>
       ${lang_code}
     </td>
-    <td class="even">
+    <td>
       -
     </td>
   </tr>

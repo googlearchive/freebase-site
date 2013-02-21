@@ -46,14 +46,14 @@
 
 <acre:block def="type_property_row(prop, type_id)">
   <tr class="data-row hover-row">
-    <th scope="row" class="row-header odd">
+    <th scope="row" class="row-header first">
       <span class="wrapper">
         <a href="${h.fb_url(prop.id, [['schema']])}">${i18n.display_name(prop)}</a>
         ${prop_menu(prop)}
       </span>
     </th>
-    <td class="even">$prop.id</td>
-    <td class="odd">
+    <td>$prop.id</td>
+    <td>
       <acre:block if="prop.expected_type">
         <a href="${h.fb_url(prop.expected_type.id, [['schema']])}">
           $prop.expected_type.id
@@ -83,7 +83,7 @@
       </acre:block>
       <span acre:if="prop.unit" class="measurement-unit">${prop.unit["/freebase/unit_profile/abbreviation"]}</span>
     </td>
-    <td class="even description">
+    <td class="description">
       <acre:script>
         var desc = i18n.display_text(prop, "", "/common/topic/description");
       </acre:script>
@@ -147,13 +147,15 @@
 
 <!-- Native Properties markup pattern -->
 <acre:block def="native_properties(properties, type_id)">
-  <tbody>
+  <thead>
     <tr acre:attrs="properties.length ? {}:{style:'display:none;'}">
       <th scope="col" class="column-header first">${_('Property')}</th>
       <th class="column-header">${_('ID')}</th>
       <th class="column-header">${_('Expected Type')}</th>
       <th class="column-header description">${_('Description')}</th>
     </tr>
+  </thead>
+  <tbody>
     <tr acre:attrs="properties.length ? {style:'display:none;'}:{}">
       <th colspan="5" class="table-empty-column" scope="col">
         <h3 class="table-empty-title">${_("This type doesn't have any properties")}</h3>
@@ -168,7 +170,7 @@
 <!-- enumerated topics -->
 <acre:block def="enumerated_topic_row(topic, type_id)">
   <tr class="data-row hover-row">
-    <th class="row-header first odd">
+    <th class="row-header first">
       <span class="wrapper">
         <a href="${h.fb_url(topic.id)}" title="${topic.id}">
           ${topic.name ? topic.name.text : topic.id}
@@ -176,7 +178,7 @@
         ${enum_topic_menu(topic, type_id)}
       </span>
     </th>
-    <td class="even">
+    <td>
       <acre:script>
         var desc = topic.description ? topic.description.text : null;
       </acre:script>
@@ -217,7 +219,7 @@
       <th class="column-header" scope="col">${_('Property')}</th>
     </tr>
     <tr acre:for="prop in props" class="data-row hover-row">
-      <td class="odd">
+      <td class="first">
         <span class="wrapper">
           <a href="${h.fb_url(prop.schema.id, [['schema']])}">
             ${i18n.display_name(prop.schema)}
@@ -230,7 +232,7 @@
         </span>
         <div class="key">$prop.schema.id</div>
       </td>
-      <td class="even">
+      <td >
         <span class="wrapper">
           <a href="${h.fb_url(prop.id, [['schema']])}">${i18n.display_name(prop)}</a>
           <acre:script>

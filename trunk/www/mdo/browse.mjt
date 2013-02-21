@@ -41,13 +41,15 @@
 
 <acre:block def="page_content()">
   <div id="content-wrapper" class="clear">
-    <section role="main" id="content-main">
-      <div class="table-header">
-        <h1>
-          ${_('Recently active data loads')}
-        </h1>
-      </div>
-      <table cellspacing="0" class="table">
+    <section role="main" id="content-main" class="section">
+      <h1 class="section-header">
+        <span class="section-title">
+          <span class="section-name">
+            ${_('Recently active data loads')}
+          </span>
+        </span>
+      </h1>
+      <table cellspacing="0" class="table big">
         <thead>
           <tr>
             <th scope="col" class="column-header first">${_('Data&nbsp;Load')}</th>
@@ -58,24 +60,24 @@
         </thead>
         <tbody>
           <tr acre:for="l in c.loads">
-            <th class="row-header odd" scope="row" style="width:50%">
+            <th class="row-header first" scope="row" style="width:50%">
               <acre:script>var name = i18n.display_name(l);</acre:script>
               <a href="${h.fb_url(l.id)}" title="${h.sprintf(_('View %s'), name)}">$name</a>
               <acre:block if="l.timestamp">
                 ${i18n_c.relative_date(l.timestamp)}
               </acre:block>
             </th>
-            <td class="odd">
+            <td>
               <ul>
                 <li><strong>${_("Objects")}</strong> ${i18n_c.number(l.objects)} </li>
                 <li><strong>${_("Links")}</strong> ${i18n_c.number(l.links)}</li>
               </ul>
             </td>
-            <td class="odd">
+            <td>
               ${image.user_image_tiny(l.creator)}
               ${components.creator_link(l.creator)}
             </td>
-            <td class="even">
+            <td>
               <acre:block if="l.creator !== l.operator">
                 ${image.user_image_tiny(l.operator)}
                 ${components.creator_link(l.operator)}

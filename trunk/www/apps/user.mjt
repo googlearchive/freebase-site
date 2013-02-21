@@ -43,15 +43,21 @@
 </acre:block>
 
 <acre:block def="page_content()">
-  <div class="table-header">
-    <div class="button-group edit">
-      <a class="button primary" href="${h.fb_url('/appeditor#create=app')}">${_("Create new")}</a>
-    </div>
-    <h2 class="table-title">
-      ${h.template_sprintf(_("%s has contributed to %s apps"), i18n.display_name(c.object), i18n_c.number(c.apps ? c.apps.length : 0))}
-    </h2>
+  <div class="section">
+    <h1 class="section-header">
+      <span class="section-right">
+        <a class="button primary edit" href="${h.fb_url('/appeditor#create=app')}">
+          ${_("Create a new app")}
+        </a>
+      </span>
+      <span class="section-title">
+        <span class="section-name">
+          ${h.template_sprintf(_("%s has contributed to %s apps"), i18n.display_name(c.object), i18n_c.number(c.apps ? c.apps.length : 0))}
+        </span>
+      </span>
+    </h1>
+    ${ac.render_app_list(c.apps)}
   </div>
-  ${ac.render_app_list(c.apps)}
 </acre:block>
 
 <acre:block def="footer_script()">

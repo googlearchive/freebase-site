@@ -48,7 +48,7 @@
     var table = hc.to_table_structure(prop_structures, data, i18n.lang);
     var metadata = {prop_structures:prop_structures};
   </acre:script>
-  <table cellspacing="0" class="data-table ${JSON.stringify(metadata)}" id="infinitescroll" data-next="${cursor}">
+  <table cellspacing="0" class="table data-table ${JSON.stringify(metadata)}" id="infinitescroll" data-next="${cursor}">
     ${collection_head(table.head)}
     ${collection_body(table.body)}
     <tfoot acre:if="cursor">

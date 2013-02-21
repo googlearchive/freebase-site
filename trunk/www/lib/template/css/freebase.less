@@ -135,15 +135,6 @@ GLOBAL CLASSES
 }
 .clear { min-height: 1%; zoom: 1; }
 
-.section-title {
-    padding-left: 5px;
-    font-weight: bold;
-    font-size: 2.4em;
-    line-height: 1;
-    margin-bottom: 10px;
-    color: #b3bfc2;
-}
-
 .aside-title {
     font-size: 1.4em;
     font-weight: bold;
@@ -169,6 +160,7 @@ ICON LINKS
 */
 
 .icon-link > span {
+  font-size: 14px;
   display: inline-block;
   padding: 3px 0 2px 22px;
   background: url(template/img/ui-icons.png) no-repeat;
@@ -285,7 +277,8 @@ body {
 */
 
 #page-content { 
-  padding: 3em 30px 0;
+  position: relative;
+  padding: 3em 30px 0 40px;
   margin-bottom: 160px;
 }
 
@@ -313,6 +306,65 @@ body {
   margin: 0 auto;
   width: 96em;
 }
+
+
+/*
+--------------------------------------------------
+PAGE SECTION
+--------------------------------------------------
+*/
+section, .section {
+  position: relative;
+  margin-bottom: 40px;
+
+  &:after {
+    z-index: -1;
+    content: "";
+    display: block;
+    position: absolute; top: 15px;
+    width: 100%; height: 10px;
+    border-top: 1px solid #D4DDE3;
+    border-left: 1px solid #D4DDE3;
+    box-shadow: inset 1px 1px 1px 0 white;
+  }
+
+  .section-header {
+    font-weight: normal;
+    margin-bottom: 10px;
+    padding-left: 15px;
+
+    .section-title {
+      display: inline-block;
+      background-color: #e8ebee;
+      padding: 0 6px;
+      margin-left: -6px;
+    }
+
+    .section-name, .section-name a {
+      font-size: 1.8em;
+      color: rgb(128, 160, 178) !important;
+    }
+
+    .section-right {
+      float: right;
+      margin-right: 25px;
+      border-left: solid 6px #e8ebee;
+      background-color: #e8ebee;
+      padding: 0 6px 0 16px;
+
+      .button {
+        margin-bottom: 10px;
+      }
+
+      .help-link {
+        font-size: 1.2em;
+        position: relative;
+        top: 0.5em;
+      }
+    }
+  }
+}
+
 
 /*
 ------------------------

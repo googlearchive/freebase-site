@@ -95,40 +95,35 @@
 </acre:block>
 
 <acre:block def="main_links(linked_id, links, historical, offset)">
-  <div class="section links-section" data-id="Links">
-    <div class="header">
-      <h1 class="kbs">
-        <span class="mark">
-          <span class="links-title">
-            <a href="javascript:void(0);"
-               class="schema-name links-name" name="Links">
-              ${_("Links")}
-            </a>
-          </span>
+  <div class="section" data-id="Links">
+    <h1 class="section-header">
+      <span class="section-title">
+        <span class="section-name">
+          ${_("Links")}
         </span>
-      </h1>
-    </div>
+      </span>
+    </h1>
     <div class="body">
-      <table class="data-table" id="infinitescroll">
+      <table class="table data-table" id="infinitescroll">
         <thead>
           <tr>
             <th class="first">
-              <span class="property-header">&nbsp;</span></th>
+              <span>&nbsp;</span></th>
             <th>
-              <span class="property-header">${_("subject")}</span></th>
+              <span>${_("Subject")}</span></th>
             <th class="menu-col">
-              <span class="property-header">${_("predicate")}</span></th>
+              <span>${_("Predicate")}</span></th>
             <th>
-              <span class="property-header">${_("object/value")}</span></th>
+              <span>${_("Object/Value")}</span></th>
             <th class="menu-col">
-              <span class="property-header">${_("creator")}</span></th>
+              <span>${_("Creator")}</span></th>
             <th class="menu-col">
-              <span class="property-header">${_("attribution")}</span></th>
+              <span>${_("Attribution")}</span></th>
             <th>
-              <span class="property-header">${_("timestamp")}</span></th>
+              <span>${_("Timestamp")}</span></th>
             <acre:block if="historical">
               <th>
-                <span class="property-header operation-header">
+                <span class="operation-header">
                   ${_("operation")}</span></th>
             </acre:block>
           </tr>

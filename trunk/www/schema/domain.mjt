@@ -62,12 +62,20 @@
 
      <!-- Types -->
      <div class="table-header">
-       <h2 class="table-title">
-         <a href="http://wiki.freebase.com/wiki/Types" rel="help external" title="${_('Read help article')}" class="help-link">${_('What are Types?')}</a>
-         ${_('Types')}
-      </h2>
+      <h1 class="section-header">
+        <span class="section-right">
+          <a href="http://wiki.freebase.com/wiki/Types" rel="help external" title="${_('Read help article')}" class="help-link">
+            ${_('What are Types?')}
+          </a>
+        </span>
+        <span class="section-title">
+          <span class="section-name">
+            ${_('Types')}
+          </span>
+        </span>
+      </h1>
      </div>
-     <table class="table table-sortable" cellspacing="0">
+     <table class="table big table-sortable" cellspacing="0">
        <thead>
          <tr acre:attrs="regular_types.length ? {}:{style:'display:none;'}">
            <th scope="col" class="column-header first"><span class="sort-icon">${_('Type')}</span></th>
@@ -111,11 +119,19 @@
 
   <!-- Mediators -->
   <div class="section">
-    <h2 class="table-title">
-      <a href="http://wiki.freebase.com/wiki/Compound_Value_Type" title="${_('Read help article')}" rel="help external" class="help-link">${_('What are Mediators?')}</a>
-      ${_('Mediators')}
-    </h2>
-    <table class="table table-sortable">
+    <h1 class="section-header">
+      <span class="section-right">
+        <a href="http://wiki.freebase.com/wiki/Compound_Value_Type" title="${_('Read help article')}" rel="help external" class="help-link">
+          ${_('What are Mediators?')}
+        </a>
+      </span>
+      <span class="section-title">
+        <span class="section-name">
+          ${_('Mediators')}
+        </span>
+      </span>
+    </h1>
+    <table class="table big table-sortable">
       <thead>
         <tr acre:attrs="mediator_types.length ? {}:{style:'display:none;'}">
           <th scope="col" class="column-header first"><span class="sort-icon">${_('Type')}</span></th>

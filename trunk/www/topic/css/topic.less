@@ -130,61 +130,16 @@ ul.toc-types {
 }
 
 
-
-
 /*
- ### Domain Box Styling
+ ### Type Box Styling
 */
-.domain-section {
-  position: relative;
-  margin-bottom: 40px;
-
-  &:after {
-    z-index: -1;
-    content: "";
-    display: block;
-    position: absolute; top: 15px;
-    width: 100%; height: 10px;
-    border-top: 1px solid #D4DDE3;
-    border-left: 1px solid #D4DDE3;
-    box-shadow: inset 1px 1px 1px 0 white;
-  }
-
-  .header {
-    font-size: 1.8em;
-    font-weight: normal;
-    margin-bottom: 10px;
-
-    .domain-title {
-      display: inline-block;
-      background-color: #e8ebee;
-      padding: 0 6px;
-      margin-left: -6px;
-    }
-
-    .domain-name {
-      color: rgb(128, 160, 178) !important;
-    }
-
-    .status {
-      float: right;
-      margin-top: 7px;
-      margin-right: 25px;
-      font-size: 11px;
-      color: #aaa;
-      background-color: #e8ebee;
-      border-left: solid 6px #e8ebee;
-      padding: 0 6px 0 16px;
-    }
-  }
-}
-
 .type-section {
   margin: 0 0 20px;
   background: #fff;
   box-shadow: 0 0 0 4px #e1e4e6;
 
   .header {
+    font-size: 1.8em;
     margin-bottom: 0;
     .linear_gradient(#8EAABA, #80A0B2);
     .box_shadow(0, 1px, 2px, #aaa);
@@ -198,18 +153,23 @@ ul.toc-types {
 /*
  * Styling for Commons vs User Domain
  */
-.status.commons,
-.status.user {
-  background-image: url(lib/template/img/ui-icons.png);
-  background-repeat: no-repeat;
-}
+.section-right.status {
+  font-size: 11px;
+  color: #aaa;
+  margin-top: 8px;
 
-.status.commons {
-  background-position: 0 -1389px;
-}
+  &.commons, &.user {
+    background-image: url(lib/template/img/ui-icons.png);
+    background-repeat: no-repeat;
+  }
 
-.status.user {
-  background-position: 0 -1417px;
+  &.commons {
+    background-position: 0 -1389px;
+  }
+
+  &.user {
+    background-position: 0 -1417px;
+  }
 }
 
 

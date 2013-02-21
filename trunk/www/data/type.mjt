@@ -43,12 +43,16 @@
 </acre:block>
 
 <acre:block def="page_content()">
-  <div class="section instances clear">
-    <h1 class="table-title">
-      <strong acre:if="c.activity">${i18n_c.number(c.activity.topic_count || 0)}</strong>
-      ${i18n.display_name(c.object)}
-      ${c.root_type_is_mediator ? _("mediators") : _("topics")}
-      <i acre:if="c.query"> (${_("filtered")})</i>
+  <div class="section">
+    <h1 class="section-header">
+      <span class="section-title">
+        <span class="section-name">
+          <strong acre:if="c.activity">${i18n_c.number(c.activity.topic_count || 0)}</strong>
+          ${i18n.display_name(c.object)}
+          ${c.root_type_is_mediator ? _("mediators") : _("topics")}
+          <i acre:if="c.query"> (${_("filtered")})</i>
+        </span>
+      </span>
     </h1>
     <acre:block if="c.table.collection">
       ${t.collection(c.table.collection.structures, c.table.collection.values, c.table.query, c.table.cursor)}

@@ -344,33 +344,40 @@
             $('.queue-forward-button').hide();
         }
 
-        $(document).keypress(function(e) {
-            if (e.keyCode === 106) { // j --> back
-                if (currentFlag > 0) {
-                    $('.queue-back-button').click();
-                }
-            } else if (e.keyCode === 107) { // k --> forward
-                if (loadedFlags.length - 1 > currentFlag) {
-                    $('.queue-forward-button').click();
-                }
-            } else if (e.keyCode === 97) { // a --> first voting option
-                currentDiv.find('.vote-form:eq(0)').find('button').click();
-            } else if (e.keyCode === 115) { // s --> second voting option
-                currentDiv.find('.vote-form:eq(1)').find('button').click();
-            } else if (e.keyCode === 100) { // d --> third voting option
-                currentDiv.find('.vote-form:eq(2)').find('button').click();
-            } else if (e.keyCode === 102) { // f --> fourth voting option
-                currentDiv.find('.vote-form:eq(3)').find('button').click();
-            } else if (e.keyCode === 104) { // h --> hot list flag
-                currentDiv.find('#add-link-to-list').click();
-            } else if (e.keyCode === 108) { // l --> link to hot list
-                currentDiv.find('#get-link-list').click();
-            } else if (e.keyCode === 116) { // t --> open discuss
-                currentDiv.find('.toggle-discuss').click();
-            } else if (e.keyCode === 113) { // q --> help panel
-                modalForm($('#show-shortcuts'));
+        fb.keyboard_shortcut.add('j', function(){ // back
+            if (currentFlag > 0) {
+                $('.queue-back-button').click();
             }
-        });
+        }, true);
+        fb.keyboard_shortcut.add('k', function(){ // forward
+            if (loadedFlags.length - 1 > currentFlag) {
+                $('.queue-forward-button').click();
+            }
+        }, true);
+        fb.keyboard_shortcut.add('a', function(){ // first voting option
+            currentDiv.find('.vote-form:eq(0)').find('button').click();
+        }, true);
+        fb.keyboard_shortcut.add('s', function(){ // second voting option
+            currentDiv.find('.vote-form:eq(1)').find('button').click();
+        }, true);
+        fb.keyboard_shortcut.add('d', function(){ // third voting option
+            currentDiv.find('.vote-form:eq(2)').find('button').click();
+        }, true);
+        fb.keyboard_shortcut.add('f', function(){ // fourth voting option
+            currentDiv.find('.vote-form:eq(3)').find('button').click();
+        }, true);
+        fb.keyboard_shortcut.add('h', function(){ // hot list flag
+            currentDiv.find('#add-link-to-list').click();
+        }, true);
+        fb.keyboard_shortcut.add('l', function(){ // link to hot list
+            currentDiv.find('#get-link-list').click();
+        }, true);
+        fb.keyboard_shortcut.add('t', function(){ // open discuss
+            currentDiv.find('.toggle-discuss').click();
+        }, true);
+        fb.keyboard_shortcut.add('q', function(){ // help panel
+            modalForm($('#show-shortcuts'));
+        }, true);
     }
     function removeButtonListeners() {
         if (currentDiv == null) {
@@ -392,8 +399,6 @@
         $('.queue-back-button').attr('disabled', true);
         $('.queue-forward-button').off('click');
         $('.queue-forward-button').attr('disabled', true);
-
-        $(document).off('keypress');
     }
     function forwardProgress() {
         progress(1);

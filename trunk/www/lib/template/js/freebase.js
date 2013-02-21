@@ -698,7 +698,7 @@
         search.data('dont_hide', false);
       })
     var topic_checkbox = $(':checkbox', search_topic_option)
-      .change(function() {        
+      .change(function() {
         var checked = $(this).is(':checked');
         $.localstore('fb-search-topic-only', !checked);
         init_search();
@@ -765,7 +765,7 @@
             .removeClass("loading");
         search_topic_option.hide();
       })
-      .focus(function(e) {        
+      .focus(function(e) {
         if (!search_label.is(":visible")) {
           $('#site-search-label').slideDown("fast");
           search_container.addClass("active");
@@ -1022,10 +1022,12 @@
        *   be careful of existing native browser shortcut commands.
        * @param {Function} callback The callback function when the keyboard
        *   shortcut character is detected.
+       * @param {Boolean} force If true don't check whether new shortcut
+       *   is going to overwrite existing one
        */
-      add: function(character, callback) {
+      add: function(character, callback, force) {
         var code = character.charCodeAt(0);
-        if (code in fb.keyboard_shortcut.cache_) {
+        if (!force && code in fb.keyboard_shortcut.cache_) {
           console.warn('Overriding keyboard shortcut', character);
         }
         fb.keyboard_shortcut.cache_[code] = callback;

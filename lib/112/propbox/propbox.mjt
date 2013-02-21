@@ -1,0 +1,1126 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+<acre:script>
+  var h = acre.require("helper/helpers.sjs");
+  var i18n = acre.require("i18n/i18n.sjs");
+  var i18n_c = acre.require("i18n/components.mjt");
+  var _ = i18n.gettext;
+  // microdata helpers
+  var microdata = acre.require("helper/microdata.sjs");
+  var components = acre.require("template/components.mjt");
+  var ph = acre.require("propbox/helpers.sjs");
+  var image = acre.require("template/imagecomponents.mjt");
+  var form = acre.require("propbox/form.mjt");
+
+  // preload gettext values
+  var FREEBASE_COMMONS = _("Freebase Commons");
+  var USER_DOMAIN = _("User Domain");
+  var VIEW_ALL_PROPERTY_VALUES = _("View all property values");
+  var EDIT_VALUE = _("Edit value");
+  var ADD_NEW_VALUE = _("Add new value");
+  var EDIT_LOCALIZED_TEXT = _("Edit localized...");
+  var FILTER_TYPE = _("Filter by type");
+  var QUERY_PROPERTY = _("Query by property");
+  var HISTORY_PROPERTY = _("View history");
+  var EDIT = _("Edit");
+  var DELETE = _("Delete");
+  var EDIT_PROPERTY = _("edit");
+  var ADD_PROPERTY = _("add");
+  var NAMESPACE = _("Namespace");
+  var OBJECT = _("Object");
+  var VALUE = _("Value");
+  var DEPRECATED_PROPERTY = _("deprecated");
+  var TYPE_NOT_ASSERTED = _("%s is not asserted on this topic.");
+  var REMOVE_TYPE = _("Remove this type from this topic.");
+  var ASSERT_TYPE = _("Assert type now.");
+  var PROPERTY_LOCKED = _("This property is only editable by " +
+    "specified users (members of the /type/property/authorities permission).");
+  var PROPERTY_REQUIRES_AUTHORITY = _("Some values for this " +
+    "property may not be editable.");
+  var SHOW_MORE = _("%s values total &raquo;");
+  var VIEW_CVT = _("View CVT");
+  var HAS_NO_VALUE = _("Flag as having no values");
+  var HAS_VALUE = _("Flag as having unknown values");
+  var FLAGGED_NO_VALUES = _("This property has been flagged " +
+    "as having no values.");
+  var REMOVE_NO_VALUES = _("Remove this flag to add new values.");
+  var FLAGGED_HAS_VALUE = _("This property has been flagged " +
+    "as having values, but those values are unknown.");
+  var REMOVE_HAS_VALUE = _("Remove this flag to add specific values.");
+ </acre:script>
+
+<acre:block def="topicbox(topic, lang)">
+  <acre:script>
+    var topic_structure = topic.structure;
+  </acre:script>
+  <acre:block if="topic_structure && topic_structure.order">
+    <acre:script>
+      var domain_order = topic_structure.order;
+    </acre:script>
+    <acre:block for="domain_id in domain_order">
+      <acre:script>
+        var domain_structure = topic_structure.domains[domain_id];
+      </acre:script>
+      <acre:block if="domain_structure">
+        <acre:script>
+          domain_structure.id = domain_id;
+        </acre:script>
+        ${domainbox(topic, domain_structure, lang)}
+      </acre:block>
+    </acre:block>
+  </acre:block>
+</acre:block>
+
+<acre:block def="domainbox(topic, domain_structure, lang)">
+  <div class="section domain domain-section" data-id="${domain_structure.id}">
+    <div class="header">
+      <acre:script>
+        var domain_type = h.is_commons_domain(domain_structure) ? "commons" : "user";
+      </acre:script>
+      <span class="status $domain_type">
+        ${h.is_commons_domain(domain_structure) ? FREEBASE_COMMONS : USER_DOMAIN}
+      </span>
+      <h1 class="kbs">
+        <span class="mark">
+          <span class="domain-title">
+            <a title="${domain_structure.id}" href="javascript:void(0);"
+               class="schema-name domain-name"
+               name="${domain_structure.id}">${domain_structure.text}</a>
+            <a class="schema-id domain-id"
+               href="${h.fb_url(domain_structure.id, [['schema']])}">
+              ${domain_structure.id}</a>
+          </span>
+        </span>
+      </h1>
+    </div>
+    <acre:block for="type_id in domain_structure.types">
+      <acre:script>
+        var type_structure = topic.structure.types[type_id];
+      </acre:script>
+      <acre:block if="type_structure">
+        <acre:script>
+          type_structure.id = type_id;
+        </acre:script>
+        ${typebox(topic, type_structure, lang)}
+      </acre:block>
+    </acre:block>
+  </div>
+</acre:block>
+
+<acre:block def="typebox(topic, type_structure, lang)">
+  <acre:script>
+    var is_asserted = ph.is_asserted_type(topic, type_structure);
+  </acre:script>
+  <div class="type-section" data-id="${type_structure.id}">
+    <div class="header">
+      <h2 class="foobar kbs hover-row">
+        <span class="header-label">
+          <span class="wrapper mark">
+            <span class="type-label">
+              <a name="${type_structure.id}" href="javascript:void(0);"
+                 class="schema-name type-name">${type_structure.text}</a>
+              <a class="schema-id type-id"
+                 href="${h.fb_url(type_structure.id, [['schema']])}">
+                ${type_structure.id}</a>
+            </span>
+          </span>
+        </span>
+        <acre:block if="is_asserted">
+          <a href="#" class="type-section-delete" title="${REMOVE_TYPE}"
+             onclick="return propbox.remove_type(this, '${type_structure.id}');">x</a>
+        </acre:block>
+      </h2>
+    </div>
+    <acre:block if="!is_asserted">
+      <div class="message-section">
+        <span class="inline-message">
+          ${h.sprintf(TYPE_NOT_ASSERTED, type_structure.text)}
+          <acre:block if="!type_structure.never_assert">
+            <a href="#" class="assert-type"
+               onclick="return propbox.add_type(this, '${type_structure.id}', ${JSON.stringify(type_structure.included_types)});">
+              ${ASSERT_TYPE}
+            </a>
+          </acre:block>
+        </span>
+      </div>
+    </acre:block>
+    <acre:block for="prop_id in type_structure.properties">
+      <acre:script>
+        var prop_structure = topic.structure.properties[prop_id];
+      </acre:script>
+      <acre:block if="prop_structure">
+        <acre:script>
+          prop_structure.id = prop_id;
+          var values = [];
+          var prop = h.get_property(topic, prop_id);
+          if (prop) {
+            values = prop.values || [];
+          }
+        </acre:script>
+        ${propbox(topic, prop_structure, values, lang)}
+      </acre:block>
+    </acre:block>
+  </div>
+</acre:block>
+
+<acre:block def="propbox(topic, prop_structure, prop_values, lang)">
+  <div class="property-section"
+       data-id="${prop_structure.id}">
+    <div class="sub-foobar kbs hover-row">
+      <span class="header-label">
+        ${prop_menu(topic, prop_structure, prop_values, lang)}
+        <acre:block if="prop_structure.deprecated">
+          <span class="property-state">(${DEPRECATED_PROPERTY})</span>
+        </acre:block>
+        <a class="schema-id prop-id"
+           href="${h.fb_url(prop_structure.id, [['schema']])}">
+          ${prop_structure.id}</a>
+      </span>
+    </div>
+    ${databox(topic, prop_structure, prop_values, lang)}
+  </div>
+</acre:block>
+
+<acre:block def="databox(topic, prop_structure, prop_values, lang)">
+  <div class="data-section">
+    <acre:block if="prop_structure.expected_type.mediator && prop_structure.properties">
+      ${datatable(topic, prop_structure, prop_values, lang)}
+    </acre:block>
+    <acre:block else="">
+      ${datalist(topic, prop_structure, prop_values, lang)}
+    </acre:block>
+  </div>
+</acre:block>
+
+<acre:block def="datatable(topic, prop_structure, prop_values, lang)">
+  <acre:script>
+    var empty = !prop_values || !prop_values.length;
+    var ect = prop_structure.expected_type.id;
+    var prop = h.get_property(topic, prop_structure.id);
+    var count = prop && prop.count || 0;
+  </acre:script>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th acre:for="i,subprop_structure in prop_structure.properties" scope="col" acre:attrs="i === 0 ? {'class':'first'} : {}">
+          <span class="property-header">
+            ${subprop_structure.text}
+          </span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <acre:block if="empty">
+        ${empty_row_tr(prop_structure.properties.length, topic, prop_structure)}
+      </acre:block>
+      <acre:block else="">
+        <acre:block for="prop_value in prop_values">
+          ${datatable_row(topic, prop_structure, prop_value, lang)}
+        </acre:block>
+      </acre:block>
+    </tbody>
+    <acre:block if="count > prop_values.length">
+      <tfoot>
+        <tr>
+          <th>
+            <div class="more">
+              <a href="javascript:void(0);"
+                 onclick="return propbox.more(this, '${topic.id}', '${prop_structure.id}')">
+                <span>${h.sprintf(SHOW_MORE, count)}</span>
+              </a>
+            </div>
+          </th>
+        </tr>
+      </tfoot>
+    </acre:block>
+  </table>
+</acre:block>
+
+<acre:block def="datatable_row(topic, prop_structure, prop_value, lang)">
+  <tr class="${ph.get_propbox_data_row_css_class(prop_structure, prop_value)}"
+      data-id="${prop_value.id}">
+    <acre:block for="i, subprop_structure in prop_structure.properties">
+      <acre:script>
+        var subprop_values;
+        if (prop_value && prop_value.property && prop_value.property[subprop_structure.id]) {
+          subprop_values = prop_value.property[subprop_structure.id].values;
+        }
+      </acre:script>
+      ${datatable_cell(topic, prop_structure, prop_value, subprop_structure, subprop_values, i === 0, lang)}
+    </acre:block>
+  </tr>
+</acre:block>
+
+<acre:block def="image_row(topic, prop_structure, prop_value, lang)">
+  <tr class="${ph.get_propbox_data_row_css_class(prop_structure, prop_value)}"
+      data-id="${prop_value.id}">
+    <td class="first">
+      <ul class="data-list">
+        <li>
+          <span class="wrapper">
+            <acre:script>var options = {mode: "fillcropmid"};</acre:script>
+            <a class="property-value" href="${h.fb_url(prop_value.id)}" title="${prop_value.id}">
+              ${image.image_thumb(prop_value.id, 24, options)}
+            </a>
+            <!!-- disabled edit image !!-->
+            <!!-- ${value_menu(topic, prop_structure, prop_value, lang)} !!-->
+          </span>
+        </li>
+      </ul>
+    </td>
+    <acre:block for="i, subprop_structure in prop_structure.properties">
+      <acre:script>
+        var subprop_values;
+        if (prop_value && prop_value[subprop_structure.id]) {
+          subprop_values = prop_value[subprop_structure.id].values;
+        }
+      </acre:script>
+      ${datatable_cell(topic, prop_structure, prop_value, subprop_structure, subprop_values, false, lang)}
+    </acre:block>
+  </tr>
+</acre:block>
+
+<acre:block def="article_row(topic, prop_structure, prop_value, lang)">
+  <tr class="${ph.get_propbox_data_row_css_class(prop_structure, prop_value)}"
+      data-id="${prop_value.id}">
+    <td class="first">
+      <ul class="data-list">
+        <li>
+          <span class="wrapper">
+            <a class="property-value" href="${h.fb_url(prop_value.id)}" title="${prop_value.id}">${prop_value.text || prop_value.id}</a>
+            <!!-- disabled edit article !!-->
+            <!!-- ${value_menu()} !!-->
+          </span>
+        </li>
+      </ul>
+    </td>
+    <acre:block for="i, subprop_structure in prop_structure.properties">
+      <acre:script>
+        var subprop_values;
+        if (prop_value && prop_value[subprop_structure.id]) {
+          subprop_values = prop_value[subprop_structure.id].values;
+        }
+      </acre:script>
+      ${datatable_cell(topic, prop_structure, prop_value, subprop_structure, subprop_values, false, lang)}
+    </acre:block>
+  </tr>
+</acre:block>
+
+<acre:block def="datatable_cell(topic, prop_structure, prop_value, subprop_structure, subprop_values, primary, lang)">
+  <acre:script>
+    var empty = !subprop_values || !subprop_values.length;
+  </acre:script>
+  <td acre:attrs="primary ? {'class':'first'}:null">
+    <ul class="data-list">
+      <acre:block if="empty">
+        ${empty_row_li(primary, prop_value, subprop_structure, null, lang, prop_structure)}
+      </acre:block>
+      <acre:block else="">
+        <acre:block for="i, subprop_value in subprop_values">
+          <li>
+            <span class="wrapper">
+              <acre:block if="i === 0 && primary">
+                ${value_menu(prop_value, subprop_structure, subprop_value, lang, prop_structure)}
+              </acre:block>
+              ${value(prop_value.id, subprop_structure, subprop_value, lang)}
+            </span>
+          </li>
+        </acre:block>
+      </acre:block>
+    </ul>
+  </td>
+</acre:block>
+
+<acre:block def="datalist(topic, prop_structure, prop_values, lang)">
+  <acre:script>
+    var empty = !prop_values || !prop_values.length;
+    var ect = prop_structure.expected_type.id;
+    var prop = h.get_property(topic, prop_structure.id);
+    var count = prop && prop.count || 0;
+  </acre:script>
+  <ul class="data-list">
+    <acre:block if="empty">
+      ${empty_row_li(false, topic, prop_structure)}
+    </acre:block>
+    <acre:block else="">
+      <acre:block for="prop_value in prop_values">
+        ${datalist_row(topic, prop_structure, prop_value, lang)}
+      </acre:block>
+    </acre:block>
+  </ul>
+  <acre:block if="count > prop_values.length">
+    <div class="more">
+      <a href="javascript:void(0);"
+         onclick="return propbox.more(this, '${topic.id}', '${prop_structure.id}')">
+        <span>${h.sprintf(SHOW_MORE, count)}</span>
+      </a>
+    </div>
+  </acre:block>
+</acre:block>
+
+<acre:block def="datalist_row(topic, prop_structure, prop_value, lang)">
+  <li class="${ph.get_propbox_data_row_css_class(prop_structure, prop_value)}">
+    <span class="wrapper first">
+      ${value_menu(topic, prop_structure, prop_value, lang)}
+      ${value(topic.id, prop_structure, prop_value, lang)}
+    </span>
+  </li>
+</acre:block>
+
+<acre:block def="value(id, prop_structure, prop_value, lang)">
+  <acre:script>
+    var ect = prop_structure.expected_type.id;
+    var citation = h.get_citation(prop_value);
+  </acre:script>
+  <acre:block if="h.is_literal_type(ect)">
+    <acre:script>
+      var attrs = h.extend({}, microdata.value(prop_structure, prop_value));
+      attrs["class"] = "property-value";
+      if (ect != '/type/text' && ect != '/type/rawstring' &&
+          ect != '/type/uri' && ect != '/type/key') {
+        // We can't store the above values in the data-value attribute
+        // since they may contain non-alphanumeric characters that get
+        // escaped by the templates.
+        attrs["data-value"] = prop_value.value;
+      }
+    </acre:script>
+    <acre:block if="ect === '/type/datetime'">
+      ${i18n_c.datetime(prop_value.value, attrs)}
+    </acre:block>
+    <acre:block elif="ect === '/type/int' || ect === '/type/float'">
+      ${i18n_c.number(prop_value.value, attrs, ect === '/type/float')}
+      <acre:block if="prop_structure.unit">
+        ${prop_structure.unit.abbreviation || ""}
+      </acre:block>
+    </acre:block>
+    <acre:block elif="ect === '/type/uri'">
+      <acre:script>
+        attrs.target = "_blank";
+      </acre:script>
+      <a href="${prop_value.value}" acre:attrs="attrs">${prop_value.text}</a>
+    </acre:block>
+    <acre:block elif="ect === '/type/key'">
+      <acre:script>
+        var ns = prop_value.namespace || prop_value.id;
+        if (!ns && prop_value.value.indexOf("/") === 0) {
+          var ns_value = h.id_key(prop_value.value, true);
+          ns = ns_value[0];
+          prop_value.value = ns_value[1];
+        }
+        if (prop_structure.id === "/type/namespace/keys") {
+          object_id = ns;
+        }
+        else {
+          object_id = ns + "/" + prop_value.value;
+        }
+        h.extend(attrs, {
+          "data-namespace": ns,
+          "data-id": object_id,
+          "title": object_id
+        });
+      </acre:script>
+      <a href="${h.fb_url(true, object_id)}" acre:attrs="attrs">${prop_value.text}</a>
+    </acre:block>
+    <acre:block else="">
+      <span acre:attrs="attrs">${prop_value.value}</span>
+      <acre:block if="ect == '/type/text' && prop_value.lang">
+        ${i18n_c.lang_code(prop_value.lang, lang)}
+      </acre:block>
+    </acre:block>
+  </acre:block>
+  <acre:block else="">
+    <acre:block if="ect === '/common/image'">
+      <acre:script>
+        var image_options = {mode: "fillcropmid"};
+      </acre:script>
+      ${image.image_thumb(prop_value.id, 50, image_options)}
+    </acre:block>
+    <acre:block else="">
+      <acre:script>
+        var text;
+        var show_lang = false;
+        if (ect === "/type/user") {
+          text = h.id_key(prop_value.id);
+        }
+        else {
+          text = prop_value.text;
+          if (text == null || text === "") {
+            text = prop_value.id;
+          }
+          show_lang = true;
+        }
+      </acre:script>
+      <a title="${prop_value.id}" class="property-value"
+         href="${h.fb_url(true, prop_value.id)}"
+         data-id="${prop_value.id}">${text}</a>
+      <acre:block if="show_lang">
+        ${i18n_c.lang_code(prop_value.lang, lang)}
+      </acre:block>
+    </acre:block>
+  </acre:block>
+  <acre:block if="citation">
+    ${components.citation(citation)}
+  </acre:block>
+</acre:block>
+
+<acre:block def="prop_menu(topic, prop_structure, prop_values, lang)">
+  <acre:script>
+    var ect = prop_structure.expected_type.id;
+    var ps = ph.get_property_status(topic, prop_structure, prop_values);
+    var lock = prop_structure.authorities == null &&
+        prop_structure.requires_permission === true;
+  </acre:script>
+  <span class="wrapper mark">
+    <ul class="outer-menu nicemenu">
+      <li class="inline-menu-item nicemenu-item">
+        <span class="headmenu">
+          <a href="javascript:void(0)" class="more-action"></a>
+        </span>
+        <ul class="row-menu submenu">
+          <acre:block if="! (ps.has_status || lock)">
+            <li acre:if="ps.unique_edit" class="row-menu-item">
+              <a href="#" onclick="return propbox.prop_edit(this, ${prop_structure.unique});">${EDIT_VALUE}</a>
+            </li>
+            <li acre:else="" class="row-menu-item" >
+              <a href="#" onclick="return propbox.prop_add(this, ${prop_structure.unique});">${ADD_NEW_VALUE}</a>
+            </li>
+          </acre:block>
+          <acre:block if="ps.is_empty && ! (ps.has_status || lock)">
+            <li class="row-menu-item fb-site-only">
+              <a href="#" onclick="return propbox.add_has_no_value(this);">${HAS_NO_VALUE}</a>
+            </li>
+            <li class="row-menu-item fb-site-only">
+              <a href="#" onclick="return propbox.add_has_value(this);">${HAS_VALUE}</a>
+            </li>
+          </acre:block>
+          <li class="row-menu-item fb-site-only">
+            <a href="${h.build_query_url(topic.id, null, prop_structure.id)}">${QUERY_PROPERTY}</a>
+          </li>
+          <li class="row-menu-item fb-site-only">
+            <acre:script>
+              var master_prop = prop_structure.master_property ? prop_structure.master_property.id : prop_structure.id;
+            </acre:script>
+            <a href="${h.fb_url(topic.id, [['links'],['filter', master_prop],['historical',1]])}">${HISTORY_PROPERTY}</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <span class="property-label">
+      <a name="${prop_structure.id}" href="javascript:void(0);"
+         class="schema-name prop-name">${prop_structure.text}</a>
+    </span>
+    <acre:block if="lock">
+      <span class="lock" title="${PROPERTY_LOCKED}"></span>
+    </acre:block>
+    <acre:block else="">
+      <acre:script>
+        var attrs = {"class": "property-modify"};
+        if (prop_structure.authorities != null) {
+          attrs["class"] += " locked";
+          attrs["title"] = PROPERTY_REQUIRES_AUTHORITY;
+        }
+      </acre:script>
+      <div acre:if="!ps.has_status" acre:attrs="attrs">
+          <a href="#" acre:if="ps.unique_edit" onclick="return propbox.prop_edit(this, ${prop_structure.unique});"></a>
+          <a href="#" acre:else="" onclick="return propbox.prop_add(this, ${prop_structure.unique});"></a>
+      </div>
+    </acre:block>
+    <acre:block
+
+    </acre:block>
+  </span>
+</acre:block>
+
+<acre:block def="value_menu(topic, prop_structure, prop_value, lang, parent_prop_structure)">
+  <acre:script>
+    var ect = prop_structure.expected_type.id;
+    var is_blob = false;
+    if (ect === "/common/document" || ect === "/common/image") {
+      is_blob = true;
+    }
+    var lock = prop_structure.authorities == null &&
+        prop_structure.requires_permission === true;
+  </acre:script>
+  <ul class="outer-menu nicemenu">
+    <li class="nicemenu-item">
+      <span class="headmenu">
+        <a href="javascript:void(0)" class="more-action"></a>
+      </span>
+      <ul class="submenu row-menu">
+        <acre:block if="!lock">
+          <li class="row-menu-item"><a href="#" onclick="return propbox.value_edit(this);">${EDIT}</a></li>
+          <li class="row-menu-item"><a href="#" onclick="return propbox.value_delete(this);">${DELETE}</a></li>
+          <acre:block if="!is_blob && topic && prop_structure && prop_value && lang">
+            <li acre:if="!h.is_literal_type(prop_structure.expected_type.id)" class="row-menu-item fb-site-only">
+              <a href="${h.fb_url(prop_value.id, [['i18n']])}">${EDIT_LOCALIZED_TEXT}</a>
+            </li>
+          </acre:block>
+        </acre:block>
+        <acre:block if="topic && parent_prop_structure && parent_prop_structure.expected_type.mediator">
+          <li class="row-menu-item fb-site-only">
+            <a href="${h.fb_url(topic.id, [['props']])}">${VIEW_CVT}</a>
+          </li>
+        </acre:block>
+      </ul>
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="empty_row_tr(cols, topic, prop_structure)">
+  <tr class="empty-row">
+    <td colspan="${cols || 1}" class="first">
+      <ul class="data-list">
+        ${empty_row_li(false, topic, prop_structure)}
+      </ul>
+    </td>
+  </tr>
+</acre:block>
+
+<acre:block def="empty_row_li(menu, topic, prop_structure, prop_value, lang, parent_prop_structure)">
+  <acre:script>
+    var ps = ph.get_property_status(topic, prop_structure);
+  </acre:script>
+  <li class="empty-row">
+    <acre:block if="!ps.has_status">
+      <span class="wrapper first">
+        <acre:block if="menu">
+          ${value_menu(topic, prop_structure, prop_value, lang, parent_prop_structure)}
+        </acre:block>
+        <span class="property-value empty-property">-</span>
+      </span>
+    </acre:block>
+    <acre:block elif="ps.has_no_value">
+      <span class="property-value inline-message">
+        ${FLAGGED_NO_VALUES}
+        <a href="#" onclick="return propbox.remove_has_no_value(this);">
+          ${REMOVE_NO_VALUES}
+        </a>
+      </span>
+    </acre:block>
+    <acre:block elif="ps.has_value">
+      <span class="property-value inline-message">
+        ${FLAGGED_HAS_VALUE}
+        <a href="#" onclick="return propbox.remove_has_value(this);">
+          ${REMOVE_HAS_VALUE}
+        </a>
+      </span>
+    </acre:block>
+  </li>
+</acre:block>
+
+<!!----
+
+propbox edit forms
+
+!!-->
+
+<acre:block def="prop_add_form(topic_id, prop_structure, lang)">
+  <acre:block if="prop_structure.expected_type.mediator">
+    ${prop_add_form_cvt(topic_id, prop_structure, lang)}
+  </acre:block>
+  <acre:block else="">
+    ${prop_add_form_simple(topic_id, prop_structure, lang)}
+  </acre:block>
+</acre:block>
+
+<acre:block def="prop_add_form_simple(topic_id, prop_structure, lang)">
+  <ul class="edit-form ${JSON.stringify(prop_structure)}">
+    <li class="add-row edit-row clear">
+      ${form_field(prop_structure, null, lang)}
+    </li>
+    <li class="edit-row-submit">
+      <input type="hidden" name="s" value="${topic_id}"/>
+      <input type="hidden" name="p" value="${prop_structure.id}"/>
+      <input type="hidden" name="lang" value="${h.lang_code(lang)}"/>
+      ${form.submit_buttons()}
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="prop_add_form_cvt(topic_id, prop_structure, lang)">
+  <table class="edit-form ${JSON.stringify(prop_structure)}">
+    <tbody>
+      <tr class="add-cvt-row edit-row">
+        <acre:block for="subprop_structure in prop_structure.properties">
+          <td class="vert-form-fields">
+            ${form_field(subprop_structure, null, lang)}
+            <acre:block if="!subprop_structure.unique">
+              <div class="magicbox-template">
+                ${form_field(subprop_structure, null, lang)}
+              </div>
+            </acre:block>
+          </td>
+        </acre:block>
+      </tr>
+      <tr class="edit-row-submit">
+        <td colspan="${prop_structure.properties.length}">
+          <input type="hidden" name="s" value="${topic_id}"/>
+          <input type="hidden" name="p" value="${prop_structure.id}"/>
+          <input type="hidden" name="lang" value="${h.lang_code(lang)}"/>
+          ${form.submit_buttons()}
+       </td>
+      </tr>
+    </tbody>
+  </table>
+</acre:block>
+
+<acre:block def="form_field(prop_structure, prop_value, lang)">
+  <acre:script>
+    var ect = prop_structure.expected_type;
+  </acre:script>
+  <div class="form-field">
+    <acre:block if="ect.enumeration">
+      ${data_input(ect.id, prop_structure.id, prop_value, lang, ect.instances || [])}
+    </acre:block>
+    <acre:block else="">
+      ${data_input(ect.id, prop_structure.id, prop_value, lang)}
+    </acre:block>
+    <span acre:if="prop_structure.unit" class="unit">
+      ${prop_structure.unit.abbreviation}
+    </span>
+  </div>
+</acre:block>
+
+
+<!!--
+  @param type_id - e.g., /type/datetime, /type/text, etc.
+    For topics use any type.
+    For enumerated types, pass enumerated list
+
+  @param name - you should almost always use the property id for the name. propbox-edit.js expects name to be a property id.
+  @param prop_value - in topic api format
+  @param lang - the preferred language of the input
+  @param enumerated - for enumerated type_id, pass the enumerated instances (Array) of the type.
+!!-->
+<acre:block def="data_input(type_id, name, prop_value, lang, enumerated)">
+  <acre:script>
+    var type = ph.data_input_type(type_id);
+    var data = {
+      type: type_id
+    };
+    if (prop_value) {
+      if (h.is_literal_type(type_id)) {
+        data.value = prop_value.value;
+        if (type_id === "/type/text") {
+          data.lang = prop_value.lang;
+        }
+        else if (type_id === "/type/key") {
+          data.namespace = prop_value.namespace || prop_value.id;
+        }
+      }
+      else {
+        data.id = prop_value.id;
+      }
+    }
+  </acre:script>
+  <acre:block if="enumerated">
+    <span class="data-input enumerated ${JSON.stringify(data)}">
+      <select class="fb-enumerated-input" name="${name}">
+        <option>
+          <acre:block if="prop_value">
+            ${_("none")}
+          </acre:block>
+          <acre:block else="">
+            ${_("select")}...
+          </acre:block>
+        </option>
+        <acre:block for="inst in enumerated">
+          <option value="${inst.id}"
+                  acre:attrs="prop_value && (prop_value.id === inst.id || prop_value.id === inst.mid) ? {selected:'selected'} : {}">
+           ${inst.text}
+         </option>
+        </acre:block>
+      </select>
+    </span>
+  </acre:block>
+  <acre:block elif="type === 'boolean'">
+    <span class="data-input boolean ${JSON.stringify(data)}">
+      <label>
+        <input type="radio" name="${name}" class="fb-boolean-input" value="true"
+               acre:attrs="prop_value && prop_value.value === true ? {checked:'checked'} : {}"/>
+        Yes
+      </label>
+      <label>
+        <input type="radio" name="${name}" class="fb-boolean-input" value="false"
+               acre:attrs="prop_value && prop_value.value === false ? {checked:'checked'} : {}"/>
+        No
+      </label>
+    </span>
+  </acre:block>
+  <acre:block elif="type === 'topic'">
+    <span class="data-input topic ${JSON.stringify(data)}">
+      <input class="fb-input" type="text" name="${name}" acre:attrs="prop_value ? {value:prop_value.text} : {}"/>
+    </span>
+  </acre:block>
+  <acre:block elif="type === 'key'">
+    <span class="data-input key ${JSON.stringify(data)}">
+      <label>
+        <acre:block if="name === '/type/namespace/keys'">
+          ${_("Object:")}
+        </acre:block>
+        <acre:block else="">
+          ${_("Namespace:")}
+        </acre:block>
+        <acre:script>
+          var ns = prop_value ? prop_value.namespace || prop_value.id : null;
+        </acre:script>
+        <input class="fb-input topic key-namespace" type="text" name="namespace"
+               acre:attrs="prop_value && ns ? {value:ns} : {}">
+      </label>
+      <label>
+        ${_("Key:")}
+        <input class="fb-input key-value" type="text" name="${name}" acre:attrs="prop_value ? {value:prop_value.value} : {}"/>
+      </label>
+    </span>
+  </acre:block>
+  <acre:block elif="type === 'int'">
+    <span class="data-input ${type} ${JSON.stringify(data)}">
+      <input class="fb-input" type="text" name="${name}"
+             acre:attrs="prop_value ? {value:i18n.format_number(prop_value.value)} : {}"/>
+    </span>
+  </acre:block>
+  <acre:block elif="type === 'float'">
+    <span class="data-input ${type} ${JSON.stringify(data)}">
+      <input class="fb-input" type="text" name="${name}"
+             acre:attrs="prop_value ? {value:i18n.format_number(prop_value.value, true)} : {}"/>
+    </span>
+  </acre:block>
+  <acre:block elif="type === 'datetime'">
+    <span class="data-input ${type} ${JSON.stringify(data)}">
+      <input class="fb-input" type="text" name="${name}"
+             acre:attrs="prop_value ? {value:i18n.format_datetime(prop_value.value)} : {}"/>
+    </span>
+  </acre:block>
+  <acre:block elif="name == '/common/topic/description'">
+    <span class="data-input textarea ${JSON.stringify(data)}">
+      <textarea class="fb-input"
+                name="/common/topic/description">${prop_value ? prop_value.value : ''}</textarea>
+    </span>
+  </acre:block>
+  <acre:block else="">
+    <span class="data-input ${type} ${JSON.stringify(data)}">
+      <input class="fb-input" type="text" name="${name}"
+             acre:attrs="prop_value ? {value:prop_value.value} : {}"/>
+    </span>
+  </acre:block>
+</acre:block>
+
+<acre:block def="value_edit_form(topic_id, prop_structure, prop_value, lang)">
+  <acre:block if="prop_structure.expected_type.mediator">
+    ${value_edit_form_cvt(topic_id, prop_structure, prop_value, lang)}
+  </acre:block>
+  <acre:block else="">
+    ${value_edit_form_simple(topic_id, prop_structure, prop_value, lang)}
+  </acre:block>
+</acre:block>
+
+<acre:block def="value_edit_form_cvt(topic_id, prop_structure, prop_value, lang)">
+  <acre:script>
+    var structure = h.extend({}, prop_structure, {values: [prop_value]});
+  </acre:script>
+  <table class="edit-form ${JSON.stringify(structure)}">
+    <tbody>
+      <tr class="edit-row">
+        <acre:block for="subprop_structure in prop_structure.properties">
+          <td class="vert-form-fields">
+            <acre:script>
+              var subprop_value = prop_value.property && prop_value.property[subprop_structure.id] && prop_value.property[subprop_structure.id].values || [];
+            </acre:script>
+            <acre:block acre:if="subprop_value.length">
+              <acre:block for="subvalue in subprop_value">
+                ${form_field(subprop_structure, subvalue, lang)}
+              </acre:block>
+              <acre:block if="!subprop_structure.unique">
+                ${form_field(subprop_structure, null, lang)}
+              </acre:block>
+            </acre:block>
+            <acre:block else="">
+              ${form_field(subprop_structure, null, lang)}
+            </acre:block>
+            <acre:block if="!subprop_structure.unique">
+              <div class="magicbox-template">
+                ${form_field(subprop_structure, null, lang)}
+              </div>
+            </acre:block>
+          </td>
+        </acre:block>
+      </tr>
+      <tr class="edit-row-submit">
+        <td colspan="${prop_structure.properties.length}">
+          <input type="hidden" name="s" value="${topic_id}"/>
+          <input type="hidden" name="p" value="${prop_structure.id}"/>
+          <input type="hidden" name="o" value="${prop_value.id}"/>
+          <input type="hidden" name="lang" value="${h.lang_code(lang)}"/>
+          ${form.submit_buttons()}
+          <button class="button delete">${_('Delete')}</button>
+          <acre:script>
+            var cvt_cotypes = [];
+            if (prop_value.type) {
+              cvt_cotypes = prop_value.type.filter(function(t) {
+                return t.id != prop_structure.expected_type.id;
+              });
+            }
+          </acre:script>
+          <acre:block if="cvt_cotypes.length">
+            <acre:script>
+              function fn_url(o) {
+                return h.fb_url(prop_value.id, [['props'], ['type', o.id]]);
+              };
+            </acre:script>
+            <span class="cvt-cotypes">
+              ${h.template_sprintf("This CVT is also typed as %s", tag_anchors(cvt_cotypes, fn_url))}
+            </span>
+          </acre:block>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</acre:block>
+
+<acre:block def="value_edit_form_simple(topic_id, prop_structure, prop_value, lang)">
+  <acre:script>
+    var structure = h.extend({}, prop_structure, {values: [prop_value]});
+  </acre:script>
+  <ul class="edit-form ${JSON.stringify(structure)}">
+    <li class="edit-row clear">
+      ${form_field(prop_structure, prop_value, lang)}
+    </li>
+    <li class="edit-row-submit">
+      <input type="hidden" name="s" value="${topic_id}"/>
+      <input type="hidden" name="p" value="${prop_structure.id}"/>
+      <input type="hidden" name="o" value="${prop_value.id || prop_value.value}"/>
+      <input type="hidden" name="lang" value="${h.lang_code(lang)}"/>
+      ${form.submit_buttons()}
+      <button class="button delete">${_('Delete')}</button>
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="value_delete_result(topic_id, prop_structure, value, lang)">
+  <acre:script>
+    var msg = h.template_sprintf(_("%s has been deleted."), tag_strong(value));
+  </acre:script>
+  <acre:block if="prop_structure.properties">
+    <tr class="row-msg row-msg-info">
+      <td colspan="${prop_structure.properties.length}">
+        <ul class="data-list">
+          <li>
+            <span class="wrapper">
+              ${form.row_msg(msg, ".row-msg")}
+            </span>
+          </li>
+        </ul>
+      </td>
+    </tr>
+  </acre:block>
+  <acre:block else="">
+    <li class="row-msg row-msg-info">
+      <span class="wrapper">
+        ${form.row_msg(msg, ".row-msg")}
+      </span>
+    </li>
+  </acre:block>
+</acre:block>
+
+
+<acre:block def="prop_add_document_form(topic_id, prop_structure, lang, replace_document)">
+  <div class="modal ${JSON.stringify(prop_structure)}">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <acre:block if="replace_document">
+          <span>${h.sprintf(_("Edit article for %s"), topic_id)}</span>
+        </acre:block>
+        <acre:block else="">
+          <span>${h.sprintf(_("Add new article to %s"), topic_id)}</span>
+        </acre:block>
+      </h1>
+      <div class="modal-content">
+        <acre:script>
+          if (replace_document) {
+            lang = replace_document.content.language;
+          }
+        </acre:script>
+        <div class="form-group form-row">
+          <label class="form-label" for="lang">${_("Language")}
+            <select name="lang">
+              <acre:block for="l in i18n.mql.langs(true)">
+                <option value="${l.id}"
+                        acre:attrs="l.id === lang ? {'selected':'selected'} : {}">${l.name}</option>
+              </acre:block>
+            </select>
+          </label>
+        </div>
+        <div class="form-group form-row">
+          <textarea name="content"
+                    class="textarea"
+                    maxlength="4096"
+                    rows="10"
+                    placeholder="${_('Enter article')}&hellip;">${replace_document ? replace_document.body : ""}</textarea>
+        </div>
+        <div class="form-group form-row inline-msg warning lang-notice" style="display:none;">
+          <p>${h.template_sprintf(_("You are submitting an article in a different language than your current one. The article will be saved, however, you will not see it until you switch to %s."), tag_strong(''))}</p>
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <input type="hidden" name="topic" value="${topic_id}"/>
+      <input type="hidden" name="property" value="${prop_structure.id}"/>
+      <acre:block if="replace_document">
+        <input type="hidden" name="document" value="${replace_document.id}"/>
+      </acre:block>
+      ${form.submit_buttons()}
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="cant_edit_document_form(topic_id, prop_structure, document)">
+  <div class="modal cant-edit-document-form ${JSON.stringify(prop_structure)}">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <span>${h.sprintf(_("Edit article for %s"), topic_id)}</span>
+      </h1>
+      <div class="modal-content">
+        <div class="form-group form-row">
+          <p>${h.sprintf(_("This article for %s was automatically generated from %s and cannot be modified."), topic_id, document.source_uri)}</p>
+        </div>
+        <div class="form-group form-row">
+          <p><strong>${_("Would you like to write a new one specifically for Freebase?")}</strong></p>
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      ${form.submit_buttons(_("Create New"))}
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="prop_add_image_form(topic_id, prop_structure, lang, replace_image)">
+  <div class="modal ${JSON.stringify(prop_structure)}">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <acre:block if="replace_image">
+          <span>${h.sprintf(_("Edit image for %s"), topic_id)}</span>
+        </acre:block>
+        <acre:block else="">
+          <span>${h.sprintf(_("Add new image to %s"), topic_id)}</span>
+        </acre:block>
+      </h1>
+      <div class="modal-content">
+        <div class="form-group form-row">
+          Something goes here
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <input type="hidden" name="s" value="${topic_id}"/>
+      <input type="hidden" name="p" value="${prop_structure.id}"/>
+      <acre:block if="replace_image">
+        <input type="hidden" name="replace" value="${replace_image}"/>
+      </acre:block>
+      ${form.submit_buttons()}
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="tag_strong(value)">
+  <strong>${value}</strong>
+</acre:block>
+
+<acre:block def="tag_anchor(href, text, attrs)">
+  <a href="${href}" acre:attrs="attrs || {}">${text}</a>
+</acre:block>
+
+<acre:block def="tag_anchors(objects, fn_url)">
+  <acre:script>
+    var anchors = [];
+    objects.forEach(function(o) {
+      anchors.push(acre.markup.stringify(tag_anchor(fn_url(o), o.id)));
+    });
+  </acre:script>
+  ${acre.markup.bless(anchors.join(", "))}
+</acre:block>
+
+
+<acre:block def="add_type_result(id, type_id, included_types, lang)">
+  <acre:script>
+    var msg;
+    if (included_types.length) {
+      msg = h.sprintf(
+          _("This type and its included type(s) (%s) " +
+            "have been asserted on this topic. " +
+            "You may need to reload and adjust your filters to see them."),
+          included_types.join(", "));
+    }
+    else {
+      msg = _("This type has been asserted on this topic.");
+    }
+  </acre:script>
+  <span class="inline-message">
+    ${msg}
+  </span>
+</acre:block>
+
+
+<acre:block def="remove_type_form(id, type_id, included_types, lang)">
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <span>${_("Remove type")}</span>
+      </h1>
+      <div class="modal-content">
+        <p>${_("Are you sure you want to remove this type from this topic?")}</p>
+        <acre:block if="included_types && included_types.length">
+          <p>
+            ${h.sprintf(_("This will not remove any of the data for the type's properties or its included type(s): %s."), included_types.join(", "))}
+          </p>
+        </acre:block>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <input type="hidden" name="id" value="${id}"/>
+      <input type="hidden" name="type" value="${type_id}"/>
+      <input type="hidden" name="lang" value="${lang}"/>
+      ${form.submit_buttons()}
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="remove_type_result(id, type_id, included_types, lang)">
+  <div class="message-section">
+    <span class="inline-message">
+      ${_("This type has been removed from this topic.")}
+      <a href="#"
+         onclick="return propbox.add_type(this, '${type_id}', ${JSON.stringify(included_types)});">
+        ${_("Undo")}
+      </a>
+    </span>
+  </div>
+</acre:block>

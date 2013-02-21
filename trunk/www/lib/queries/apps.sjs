@@ -1435,7 +1435,15 @@ function create_app_version(resource, key, timestamp, service_url) {
               };
 
               if (timestamp || (version.as_of_time === null)) {
-                timestamp = timestamp || '__now__';
+
+                // HACK: This is work around for MQL returning UTC time format
+                // for __now__ with MTV time.
+                var moment = acre.require('moment/moment.sjs');
+                var utcTime = moment.moment.utc().toJSON();
+                timestamp = timestamp || utcTime;
+
+                // After the bug is fixed use following:
+                //timestamp = timestamp || '__now__';
 
                 update_q.as_of_time = {
                   value       : timestamp,

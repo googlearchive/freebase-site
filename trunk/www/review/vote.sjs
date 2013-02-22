@@ -106,7 +106,7 @@ function processVote(flag, vote, item, user) {
                 return deferred.rejected(MISSING_PARAMS);
             } else {
                 var items = reviewHelpers.getFlagItems(flagInfo);
-                if (items[0].id !== item && items[1].id !== item) {
+                if (!items || (items[0].id !== item && items[1].id !== item)) {
                     return deferred.rejected(INVALID_ITEM);
                 }
             }
@@ -199,7 +199,7 @@ function executeVote(flagInfo, verifiedJudgements) {
                 if (judgementItem.id === flagItems[0].id) {
                     id_target = flagItems[0].id;
                     id_source = flagItems[1].id;
-                } else if (judgementItem.id === items[1].id) {
+                } else if (judgementItem.id === flagItems[1].id) {
                     id_target = flagItems[1].id;
                     id_source = flagItems[0].id;
                 } else {

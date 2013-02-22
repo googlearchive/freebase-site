@@ -72,25 +72,25 @@ function flagContent(flag, user) {
     var userInfo;
 
     return reviewHelpers.getFlagAndUserInfo(flag, user).then(function(results) {
-        
+
         var displayInfo = {};
         flagInfo = results[0];
-        userInfo = results[1];                
+        userInfo = results[1];
 
         displayInfo.id = flagInfo.id;
-        displayInfo.kind = reviewHelpers.getFlagKind(flagInfo);        
-        
+        displayInfo.kind = reviewHelpers.getFlagKind(flagInfo);
+
         // Authenitcate user
         displayInfo.authToVote = true;
         displayInfo.isCreator = false;
 
         var creator = reviewHelpers.getFlagCreator(flagInfo);
         displayInfo.creator = h.id_key(creator)
-        displayInfo.creatorUrl = h.fb_url(creator);   
+        displayInfo.creatorUrl = h.fb_url(creator);
         if (creator === user) {
             displayInfo.authToVote = false;
             displayInfo.isCreator = true;
-        }  
+        }
         if (!reviewHelpers.userCanVoteForFlag(flagInfo, userInfo)) {
             displayInfo.authToVote = false;
         }
@@ -120,10 +120,10 @@ function flagContent(flag, user) {
                     break;
                 }
             }
-        } 
+        }
 
         // Item info
-        var items = h.get_values(flagInfo, '/freebase/review_flag/item');
+        var items = h.get_values(flagInfo, '/freebase/review_flag/item') || [];
         displayInfo.items = [];
         for (var i = 0, l = items.length; i < l; i++) {
             var item = items[i];

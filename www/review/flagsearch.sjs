@@ -165,8 +165,17 @@ function findFlags(user, limit, voted, created, order, kind, domain, admin, curs
     if(!cursor) {
         cursor = true;
     }
-    return freebase.mqlread(baseQuery, {"cursor": cursor});
-
+    return freebase.mqlread(baseQuery, {"cursor": cursor})
+        .then(function(envelope) {
+            if(envelope && envelope.result){
+                return envelope;
+            } else {
+                throw new Error(
+                        "Failed to fetch flags. Please try again later.");
+            }
+        }, function(err) {
+            throw new Error("Failed to fetch flags. Please try again later.");
+        });
 }
 
 

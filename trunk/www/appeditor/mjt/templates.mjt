@@ -66,7 +66,7 @@
       $('.row').width( filecolumn_width );
       $('.column').height( filecolumn_height - 1 );
       $('#file-area').height( filearea_height - 1 );
-      $('#file-list').height( filearea_height - $('#app-search').height() - $('#app-edits').height() );
+      $('#file-list').height( filearea_height - $('#app-edits').height() );
       $('.refresh-right').show();
       if (ui.dialog) {
         ui.dialog.css('left', ($(window).width() - ui.dialog.outerWidth())/2);
@@ -170,14 +170,6 @@
   <div id="file-list"></div>
   <div id="app-edits-shim">
     ${app_edits()}
-  </div>
-
-  <div id="app-search">
-    <form id="codesearch-form" action="http://codesearch.${ui.get_app().get_acre_host()}/" target="_blank">
-      <div class="file-list-section-title">Find code in app:</div>
-      <input id='codesearch-app' type='hidden' name="app" value='${ui.get_app().get_path()}' />
-      <input type="text" name="q" value=""/>
-    </form>
   </div>
 </acre:block>
 

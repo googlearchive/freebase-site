@@ -36,22 +36,22 @@
     var apps = ui.get_recents('apps');
     var num_apps = Math.min(apps.length, 10);
   </acre:script>
-  <div class="section selectable" acre:if="user" acre:onclick="ui.do_show_dialog('new_app')">
+  <div class="menu-section selectable" acre:if="user" acre:onclick="ui.do_show_dialog('new_app')">
     New App...
   </div>
-  <div class="section selectable" acre:onclick="ui.do_acre_home_link('/apps')">      
-    App Directory...     
+  <div class="menu-section selectable" acre:onclick="ui.do_acre_home_link('/apps')">
+    App Directory...
   </div>
-  <div acre:if="ui.get_user()" id="your-apps-menu-item" class="section selectable">      
+  <div acre:if="ui.get_user()" id="your-apps-menu-item" class="menu-section selectable">
     <div id="your-apps-opener"><img id="your-apps-loader" src="img/loader-tinyorange.gif" style="display:none;" /></div>
-    Your Apps 
+    Your Apps
   </div>
-  <div acre:else="" class="section">
+  <div acre:else="" class="menu-section">
     <h3>Your Apps</h3>
     <a href="${$('#nav-signin').attr('href')}" title="Sign in to your Freebase account">Sign in</a> to show your apps here.
   </div>
 
-  <div class="section last"> 
+  <div class="menu-section last">
     <h3>Recent Apps</h3>
     <ul acre:if="(num_apps &gt; 0)">
       <li acre:for="(var i=0; i &lt; num_apps; i++)">
@@ -69,7 +69,7 @@
   <acre:script script="ondomready">
     ui.do_setup_submenu('your-apps-menu-item', 'yourapps');
     if (auto_open) {
-      $('#your-apps-menu-item').trigger('mouseenter'); 
+      $('#your-apps-menu-item').trigger('mouseenter');
     }
   </acre:script>
 </acre:block>
@@ -92,7 +92,7 @@
       var submenu = $('#menu-yourapps');
       var submenu_height = Math.min(submenu.height(), $(window).height() - submenu.offset().top - 25);
       submenu.height(submenu_height).css('visibility', 'visible');
-      
+
       $('#your-apps-loader').hide();
     </acre:script>
   </acre:block>
@@ -106,7 +106,7 @@
     var user = ui.get_user();
     var writable = app ? app.is_writable() : false;
   </acre:script>
-  <div class="section" acre:if="writable">
+  <div class="menu-section" acre:if="writable">
     <h3>Name</h3>
     <fieldset class="center">
       <label for="file-name">File name </label>
@@ -114,7 +114,7 @@
       <button id="button-name" acre:if="writable" class="exit" disabled="disabled">Rename</button>
     </fieldset>
   </div>
-  <div class="section" acre:if="writable">
+  <div class="menu-section" acre:if="writable">
     <h3>Type</h3>
     <fieldset id="fieldset-metadata">
       <div acre:def="metadata_section()">
@@ -141,9 +141,9 @@
         </div>
         <div class="form-row">
           <label for="file-mimetype">MIME type </label>
-          <select id="file-mimetype" 
+          <select id="file-mimetype"
             acre:attrs="!file.get_editor_supported_features('mimetype_change') || (sup_mime_types.length &lt; 2) ? {}:{}">
-            <option  acre:for="sup_mime_type in sup_mime_types" value="$sup_mime_type" 
+            <option  acre:for="sup_mime_type in sup_mime_types" value="$sup_mime_type"
               acre:attrs="(sup_mime_type === file.get_mime_type())?{'selected':''}:{}">
               $sup_mime_type
             </option>
@@ -164,47 +164,47 @@
       <div id="metadata-section">${metadata_section()}</div>
     </fieldset>
   </div>
-  <div class="section" acre:else="">
+  <div class="menu-section" acre:else="">
     <h3>Type</h3>
     <fieldset id="fieldset-metadata">
       <div class="form-row">
         <label for="file-handler">Acre type:</label>
         <span class="form-static">${file.get_acre_handler()}</span>
-      </div>            
-      <div class="form-row">            
+      </div>
+      <div class="form-row">
         <label for="file-mimetype">MIME type: </label>
         <span class="form-static">${file.get_mime_type()}</span>
-      </div>              
+      </div>
     </fieldset>
   </div>
-  <div class="section">
+  <div class="menu-section">
     <h3>Validate</h3>
-    <!-- mjt.bless is being used so HTML entities for system control characters 
+    <!-- mjt.bless is being used so HTML entities for system control characters
         can be printed. These are all declared in ui.shortcut -->
     <button acre:onclick="ui.do_file_check()" title="${mjt.bless(ui.shortcut.get_keys('Check Syntax'))}"
       acre:attrs="ui.get_file_check_options().useful===1?{}:{'disabled':'disabled'}">
       Check Syntax</button>
   </div>
-  <div class="section">
+  <div class="menu-section">
     <h3>History</h3>
     <fieldset>
       <button acre:if="writable" acre:onclick="ui.do_file_revert_to_saved()" class="exit"
         acre:attrs="!file.is_dirty()?{'disabled':'disabled'}:{}">
-        Revert to Saved</button> 
+        Revert to Saved</button>
       <button acre:onclick="ui.do_show_dialog('diff_patch',['file_history', ui.get_file().get_name()]);">
         Review Older Versions</button>
     </fieldset>
   </div>
-  <div class="section last">
+  <div class="menu-section last">
     <h3>Actions</h3>
-    <button acre:onclick="ui.do_show_dialog('save_file_as')" 
+    <button acre:onclick="ui.do_show_dialog('save_file_as')"
       acre:attrs="ui.get_user()?{}:{'disabled':'disabled'}">
       Clone this File</button>
-    <button acre:onclick="ui.do_show_dialog('delete_file',[ui.get_file().get_name()]);" 
+    <button acre:onclick="ui.do_show_dialog('delete_file',[ui.get_file().get_name()]);"
       acre:attrs="writable?{}:{'disabled':'disabled'}">
       Delete this File</button>
   </div>
-  <acre:script script="ondomready">      
+  <acre:script script="ondomready">
     ui.watch_inputs('name', {
       inputs: {
         'file-name' : ui.get_file().get_name()
@@ -212,7 +212,7 @@
       change: function(fields){
         return ((fields['file-name'] !== "") ? fields : false);
       },
-      submit: function(inputs) { 
+      submit: function(inputs) {
         ui.do_file_move(inputs['file-name']);
       }
     });
@@ -231,7 +231,7 @@
 
     var writable = is_user &amp;&amp; app.is_writable();
   </acre:script>
-  <div acre:if="file.get_editor_supported_features('hotswap')" class="section">
+  <div acre:if="file.get_editor_supported_features('hotswap')" class="menu-section">
     <acre:script>var has_options = true;</acre:script>
     <h3>Text Editor</h3>
     <fieldset>
@@ -241,15 +241,15 @@
       </div>
     </fieldset>
   </div>
-  <div acre:if="file.get_editor_supported_features('margin')" class="section">
-    <acre:script>var has_options = true;</acre:script> 
+  <div acre:if="file.get_editor_supported_features('margin')" class="menu-section">
+    <acre:script>var has_options = true;</acre:script>
     <h3>Line Numbers</h3>
     <fieldset>
       <input name='edopt-margin' id='edopt-margin-y' type='radio' value="1" acre:attrs="ui.get_editor_prefs('margin') ? {'checked':'checked'} : {}" /> <label for="edopt-margin-y">yes</label>
       <input name='edopt-margin' id='edopt-margin-n' type='radio' value="0" acre:attrs="ui.get_editor_prefs('margin') ? {} : {'checked':'checked'}" /> <label for="edopt-margin-y">no</label>
     </fieldset>
   </div>
-  <div acre:if="file.get_editor_supported_features('softwrap')" class="section">
+  <div acre:if="file.get_editor_supported_features('softwrap')" class="menu-section">
     <acre:script>var has_options = true;</acre:script>
     <h3>Soft Wrap</h3>
     <fieldset>
@@ -257,7 +257,7 @@
       <input name='edopt-softwrap' id="edopt-softwrap-n" type='radio' value="0" acre:attrs="ui.get_editor_prefs('softwrap') ? {} : {'checked':'checked'}" /> <label for="edopt-softwrap-n">no</label>
     </fieldset>
   </div>
-  <div acre:if="file.get_editor_supported_features('codeassist')" class="section last">
+  <div acre:if="file.get_editor_supported_features('codeassist')" class="menu-section last">
     <acre:script>var has_options = true;</acre:script>
     <h3>Automatic Code Assist</h3>
     <fieldset>
@@ -265,7 +265,7 @@
       <input name='edopt-dotTrigger' id="edopt-dotTrigger-n" type='radio' value="0" acre:attrs="ui.get_editor_prefs('dotTrigger') ? {} : {'checked':'checked'}" /> <label for="edopt-dotTrigger-n">no</label>
     </fieldset>
   </div>
-  <div acre:if="file.get_editor_supported_features('emql')" class="section last">
+  <div acre:if="file.get_editor_supported_features('emql')" class="menu-section last">
     <acre:script>var has_options = true;</acre:script>
     <h3>Enable MQL Extensions (experimental)</h3>
     <fieldset>
@@ -275,7 +275,7 @@
   </div>
   <div acre:if="!has_options">
     <p style="margin:10px">
-      No configuration options for this file type. 
+      No configuration options for this file type.
     </p>
   </div>
   <acre:script script="ondomready">
@@ -294,7 +294,7 @@
 <!-- Help Menu -->
 <acre:block def="help()">
   <div id="help-menu-content">
-  <div class="section">
+  <div class="menu-section">
     <h3>Documentation</h3>
     <ul>
       <li><a href="#0" acre:onclick="return ui.do_show_dialog('keyboard_shortcuts')">
@@ -305,23 +305,11 @@
         Acre Template Tag Reference</a></li>
     </ul>
   </div>
-  <div class="section">
-    <h3>Code Search</h3>
-    <p>
-      Not sure how to use a particular method or template tag?  See how someone else did!
-    </p>
-    <form id="codesearch-form" action="http://codesearch.${ui.get_store().get_acre_host()}/" target="_blank">
-      <fieldset>
-          <input id="code-search" name="q" type="text" />
-          <button id="button-codesearch">Find Code</button>
-      </fieldset>
-    </form>
-  </div>
-  <div class="section last">
+  <div class="menu-section last">
     <a href="#0" acre:onclick="return ui.do_show_dialog('about_appeditor')">About App Editor</a>
   </div>
   </div>
-  <acre:script script="ondomready">      
+  <acre:script script="ondomready">
     $("#help-menu-content a").click(function(){
       ui.do_hide_overlays();
     });
@@ -377,19 +365,19 @@
         setTimeout(function(){ $('#'+tab_id).acre(fb.acre.apps.appeditor + "/mjt/menus.mjt", tab_id); }, 0);
       }
     });
-    
+
     $('#app-general-listing').click(function(){
       window.open(ui.get_app().get_edit_url());
       return false;
     })
   </acre:script>
 </acre:block>
-  
+
   <div class="tab-body" acre:def="app_general()">
     <acre:script>
       var writable = ui.get_app().is_writable();
     </acre:script>
-        
+
     <div class="tab-section">
       <h3>Versions</h3>
       <div class="sidebar">
@@ -400,7 +388,7 @@
           <em>Current</em> is always the latest version; all edits are made to Current.  Other versions are read only.
         </p>
         <p>
-          <em>Release</em> is the version the app author wants people to use.  Any version can be released, but it's good practice to create and release a version other than Current to prevent development from impacting users. 
+          <em>Release</em> is the version the app author wants people to use.  Any version can be released, but it's good practice to create and release a version other than Current to prevent development from impacting users.
         </p>
       </div>
       <fieldset id="add-version" acre:if="writable">
@@ -408,7 +396,7 @@
         <input id='add-version-key' type='text' maxlength="10" />
         <button id="button-version" acre:onclick="ui.do_app_add_version($('#add-version-key').val())">
           Add Version</button>
-        <button acre:if="ui.get_app().get_versions().length" 
+        <button acre:if="ui.get_app().get_versions().length"
           acre:onclick="ui.do_show_dialog('diff_patch',['app_diff']);">
           View Changes</button>
       </fieldset>
@@ -438,7 +426,7 @@
         ui.watch_inputs('devurl', {
           inputs: {
             devurl: app.get_name()
-          },   
+          },
           update_on_submit : true,
           submit: function(inputs){
             ui.do_app_move("//" + inputs['devurl'] + app_root);
@@ -452,7 +440,7 @@
       </div>
     </div>
   </div>
-  
+
     <acre:block def="app_hosts_list()">
       <acre:script>
         var app = ui.get_app();
@@ -466,9 +454,9 @@
           var host = hosts[i];
           if (host.version == release) {
               var re = published_regex.exec(host.host);
-              if (re) { 
+              if (re) {
                 pub = re[1];
-                break; 
+                break;
               }
           }
         }
@@ -476,7 +464,7 @@
       <div acre:if="writable">
         <p>Your <strong>Release URL</strong> points to <em>Release:</em></p>
         <fieldset>
-          http://<input id="puburl" type="text" minlength="5" maxlength="20" value="${pub || ''}" />.${app.get_acre_host()} 
+          http://<input id="puburl" type="text" minlength="5" maxlength="20" value="${pub || ''}" />.${app.get_acre_host()}
           <button id='button-puburl' disabled='disabled'>
             <span acre:if="pub">Change URL</span>
             <span acre:else="">Choose URL</span>
@@ -492,7 +480,7 @@
             </tr>
           </table>
         </div>
-        <acre:script script="ondomready">            
+        <acre:script script="ondomready">
           ui.watch_inputs('puburl', {
             inputs : {
               puburl: $('#puburl').val()
@@ -506,7 +494,7 @@
                 .enqueue()
                 .onready(function(r){
                     $('#button-puburl').removeAttr('disabled');
-                    $('#puburl-status').removeClass().addClass('puburl-success').html(r.message); 
+                    $('#puburl-status').removeClass().addClass('puburl-success').html(r.message);
                 })
                 .onerror(function(code, message, info){
                   $('#puburl-status').removeClass().addClass('puburl-fail').html(message);
@@ -536,17 +524,17 @@
         var release = app.get_released_version();
         var released_path = release ? app_path.replace("//", "//" + release + ".") : app_path;
         var versions = app.get_versions();
-    
+
         var re = new RegExp('(\\d+)');
         var counter = 1;
-        for (var i=0; i&lt; versions.length; i++) { 
+        for (var i=0; i&lt; versions.length; i++) {
           var r = re.exec(versions[i].name);
           if (r &amp;&amp; r.length) {
               var cnt = parseInt(r[1], 10);
               if (counter &lt;= cnt) { counter = cnt + 1; }
           }
         }
-        
+
         var first_number = true;
       </acre:script>
 
@@ -580,25 +568,25 @@
               <acre:script>
                 var path = app_path.replace("//", "//" + version.name + ".");
                 var view_url = app.get_base_url().replace("//", "//" + version.name + ".");
-                
-                var show_update = false;                    
+
+                var show_update = false;
                 if (/\d+/.test(version.name)) {
                   if (first_number) {
                     show_update = true;
                     first_number = false;
                   }
                 } else {
-                  show_update = true;       
+                  show_update = true;
                 }
               </acre:script>
               <td acre:if="release || writable" class="center">
-                <input acre:if="writable" name="version-release" type="radio" value="$version.name" 
+                <input acre:if="writable" name="version-release" type="radio" value="$version.name"
                   acre:attrs="released_path != path ? {} : {'checked':'checked'}" />
                 <span acre:else=""><em acre:if="released_path == path">&#x2713;</em></span>
               </td>
               <td>
                 <a class="app-link" apppath="$path" href="${ui.get_appeditor_url(path)}">$version.name</a>
-              </td>     
+              </td>
               <td>
                 <span acre:if="version.as_of_time">
                   ${ui.get_relative_timestamp(version.as_of_time)}
@@ -621,19 +609,19 @@
       </div>
       <acre:block if="writable" script="ondomready">
         $('#add-version-key').val(counter);
-          
+
         $('.remove-version-button').click(function() {
           $(this).parents('tr').fadeOut('slow');
           ui.do_app_remove_version($(this).attr('key'));
           return false;
         });
-    
+
         $("input[name='version-release']").click(function() {
           var ver = $(this).val();
           ui.do_app_set_release(ver);
           return false;
         });
-        
+
         $(".version-service-url").click(function() {
           service_url = $(this).attr('checked') ? 'http://www.sandbox-freebase.com' : false;
           ui.do_app_add_version($(this).attr('key'), null, service_url);
@@ -669,7 +657,7 @@
         <p>
           If you're an author, you can also <em>merge</em> the changes.
         </p>
-        
+
       </div>
       <h3>View Changes from Clones</h3>
       <div id="clone-list">
@@ -736,7 +724,7 @@
               $(this).val(path);
               $('#button-merge').removeAttr("disabled").val(path);
           });
-          
+
       $('.button-get-changes').click(function(){
         ui.do_show_dialog('diff_patch',['merge_changes',{ appid : $(this).val() }]);
       });
@@ -749,7 +737,7 @@
         <div class="sidebar">
           <p>
             You can add other Freebase users as <em>Authors</em>
-            to your app.  Choose authors carefully! They can edit code, release versions, 
+            to your app.  Choose authors carefully! They can edit code, release versions,
             and delete files.
           </p>
         </div>
@@ -758,7 +746,7 @@
           <label for="add-author-input">Find a user to add</label>
           <input id='add-author-input' type='text' />
         </fieldset>
-    
+
         <div id="app-authors-list">
           ${app_authors_list(ui.get_app().get_authors())}
         </div>
@@ -782,14 +770,14 @@
       </div>
     </div>
   </div>
-  
+
     <acre:block def="app_authors_list(user_dict)">
       <acre:script>
         var one_user = (function() { var r=0; for (var p in user_dict) { r++; }; return r == 1;})();
       </acre:script>
-    
+
       <h4 class="list-title">These authors can edit this app:</h4>
-  
+
       <table class="edit-list">
         <tr acre:for="user in user_dict" class="user-listitem">
           <td class="user-image-cell">
@@ -825,7 +813,7 @@
       var writeuser_attr = {};
       if (write_user) {
         writeuser_attr.checked = 'checked';
-        if (!is_write_user) { 
+        if (!is_write_user) {
           writeuser_attr.disabled = 'disabled';
         };
       }
@@ -833,7 +821,7 @@
     <div class="tab-section">
       <div class="sidebar">
         <p>
-          <em>API keys</em> authorize information exchange with other web applications or services. 
+          <em>API keys</em> authorize information exchange with other web applications or services.
         </p>
         <p>
           To use the Freebase APIs specifically, follow the <a href="http://wiki.freebase.com/wiki/How_to_obtain_an_API_key" target="blank">instructions on the wiki</a>.
@@ -862,7 +850,7 @@
           To make a Freebase API call as this writeuser, use the <em>http_sign: "keystore"</em> option.
         </p>
         <p>
-          Be careful with this option, as you may exceed 
+          Be careful with this option, as you may exceed
           Freebase's daily single-user write limit.
         </p>
       </div>
@@ -876,9 +864,9 @@
           <p>
             <small>
               <em>Note:</em> You also need to do a special
-              <a href="${fb.h.build_url(ui.get_app().get_base_url(), 
+              <a href="${fb.h.build_url(ui.get_app().get_base_url(),
                                       '/acre/account/signin', [
-                                        ['provider', 'freebase_writeuser'], 
+                                        ['provider', 'freebase_writeuser'],
                                         ['onsucceed', window.location.href]
                                       ])}">
               login</a> to your app to set the <strong>freebase_writeuser_access</strong> API key.
@@ -893,14 +881,14 @@
       });
     </acre:script>
   </div>
-  
+
     <acre:block def="app_apikeys_list(keys)">
       <fieldset>
         <div class="form-row">
           <label for="apikey-name">Name / Domain:</label>
           <input id='apikey-name' type='text' />
         </div>
-        <div class="form-row">          
+        <div class="form-row">
           <label for="apikey-token">Key:</label>
           <input id='apikey-token' type='text' />
         </div>
@@ -941,12 +929,12 @@
             'apikey-name' : null,
             'apikey-token' : null,
             'apikey-secret' : null
-          },  
+          },
           submit : function(inputs) {
             ui.do_app_add_apikey(inputs['apikey-name'], inputs['apikey-token'], inputs['apikey-secret']);
           }
         });
-      
+
         $('.remove-key-button').click(function() {
           $(this).parents('tr').fadeOut('slow');
           ui.do_app_remove_apikey($(this).attr('key'));

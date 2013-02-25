@@ -39,10 +39,18 @@
   var image = acre.require("lib/template/imagecomponents.mjt");
 </acre:script>
 
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="browse.mf.css" />
+</acre:block>
+
 <acre:block def="page_content()">
   <div id="content-wrapper" class="clear">
     <section id="content-main" role="main" class="section">
       <h1 class="section-header">
+        <span class="section-right search-box" id="schema-search">
+          <input type="text" class="text-input" id="schema-search-input"
+                 placeholder="${_('Find a domain, type or property')}" />
+        </span>
         <span class="section-title">
           <span class="section-name">
             ${_('Recent schema changes')}
@@ -139,12 +147,17 @@
 </acre:block>
 
 <acre:block def="shakespeare_help_text()">
-<a href="${h.fb_url('/en/shakespeare')}">${_("William Shakespeare")}</a>
+  <a href="${h.fb_url('/en/shakespeare')}">${_("William Shakespeare")}</a>
 </acre:block>
+
 <acre:block def="hamlet_help_text()">
-<a href="${h.fb_url('/m/03j9w')}">${_("Hamlet")}</a>
+  <a href="${h.fb_url('/m/03j9w')}">${_("Hamlet")}</a>
 </acre:block>
 
 <acre:block def="schema_help_link()">
-<a href="http://wiki.freebase.com/Schema">${_("help center")}</a>
+  <a href="http://wiki.freebase.com/Schema">${_("help center")}</a>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="browse.mf.js"></script>
 </acre:block>

@@ -56,7 +56,10 @@ function findFlags(user, limit, voted, created, order, kind, domain, admin, curs
         } else {
             showAdmin = "forbidden";
         }
+    } else {
+        showAdmin = "forbidden";
     }
+
     if(showAdmin) {
         var adminPatch = { "status": { "mid": null, "optional": showAdmin } };
         baseQuery = acre.freebase.extend_query(baseQuery, adminPatch);

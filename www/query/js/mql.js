@@ -56,12 +56,14 @@
         queryEditorOptions.hideControls = true;
       }
 
-      if (fb.c && fb.c.query) {
-        queryEditorOptions.content = JSON.stringify(fb.c.query);
-        queryEditorOptions.cleanUp = true;
-        autorun = true;
-        outputPaneOptions.queryLoaded = true;
+      if (!fb.c || !fb.c.query) {
+        $(".page-title").text("Failed to load query").css("visibility", "visible");
+        return;
       }
+
+      queryEditorOptions.content = JSON.stringify(fb.c.query);
+      queryEditorOptions.cleanUp = true;
+      outputPaneOptions.queryLoaded = true;
       
       queryEditorOptions.onChange = function() {
         qe.is_dirty = true;
@@ -79,11 +81,11 @@
         $(window).resize(qe.resize);
         
         qe.is_dirty = false;
-        if (autorun) qe.cuecard.queryEditor.run(false);
+        qe.cuecard.queryEditor.run(false);
 
         // fulhack to hide initial laying out
         setTimeout(function() {
-          $("#qe-module, #the-output-pane").css("visibility", "visible");
+          $("#page-title, #qe-module, #the-output-pane").css("visibility", "visible");
         }, 1);
       };
 
@@ -94,10 +96,11 @@
         outputPaneOptions: outputPaneOptions
       });
 
-      qe.page_chrome_height =  $("#header").outerHeight() +
+      qe.page_chrome_height =  $("#header").outerHeight(true) +
                                $("#page-header").outerHeight() +
                                ($("#page-content").outerHeight(true) - $("#page-content").height()) +
-                               $("#page-title").outerHeight(true);
+                               $("#page-title").outerHeight(true) +
+                               $("#footer").outerHeight(true);
 
       $(window).bind("beforeunload", function(evt) {
         // TODO - check whether query neeeds saving

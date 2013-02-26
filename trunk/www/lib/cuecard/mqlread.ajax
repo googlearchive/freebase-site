@@ -36,7 +36,7 @@ var freebase = apis.freebase;
 
 var SPEC = {
 
-  method: "GET",
+  method: ["GET", "POST"],
 
   auth: false,
 

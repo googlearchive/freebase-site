@@ -966,6 +966,7 @@ function init_rules(lib) {
     {prefix:"/view/schema/",            url:"/", params:{schema:""},  redirect:301},
     {prefix:"/tools/schema/",           url:"/", params:{schema:""},  redirect:301},
     {prefix:"/type/schema/",            url:"/", params:{schema:""},  redirect: 301},
+    {prefix:"/schema/",                 url:"/", params:{schema:""},  redirect: 301},
 
     {prefix:"/tools/explore/",          url:"/", params:{links:""},   redirect:301},
     {prefix:"/tools/explore2/",         url:"/", params:{links:""},   redirect:301},

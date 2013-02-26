@@ -110,10 +110,19 @@
     </td>
     <td>
       <acre:block if="name.link">
-        ${name.link.timestamp}
+        ${timestamp(name.link)}
       </acre:block>
     </td>
   </tr>
+</acre:block>
+
+<acre:block def="timestamp(link)">
+  <acre:script>
+    var parts = link.timestamp.split('T');
+  </acre:script>
+  <span class="timestamp">
+    <span class="date">${parts[0]}</span><span class="time fullts">T${parts[1]}</span>
+  </span>
 </acre:block>
 
 <acre:block def="name_menu(name, lang_code)">

@@ -335,7 +335,7 @@ function init_rules(lib) {
         {
           "name": _("Instances"),
           "key": "instances",
-          "app": "data",
+          "app": "query",
           "script": "type.tab"
         },
         {

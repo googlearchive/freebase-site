@@ -45,7 +45,7 @@ for all *non-propbox* tables
   margin: 0 0 20px;
   background: #fff;
   box-shadow: 0 0 0 4px #e1e4e6;
-  /* padding: 0 15px 20px; */
+  padding: 0 15px 20px;
 
   .first {
     padding-left: 15px !important;
@@ -76,7 +76,12 @@ for all *non-propbox* tables
 
       td {
         font-size: 1.2em;
-        white-space:nowrap;
+        vertical-align: top;
+        white-space: nowrap;
+
+        .data-list li {
+          padding: 0;
+        }
       }
 
       th {

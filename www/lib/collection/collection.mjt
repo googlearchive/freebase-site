@@ -48,7 +48,7 @@
     var table = hc.to_table_structure(prop_structures, data, i18n.lang);
     var metadata = {prop_structures:prop_structures};
   </acre:script>
-  <table cellspacing="0" class="table data-table ${JSON.stringify(metadata)}" id="infinitescroll" data-next="${cursor}">
+  <table cellspacing="0" class="table ${JSON.stringify(metadata)}" id="infinitescroll" data-next="${cursor}">
     ${collection_head(table.head)}
     ${collection_body(table.body)}
     <tfoot acre:if="cursor">
@@ -146,7 +146,7 @@
                   <li>
                     <span class="wrapper">
                       <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
-                      <p acre:if="cell.docs.length" class="load-blurb" data-id="${cell.docs[0].id}"></p>
+                      <p acre:if="cell.docs.length" class="property-value load-blurb" data-id="${cell.docs[0].id}"></p>
                     </span>
                   </li>
                 </ul>
@@ -171,11 +171,10 @@
 
 
 <acre:block def="row_menu()">
-  <ul class="combo-menu nicemenu">
+  <ul class="outer-menu nicemenu">
     <li class="nicemenu-item">
       <span class="headmenu">
-        <a href="#" onclick="return false;" class="default-action edit-action">edit</a>
-        <a href="javascript:void(0)" class="more-action">menu</a>
+        <a href="javascript:void(0)" class="more-action"></a>
       </span>
       <ul class="submenu row-menu">
         <li class="row-menu-item"><a href="#" onclick="return fb.collection.row_edit(this);">${EDIT}</a></li>

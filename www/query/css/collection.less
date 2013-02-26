@@ -11,6 +11,10 @@
 
 .modal-content {
   padding-left: 40px;
+
+  .property-section {
+    position: relative;
+  }
 }
 
 .modal-title {
@@ -43,4 +47,19 @@
 .mediator-header,
 .image {
   text-align: center;
+}
+
+.table {
+  .property-value {
+    max-width: 300px;
+    font-size: 0.8em;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:hover {
+      white-space: normal;
+    }
+  }
 }

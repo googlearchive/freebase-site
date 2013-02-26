@@ -37,15 +37,15 @@
     var _ = i18n.gettext;
 
     var SHOW_TOP_X_USERS = 10;
-    var FIND_FLAGS_BY_DOMAIN = _('Vote on flags by domain:');    
+    var FIND_FLAGS_BY_DOMAIN = _('Vote on flags by domain:');
     var WEEKLY_FLAG_CHART_TITLE = _('Top Weekly Flag Contributors');
     var WEEKLY_VOTE_CHART_TITLE = _('Top Weekly Vote Contributors');
     var USER = _('user');
     var FLAGS = _('flags');
     var VOTES = _('votes');
-    var UNDERSTAND = _("Understand review tasks");    
+    var UNDERSTAND = _("Understand review tasks");
     var WHAT_ARE_REVIEW_TASKS = _("What are review tasks?");
-    var REVIEW_TASKS_ABOUT = _("Whenever a topic is flagged for delete or merge, it is reviewed by other members of the community. This review process helps prevent accidental or malicious deletion of topics, but it relies on members of the community to help out and vote on topics.");    
+    var REVIEW_TASKS_ABOUT = _("Whenever a topic is flagged for delete or merge, it is reviewed by other members of the community. This review process helps prevent accidental or malicious deletion of topics, but it relies on members of the community to help out and vote on topics.");
     var HELP_IMPROVE = _("Help Improve Freebase");
     var REVIEW_LINK_ASIDE = _("Review topics that have been marked for merge or delete.");
     var VOTE_NOW = _("Vote now!");
@@ -56,51 +56,55 @@
 </acre:script>
 
 <acre:block def="head()">
-    <link rel="stylesheet" type="text/css" href="browse.mf.css" />       
+    <link rel="stylesheet" type="text/css" href="browse.mf.css" />
 </acre:block>
 
 <acre:block def="page_content()">
-    <div id="content-wrapper">        
-        <section id="content-main" role="main">            
-            <div id="graph-wrapper">   
+    <div id="content-wrapper">
+        <section id="content-main" role="main">
+            <div id="graph-wrapper">
                 <div id="placeholder" style="width:800px;height:300px;margin:0 auto;"></div>
-            </div>            
+            </div>
             <div class="spacer"></div>
-            <div style="overflow:hidden;">
-                <div class="left-half">
-                    <div class="table-header">
-                        <h1>${WEEKLY_FLAG_CHART_TITLE}</h1>
-                    </div>
-                    <table class="table applist">
-                        <thead>                      
+            <div class="weekly-wrapper">
+                <div class="left-half section">
+                    <h1 class="section-header">
+                        <span class="section-name">
+                          ${WEEKLY_FLAG_CHART_TITLE}
+                        </span>
+                    </h1>
+                    <table class="table">
+                        <thead>
                             <tr>
-                                <th class="column-header" colspan="2">${USER}</th>
+                                <th class="column-header first" colspan="2">${USER}</th>
                                 <th class="column-header">${FLAGS}</th>
                             </tr>
                         </thead>
                         <acre:block for="user in c.topFlagCreators.splice(0, SHOW_TOP_X_USERS)">
                             <tr>
-                                <td><img src="${acre.freebase.imgurl(user.id, 30, 30, 'fillcrop')}"/></td>
+                                <td class="first"><img src="${acre.freebase.imgurl(user.id, 30, 30, 'fillcrop')}"/></td>
                                 <td><a href="${user.id}">${user.id}</a></td>
                                 <td>${i18n_c.number(user.v)}</td>
                             </tr>
                         </acre:block>
                     </table>
                 </div>
-                <div class="right-half">
-                    <div class="table-header">
-                        <h1>${WEEKLY_VOTE_CHART_TITLE}</h1>
-                    </div>
-                    <table class="table applist">
-                        <thead>                      
+                <div class="right-half section">
+                    <h1 class="section-header">
+                        <span class="section-name">
+                          ${WEEKLY_VOTE_CHART_TITLE}
+                        </span>
+                    </h1>
+                    <table class="table">
+                        <thead>
                             <tr>
-                                <th class="column-header" colspan="2">${USER}</th>
+                                <th class="column-header first" colspan="2">${USER}</th>
                                 <th class="column-header">${VOTES}</th>
                             </tr>
-                        </thead>                         
+                        </thead>
                         <acre:block for="user in c.topVoteCreators.splice(0, SHOW_TOP_X_USERS)">
                             <tr>
-                                <td><img src="${acre.freebase.imgurl(user.id, 30, 30, 'fillcrop')}"/></td>
+                                <td class="first"><img src="${acre.freebase.imgurl(user.id, 30, 30, 'fillcrop')}"/></td>
                                 <td><a href="${user.id}">${user.id}</a></td>
                                 <td>${i18n_c.number(user.v)}</td>
                             </tr>
@@ -132,7 +136,7 @@
                 <div class="sub-section">
                     <h4>${BROWSE_BY_DOMAIN}</h4>
                     <p>${BROWSE_BY_DOMAIN_INFO}</p>
-                    <div class="search-box" id="aside-search" >                    
+                    <div class="search-box" id="aside-search" >
                         <form method="get">
                             <fieldset>
                                 <input type="text" name="id" class="text-input" id="review-search" placeholder="${FIND_FLAGS_BY_DOMAIN}" />
@@ -140,20 +144,20 @@
                         </form>
                         <label>
                             <input type="hidden" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all"/>
-                        </label>                  
+                        </label>
                     </div>
                 </div>
             </section>
-        </aside>       
+        </aside>
     </div>
 </acre:block>
 
-<acre:block def="footer_script()">   
+<acre:block def="footer_script()">
   <script type="text/javascript" src="browse.mf.js" />
 </acre:block>
 
 <acre:block def="acre_javascript_vars()">
   <script>
     SERVER.c = ${JSON.stringify(c)};
-  </script>  
+  </script>
 </acre:block>

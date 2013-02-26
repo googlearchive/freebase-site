@@ -351,15 +351,17 @@ function get_weblinks(topic) {
   all.forEach(function(item) {
     var url = item.value;
     var domain = h.parse_uri(url).host;
+    var favicon_host = domain;
     // handle http://mb-redir.freebaseapps.com -> musicbrainz
     if (domain === 'mb-redir.freebaseapps.com') {
       domain = 'musicbrainz.org';
+      favicon_host = 'www.musicbrainz.org';
     }
     else {
       var parts = domain.split('.');
-      if (parts.length >= 2) {
-        // Get the domain part of the host
-        domain = parts.slice(parts.length - 2).join('.');
+      if (parts.length &&
+          (parts[0] == 'www' || h.endsWith(domain, '.wikipedia.org'))) {
+        domain = parts.slice(1).join('.');
       }
       domain = domain.toLowerCase();
     }
@@ -368,7 +370,7 @@ function get_weblinks(topic) {
       d = by_domains[domain] = {
         domain: domain,
         urls: [],
-        favicon: h.proxy_image_url('http://www.' + domain + '/favicon.ico')
+        favicon: h.proxy_image_url('http://' + favicon_host + '/favicon.ico')
       };
       result.push(d);
     }

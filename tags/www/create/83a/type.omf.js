@@ -1,1 +1,0 @@
-["lib/propbox/propbox.omf.js", "lib/propbox/propbox-edit.omf.js", "js/type.js"]

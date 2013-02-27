@@ -881,6 +881,12 @@ function init_rules(lib) {
     // Redirects for legacy urls
     //
 
+
+    // Old API endpoints
+    {prefix:"/api",          app:"lib",
+                             script:"error/deprecated_path.template"},
+
+
     // Review queue
     {prefix:"/review",       app:"review", script:"queue.controller"},
 

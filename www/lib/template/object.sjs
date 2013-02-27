@@ -114,7 +114,8 @@ function main(rule, object) {
     nav_keys: rule.nav_keys || [],
     gear: rule.gear || [],
     banners: rule.banners || [],
-    show_image: rule.show_image
+    show_image: rule.show_image,
+    access: acre.cache.request.get("access")
   };
 
   // extend object type (global) promises

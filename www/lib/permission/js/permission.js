@@ -34,8 +34,15 @@
 
    var p = fb.permission = {
      init: function() {
+       // if read-only mode, disable all editing
+       if (fb.access == "readonly") {
+         $(".edit").hide();
+         $(".no-edit").show();
+         return;
+       }
+
+       // if no user, don't need to waste our time with the permission query
        if (!fb.user) {
-         // if no user, don't need to waste our time with the permission query
          setTimeout(function() {
            p.has_permission = false;
            $(window).trigger("fb.permission.has_permission", p.has_permission);

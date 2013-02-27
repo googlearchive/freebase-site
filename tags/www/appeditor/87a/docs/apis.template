@@ -1,0 +1,168 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var ah = acre.require("./apis_helpers.sjs");
+  var node = acre.require("./obj_global").exports;
+
+  var sections = [];
+  ah.renderNode(node, 1, [], sections);
+
+  var sel_section = acre.request.path_info.replace(/^\//, '');
+  node = ah.get_node(node, sel_section);
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="docs.mf.css" />
+</acre:block>
+
+<acre:block def="header(exports)">
+</acre:block>
+
+<acre:block def="content_body()">
+  <div id="help-viewer-standalone">
+    <div id="help-section">
+      <div id="help-subnav">
+        <ul>
+          <acre:block for="section in sections">
+            <li class="${section.level ? 'level'+section.level : 'level1'}${(sel_section == section.key)?' selected':''}">
+              <a acre:if="(sel_section == section.key) || !section.hidden" 
+                  href="${h.fb_url('/appeditor/docs/apis/', section.key)}"
+                class="${section.deprecated ? 'deprecated' : ''}">
+                $section.name
+              </a>
+            </li>
+          </acre:block>
+        </ul>
+      </div>
+      <div id="help-content">
+        <h1>
+          Acre API Reference 
+          <acre:block if="sel_section">- <em>${sel_section}</em></acre:block>
+        </h1>
+        <acre:block if="node.deprecated">
+          <p class="deprecation">
+            Deprecated
+            <acre:block if="'see' in node">
+              <span class="see-info">, use: ${typeof node.see == 'string' ? node.see : node.see.join(', ')}</span>
+            </acre:block>
+          </p>
+        </acre:block>
+        <acre:block else="">    
+          <p acre:if="node.description">${node.description}</p>
+        </acre:block>
+        <dl acre:if="node != null && node.type == 'module'">
+          <acre:block for="n, v in node.members">
+            <acre:block if="v != null && v.type != 'module'">
+              ${render(v, n, v.deprecated, sel_section)}
+            </acre:block>
+          </acre:block>
+        </dl>
+      </div>
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="render(v, name, deprecated, title)">
+  <dt class="${deprecated ? 'deprecated' : ''}">
+    <strong><code><a name="member_${name}">${name}</a></code></strong>
+    <acre:block if="v.type == 'function'">
+      function(<code><em acre:for="i,p in v.paramInfo"><acre:block if="i">, </acre:block>$p.name</em></code>)
+    </acre:block>
+    <acre:block else="">
+      ${v.type}
+    </acre:block>
+  </dt>
+  <dd>
+    <acre:block if="deprecated">
+      <span class="deprecation">Deprecated
+        <acre:block if="'see' in v">
+          <span class="see-info">, use ${typeof v.see == 'string' ? v.see : v.see.join(', ')}</span>
+        </acre:block>
+      </span>
+    </acre:block>
+    <acre:block else="">
+      <span acre:if="v.description">${acre.markup.bless(v.description)}</span>
+    </acre:block> 
+    <acre:block if="v.type == 'function' && 'paramInfo' in v && v.paramInfo.length > 0">
+      <ul>
+        <li acre:for="i, param in v.paramInfo">
+          ${render_param(param)}
+          <acre:block if="param.structure">
+            ${render_structure(param.structure)}
+          </acre:block>
+        </li>
+      </ul>
+    </acre:block>
+    <acre:block elif="v.structure">
+      ${render_structure(v.structure)}
+    </acre:block>
+    <acre:block elif="v.choices">
+      ${render_choices(v.choices)}
+    </acre:block>
+  </dd>
+</acre:block>
+
+<acre:block def="render_param(param)">
+  <code><em>${param.name}</em></code> 
+  (${param.type}, ${param.optional ? 'optional' : 'required'}) - ${acre.markup.bless(param.description)}
+  <acre:block if="param.choices">
+    ${render_choices(param.choices)}
+  </acre:block>
+</acre:block>
+
+<acre:block def="render_choices(choices)">
+  Value is one of:
+  <ul>
+    <li acre:for="key, choice in choices">
+      <code><em>${key}</em></code> - ${acre.markup.bless(choice)}
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="render_structure(structure)">
+  <ul>
+    <li acre:for="key, struct in structure">
+      <acre:script>
+        struct.name = struct.name || key;
+      </acre:script>
+      ${render_param(struct)}
+      <acre:block if="struct.structure">
+        ${render_structure(struct.structure)}
+      </acre:block>
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="footer(exports, attrs)">
+</acre:block>

@@ -98,7 +98,8 @@ function init_rules(lib) {
   rules["util"] = {
     fs_routing: lib + "/routing/rules_dump.sjs",
     schema_warmer: lib + "/schema/warmer.controller",
-    script_warmer: lib + "/scripts/warmer.controller"
+    script_warmer: lib + "/scripts/warmer.controller",
+    status: lib + "/routing/status.ajax"
   };
 
 

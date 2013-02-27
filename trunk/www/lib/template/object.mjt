@@ -143,7 +143,11 @@
 
 <acre:block def="content_body()">
   <div id="page-header">
-
+    <acre:block if="c.access == 'readonly'">
+      <div class="page-flag error" style="text-align: center">
+        <span class="page-flag-msg">${_("Freebase is currently in read-only mode")}</span>
+      </div>
+    </acre:block>
     <acre:block if="c.banners && c.banners.length">
       <acre:block for="banner in c.banners">
         <div class="page-flag">
@@ -510,6 +514,7 @@
 
 <acre:block def="acre_javascript_vars()">
   <script>
+    SERVER.access = "${c.access}";
     SERVER.c.id = "${c.object.id}";
     SERVER.c.object_type = "${c.object_type.id}";
     SERVER.c.current_tab = "${c.current_tab.key}";

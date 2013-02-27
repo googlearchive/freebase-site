@@ -76,6 +76,11 @@
 
 <acre:block def="content_body()">
   <div id="page-header">
+    <acre:block if="c.access == 'readonly'">
+      <div class="page-flag error" style="text-align: center">
+        <span class="page-flag-msg">${_("Freebase is currently in read-only mode")}</span>
+      </div>
+    </acre:block>
     <div class="page-title">
       <acre:script>
         var total_entities, total_triples;
@@ -167,6 +172,9 @@
 </acre:block>
 
 <acre:block def="acre_javascript_vars()">
+  <script>
+    SERVER.access = "${c.access}";
+  </script>
   <acre:block if="that_exports.acre_javascript_vars">
     ${that_exports.acre_javascript_vars()}
   </acre:block>

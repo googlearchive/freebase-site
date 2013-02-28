@@ -115,7 +115,7 @@ function main(rule, object) {
     gear: rule.gear || [],
     banners: rule.banners || [],
     show_image: rule.show_image,
-    access: acre.cache.request.get("access")
+    access: acre.cache.request.get("access") || ""
   };
 
   // extend object type (global) promises

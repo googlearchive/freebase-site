@@ -1,0 +1,99 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+var validators = acre.require('validator/validators.sjs');
+var propbox = acre.require('propbox/propbox.mjt');
+var ph = acre.require('propbox/helpers.sjs');
+var h = acre.require('helper/helpers.sjs');
+var queries = acre.require('propbox/queries.sjs');
+var apis = acre.require('promise/apis.sjs');
+var freebase = apis.freebase;
+var deferred = apis.deferred;
+
+/**
+ * Set valuenotations and refresh propbox using Topic API.
+ */
+var SPEC = {
+
+  method: 'POST',
+  auth: true,
+
+  validate: function(params) {
+    return [
+      validators.MqlId(params, 's', {required:true}),
+      validators.OneOf(params, 'p', {required:true, oneof:[
+        '/freebase/valuenotation/has_value',
+        '/freebase/valuenotation/has_no_value'] }),
+      validators.MqlId(params, 'o', {required:true}),
+      validators.OneOf(params, 'connect', {required:true, oneof: [
+        'insert',
+        'delete']}),
+      validators.LangId(params, 'lang', {if_empty:'/lang/en'})
+    ];
+  },
+
+  run: function(s, p, o, connect, lang) {
+    var q = {id: s};
+    q[p] = {
+      id: o,
+      connect: connect
+    };
+    return freebase.mqlwrite(q)
+      .then(function(env) {
+        var result = env.result;
+        var options = {
+          filter: o,
+          lang: h.lang_code(i18n.get_lang(true, lang))
+        };
+        var promises = {
+          prop_structure: queries.prop_structure(o, lang),
+          topic: freebase.get_topic(s, options)
+        };
+        return deferred.all(promises)
+          .then(function(r) {
+            var prop_structure = r.prop_structure;
+            var topic = r.topic;
+            if (!topic) {
+              // The Topic API does not return any result for EMPTY properties
+              // that do not have any status (ie. has_no_value, has_value).
+              topic = {id:s};
+            }
+            var values = h.get_values(topic, o) || [];
+            return {
+              html: acre.markup.stringify(
+                propbox.propbox(topic, prop_structure, values, lang))
+            };
+          });
+
+      });
+
+  }
+};

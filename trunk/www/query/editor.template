@@ -42,13 +42,12 @@
 <acre:block def="head()">
   <link rel="stylesheet" type="text/css" href="lib/editor-bundle.mf.css" />
   <link rel="stylesheet" type="text/css" href="editor.mf.css" />
-  <link rel="stylesheet" type="text/css" href="lib/template/css/chosen.jquery.css" />
 </acre:block>
 
 <acre:block def="content_body()">
   <div id="page-content">
     <div id="page-title">
-      <button id="save-query" class="button save disabled" 
+      <button id="save-query" class="button save disabled"
               onclick="return window.freebase.queryeditor.save(this)">
               ${_('Save Query')}
       </button>
@@ -68,22 +67,22 @@
         <li class="nicemenu-item">
           <a href="javascript:void(0);" class="icon-link headmenu">
             <span class="link-icon"><span class="more-icon">${_('Link')}</span></span>
-          </a>	
+          </a>
           <ul class="links-menu submenu right">
             <li class="row-menu-item">
-              <a href="javascript:void(0)" target="_blank" class="icon-link" title="${_('Click to get Mqlread URL')}" 
+              <a href="javascript:void(0)" target="_blank" class="icon-link" title="${_('Click to get Mqlread URL')}"
                 onmouseover="return fb.dispatch(event, fb.queryeditor.computeMqlReadLink, [], this);" >
                 ${_("MQLRead link")}
               </a>
             </li>
             <li class="row-menu-item">
-              <a href="javascript:void(0)" target="_blank" class="icon-link" title="${_('Click to get query URL')}" 
+              <a href="javascript:void(0)" target="_blank" class="icon-link" title="${_('Click to get query URL')}"
                 onmouseover="return fb.dispatch(event, fb.queryeditor.computeCompactLink, [], this);" >
                 ${_("Permanent Link")}
               </a>
             </li>
             <li class="row-menu-item">
-              <a href="javascript:void(0)" target="_blank" class="icon-link" title="${_('Click to get tiny URL')}" 
+              <a href="javascript:void(0)" target="_blank" class="icon-link" title="${_('Click to get tiny URL')}"
                 onclick="return fb.dispatch(event, fb.queryeditor.computeTinyCompactLink, [], this);" >
                 ${_("TinyURL")}
               </a>

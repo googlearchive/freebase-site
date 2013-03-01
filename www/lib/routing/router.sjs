@@ -96,6 +96,7 @@ function init_rules(lib) {
 
   // *********** UTIL *************
   rules["util"] = {
+    config: lib + "/routing/config.ajax", 
     fs_routing: lib + "/routing/rules_dump.sjs",
     schema_warmer: lib + "/schema/warmer.controller",
     script_warmer: lib + "/scripts/warmer.controller",

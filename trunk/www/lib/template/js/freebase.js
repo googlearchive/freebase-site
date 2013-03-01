@@ -939,7 +939,16 @@
 
     fb.hover = {
 
-      pane: "#fb-topic-hover-pane",
+      pane: (function() {
+               var pane = $("#fb-topic-hover-pane")
+                 .hover(function() {
+                          clearTimeout(fb.hover.hide_timer_);
+                        }, function() {
+                          fb.hover.hide_now_();
+                        });
+               return pane;
+
+             })(),
 
       current_target: null,
 
@@ -955,8 +964,9 @@
         "/image${id}?maxwidth=75&errorid=/freebase/no_image_png&key=" +
         fb.acre.freebase.api_key,
 
-      show: function() {
-        var topic_link = this;
+      show: function(e) {
+        clearTimeout(fb.hover.hide_timer_);
+        var topic_link = e.target;
         var id = $(topic_link).attr("data-id");
         if (!id) return;
 
@@ -966,7 +976,7 @@
         $(topic_link).removeAttr("title");
 
         if (fb.hover.cache[id]) {
-          _show();
+          fb.hover.show_now_(topic_link, fb.hover.cache[id]);
         }
         else {
           $.ajax({
@@ -976,20 +986,21 @@
                 var html = $.suggest.suggest.create_flyout(
                     data['result'][0], fb.hover.image_url);
                 fb.hover.cache[id] = html;
-                _show();
+                fb.hover.show_now_(topic_link, html);
               }
             },
             dataType: "jsonp",
             cache: true
           });
         }
+      },
 
-        function _show() {
+      show_now_: function(topic_link, html) {
           // if target changed while fetching, bail
           if (topic_link !== fb.hover.current_target) return;
 
-          $(fb.hover.pane).html(fb.hover.cache[id]);
-          var hover_height = $(fb.hover.pane).height();
+          fb.hover.pane.html(html);
+          var hover_height = fb.hover.pane.height();
           var link_height = $(topic_link).height();
 
           // position above or below depending on where link is in viewport
@@ -1002,13 +1013,16 @@
             top = top - hover_height - link_height;
           }
 
-          $(fb.hover.pane).css({top:top, left:left}).show();
-        }
+          fb.hover.pane.css({top:top, left:left}).show();
       },
 
       hide: function() {
+        fb.hover.hide_timer_ = setTimeout(fb.hover.hide_now_, 100);
+      },
+
+      hide_now_: function() {
         fb.hover.current_target = null;
-        $(fb.hover.pane).hide();
+        fb.hover.pane.hide();
       }
 
     };
@@ -1069,8 +1083,8 @@
     });
 
     $("#page-content")
-      .on("mouseover", "a.property-value", fb.hover.show)
-      .on("mouseout", "a.property-value", fb.hover.hide);
+      .on("mouseenter", "a.property-value", fb.hover.show)
+      .on("mouseleave", "a.property-value", fb.hover.hide);
 
     $(document.body)
       .on("dblclick", ".mid", fb.on_mid_dblclick)

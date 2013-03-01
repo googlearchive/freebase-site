@@ -113,24 +113,16 @@
       </div>
     </div>
 
-    <div class="section search-section">
-      <div class="header">
-        <h1 class="kbs">
-          <span class="mark">
-            <span class="search-title">
-              <a href="javascript:void(0);"
-                 class="schema-name results-name" name="results">
-                ${_("Search Results")}
-              </a>
-            </span>
+    <section class="section search-section">
+      <h1 class="section-header">
+        <span class="section-title">
+          <span class="section-name">
+            ${_("Search Results")}
           </span>
-        </h1>
-      </div>
+      </h1>
       <div class="body">
         <table class="data-table" id="infinitescroll">
-
           ${search_body(c.query, c.correction, c.result, c.cursor)}
-
           <tfoot>
             <tr>
               <td colspan="2">
@@ -141,7 +133,7 @@
           </tfoot>
         </table>
       </div>
-    </div>
+    </section>
   </div>
 </acre:block>
 

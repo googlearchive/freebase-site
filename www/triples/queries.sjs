@@ -220,22 +220,30 @@ function get_links_(
       });
   }
   else {
-    d = deferred.all({
-      outgoing: get_outgoing_links_(
+    if (linked_id == null) {
+      d = deferred.all({
+        any: get_any_links_(
+          creator, provenance, historical, sort, timestamp, next)
+      });
+    }
+    else {
+      d = deferred.all({
+        outgoing: get_outgoing_links_(
           linked_id, null, creator, provenance,
           historical, sort, timestamp, next),
-      incoming: get_incoming_links_(
-          linked_id, null, creator, provenance,
-          historical, sort, timestamp, next),
-      reverse: get_reverse_links_(
-          linked_id, null, creator, provenance,
-          historical, sort, timestamp, next)
-    });
+        incoming: get_incoming_links_(
+            linked_id, null, creator, provenance,
+            historical, sort, timestamp, next),
+        reverse: get_reverse_links_(
+            linked_id, null, creator, provenance,
+            historical, sort, timestamp, next)
+      });
+    }
   }
   return d
     .then(function(r) {
       var all = [];
-      ['outgoing', 'incoming', 'reverse'].forEach(function(k) {
+      ['outgoing', 'incoming', 'reverse', 'any'].forEach(function(k) {
         if (r[k]) {
           all = all.concat(r[k]);
         }
@@ -389,6 +397,32 @@ function get_reverse_links_(
   apply_filter_(q[0], null, creator, provenance,
                 historical, sort, timestamp, next);
   apply_reverse_property_(q[0], reverse_pids);
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return env.result;
+    });
+}
+
+/**
+ * When querying links that are not linked to a source or target, use this
+ * query. (i.e., links by creator or provenance).
+ * @private
+ */
+function get_any_links_(
+    creator, provenance, historical, sort, timestamp, next) {
+  var q = [{
+    type: '/type/link',
+    source: get_object_clause_(),
+    master_property: {
+      id: null
+    },
+    target_value: {},
+    target: get_object_clause_(true),
+    timestamp: null,
+    optional: true
+  }];
+  apply_filter_(q[0], null, creator, provenance,
+                historical, sort, timestamp, next);
   return freebase.mqlread(q)
     .then(function(env) {
       return env.result;

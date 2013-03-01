@@ -264,6 +264,19 @@ test('get_attribution_writes', function() {
       ], '/user/book_bot/attr/145');
 });
 
+test('get_links_by_attribution2', function() {
+  var links;
+  q.get_links(null, null, '/user/mwcl_musicbrainz/attr/105')
+    .then(function(r) {
+      links = r;
+    });
+  acre.async.wait_on_results();
+  ok(links && links.length, 'Got links');
+  assert_links_(
+      links, attribution_assertion_('/user/mwcl_musicbrainz/attr/105'),
+      '/user/mwcl_musicbrainz/attr/105');
+});
+
 test('get_links_by_provenance', function() {
   var links;
   q.get_links_by_provenance('/en/stanford_university')

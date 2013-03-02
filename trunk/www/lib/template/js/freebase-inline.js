@@ -42,6 +42,23 @@
       }
   };
 
+  // Get last guid from cookie string
+  function getGuidFromDateline(dateline) {
+    // Find trailing alphanumeric string
+    var str = dateline.match(/\w+$/g);
+    return str ? str[0] : '';
+  }
+
+  // Returns true if first param cookie is newer than second one.
+  // Example of a Cookie string:
+  //    "v1sandbox=1362184156000,9202a8c04000641f800000002e3e12db"
+  function isCookieNewer(cookie, serverCookie) {
+    // Trim leading and trailing quote
+    cookie.replace(/^"|"$/g, '');
+    // Compare strings
+    return getGuidFromDateline(cookie) > getGuidFromDateline(serverCookie);
+  }
+
   // fb-dateline-reload is reset after a page load, to avoid a refresh
   // loop. More or less: only reload any given page once, but allow
   // future reloads. See the fb-dateline-reload reference later
@@ -51,11 +68,8 @@
     return;
   }
 
-  // TODO - for now, just do a naive comparison.
-  // This could be improved in a couple of ways:
-  //  - Only if dateline is greater (once sequential again)
-  //  - Compare by specific backend
-  if (SERVER.cookie("fb-dateline") !== SERVER["dateline"]) {
+  // Check if dateline is greater
+  if (isCookieNewer(SERVER.cookie("fb-dateline"), SERVER["dateline"])) {
     // be sure to set the cookie so that the reloaded page knows it
     // came in as the result of a reload
     SERVER.cookie("fb-dateline-reload", "true", { path: "/" });

@@ -103,6 +103,7 @@ var exports = {
   "legacy_fb_url": legacy_fb_url,
   "fb_api_url": fb_api_url,
   "wiki_url": wiki_url,
+  "developer_url": developer_url,
   "account_url": account_url,
   "image_url": image_url,
   "lib_base_url": lib_base_url,
@@ -1468,6 +1469,22 @@ function fb_api_url() {
 function wiki_url(page) {
   var args = Array.prototype.slice.call(arguments);
   args.unshift("http://wiki.freebase.com", "/wiki/");
+  return build_url.apply(null, args);
+};
+
+/**
+ * freebase developer url
+ * Use for links to the Google developers site
+ *
+ * Note that this is a little bit different from other forms of url helpers
+ * in that the path, "/freebase/" is automatically prepended to the page parameter
+ * so that you only need to pass the subdirectory
+ *
+ * developer_url("v1/search-overview") => https://developers.google.com/freebase/v1/search-overview
+ */
+function developer_url(page) {
+  var args = Array.prototype.slice.call(arguments);
+  args.unshift("https://developers.google.com", "/freebase/");
   return build_url.apply(null, args);
 };
 

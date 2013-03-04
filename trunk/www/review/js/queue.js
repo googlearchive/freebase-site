@@ -31,6 +31,8 @@
 
 (function($, fb, formlib) {
 
+    fb.reviewqueue = {};
+
     var incomingContent = {};
     var loadedContent = {};
     var loadedFlags = [];
@@ -281,6 +283,8 @@
         };
         formlib.init_modal_form(form_options);
     }
+    fb.reviewqueue.modalForm = modalForm;
+
     function attachButtonListeners() {
 
         if (currentDiv == null) {

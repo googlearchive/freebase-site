@@ -31,16 +31,15 @@
 
 <acre:script>
     var c = this.exports.c = {};
-    var helper = acre.require("lib/helper/helpers.sjs");
     var i18n = acre.require("lib/i18n/i18n.sjs");
     var i18n_c = acre.require("lib/i18n/components.mjt");
     var _ = i18n.gettext;
     var propboxForm = acre.require("lib/propbox/form.mjt");
 
-    var BACK = _("Back");
+    var BACK = _("Back (J)");
     var CLOSE = _("Close");
-    var FORWARD = _("Forward");
-    var LOADING = _("Loading...");    
+    var FORWARD = _("Forward (K)");
+    var LOADING = _("Loading...");
     var PROBLEMS = _("Well, this is embarrassing! We're having some problems and working to resolve them.");
     var COMPLETE = _("You have completed voting on all flags in this category!");
     var LINK_TO = _("Link to this flag in review.");
@@ -55,23 +54,23 @@
 <acre:block def="content()">
 
   <div class="queue-header">
-    <div class="queue-back-button">${propboxForm.cancel_button(BACK)}</div>          
-    <span class="queue-header-message" id="queue-header-message">${_("Review Queue")}</span>        
-    <div class="queue-forward-button">${propboxForm.cancel_button(FORWARD)}</div>                   
+    <div class="queue-back-button">${propboxForm.cancel_button(BACK)}</div>
+    <span class="queue-header-message" id="queue-header-message">${_("Review Queue")}</span>
+    <div class="queue-forward-button">${propboxForm.cancel_button(FORWARD)}</div>
   </div>
   <div id="storage">
   </div>
-  <div id="complete" class="queue-message" style="visibility: hidden;">
+  <div id="complete" class="queue-message" style="display:none;">
     ${COMPLETE}
   </div>
-  <div id="errormsg" class="queue-message" style="visibility: hidden;">
+  <div id="errormsg" class="queue-message" style="display:none;">
     ${PROBLEMS}
   </div>
-  <div id="parameters" style="visibility: hidden;">
+  <div id="parameters" style="display:none;">
     ${JSON.stringify(c.params)}
   </div>
 
-  <div id="linking" style="visibility: hidden;">    
+  <div id="linking" style="display:none;">
     <div id="queue-link-to-flag" class="modal">
       <div class="modal-inner">
         <h1 class="modal-title">
@@ -81,18 +80,18 @@
           <div class="form-group clear">
             <div class="form-row form-row-inline">
               <label class="form-label">${COPY_SHARE}</label>
-              <input class="text-input" type="text" id="link-text" value=""/>                        
+              <input class="text-input" type="text" id="link-text" value=""/>
             </div>
           </div>
         </div>
       </div>
-      <div class="modal-buttons">            
+      <div class="modal-buttons">
         ${propboxForm.cancel_button(CLOSE)}
       </div>
     </div>
   </div>
 
-  <div id="shortcuts" style="visibility: hidden;">
+  <div id="shortcuts" style="display:none;">
     <div id="show-shortcuts" class="modal">
       <div class="modal-inner">
         <h1 class="modal-title">
@@ -132,27 +131,27 @@
               <dl class="key-map">
                 <dt class="key-symbol">${_("l")}</dt>
                 <dd class="key-desc">${_("Get link to hot list.")}</dd>
-              </dl>                        
+              </dl>
             </div>
           </div>
         </div>
       </div>
-      <div class="modal-buttons">            
+      <div class="modal-buttons">
         ${propboxForm.cancel_button(CLOSE)}
       </div>
     </div>
   </div>
-   
+
 </acre:block>
 
-<acre:block def="footer_script()">    
-  <script type="text/javascript" src="queue.mf.js" />    
+<acre:block def="footer_script()">
+  <script type="text/javascript" src="queue.mf.js" />
 </acre:block>
 
 <acre:block def="acre_javascript_vars()">
   <script>
     SERVER.c.params = ${JSON.stringify(c.params)};
-  </script>  
+  </script>
 </acre:block>
 
 

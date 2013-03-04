@@ -51,6 +51,7 @@
     var NOT_SURE = _("Not sure?");
     var REMOVE_OWN_FLAG = _("Remove your flag?");
     var HELP = _("Help");
+    var KEYBOARD_SHORTCUTS = _("Keyboard Shortcuts");
     var LINK_TO_FLAG = _("Link to flag");
     var ADD_TO_HOTLIST = _("Add to hotlist");
     var LINK_TO_HOTLIST = _("Link to hotlist");
@@ -86,16 +87,16 @@
   <div class="topic-frame">
     <div id="page-content-wrapper">
       <div acre:if="displayInfo.items.length === 1" id="flag-content" class="flag-content">
-          <iframe src="${displayInfo.items[0].url}" width="100%" frameborder="0" style="height: auto; min-height: 800px;">
+          <iframe src="${displayInfo.items[0].url}" width="100%" frameborder="0" style="height: 100%;">
           </iframe>
       </div>
       <div acre:else="" id="flag-content" class="flag-content">
         <div class="topic-frame topic-frame-left">
-          <iframe src="${displayInfo.items[0].url}" width="100%" frameborder="0" style="height: auto; min-height: 800px;">
+          <iframe src="${displayInfo.items[0].url}" width="100%" frameborder="0" style="height: 100%;">
           </iframe>
         </div>
         <div class="topic-frame topic-frame-right">
-          <iframe src="${displayInfo.items[1].url}" width="100%" frameborder="0" style="height: auto; min-height: 800px;">
+          <iframe src="${displayInfo.items[1].url}" width="100%" frameborder="0" style="height: 100%;">
           </iframe>
         </div>
       </div>
@@ -124,8 +125,13 @@
         ${REMOVE_OWN_FLAG}
       </acre:block>
       <acre:block else="">
-        ${helper.template_sprintf(S_BY_S, tag_a(FLAGGED, displayInfo.flagUrl), tag_a(displayInfo.creator, displayInfo.creatorUrl))}
+        ${helper.template_sprintf(S_BY_S, tag_a(FLAGGED, displayInfo.flagUrl),
+          tag_a(displayInfo.creator, displayInfo.creatorUrl))}
       </acre:block>
+      - <a href="javascript:void(0)"
+            onclick="fb.reviewqueue.modalForm($$('#show-shortcuts'))">
+          ${KEYBOARD_SHORTCUTS}
+        </a>
       - <a href="http://wiki.freebase.com/wiki/Review_Queue">${HELP}</a>
     </div>
     <div class="flagreview-bottomright">

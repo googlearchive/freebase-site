@@ -1,4 +1,4 @@
-Listing of Freebase commons schemas.
+#summary Listing of Freebase commons schemas.
 
 = Freebase Commons Schemas Categories=
 This wiki contains documentation for freebase commons schemas. There are currently 68 Freebase commons schemas listed here.

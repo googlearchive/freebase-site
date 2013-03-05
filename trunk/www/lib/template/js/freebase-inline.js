@@ -53,6 +53,7 @@
   // Example of a Cookie string:
   //    "v1sandbox=1362184156000,9202a8c04000641f800000002e3e12db"
   function isCookieNewer(cookie, serverCookie) {
+    if (!cookie || !serverCookie) { return; }
     // Trim leading and trailing quote
     cookie.replace(/^"|"$/g, '');
     // Compare strings

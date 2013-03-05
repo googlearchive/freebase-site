@@ -55,8 +55,9 @@
 
   <div id="tabbar">
     <div id="tabbar-types" class="types-toggle">
-      <a href="javascript:void(0);" onclick="fb.topic.toggle_types(true);" class="clear">
-        <span class="right-arrow"></span>${_('Go to Type:')}
+      <a href="javascript:void(0);" 
+         onclick="fb.topic.toggle_types(false);" class="clear">
+        <span class="right-arrow"></span>${_('Types:')}
       </a>
     </div>
     <div id="pill-filter-box" class="pill-box">
@@ -88,12 +89,20 @@
       var domains = c.topic && c.topic.structure && c.topic.structure.order;
     </acre:script>
     <div class="types-toggle">
-      <a href="javascript:void(0);" onclick="fb.topic.toggle_types(false);">
-        <span class="down-arrow"></span> ${_('Go to Type:')}
+      <a href="javascript:void(0);" onclick="fb.topic.toggle_types(true);">
+        <span class="down-arrow"></span> ${_('Types:')}
       </a>
     </div>
     <div class="nav-module">
       <div class="nav-section" id="toc">
+        <div id="add-type">
+          <h2 id="add-type-h2">
+            <a href="javascript:void(0);">${_('Add type')}</a>
+          </h2>
+          <div id="add-type-form">
+            <input id="add-type-input" type="text"/>
+          </div>
+        </div>
         <acre:block if="domains && domains.length">
           <acre:block for="domain_id in domains">
             ${toc_domain(c.topic, domain_id, type_map)}

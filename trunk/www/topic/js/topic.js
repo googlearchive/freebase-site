@@ -75,9 +75,15 @@
       });
 
       // Initialize toggle-types menu collapse/expand
-      if ($.localstore('types_expanded')) {
-        topic.toggle_types($('#types-toggle > a'));
-      }
+      topic.toggle_types($.localstore('fb.topic.types.collapsed'));
+
+      // Add type suggest
+      $('#add-type-input')
+          .suggest(fb.suggest_options.cotype())
+          .bind('fb-select', function(e, data) {
+            topic.add_filter(data.id, '/type/type');
+            $(this).val('').trigger('textchange');
+          });
 
       // Initialize show-all
       if ($.localstore('topic.show_all')) {
@@ -221,20 +227,19 @@
     /**
      * Collapse/expand domains/types table-of-contents.
      */
-    toggle_types: function(show) {
-      if (show) {
+    toggle_types: function(hide) {
+      if (hide) {
+        $.localstore('fb.topic.types.collapsed', 1, false);
+        $('.nav.column').slideUp(function() {
+          $('.data.column').animate({marginRight: 0});
+        });
+      } else {
         var width = $('.nav.column').width() + 20;
-        $.localstore('types_expanded', 1, false);
+        $.localstore('fb.topic.types.collapsed', 0, false);
         $('.data.column').animate({marginRight: width}, function() {
           $('.nav.column').slideDown(function() {
             topic.init_nav_scrolling($(".nav-module", this));
           });
-        });
-      }
-      else {
-        $.localstore('types_expanded', 0, false);
-        $('.nav.column').slideUp(function() {
-          $('.data.column').animate({marginRight: 0});
         });
       }
     },

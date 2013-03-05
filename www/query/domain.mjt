@@ -64,7 +64,7 @@
 </acre:block>
 
 <acre:block def="query_table(queries)">
-  <table cellspacing="0" class="table big table-sortable">
+  <table cellspacing="0" class="table big">
     <thead>
       <tr>
         <th scope="col first" class="column-header">${_('Query')}</th>

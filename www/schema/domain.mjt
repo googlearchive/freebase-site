@@ -75,7 +75,7 @@
         </span>
       </h1>
      </div>
-     <table class="table big table-sortable" cellspacing="0">
+     <table class="table big" cellspacing="0">
        <thead>
          <tr acre:attrs="regular_types.length ? {}:{style:'display:none;'}">
            <th scope="col" class="column-header first"><span class="sort-icon">${_('Type')}</span></th>
@@ -131,7 +131,7 @@
         </span>
       </span>
     </h1>
-    <table class="table big table-sortable">
+    <table class="table big">
       <thead>
         <tr acre:attrs="mediator_types.length ? {}:{style:'display:none;'}">
           <th scope="col" class="column-header first"><span class="sort-icon">${_('Type')}</span></th>

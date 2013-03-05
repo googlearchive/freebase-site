@@ -55,7 +55,7 @@
         </span>
       </span>
     </h1>
-    <table id="queries" cellspacing="0" class="table big table-sortable">
+    <table id="queries" cellspacing="0" class="table big">
       <thead>
         <tr>
           <th class="column-header first {sorter: 'ignoreCase'}"><span class="sort-icon">${_("Name")}</span></th>
@@ -84,8 +84,4 @@
       </tbody>
     </table>
   </div>
-</acre:block>
-
-<acre:block def="footer_script()">
-  <script src="user.mf.js"></script>
 </acre:block>

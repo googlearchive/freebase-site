@@ -64,6 +64,7 @@ var exports = {
   "lang_id": lang_id,
   "get_attribution": get_attribution,
   "fb_object_type": fb_object_type,
+  "get_citation": get_citation,
 
   // MATH
   "round": round,

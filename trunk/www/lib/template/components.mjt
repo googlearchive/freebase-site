@@ -91,6 +91,7 @@
 </acre:block>
 
 <acre:block def="citation(cite)">
-  <a href="${cite.uri}" class="citation" target="_new">
+  <a href="${cite.uri}" class="citation" 
+     title="${cite.statement || cite.provider}" target="_new">
     ${cite.provider}</a>
 </acre:block>

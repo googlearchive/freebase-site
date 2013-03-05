@@ -62,7 +62,7 @@
       </acre:block>
     </h2>
   </acre:block>
-  <table cellspacing="0" class="table table-sortable">
+  <table cellspacing="0" class="table">
     <thead>
       <tr>
         <th scope="col" class="column-header">${_('Version')}</th>

@@ -57,7 +57,7 @@
         </span>
       </span>
     </h1>
-    <table class="table table-sortable" id="i18n-table">
+    <table class="table" id="i18n-table">
       <thead>
         <tr>
           <th class="column-header first {sorter: 'string'}" scope="col">

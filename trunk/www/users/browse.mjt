@@ -48,7 +48,7 @@
         </span>
       </span>
     </h1>
-    <table cellspacing="0" class="table big table-sortable">
+    <table cellspacing="0" class="table big">
       <thead>
         <tr>
           <th scope="col" class="column-header first">${_('User')}</th>
@@ -79,7 +79,7 @@
         </span>
       </span>
     </h1>
-    <table cellspacing="0" class="table big table-sortable">
+    <table cellspacing="0" class="table big">
       <thead>
         <tr>
           <th scope="col" class="column-header first">${_('User')}</th>

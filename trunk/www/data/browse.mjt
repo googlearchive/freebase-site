@@ -71,7 +71,7 @@
         </span>
       </h1>
       <acre:block if="c.domains">
-        <table id="browse" cellspacing="0" class="table big table-sortable">
+        <table id="browse" cellspacing="0" class="table big">
           <thead>
             <tr>
               <th scope="col" class="column-header first"><span class="sort-icon">${_('Domain')}</span></th>

@@ -55,7 +55,7 @@
             </span>
           </span>
         </h1>
-        <table cellspacing="0" class="table big table-sortable" acre:if="c.domain.types.length">
+        <table cellspacing="0" class="table big" acre:if="c.domain.types.length">
           <thead>
             <tr>
               <th class="column-header first {sorter: 'ignoreCase'}">

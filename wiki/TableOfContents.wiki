@@ -7,8 +7,8 @@
     * [Astronomy_commons  Astronomy commons]
     * [Aviation_commons  Aviations commons]
     * [Awards_commons  Awards commons]
-  
-  * *B*
+ 
+ * *B*
     * [Baseball_commons   Baseball commons]
     * [Bicycles_commons   Bicycles commons]
     * [Biology_commons   Bicycles commons]

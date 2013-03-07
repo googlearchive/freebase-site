@@ -1,6 +1,7 @@
 #summary Listing of Freebase commons schemas.
 
 *Commons Categories*
+
   * *A*
    * [American_Football_commons  American Football commons]
    * [Architecture_commons  Architecture commons]

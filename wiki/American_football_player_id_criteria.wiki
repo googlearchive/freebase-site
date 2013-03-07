@@ -1,0 +1,44 @@
+#summary American football player Id Criteria
+
+= Identity Criterion for American Football Player type =
+The general information on the Identity Criterion for various freebase types is given at <http://wiki.freebase.com/wiki/Identity_criterion_for_types>. If anyone in the community want any changes to be done to the identity criterion for /american_football/football_player, please make edits directly to the features and guidelines below.
+
+===Features for establishing identity relationships===
+ * *_name_match_* : There is a ''name_match'' if the names of the football players or their aliases on both the sources match. The match may also be approximate due to the topics using football players' nick names, missing/extra middle names, prefix/suffix (such as Jr., Sr.), or initials.
+ * *_current_team_match_* : There is a ''team_match'' if the player’s current team listed in Freebase property /american_football/football_player/current_team (Current Team) is same on both the sources.
+ * *_former_team_match_*:  There is a ''former_team_match''  if at least one of the player’s previous teams listed in Freebase property /american_football/football_player/former_teams (Former Teams) matches with the teams on the other source.
+
+
+===General guidelines for establishing identity between two American Football Players===
+Here are some typical patterns for determining identity of american football players:
+
+<ol style="list-style-type: lower-alpha">
+<li><span id="27.a"></span>''name_match'' and ''current_team_match''.
+(#27.1|Example 1]])</li>
+<li><span id="27.b"></span>''name_match'' and ''former_team_match''.
+(#27.2|Example 2]])</li>
+</ol>
+
+===Additional Patterns and Features===
+Identity features, Patterns and Examples for following types are also applicable for establishing identity relationships in type /american_football/football_player:
+ * type /people/person at http://wiki.freebase.com/wiki/Commons/people/person#Identity_Criterion_for_Person_type.
+ * type /sports/pro_athlete at  http://wiki.freebase.com/wiki/Commons/sports/athlete#Identity_Criterion_for_Athlete_type.
+
+
+===Examples===
+
+<br/><br/>
+
+<span id="27.1"></span>[[File:Example218amefootplayer.jpg|border|720px]]
+
+<br/><br/>
+
+[[#27.a|Pattern a]] Example 1: [http://espn.go.com/nfl/player/_/id/5615/matt-schaub Permalink] Here the names of the football players and their current teams match on both the sources. Hence the american football players are identical.
+
+<br/><br/>
+
+<span id="27.2"></span>[[File:Example219amefootplayer.jpg|border|720px]]
+
+<br/><br/>
+
+[[#27.b|Pattern b]] Example 2: [http://www.aeispeakers.com/speakerbio.php?SpeakerID=1044 Permalink] Here the names of the football players and their former teams match on both the sources. Hence the american football players are identical.

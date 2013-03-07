@@ -1,0 +1,17 @@
+#summary Different types in Baseball Commons.
+
+= Baseball commons =
+content
+
+==Types==
+Here are the following types in baseball commons
+
+  * [Type1 Type1OnFB]
+    * Type Definition on Wiki
+    * Data Entry tutorial
+    * Identity Criterion
+
+  * [Type2 Type2OnFB]
+    * Type Definition on Wiki
+    * Data Entry
+    * Identity Criterion

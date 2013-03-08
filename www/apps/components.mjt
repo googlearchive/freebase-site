@@ -47,14 +47,12 @@
   <tbody>
     <tr acre:for="app in apps">
       <td class="row-header first" scope="row">
-        <h3 class="app-title">
-          <a href="${h.fb_url(app.id)}">$app.name</a>
-          <span acre:if="app.acre && app.acre.version" class="applist-version">
-            v.$app.acre.version
-          </span>
-        </h3>
-        <p class="applist-details truncate" acre:if="app.description">
-        $app.description
+        <a href="${h.fb_url(app.id)}">$app.name</a>
+        <span acre:if="app.acre && app.acre.version" class="applist-version">
+          v.$app.acre.version
+        </span>
+        <p class="applist-details" acre:if="app.description">
+          $app.description
         </p>
       </td>
       <td>

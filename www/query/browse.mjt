@@ -97,9 +97,9 @@
         </thead>
         <tbody>
           <tr acre:for="q in c.queries">
-            <th class="row-header first" scope="row">
+            <td class="row-header first" scope="row">
               <a href="${h.fb_url(q.id)}">${i18n.display_name(q)}</a>
-            </th>
+            </td>
             <td scope="row">
               <acre:block if="q.type">
                 <a href="${h.fb_url(q.type.id)}">${i18n.display_name(q.type)}</a>

@@ -67,10 +67,10 @@
         </thead>
         <tbody>
           <tr acre:for="d in c.domains">
-            <th class="row-header first" scope="row">
+            <td class="row-header first" scope="row">
               <acre:script>var name = i18n.display_name(d);</acre:script>
               <a href="${h.fb_url(d.id, [['schema','']])}" title="${h.sprintf(_('View %s'), name)}">$name</a>
-            </th>
+            </td>
             <td>$d.id</td>
             <td>
               <ul>

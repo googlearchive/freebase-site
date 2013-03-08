@@ -75,17 +75,17 @@
           <thead>
             <tr>
               <th scope="col" class="column-header first"><span class="sort-icon">${_('Domain')}</span></th>
-              <th scope="col" class="column-header column-header-desc">${_('ID')}</th>
+              <th scope="col" class="column-header">${_('ID')}</th>
               <th scope="col" class="column-header" style="text-align:right">${_("Topics")}</th>
               <th scope="col" class="column-header">${_("Facts")}</th>
             </tr>
           </thead>
           <tbody>
             <tr acre:for="d in c.domains">
-              <th class="row-header first" scope="row">
+              <td class="row-header first" scope="row">
                 <acre:script>var name = i18n.display_name(d);</acre:script>
                 <a href="${h.fb_url(d.id)}" title="${h.sprintf(_('View %s'), name)}">$name</a>
-              </th>
+              </td>
               <td class="key">$d.id</td>
               <td class="topics" style="width:30%;text-align:right">
                 <div class="wrapper">

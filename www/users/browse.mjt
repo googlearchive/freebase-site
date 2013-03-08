@@ -59,10 +59,10 @@
       </thead>
       <tbody>
         <tr acre:for="u in c.active">
-          <th class="row-header first" scope="row">
+          <td class="row-header first" scope="row">
             ${image.user_image_tiny(u.id)}
             ${components.creator_link(u.id, h.fb_url(u.id, [['writes']]))}
-          </th>
+          </td>
           <td>${i18n_c.relative_date(u.timestamp)}</td>
           <td>${i18n_c.number(u.objects)}</td>
           <td>${i18n_c.number(u.links)}</td>

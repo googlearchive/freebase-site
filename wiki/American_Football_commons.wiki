@@ -6,12 +6,8 @@ This is american football commons
 =Types=
 Here are the following types in American Football Commons
 
- * American Football Player
-   * [American_football_player Type definition for American Football Player]
-   * [American_football_player_id_criteria American Football Player Identity Criteria]
-   * [Data_entry_tutorial Data Entry for American Football Player]
+ * [American_football_player American Football Player]
+   * [Data_entry_AmeFootballPlayer Data Entry for American Football Player]
 
- * Super Bowl
-   * [Super_bowl Type definition for Super Bowl]
-   * [Super_bowl_id_criteria Super Bowl Identity Criteria]
-   * [Data_entry_tutorial Data Entry for Super Bowl]
+ * [Super_bowl Super Bowl]
+   * [Data_entry_SuperBowl Data Entry for Super Bowl]

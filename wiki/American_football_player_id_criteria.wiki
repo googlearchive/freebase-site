@@ -36,7 +36,7 @@ https://code.google.com/p/freebase-site/source/browse/wiki/Example218amefootplay
 
 [[#27.a|Pattern a]] Example 1: [http://espn.go.com/nfl/player/_/id/5615/matt-schaub Permalink] Here the names of the football players and their current teams match on both the sources. Hence the american football players are identical.
 
-<br/><br/>
+=====Example 2=====
 
 https://code.google.com/p/freebase-site/source/browse/wiki/Example219amefootplayer.png
 

@@ -26,4 +26,4 @@ An American football player is an individual who participates in games of Americ
 
 
 ==Data Entry==
- * [Data_entry_tutorial Data Entry for American Football Player]
+ * [Data_entry_AmeFootballPlayer Data Entry for American Football Player]

@@ -14,7 +14,7 @@ Here are some typical patterns for determining identity of american football pla
 
 <ol style="list-style-type: lower-alpha">
 <li><span id="27.a"></span>''name_match'' and ''current_team_match''.
-([American_football_player_id_criteria#27.1 Example_1])</li>
+([American_football_player_id_criteria#Example_1 Example 1])</li>
 <li><span id="27.b"></span>''name_match'' and ''former_team_match''.
 ([American_football_player_id_criteria#27.2 Example 2])</li>
 </ol>

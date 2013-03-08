@@ -30,7 +30,7 @@ Identity features, Patterns and Examples for following types are also applicable
 <br/><br/>
 
 =====Example 1=====
-https://code.google.com/p/freebase-site/source/browse/wiki/Example218amefootplayer.jpg
+https://code.google.com/p/freebase-site/source/browse/wiki/Example218amefootplayer.png
 
 <br/><br/>
 

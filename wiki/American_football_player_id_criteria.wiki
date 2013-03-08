@@ -1,6 +1,6 @@
 #summary American football player Id Criteria
 
-= Identity Criterion for American Football Player type =
+= Identity Criterion for American Football Player =
 The general information on the Identity Criterion for various freebase types is given at <http://wiki.freebase.com/wiki/Identity_criterion_for_types>. If anyone in the community want any changes to be done to the identity criterion for /american_football/football_player, please make edits directly to the features and guidelines below.
 
 ===Features for establishing identity relationships===
@@ -14,9 +14,9 @@ Here are some typical patterns for determining identity of american football pla
 
 <ol style="list-style-type: lower-alpha">
 <li><span id="27.a"></span>''name_match'' and ''current_team_match''.
-(#27.1|Example 1]])</li>
+([American_football_player_id_criteria#27.1 Example_1])</li>
 <li><span id="27.b"></span>''name_match'' and ''former_team_match''.
-(#27.2|Example 2]])</li>
+([American_football_player_id_criteria#27.2 Example 2])</li>
 </ol>
 
 ===Additional Patterns and Features===
@@ -29,6 +29,7 @@ Identity features, Patterns and Examples for following types are also applicable
 
 <br/><br/>
 
+=====Example 1=====
 <span id="27.1"></span>[[File:Example218amefootplayer.jpg|border|720px]]
 
 <br/><br/>

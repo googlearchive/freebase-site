@@ -60,17 +60,17 @@
         </thead>
         <tbody>
           <tr acre:for="l in c.loads">
-            <th class="row-header first" scope="row" style="width:50%">
+            <td class="row-header first" scope="row" style="width:50%">
               <acre:script>var name = i18n.display_name(l);</acre:script>
               <a href="${h.fb_url(l.id)}" title="${h.sprintf(_('View %s'), name)}">$name</a>
               <acre:block if="l.timestamp">
                 ${i18n_c.relative_date(l.timestamp)}
               </acre:block>
-            </th>
+            </td>
             <td>
               <ul>
-                <li><strong>${_("Objects")}</strong> ${i18n_c.number(l.objects)} </li>
-                <li><strong>${_("Links")}</strong> ${i18n_c.number(l.links)}</li>
+                <li>${_("Objects")}: ${i18n_c.number(l.objects)} </li>
+                <li>${_("Links")}: ${i18n_c.number(l.links)}</li>
               </ul>
             </td>
             <td>

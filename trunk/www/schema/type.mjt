@@ -68,16 +68,16 @@
           </span>
         </span>
       </h1>
-      <table cellspacing="0" class="table">
+      <table cellspacing="0" class="table big">
         <thead>
           <tr acre:attrs="c.type.instance.length ? {} : {style:'display:none;'}">
             <th class="column-header first">${_('Name')}</th>
             <th class="column-header">${_('Description')}</th>
           </tr>
           <tr acre:attrs="c.type.instance.length ? {style:'display:none;'} : {}">
-            <th colspan="2" class="table-empty-column" scope="col">
+            <td colspan="2" class="table-empty-column" scope="col">
               <p>${_('This type has no Topics')}</p>
-            </th>
+            </td>
           </tr>
         </thead>
         <tbody>
@@ -109,7 +109,7 @@
           </span>
         </span>
       </h1>
-      <table class="table" cellspacing="0">
+      <table class="table big" cellspacing="0">
         ${tc.native_properties(c.type.properties, c.type.id)}
         <tfoot class="table-edit edit">
           <tr>
@@ -142,15 +142,15 @@
           </span>
         </span>
       </h1>
-      <table class="table" cellspacing="0" id="included-types-table">
+      <table class="table big" cellspacing="0" id="included-types-table">
         <acre:block for="type in c.type['/freebase/type_hints/included_types']">
           ${tc.included_type_thead(c.type.id, type)}
         </acre:block>
         <thead acre:attrs="c.type['/freebase/type_hints/included_types'].length ? {style:'display:none;'}:{}">
           <tr>
-            <th colspan="4" class="table-empty-column" scope="col">
+            <td colspan="4" class="table-empty-column" scope="col">
               <h3 class="table-empty-title">${_("This type doesn't have any included types.")}</h3>
-            </th>
+            </td>
           </tr>
         </thead>
         <tfoot class="table-edit edit">
@@ -174,7 +174,7 @@
           </span>
         </span>
       </h1>
-      <table class="table" cellspacing="0" id="incoming-properties-table">
+      <table class="table big" cellspacing="0" id="incoming-properties-table">
         <acre:block if="c.type.incoming.domain.length">
           ${tc.incoming_props_thead(i18n.display_name(c.type.domain), true)}
           ${tc.incoming_props_tbody(c.type.incoming.domain)}

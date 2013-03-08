@@ -37,6 +37,10 @@
   var _ = i18n.gettext;
 </acre:script>
 
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="apps.mf.css" />
+</acre:block>
+
 <acre:block def="page_content()">
   <acre:block if="c.hosts && c.hosts.length">
     <h2 class="table-title">
@@ -62,7 +66,7 @@
       </acre:block>
     </h2>
   </acre:block>
-  <table cellspacing="0" class="table">
+  <table cellspacing="0" class="table big">
     <thead>
       <tr>
         <th scope="col" class="column-header">${_('Version')}</th>
@@ -72,11 +76,11 @@
     </thead>
     <tbody>
       <tr>
-        <th class="row-header odd" scope="row">
+        <td class="row-header odd" scope="row">
           <a href="http://${c.host + '.' + c.acre_host}">
             ${_('Current')}
           </a>
-        </th>
+        </td>
         <td class="even">-</td>
         <td class="odd">
           <a href="${h.fb_url('/appeditor/#!path=//' + c.host)}">
@@ -85,11 +89,11 @@
         </td>
       </tr>
       <tr acre:for="v in c.all_versions">
-        <th class="row-header odd" scope="row">
+        <td class="row-header odd" scope="row">
           <a href="http://${v.name + '.' + c.host + '.' + c.acre_host}">
             $v.name
           </a>
-        </th>
+        </td>
         <td class="even">
           ${h.relative_date(acre.freebase.date_from_iso(v.as_of_time))}
         </td>

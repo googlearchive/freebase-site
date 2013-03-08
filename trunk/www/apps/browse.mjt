@@ -36,7 +36,7 @@
   var _ = i18n.gettext;
   var components = acre.require("lib/template/components.mjt");
   var image = acre.require("lib/template/imagecomponents.mjt");
-  var ac =acre.require("components.mjt");
+  var ac = acre.require("components.mjt");
 </acre:script>
 
 <acre:block def="title()" trim="">

@@ -44,13 +44,13 @@
 <!-- Domain Regular Types markup pattern -->
 <acre:block def="domain_type_row(type)">
   <tr class="data-row hover-row">
-    <th class="row-header first" scope="row">
+    <td class="row-header first" scope="row">
       <span class="wrapper">
         <a href="${h.fb_url(type.id, [['schema']])}">${i18n.display_name(type, "")}</a>
         ${type_menu(type)}
       </span>
-    </th>
-    <td>$type.id</td>
+    </td>
+    <td class="break"><span class="mid">$type.id</span></td>
     <td class="numeric">${i18n_c.number(type.properties && type.properties.length || 0)}</td>
     <td class="numeric">
       <a href="${h.build_query_url(null, type.id)}">

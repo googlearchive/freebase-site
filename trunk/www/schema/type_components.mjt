@@ -46,14 +46,14 @@
 
 <acre:block def="type_property_row(prop, type_id)">
   <tr class="data-row hover-row">
-    <th scope="row" class="row-header first">
+    <td scope="row" class="row-header first">
       <span class="wrapper">
         <a href="${h.fb_url(prop.id, [['schema']])}">${i18n.display_name(prop)}</a>
         ${prop_menu(prop)}
       </span>
-    </th>
-    <td>$prop.id</td>
-    <td>
+    </td>
+    <td class="break"><span class="mid">$prop.id</span></td>
+    <td class="break">
       <acre:block if="prop.expected_type">
         <a href="${h.fb_url(prop.expected_type.id, [['schema']])}">
           $prop.expected_type.id
@@ -157,9 +157,9 @@
   </thead>
   <tbody>
     <tr acre:attrs="properties.length ? {style:'display:none;'}:{}">
-      <th colspan="5" class="table-empty-column" scope="col">
+      <td colspan="5" class="table-empty-column" scope="col">
         <h3 class="table-empty-title">${_("This type doesn't have any properties")}</h3>
-      </th>
+      </td>
     </tr>
     <acre:block for="prop in properties" class="data-row hover-row">
       ${type_property_row(prop, type_id)}
@@ -170,14 +170,14 @@
 <!-- enumerated topics -->
 <acre:block def="enumerated_topic_row(topic, type_id)">
   <tr class="data-row hover-row">
-    <th class="row-header first">
+    <td class="row-header first">
       <span class="wrapper">
         <a href="${h.fb_url(topic.id)}" title="${topic.id}">
           ${topic.name ? topic.name.text : topic.id}
         </a>
         ${enum_topic_menu(topic, type_id)}
       </span>
-    </th>
+    </td>
     <td>
       <acre:script>
         var desc = topic.description ? topic.description.text : null;
@@ -189,12 +189,12 @@
 
 <!-- Included Types markup pattern -->
 <acre:block def="included_type_thead(type_id, included_type, expanded)">
-  <thead>
+  <thead class="expandable">
     <tr>
       <th class="tbody-header ${expanded ? 'expanded' : ''}" colspan="4"
          data-url="${h.ajax_url('/get_type_properties.ajax', [['id',included_type],['lang',i18n.lang]])}">
-        <a href="#" class="edit" onclick="return freebase.dispatch(event, freebase.schema.type.delete_included_type, ['${type_id}', '${included_type}'], this);"><span>${_('delete')}</span></a>
-        <span class="tbody-header-title"><a href="${h.fb_url(included_type, [['schema']])}"> ${included_type}</a></span>
+        <a href="#" class="edit included-type-delete" onclick="return freebase.dispatch(event, freebase.schema.type.delete_included_type, ['${type_id}', '${included_type}'], this);"><span>${_('delete')}</span></a>
+        <span class="tbody-header-title"> ${included_type}</span>
       </th>
     </tr>
   </thead>
@@ -202,7 +202,7 @@
 
 <!-- Incoming Properties markup pattern -->
 <acre:block def="incoming_props_thead(name, expanded, data_url)">
-  <thead>
+  <thead class="expandable">
     <tr>
       <th class="tbody-header ${expanded ? 'expanded' : ''}" colspan="4"
           data-url="${data_url ? data_url : ''}">

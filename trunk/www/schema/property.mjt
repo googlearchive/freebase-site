@@ -87,7 +87,7 @@
       </tr>
     </tbody>
   </table>
-  <table class="table">
+  <table class="table big">
     <thead>
       <th class="numeric column-header" scope="column">${_("Expected Type")}</th>
       <th class="numeric column-header" scope="column">${_("Disambiguating")}</th>
@@ -96,24 +96,26 @@
       <th class="numeric column-header" scope="column" acre:if="c.property_reverse">${_("Reverse")}</th>
     </thead>
     <tbody>
-      <td class="numeric odd">
-        <a href="${h.fb_url(c.property.expected_type.id, [['schema']])}">$c.property.expected_type.id</a>
-      </td>
-      <td class="numeric even">
-        <span acre:if="c.property['/freebase/property_hints/disambiguator'] === true">${_("True")}</span>
-        <span acre:else="">${_("False")}</span>
-      </td>
-      <td class="numeric odd">
-        <span acre:if="c.property.unique === true">${_("True")}</span>
-        <span acre:else="">${_("False")}</span>
-      </td>
-      <td class="numeric even">
-        <span acre:if="c.property['/freebase/property_hints/display_none'] === true">${_("True")}</span>
-        <span acre:else="">${_("False")}</span>
-      </td>
-      <td class="numeric odd" acre:if="c.property_reverse">
-        <a href="${h.fb_url(c.property.reverse_property.id, [['schema']])}">${c.property.reverse_property.id}</a>
-      </td>          
+      <tr class="data-row hover-row">
+        <td class="numeric odd">
+          <a href="${h.fb_url(c.property.expected_type.id, [['schema']])}">$c.property.expected_type.id</a>
+        </td>
+        <td class="numeric even">
+          <span acre:if="c.property['/freebase/property_hints/disambiguator'] === true">${_("True")}</span>
+          <span acre:else="">${_("False")}</span>
+        </td>
+        <td class="numeric odd">
+          <span acre:if="c.property.unique === true">${_("True")}</span>
+          <span acre:else="">${_("False")}</span>
+        </td>
+        <td class="numeric even">
+          <span acre:if="c.property['/freebase/property_hints/display_none'] === true">${_("True")}</span>
+          <span acre:else="">${_("False")}</span>
+        </td>
+        <td class="numeric odd" acre:if="c.property_reverse">
+          <a href="${h.fb_url(c.property.reverse_property.id, [['schema']])}">${c.property.reverse_property.id}</a>
+        </td>    
+      </tr>
     </tbody>
   </table>
 </acre:block>

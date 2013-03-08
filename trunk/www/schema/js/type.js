@@ -60,7 +60,12 @@
           url: row.attr("data-url"),
           dataType: "json",
           success: function(data) {
-            var tbody = $(data.result.html).hide();
+            var table = $('<table>').append(data.result.html);
+            var tbody = table.find('tbody:first');
+            var thead = table.find('thead:first');
+            if (thead.length) {
+              tbody.prepend(thead.find('>tr'));
+            }
             row.parents("thead:first").after(tbody);
             propbox.init_menus(tbody, true);
             t._toggle(row);
@@ -77,15 +82,15 @@
     },
 
     _toggle: function(row) {
-      var tbody = row.parents("thead:first").next("tbody:first");
+      var expanding_header = row.parents('thead.expandable:first');
+      var tbody = expanding_header.next('tbody:first');
       if (row.is(".expanded")) {
         tbody.hide();
         row.removeClass("expanded");
         $(".tbody-header-title", row).removeClass("expanded");
       }
       else {
-        //tbody.show();
-        tbody.css("display", "table-row-group"); // default display:block seems to group multiple tbody's togehter
+        tbody.show();
         row.addClass("expanded");
         $(".tbody-header-title", row).addClass("expanded");
       }

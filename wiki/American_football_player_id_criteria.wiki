@@ -16,7 +16,7 @@ Here are some typical patterns for determining identity of american football pla
 <li><span id="27.a"></span>''name_match'' and ''current_team_match''.
 ([American_football_player_id_criteria#Example_1 Example 1])</li>
 <li><span id="27.b"></span>''name_match'' and ''former_team_match''.
-([American_football_player_id_criteria#27.2 Example 2])</li>
+([American_football_player_id_criteria#Example_2 Example 2])</li>
 </ol>
 
 ===Additional Patterns and Features===
@@ -30,7 +30,7 @@ Identity features, Patterns and Examples for following types are also applicable
 <br/><br/>
 
 =====Example 1=====
-<span id="27.1"></span>[[File:Example218amefootplayer.jpg|border|720px]]
+https://code.google.com/p/freebase-site/source/browse/wiki/Example218amefootplayer.jpg
 
 <br/><br/>
 

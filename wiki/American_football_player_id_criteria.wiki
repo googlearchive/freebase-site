@@ -12,12 +12,12 @@ The general information on the Identity Criterion for various freebase types is 
 ===General guidelines for establishing identity between two American Football Players===
 Here are some typical patterns for determining identity of american football players:
 
-<ol style="list-style-type: lower-alpha">
-<li><span id="27.a"></span>''name_match'' and ''current_team_match''.
-([American_football_player_id_criteria#Example_1 Example 1])</li>
-<li><span id="27.b"></span>''name_match'' and ''former_team_match''.
-([American_football_player_id_criteria#Example_2 Example 2])</li>
-</ol>
+ =====Pattern_a=====
+''name_match'' and ''current_team_match'' ([American_football_player_id_criteria#Example_1 Example 1])
+ =====Pattern_b===== 
+''name_match'' and ''former_team_match''.
+([American_football_player_id_criteria#Example_2 Example 2])
+
 
 ===Additional Patterns and Features===
 Identity features, Patterns and Examples for following types are also applicable for establishing identity relationships in type /american_football/football_player:
@@ -30,15 +30,15 @@ Identity features, Patterns and Examples for following types are also applicable
 <br/><br/>
 
 =====Example 1=====
-https://code.google.com/p/freebase-site/source/browse/wiki/Example218amefootplayer.png
+<img src="http://freebase-site.googlecode.com/svn/wiki/Example218amefootplayer.png"  height="420" width="720">
 
 <br/><br/>
 
-[[#27.a|Pattern a]] Example 1: [http://espn.go.com/nfl/player/_/id/5615/matt-schaub Permalink] Here the names of the football players and their current teams match on both the sources. Hence the american football players are identical.
+[Pattern_a Pattern-a] Example 1: [http://espn.go.com/nfl/player/_/id/5615/matt-schaub Permalink] Here the names of the football players and their current teams match on both the sources. Hence the american football players are identical.
 
 =====Example 2=====
-[https://code.google.com/p/freebase-site/source/browse/wiki/Example219amefootplayer.png]
+<img src="http://freebase-site.googlecode.com/svn/wiki/Example219amefootplayer.png"  height="420" width="720">
 
 <br/><br/>
 
-[[#27.b|Pattern b]] Example 2: [http://www.aeispeakers.com/speakerbio.php?SpeakerID=1044 Permalink] Here the names of the football players and their former teams match on both the sources. Hence the american football players are identical.
+[Pattern b] Example 2: [http://www.aeispeakers.com/speakerbio.php?SpeakerID=1044 Permalink] Here the names of the football players and their former teams match on both the sources. Hence the american football players are identical.

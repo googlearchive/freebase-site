@@ -1,0 +1,29 @@
+#summary American football player Type Definition
+
+= American Football Player=
+
+==Type Definition ==
+An American football player is an individual who participates in games of American football. The type includes professional and amateur football players, as well as international American football players.
+
+===Persons who are an American Football Player===
+ * Professional American football players (e.g. Peyton Manning, Richard Bartel, Patrick Gerigk)
+ * Amateur American football players such as those who play for high schools, colleges, clubs, or in other non-professional tournaments (e.g. Carlos Alvarez, Don Roberts, Noel Devine)
+
+===Persons who are NOT an American Football Player===
+ * Association football (soccer) players (e.g. David Beckham, Daniele Corvia, Gerd Muller)
+  * Use the Football player type for these.
+ * Rugby players (e.g. Ignacio Corleto, Mat Rogers, Chris Paterson)
+  * Use the Rugby player type for these.
+ * Other kinds of footballers we don't currently have types for such as Canadian football players, Australian rules football players and Gaelic football players (e.g. Greg Battle, Jonathan Brown, Sean Purcell)
+  * Use the Athlete type for these
+
+== Properties ==
+ * Current team : The team that the player plays on
+ * Former teams : The teams that the player has played on during his NFL career.
+
+== Identity Criterion==
+ * [American_football_player_id_criteria American Football Player Identity Criteria]
+
+
+==Data Entry==
+ * [Data_entry_tutorial Data Entry for American Football Player]

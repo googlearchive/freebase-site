@@ -1,8 +1,9 @@
 #summary American football player Type Definition
 
 = American Football Player=
+/american_football/football_player
 
-==Type Definition ==
+== Type Definition ==
 An American football player is an individual who participates in games of American football. The type includes professional and amateur football players, as well as international American football players.
 
 ===Persons who are an American Football Player===

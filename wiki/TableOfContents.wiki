@@ -1,13 +1,13 @@
 #summary Listing of Freebase commons schemas.
 
   * Commons Categories
-    * <b>A</b>
+    * *A*
       * [American_Football_commons  American Football commons]
       * [American_Football_commons  Architecture commons]
       * [American_Football_commons  Astronomy commons]
       * [American_Football_commons  Aviations commons]
       * [American_Football_commons  Awards commons]
-    * <b>B</b>
+    * *B*
       * [Baseball_commons   Baseball commons]
       * [American_Football_commons   Bicycles commons]
       * [Biology_commons   Bicycles commons]
@@ -15,7 +15,7 @@
       * [Book_commons   Book Commons]
       * [Broadcast_commons   Broadcast commons]
       * [Business_Commons  Business Commons]
-    * <b>C</b>
+    * *C*
       * [Celebrities_commons   Celebrities commons]
       * [Chemistry_commons   Chemistry commons]
       * [Comics_commons   Comics commons]

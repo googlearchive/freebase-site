@@ -12,8 +12,8 @@ The general information on the Identity Criterion for various freebase types is 
 ===General guidelines for establishing identity between two American Football Players===
 Here are some typical patterns for determining identity of american football players:
 
- =====Pattern_a=====
-''name_match'' and ''current_team_match'' ([American_football_player_id_criteria#Example_1 Example 1])
+ <ol style="list-style-type: lower-alpha">
+ ''name_match'' and ''first_airdate_match'' and ''country_of_origin_match''. [#6.1 Example 1]
  =====Pattern_b===== 
 ''name_match'' and ''former_team_match''.
 ([American_football_player_id_criteria#Example_2 Example 2])
@@ -30,6 +30,7 @@ Identity features, Patterns and Examples for following types are also applicable
 <br/><br/>
 
 =====Example 1=====
+<span id="6.1"></span>
 <img src="http://freebase-site.googlecode.com/svn/wiki/Example218amefootplayer.png"  height="420" width="720">
 
 <br/><br/>

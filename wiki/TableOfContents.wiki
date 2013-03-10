@@ -1,13 +1,13 @@
 #summary Listing of Freebase commons schemas.
 
- * [Commons Categories]
-   * <b>A</b>
+  * Commons Categories
+    * <b>A</b>
       * [American_Football_commons  American Football commons]
       * [American_Football_commons  Architecture commons]
       * [American_Football_commons  Astronomy commons]
       * [American_Football_commons  Aviations commons]
       * [American_Football_commons  Awards commons]
-   * [<b>B</b>]
+    * <b>B</b>
       * [Baseball_commons   Baseball commons]
       * [American_Football_commons   Bicycles commons]
       * [Biology_commons   Bicycles commons]
@@ -15,49 +15,40 @@
       * [Book_commons   Book Commons]
       * [Broadcast_commons   Broadcast commons]
       * [Business_Commons  Business Commons]
-
-  * *C*
-   * [Celebrities_commons   Celebrities commons]
-   * [Chemistry_commons   Chemistry commons]
-   * [Comics_commons   Comics commons]
-   * [Computers_commons   Computers commons]
-   * [Conferences_commons   Conferences commons]
-   * [Cricket_commons   Cricket commons]
-
+    * <b>C</b>
+      * [Celebrities_commons   Celebrities commons]
+      * [Chemistry_commons   Chemistry commons]
+      * [Comics_commons   Comics commons]
+      * [Computers_commons   Computers commons]
+      * [Conferences_commons   Conferences commons]
+      * [Cricket_commons   Cricket commons]
   * *D*
    * [Digicams_commons   Digicams commons]
-
   * *E*
    * [Education_commons   Education commons]
    * [Engineering_commons   Engineering commons]
    * [Event_commons   Event commons]
-
   * *F*
    * [Fashion_commons   Fashion commons]
    * [Fictional_universes_commons   Fictional universes commons]
    * [Film_commons   Film commons]
    * [Food_and_Drink_commons   Food and Drink commons]
    * [Freebase_commons   Freebase commons]
-
   * *G*
    * [Games_commons   Games commons]
    * [Geology_commons   Games commons]
    * [Government_commons   Games commons]
-
   * *H*
    * [Hobbies_commons   Hobbies commons]
-
   * *I*
    * [Ice_Hockey_commons   Ice Hockey commons]
    * [Influence_commons   Influence commons]
    * [Internet_commons   Internet commons]
-
   * *L*
    * [Language_commons Language commons]
    * [Law_commons  Law commons]
    * [Library_commons   Library commons]
    * [Location_commons   Location commons]
-
   * *M*
    * [Martial_arts commons Martial arts commons]
    * [Measurement_unit_commons Measurement unit commons]
@@ -66,30 +57,25 @@
    * [Meteorology_commons Meteorology commons]
    * [Military_commons Military commons]
    * [Music_commons Music commons]
-
   * *O*
    * [Olympics_commons Olympics commons]
    * [Opera_commons Opera commons]
    * [Organization_commons Organization commons]
-
   * *P*
    * [People_commons People commons]
    * [Periodicals_commons Periodicals commons]
    * [Physical_geography commons Physical geography commons]
    * [Projects_commons Projects commons]
    * [Protected_places_commons Protected places commons]
-
   * *R*
    * [Radio_commons Radio commons]
    * [Rail_commons Rail commons]
    * [Religion_commons Religion commons]
    * [Royalty_and_nobility_commons Royalty and nobility commons]
-
   * *S*
    * [Soccer_commons Soccer commons]
    * [Spaceflight_commons Spaceflight commons]
    * [Sports_commons Sports commons]
-
   * *T*
    * [TV_commons TV commons]
    * [Tennis_commons Tennis commons]
@@ -97,7 +83,6 @@
    * [Time_commons Time commons]
    * [Transportation_commons Transportation commons]
    * [Travel_commons Travel commons]
-
   * *V*
    * [Video_Games_commons Video Games commons]
    * [Visual_arts_commons Visual arts commons]

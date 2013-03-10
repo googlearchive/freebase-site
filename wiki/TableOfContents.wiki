@@ -1,21 +1,20 @@
 #summary Listing of Freebase commons schemas.
 
-*Commons Categories*
- * *A*
-    * [American_Football_commons  American Football commons]
-    * [American_Football_commons  Architecture commons]
-    * [American_Football_commons  Astronomy commons]
-    * [American_Football_commons  Aviations commons]
-    * [American_Football_commons  Awards commons]
- 
- * *B*
-    * [Baseball_commons   Baseball commons]
-    * [American_Football_commons   Bicycles commons]
-    * [Biology_commons   Bicycles commons]
-    * [Boats_commons   Bicycles commons]
-    * [Book_commons   Book Commons]
-    * [Broadcast_commons   Broadcast commons]
-    * [Business_Commons  Business Commons]
+ * [Commons Categories]
+   * [A]
+      * [American_Football_commons  American Football commons]
+      * [American_Football_commons  Architecture commons]
+      * [American_Football_commons  Astronomy commons]
+      * [American_Football_commons  Aviations commons]
+      * [American_Football_commons  Awards commons]
+   * [B]
+      * [Baseball_commons   Baseball commons]
+      * [American_Football_commons   Bicycles commons]
+      * [Biology_commons   Bicycles commons]
+      * [Boats_commons   Bicycles commons]
+      * [Book_commons   Book Commons]
+      * [Broadcast_commons   Broadcast commons]
+      * [Business_Commons  Business Commons]
 
   * *C*
    * [Celebrities_commons   Celebrities commons]

@@ -199,7 +199,7 @@
     <a href="${h.fb_url()}">
       <img alt="${_('Freebase logo')}"
            id="fb-logo"
-           acre:attrs="h.is_production() ? {src: h.static_url(acre.resolve('template/img/freebase-logo-production.png'))} : {src: h.static_url(acre.resolve('template/img/freebase-logo-sandbox.png'))}"
+           src="${h.static_url('lib/template/img/freebase-logo.png')}"
            border="0" height="21" width="120" />
     </a>
   </acre:block>

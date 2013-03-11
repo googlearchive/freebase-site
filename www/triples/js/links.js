@@ -46,31 +46,17 @@
 
     init: function() {
       lh.init_page(links);
-
-      // Recent filters
-      $('#recent-filters-container').lrulist({
-        key: 'links.filters',
-        max: 10,
-        separator: '<span class="sep">|</span>',
-        template: links.recent_filter
-      });
     },
 
     add_filter_callback: function(id) {
-      $('#recent-filters-container').lrulist('update', id);
+      var inst = $('#pill-filter-suggest').data('suggest_lrulist');;
+      if (inst) {
+        inst.update({id:id});
+      }
     },
 
     get_ajax_url: function() {
       return fb.h.ajax_url('links.ajax');
-    },
-
-
-    /**
-     * Callback for $.lrulist to create a recent filter item.
-     */
-    recent_filter: function(id) {
-      return $('<a href="javascript:void(0);">')
-          .text(id).click(links.click_filter);
     },
 
     /**

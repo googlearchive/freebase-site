@@ -156,7 +156,7 @@
       </acre:block>
     </acre:block>
     <acre:block if="c.object.flag">
-      <div class="page-flag">
+      <div class="page-flag object-flag">
         <!!-- Flags (merge, delete, split, objectionable) !!-->
         <acre:script>
           var flag = c.object.flag;

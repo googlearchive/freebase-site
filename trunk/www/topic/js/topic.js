@@ -67,7 +67,11 @@
       });
 
       // Initialize toggle-types menu collapse/expand
-      topic.toggle_types($.localstore('fb.topic.types.collapsed'));
+      if ($(document.body).is('.embed')) {
+        topic.toggle_types(false);
+      } else {
+        topic.toggle_types($.localstore('fb.topic.types.collapsed'));
+      }
 
       // Add type suggest
       $('#add-type-input')

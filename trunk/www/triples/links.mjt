@@ -64,13 +64,11 @@
   <acre:script>
     var disable_creator = false;
     var disable_filter = false;
-    var show_recent_filters = true;
     if (c.current_tab.key === 'writes') {
       disable_creator = true;
     }
     if (c.current_tab.key == 'instances' && c.object_type.id == '/type/property') {
       disable_filter = true;
-      show_recent_filters = false;
     }
   </acre:script>
   <div id="tabbar">
@@ -79,12 +77,6 @@
       ${creator_filter_box(c.creator, disable_creator)}
     </div>
     ${filter_box(c.filter, disable_filter)}
-    <acre:block if="show_recent_filters">
-      <div id="recent-filters" class="filter-options">
-        <strong>${_("Recent filters:")}</strong>
-        <span id="recent-filters-container"></span>
-      </div>
-    </acre:block>
     ${filter_options(c.historical, c.timestamp)}
     ${view_options(c.sort, c.fullts, c.fullattr)}
   </div>

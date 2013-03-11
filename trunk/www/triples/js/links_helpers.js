@@ -52,7 +52,8 @@
 
       // Initialize filter suggest input
       var pill_suggest = $('#pill-filter-suggest')
-          .suggest($.extend({
+          .suggest_lrulist($.extend({
+            localstore_key: 'fb.links.recent_filters',
             scoring: 'schema'
           }, fb.suggest_options.all('type:/type/property')))
           .bind('fb-select', function(e, data) {

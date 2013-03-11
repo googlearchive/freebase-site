@@ -101,32 +101,16 @@
           <div class="form-group clear">
             <div class="form-row form-row-inline">
               <dl class="key-map">
-                <dt class="key-symbol">${_("a")}</dt>
-                <dd class="key-desc">${_("First voting option.")}</dd>
-              </dl>
-              <dl class="key-map">
-                <dt class="key-symbol">${_("s")}</dt>
-                <dd class="key-desc">${_("Second voting option.")}</dd>
-              </dl>
-              <dl class="key-map">
-                <dt class="key-symbol">${_("d")}</dt>
-                <dd class="key-desc">${_("Third voting option.")}</dd>
-              </dl>
-              <dl class="key-map">
-                <dt class="key-symbol">${_("f")}</dt>
-                <dd class="key-desc">${_("Fourth voting option.")}</dd>
-              </dl>
-              <dl class="key-map">
-                <dt class="key-symbol">${_("h")}</dt>
-                <dd class="key-desc">${_("Hot list current flag.")}</dd>
-              </dl>
-              <dl class="key-map">
                 <dt class="key-symbol">${_("j")}</dt>
                 <dd class="key-desc">${_("Go to previous flag.")}</dd>
               </dl>
               <dl class="key-map">
                 <dt class="key-symbol">${_("k")}</dt>
                 <dd class="key-desc">${_("Go to next flag.")}</dd>
+              </dl>
+              <dl class="key-map">
+                <dt class="key-symbol">${_("h")}</dt>
+                <dd class="key-desc">${_("Hot list current flag.")}</dd>
               </dl>
               <dl class="key-map">
                 <dt class="key-symbol">${_("l")}</dt>

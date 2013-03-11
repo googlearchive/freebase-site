@@ -91,7 +91,7 @@
     </div>
     <div class="nav-module">
       <div class="nav-section" id="toc">
-        <div id="add-type">
+        <div id="add-type" class="edit">
           <h2 id="add-type-h2">
             <a href="javascript:void(0);">${_('Add type')}</a>
           </h2>

@@ -75,8 +75,8 @@ function type(type_id, query) {
     .then(function(result) {
       if (result) {
         var summary = {};
-        summary.topic_count = result.triples;
-        summary.facts = result.nodes;
+        summary.topic_count = result.nodes;
+        summary.facts = result.triples;
         summary.has_article = result.has_article || 0;
         summary.has_image = result.has_image || 0;
         return summary;

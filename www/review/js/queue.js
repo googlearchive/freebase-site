@@ -358,18 +358,6 @@
                 $('.queue-forward-button').click();
             }
         }, true);
-        fb.keyboard_shortcut.add('a', function(){ // first voting option
-            currentDiv.find('.vote-form:eq(0)').find('button').click();
-        }, true);
-        fb.keyboard_shortcut.add('s', function(){ // second voting option
-            currentDiv.find('.vote-form:eq(1)').find('button').click();
-        }, true);
-        fb.keyboard_shortcut.add('d', function(){ // third voting option
-            currentDiv.find('.vote-form:eq(2)').find('button').click();
-        }, true);
-        fb.keyboard_shortcut.add('f', function(){ // fourth voting option
-            currentDiv.find('.vote-form:eq(3)').find('button').click();
-        }, true);
         fb.keyboard_shortcut.add('h', function(){ // hot list flag
             currentDiv.find('#add-link-to-list').click();
         }, true);

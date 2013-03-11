@@ -59,6 +59,8 @@ var INVALID_ITEM = 'Item supplied is not an option for flag.';
 var MALFORMED_FLAG = 'Malformed flag.';
 var LOW_PERMISSION = 'User does not have permission.';
 var VOTE_ON_OWN_FLAG = 'User can not vote on own flag.';
+var PROCESS_VOTE_ERROR = 'There was a problem with the previous vote. ' +
+        'Please try again later.';
 
 // processFlag constants
 var INSUFFICIENT_VOTES = 'Insufficient votes to process';
@@ -168,6 +170,8 @@ function processVote(flag, vote, item, user) {
 
     }).then(function(result) {
         return deferred.resolved(SUCCESS);
+    }, function(error) {
+        return deferred.rejected(PROCESS_VOTE_ERROR);
     });
 }
 
@@ -379,6 +383,8 @@ function processFlag(mid) {
                 return executeVote(flagInfo, verifiedJudgments);
             });
         }
+    }, function (err) {
+        return deferred.rejected(PROCESS_VOTE_ERROR);
     });
 }
 

@@ -2159,10 +2159,8 @@ function save_file_binary(resource, form_request, revision, name, based_on) {
       };
       return urlfetch(url, args)
         .then(function(env) {
-          acre.syslog(JSON.stringify(env), "c");
           return handle_freebase_response(env).result;
         }, function(e) {
-          acre.syslog(JSON.stringify(e), "xxx");
           var error = parse_freebase_error(e);
           if (error && error.messages[0].code === "/api/status/error/file_format/unsupported_mime_type") {
             throw new ServiceError("400 Bad Request", "/api/status/error/file_format/unsupported_mime_type", {
@@ -2171,7 +2169,6 @@ function save_file_binary(resource, form_request, revision, name, based_on) {
               info    : error.messages[0].info.mime_type
             });
           } else {
-            acre.syslog(JSON.stringify(e), "yyy");
             throw e;
           }
         }).then(function(ret) {

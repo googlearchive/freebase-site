@@ -1201,6 +1201,7 @@ function account_provider(name, opts) {
  */
 function enable_writeuser(writeuser) {
   writeuser = writeuser || "fb_writeuser";
+  acre.syslog.info(writeuser, "writeuser.set");
   acre.oauth.providers.freebase_writeuser.writeuser = writeuser;
   if (!acre.oauth.has_credentials("freebase_writeuser")) {
     throw "Can't proceed without freebase_writeuser credentials.";

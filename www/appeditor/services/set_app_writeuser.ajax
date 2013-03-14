@@ -41,10 +41,10 @@ var SPEC = {
   validate: function(params) {
     return [
       validators.AcreResource(params, "appid", {required: true}),
-      validators.StringBool(params, "enable", {if_empty: true})
+      validators.StringBool(params, "enable", {if_empty: true}),
       params.auth_user
     ];
   },
 
-  run: queries.set_app_write_user
+  run: queries.set_app_writeuser
 };

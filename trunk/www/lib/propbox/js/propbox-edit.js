@@ -78,7 +78,6 @@
 
     prop_add: function(prop_section, html, structure) {
       var ls = $(">.data-section", prop_section);
-      //$("> .data-table > tbody > .empty-row, > .data-list > .empty-row", ls).hide();
       var body = $("> .data-table > tbody, > .data-list", ls);
 
       var edit_row = $(".edit-row", html);
@@ -107,7 +106,14 @@
           if (structure.unique) {
             edit_row.trigger(options.event_prefix + "cancel");
           }
+        })
+        .bind(event_prefix + 'cancel', function() {
+          if (prop_section.find('.edit-row').length == 1) {
+            // Am I the only edit row? There might be other edits in progress.
+            prop_section.removeClass('editing');
+          }
         });
+      prop_section.addClass('editing');
       formlib.init_inline_add_form(options);
     },
 
@@ -255,7 +261,14 @@
         .bind(event_prefix + "delete", function() {
           edit_row.trigger(event_prefix + "cancel");
           propbox.edit.value_delete_begin(prop_section, prop_row);
+        })
+        .bind(event_prefix + 'cancel', function() {
+          if (prop_section.find('.edit-row').length == 1) {
+            // Am I the only edit row? There might be other edits in progress.
+            prop_section.removeClass('editing');
+          }
         });
+      prop_section.addClass('editing');
       formlib.init_inline_edit_form(options);
     },
 

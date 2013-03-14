@@ -58,7 +58,7 @@
       <link rel="stylesheet" type="text/css" href="suggest/suggest.mf.css" />
       <!!--
          Modernizr must be served from document head.
-         
+
       -->
       <script src="template/modernizr.mf.js"></script>
 
@@ -88,16 +88,26 @@
         }
       </style>
 
-      <acre:block if="h.is_production()">
-        <script>${acre.include("googleanalytics.js")}</script>
-      </acre:block>
+      <script type="text/javascript">
+        if (SERVER.ga_id) {
+          var _gaq = _gaq || [];
+          _gaq.push(['_setAccount', SERVER.ga_id]);
+          _gaq.push(['_trackPageview']);
+
+          (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+          })();
+        }
+      </script>
 
       <!-- any additional head content (i.e., css, js, etc.)-->
       <acre:block if="exports.head">
         ${exports.head(exports)}
       </acre:block>
     </head>
-    
+
     <acre:block if="exports.body">
       ${exports.body(exports)}
     </acre:block>
@@ -126,7 +136,7 @@
   <acre:block else="">
     ${header(exports)}
   </acre:block>
-  
+
   <!!-- content !!-->
   <acre:block if="exports.content">
     ${exports.content(exports)}
@@ -134,7 +144,7 @@
   <acre:block else="">
     ${content(exports)}
   </acre:block>
-  
+
   <!!-- footer !!-->
   <acre:block if="exports.footer">
     ${exports.footer(exports)}
@@ -176,14 +186,14 @@
             </ul>
             <a href="${h.account_url('signout')}" title="Sign out of Freebase" rel="nofollow" id="nav-signout">Sign Out</a>
           </div>
-        </acre:block>        
+        </acre:block>
       </div>
       <div class="nav-user-controls anonymous" id="signedout" style="display:none;">
         <acre:block if="exports.nav_user_signedout">
           ${exports.nav_user_signedout()}
         </acre:block>
         <acre:block else="">
-          <a href="${h.account_url('signin')}" title="Sign in to your Freebase account" 
+          <a href="${h.account_url('signin')}" title="Sign in to your Freebase account"
              id="fb-signin-link"
              rel="nofollow">Sign In or Sign Up</a>
         </acre:block>
@@ -285,7 +295,7 @@
     </acre:block>
   </div>
   <div id="fb-topic-hover-pane" class="fbs-reset fbs-flyout-pane"></div>
-  ${incompatible_components.overlay_dialog()}  
+  ${incompatible_components.overlay_dialog()}
   ${incompatible_components.inline_dialog()}
 </acre:block>
 
@@ -352,12 +362,12 @@
 <acre:block def="acre_javascript_vars(exports)">
 
   <acre:script>
-    // Fetch the client-side googleapis.com api key if we are using those APIs. 
-    // This is needed for Suggest to make requests. 
+    // Fetch the client-side googleapis.com api key if we are using those APIs.
+    // This is needed for Suggest to make requests.
     var api_key = '';
-    if (acre.freebase.googleapis_url) { 
+    if (acre.freebase.googleapis_url) {
       api_key = acre.keystore.get('googleapis_client_side');
-      if (api_key && api_key.length > 1) { 
+      if (api_key && api_key.length > 1) {
             api_key = api_key[0];
        }
      }
@@ -402,6 +412,12 @@
     if (acre.request.headers['x-metaweb-tid']) {
       SERVER.tid = acre.request.headers['x-metaweb-tid'];
     }
+    // Google Analytics ID
+    if(h.is_production()) {
+      SERVER.ga_id = "UA-3096233-10";
+    } else if (h.is_sandbox()) {
+      SERVER.ga_id = "UA-3096233-11";
+    }
   </acre:script>
   <script>
     window.SERVER = ${JSON.stringify(SERVER)};
@@ -413,7 +429,7 @@
        if (errorid != null) params.errorid = errorid;
        return base_url + "?" + $.param(params);
      };
-     
+
      // inline JS that needs to run before page-render
      ${acre.include("template/freebase-inline.mf.js")}
   </script>

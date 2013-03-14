@@ -1070,6 +1070,10 @@
      * document keypress => keyboard shortcut handlers
      */
     $(document).keypress(function(e) {
+      if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) {
+        /** For now, ignore all modifier shortcuts */
+        return true;
+      }
       var code = e.charCode;
       var target = e.target;
       if (fb.keyboard_shortcut.cache_[code] &&
@@ -1080,6 +1084,7 @@
         fb.keyboard_shortcut.cache_[code]();
         return false;
       }
+      return true;
     });
 
     $("#page-content")

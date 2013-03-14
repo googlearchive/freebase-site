@@ -94,6 +94,7 @@ var exports = {
   // URL
   "is_client": is_client,
   "is_production": is_production,
+  "is_sandbox": is_sandbox,
   "parse_params": parse_params,
   "build_url": build_url,
   "fb_url": fb_url,
@@ -1242,12 +1243,27 @@ function is_client() {
   return is_client.b;
 }
 
+/**
+ * http://www.freebase.com
+ * http://dev.freebase.com
+ */
 function is_production() {
   if (is_production.b == undefined) {
-    is_production.b = /www\.freebase\.com$/.test(acre.request.server_name);
+    is_production.b = /(www|dev)\.freebase\.com$/.test(acre.request.server_name);
   }
   return is_production.b;
 }
+
+/**
+ * http://www.sandbox-freebase.com
+ */
+function is_sandbox() {
+  if (is_sandbox.b == undefined) {
+    is_sandbox.b = /www\.sandbox\-freebase\.com$/.test(acre.request.server_name);
+  }
+  return is_sandbox.b;
+}
+
 
 /**
  * params can be an array of tuples so that we can use url builders

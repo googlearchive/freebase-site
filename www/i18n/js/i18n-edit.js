@@ -83,14 +83,21 @@
 
       edit_name_init: function(options) {
           var name = $(":input[name=value]", options.edit_row);
-          name.bind("input", function(e) {
+          name
+            .bind("input", function(e) {
               if ($.trim(this.value) !== "") {
-                  formlib.enable_submit(options);
+                formlib.enable_submit(options);
               }
               else {
-                  formlib.disable_submit(options);
+                formlib.disable_submit(options);
               }
-          });
+            })
+            .keypress(function(e) {
+              if (e.keyCode == 13) {
+                options.edit_row.trigger(options.event_prefix + 'submit');
+              }
+            })
+            .focus();
       },
 
       edit_name_validate: function(options) {

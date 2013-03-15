@@ -473,7 +473,7 @@
         status: ["", "Searching...", "Select an item from the list:"],
         service_url: fb.h.fb_googleapis_url(),
         key: fb.acre.freebase.api_key,
-        lang: fb.suggest_lang.lang()
+        lang: 's/all'
       },
 
       /**

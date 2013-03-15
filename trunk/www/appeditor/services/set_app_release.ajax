@@ -41,7 +41,8 @@ var SPEC = {
   validate: function(params) {
     return [
       validators.AcreResource(params, "appid", {required: true}),
-      validators.AcreVersion(params, "version", {required: true})
+      validators.AcreVersion(params, "version", {required: true,
+          allow_reserved_words: true})
     ];
   },
 
@@ -51,5 +52,5 @@ var SPEC = {
         return queries.get_app_versions(resource);
       });
   }
-  
+
 };

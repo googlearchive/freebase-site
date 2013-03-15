@@ -881,15 +881,21 @@ Validator.factory(scope, "AcreAppKey", {
 });
 
 Validator.factory(scope, "AcreVersion", {
-  "string": function(key) {
-    // 'current' is a reserved version name
-    if (key == 'current') {
-      return this.invalid('"current" is a reserved version name.');
-    }
+  "default": {
+    // By default, "current" and "release" version labels are not allowed
+    allow_reserved_words: false
+  },
+  "string": function(key, options) {
+    if (!options.allow_reserved_words) {
+      // 'current' is a reserved version name
+      if (key == 'current') {
+        return this.invalid('"current" is a reserved version name.');
+      }
 
-    // 'release' is a reserved version name
-    if (key == 'release') {
-      return this.invalid('"release" is a reserved version name.');
+      // 'release' is a reserved version name
+      if (key == 'release') {
+        return this.invalid('"release" is a reserved version name.');
+      }
     }
 
     // XXX - check that it's non-null, uses valid characters

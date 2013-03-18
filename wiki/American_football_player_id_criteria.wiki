@@ -28,7 +28,7 @@ Identity features, Patterns and Examples for following types are also applicable
 
 <br/><br/>
 
-=====Example1=====
+======Example1======
 <img src="http://freebase-site.googlecode.com/svn/wiki/Example218amefootplayer.png"  height="420" width="720">
 
 <br/><br/>

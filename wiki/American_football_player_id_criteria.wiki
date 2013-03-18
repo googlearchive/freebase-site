@@ -9,7 +9,7 @@ The general information on the Identity Criterion for various freebase types is 
  * *_former_team_match_*:  There is a ''former_team_match''  if at least one of the player’s previous teams listed in Freebase property /american_football/football_player/former_teams (Former Teams) matches with the teams on the other source.
 
 
-===General guidelines for establishing identity between two American Football Players===
+====General guidelines for establishing identity between two American Football Players====
 Here are some typical patterns for determining identity of american football players:
 
  <ol style="list-style-type: lower-alpha">

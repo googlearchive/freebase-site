@@ -13,7 +13,7 @@ The general information on the Identity Criterion for various freebase types is 
 Here are some typical patterns for determining identity of american football players:
 
  <ol style="list-style-type: lower-alpha">
- <li><span id="6.m"></span>''name_match'' and ''first_airdate_match'' and ''country_of_origin_match''. ([American_football_player_id_criteria#Example1 Example 1])</li>
+ <li><span id="6.m"></span>''name_match'' and ''first_airdate_match'' and ''country_of_origin_match''. ([American_football_player_id_criteria#Example22 Example 1])</li>
 <li><span id="6.n"></span>''name_match'' and ''former_team_match''.
 ([#6.2 Example 2])</li>
 </ol>
@@ -35,7 +35,7 @@ Identity features, Patterns and Examples for following types are also applicable
 
 [#6.m Pattern-a] Example 1: [http://espn.go.com/nfl/player/_/id/5615/matt-schaub Permalink] Here the names of the football players and their current teams match on both the sources. Hence the american football players are identical.
 
-<span id="6.2"></span>
+<span id="Example22"></span>
 <img src="http://freebase-site.googlecode.com/svn/wiki/Example219amefootplayer.png"  height="420" width="720">
 
 <br/><br/>

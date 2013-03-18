@@ -7,7 +7,7 @@ The general information on the Identity Criterion for various freebase types is 
  * *_name_match_* : There is a ''name_match'' if the names of the football players or their aliases on both the sources match. The match may also be approximate due to the topics using football players' nick names, missing/extra middle names, prefix/suffix (such as Jr., Sr.), or initials.
  * *_current_team_match_* : There is a ''team_match'' if the player’s current team listed in Freebase property /american_football/football_player/current_team (Current Team) is same on both the sources.
  * *_former_team_match_*:  There is a ''former_team_match''  if at least one of the player’s previous teams listed in Freebase property /american_football/football_player/former_teams (Former Teams) matches with the teams on the other source.
-
+<a href=#ttt">Example 2</a>
 
 ====General guidelines for establishing identity between two American Football Players====
 Here are some typical patterns for determining identity of american football players:
@@ -41,3 +41,5 @@ Identity features, Patterns and Examples for following types are also applicable
 <br/><br/>
 
 [#6.n Pattern b] Example 2: [http://www.aeispeakers.com/speakerbio.php?SpeakerID=1044 Permalink] Here the names of the football players and their former teams match on both the sources. Hence the american football players are identical.
+
+<a name="ttt"></a>

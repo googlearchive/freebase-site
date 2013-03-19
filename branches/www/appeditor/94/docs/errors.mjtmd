@@ -1,0 +1,64 @@
+Acre Templates - *Errors*
+================================
+<acre:script>
+  q = acre.require("./example_query").query;
+</acre:script>
+  
+The red error text in this section is intentional.
+
+`$$` must begin a variable substitution or be quoted, otherwise:
+
+#### code
+>     $$
+
+#### output
+<blockquote>
+    $
+</blockquote>
+
+
+The result of `$$`-expansion must be a number or string or a markup object. Other types of javascript objects generate errors for now:
+
+#### code
+>     $$Object
+
+#### output
+<blockquote>
+    $Object
+</blockquote>
+
+null values show up like this:
+
+#### code
+>     $${null}
+
+#### output
+<blockquote>
+    ${null}
+</blockquote>
+
+undefined properties show up like this:
+
+#### code
+>     $$q.missing_property
+
+#### output
+<blockquote>
+    $q.missing_property
+</blockquote>
+
+`a['b']` must be enclosed with `$${}`:
+
+#### code
+>     wrong: $$q.result.film[0].film.name
+>     <hr></hr>
+>     right: $${q.result.film[0].film.name}
+
+#### output
+<blockquote>
+    wrong: $q.result.film[0].film.name
+    <hr></hr>
+    right: ${q.result.film[0].film.name}
+</blockquote>
+
+

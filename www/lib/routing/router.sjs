@@ -96,7 +96,7 @@ function init_rules(lib) {
 
   // *********** UTIL *************
   rules["util"] = {
-    config: lib + "/routing/config.ajax", 
+    config: lib + "/routing/config.ajax",
     fs_routing: lib + "/routing/rules_dump.sjs",
     schema_warmer: lib + "/schema/warmer.controller",
     script_warmer: lib + "/scripts/warmer.controller",
@@ -939,6 +939,9 @@ function init_rules(lib) {
     {prefix:"/tools/pipeline/showtask", url:"/tools/flags/review", redirect:301},
 
     // Policies
+    {prefix:"/policies/freebase-cc-by-61x23.png",
+                                        url:"/policies/img/freebase-cc-by-61x23.png",
+                                        redirect:301},
     {prefix:"/signin/tos",              url:"/policies/tos", redirect:301},
     {prefix:"/signin/cc",               url:"/policies/copyright", redirect:301},
     {prefix:"/signin/freebaseid",       url:"/policies/freebaseid", redirect:301},

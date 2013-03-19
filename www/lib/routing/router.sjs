@@ -943,8 +943,8 @@ function init_rules(lib) {
 
     // Policies
     {prefix:"/policies/freebase-cc-by-61x23.png",
-                                        url:"/policies/img/freebase-cc-by-61x23.png",
-                                        redirect:301},
+        url:"http://www.gstatic.com/freebase/img/freebase-cc-by-61x23.png",
+        redirect:301},
     {prefix:"/signin/tos",              url:"/policies/tos", redirect:301},
     {prefix:"/signin/cc",               url:"/policies/copyright", redirect:301},
     {prefix:"/signin/freebaseid",       url:"/policies/freebaseid", redirect:301},

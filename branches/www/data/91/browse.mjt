@@ -1,0 +1,179 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+  var image_components = acre.require("lib/template/imagecomponents");
+  var user_id = acre.request.params.user_id;
+  var UNAVAILABLE = "-";
+</acre:script>
+
+<acre:block def="head()">
+  <meta name="description"
+        content="Freebase is a community-curated database of well-known people, places and things.">
+  <meta name="keywords"
+        content="database, open database, shared database, facts, fact sheet, information, community,
+                 discussion, semantic web, google, metaweb" >
+  <meta name="robots" content="noodp">
+  <link rel="stylesheet" type="text/css" href="browse.mf.css" />
+  <style type="text/css">
+    @-webkit-keyframes grow {
+      0% {
+        -webkit-transform: scale3d(0,1,0);
+      }
+      100% {
+        -webkit-transform: scale3d(1,1,0);
+      }
+    }
+  </style>
+</acre:block>
+
+<acre:block def="page_content()">
+  <div id="content-wrapper" class="clear">
+    <section id="content-main" class="section">
+      <h1 class="section-header">
+        <span class="section-title">
+          <span class="section-name">
+            ${_('Explore Freebase Data')}
+          </span>
+        </span>
+      </h1>
+      <acre:block if="c.domains">
+        <table id="browse" cellspacing="0" class="table big">
+          <thead>
+            <tr>
+              <th scope="col" class="column-header first"><span class="sort-icon">${_('Domain')}</span></th>
+              <th scope="col" class="column-header">${_('ID')}</th>
+              <th scope="col" class="column-header" style="text-align:right">${_("Topics")}</th>
+              <th scope="col" class="column-header">${_("Facts")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr acre:for="d in c.domains">
+              <td class="row-header first" scope="row">
+                <acre:script>var name = i18n.display_name(d);</acre:script>
+                <a href="${h.fb_url(d.id)}" title="${h.sprintf(_('View %s'), name)}">$name</a>
+              </td>
+              <td class="key">$d.id</td>
+              <td class="topics" style="width:30%;text-align:right">
+                <div class="wrapper">
+                  <acre:block if="d.topics != null">
+                    <span style="width:${d.topics.log_percent}%" class="bar"></span>
+                    <span class="value">${h.format_stat(d.topics.count)}</span>
+                  </acre:block>
+                  <acre:block else="">
+                    <span class="value">${UNAVAILABLE}</span>
+                  </acre:block>
+                </div>
+              </td>
+              <td class="facts" style="width:30%">
+                <div class="wrapper">
+                  <acre:block if="d.facts != null">
+                    <span style="width:${d.facts.log_percent}%" class="bar"></span>
+                    <span class="value">${h.format_stat(d.facts.count)}</span>
+                  </acre:block>
+                  <acre:block else="">
+                    <span class="value">${UNAVAILABLE}</span>
+                  </acre:block>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </acre:block>
+    </section>
+
+    <aside class="secondary">
+      <section class="wrapper">
+      <h3 class="primary"><span>${_("How can you get started?")}</span></h3>
+      <div class="sub-section">
+        <h4>${_("Learn how it works")}</h4>
+        <p>${_("Discover what kind of information Freebase contains, how it's organized, and how Freebase allows you to uniquely identify identities anywhere on the web")}</p>
+        <a href="${h.developer_url('guide/basic_concepts')}" rel="external help" class="more">${_("Keep reading &raquo;")}</a>
+      </div>
+      <div class="sub-section">
+        <h4>${_("Use Freebase data")}</h4>
+        <p>${h.template_sprintf(_("Freebase data is free to use under %s. You can:"), license_help_text())}</p>
+        <ul>
+          <li>${h.template_sprintf(_("Query Freebase using our %s, %s, or %s APIs"), search_help_text(), topic_help_text(), query_help_text())}</li>
+          <li>${h.template_sprintf(_("%s our weekly data dumps"), download_help_text())}</li>
+        </ul>
+      </div>
+      </section>
+      <div class="newsletter">
+        <div class="wrapper">
+          <h4>${_("Join the Community")}</h4>
+          <ul>
+            <li>${h.template_sprintf(_("Follow %s"), gplus_text())}</li>
+            <li>${_("Subscribe to the mailing list for community discussion:")}</li>
+          </ul>
+          <form method="POST" action="http://lists.freebase.com/mailman/subscribe/freebase-discuss" >
+            <input name="email" type="email"
+                   placeholder="${_('Your email address...')}"
+                   class="text-input"/>
+
+            <button class="button primary">${_("Subscribe")}</button>
+          </form>
+          <a href="http://freebase.markmail.org/" class="more">${_("Read the List Archive")}</a>
+        </div>
+      </div>
+    </aside>
+  </div>
+</acre:block>
+
+<acre:block def="license_help_text()">
+  <a href="${h.developer_url('faq#rules_for_using_data')}">${_("an open license")}</a>
+</acre:block>
+
+<acre:block def="search_help_text()">
+  <a href="${h.developer_url('v1/search-overview')}">${_("Search")}</a>
+</acre:block>
+
+<acre:block def="topic_help_text()">
+  <a href="${h.developer_url('v1/topic-overview')}">${_("Topic")}</a>
+</acre:block>
+
+<acre:block def="query_help_text()">
+  <a href="${h.developer_url('v1/mql-overview')}">${_("MQL")}</a>
+</acre:block>
+
+<acre:block def="download_help_text()">
+  <a href="${h.developer_url('data')}">${_("Download")}</a>
+</acre:block>
+
+<acre:block def="gplus_text()">
+  <a href="http://plus.google.com/109936836907132434202">${_("Freebase on G+")}</a>
+</acre:block>
+

@@ -1,0 +1,185 @@
+Acre Templates - *Template Basics*
+==================================
+
+In addition to native JavaScript files, the Acre server can execute Acre templates.  The Acre template language can be used to generate relaxed HTML content or strict well-formed XML content (see [Parsing Modes](http://freebaseapps.com/docs/acre_templates/parsing)).  
+
+We'll be evaluating bits of Acre templates throughout this page. First we'll show the Acre template, then the expanded HTML output of the Acre template.
+
+Here's our first example: plain markup passes right through:
+
+#### code
+>     <h3>hello</h3>
+
+#### output
+<blockquote>
+    <h3>hello</h3>
+</blockquote>
+
+## Example Data
+
+To start with we'll set up some sample data, so we can talk about the basics of the template language without contacting an external service just yet. We'll set up a global JavaScript variable `q` that contains a simulated JSON response from the Freebase service.  To set `q` , an `<acre:script>` tag is put into the template:
+
+#### code
+>     The acre:script tag...
+> 
+>     <acre:script>
+>     q = {
+>         "result": {
+>             "id": "/guid/9202a8c04000641f8000000000056600",
+>             "name": "Buster Keaton",
+>             "film": [{
+>                 "type": "/film/performance",
+>                 "film": {
+>                     "id": "/guid/9202a8c04000641f800000000008910a",
+>                     "name": "Sherlock, Jr.",
+>                     "initial_release_date": "1924-04-21"
+>                 }
+>             },
+>             {
+>                 "type": "/film/performance",
+>                 "film": {
+>                     "id": "/guid/9202a8c04000641f80000000002c39db",
+>                     "name": "Steamboat Bill Jr.",
+>                     "initial_release_date": "1928-05-19"
+>                 }
+>             }]
+>         }
+>     };
+>     </acre:script>
+> 
+>     is invisible.
+
+#### output
+<blockquote>
+    The acre:script tag...
+
+    <acre:script>
+    q = {
+        "result": {
+            "id": "/guid/9202a8c04000641f8000000000056600",
+            "name": "Buster Keaton",
+            "film": [{
+                "type": "/film/performance",
+                "film": {
+                    "id": "/guid/9202a8c04000641f800000000008910a",
+                    "name": "Sherlock, Jr.",
+                    "initial_release_date": "1924-04-21"
+                }
+            },
+            {
+                "type": "/film/performance",
+                "film": {
+                    "id": "/guid/9202a8c04000641f80000000002c39db",
+                    "name": "Steamboat Bill Jr.",
+                    "initial_release_date": "1928-05-19"
+                }
+            }]
+        }
+    };
+    </acre:script>
+
+    is invisible.
+</blockquote>
+
+
+
+## Text Substitution
+
+Text splicing is the fundamental operation in any template language. In Acre templates, text substitutions are introduced with the dollar sign: `$$`. Complex expressions following the `$$` must be enclosed in curly braces: `$${expr}`. For simple expressions the braces can be omitted.
+
+Inside the text and attribute values in the template, you can evaluate arbitrary JavaScript expressions with `$${expr}`. The result of evaluating expr will be inserted into the output document.
+
+#### code
+>     <div>
+>       $${q.result.film.length} films found
+>     </div>
+
+#### output
+<blockquote>
+    <div>
+      ${q.result.film.length} films found
+    </div>
+</blockquote>
+
+
+Variable names and `.` paths don't require `{}` delimiters:
+
+#### code
+>     <div>
+>       $$q.result.film.length films found
+>     </div>
+
+#### output
+<blockquote>
+    <div>
+      $q.result.film.length films found
+    </div>
+</blockquote>
+
+
+`$$` substitution works in attribute values as well:
+
+#### code
+>     <a href="http://freebase.com/view$$q.result.id">
+>       $$q.result.name
+>     </a>
+
+#### output
+<blockquote>
+    <a href="http://freebase.com/view$$q.result.id">
+      $q.result.name
+    </a>
+</blockquote>
+
+
+To avoid triggering substitution, you can use two dollar signs `$$$$` to generate a single `$$` in the output.
+
+#### code
+>     $$$$100.00
+
+#### output
+<blockquote>
+    $$100.00
+</blockquote>
+
+
+You can't use the right-brace `}` character inside `$${expr}` because the code that looks for `$${...}` can't count nested braces. If you need to use braces in an expression, create a new JavaScript function using a `<acre:script>` tag and call that function from the `$${}`.
+
+
+## HTML entity encoding
+
+All JavaScript strings are treated as text rather than markup. When they are inserted into the page, the `&`, `<`, `>`, and `"` characters will be converted to entities. Note that `<` and `>` render correctly:
+
+#### code
+>     $${String.fromCharCode(60)}
+>     $${String.fromCharCode(62)}
+
+#### output
+<blockquote>
+    ${String.fromCharCode(60)}
+    ${String.fromCharCode(62)}
+</blockquote>
+
+This means that script injection vulnerabilities are now the exception rather than the rule.
+
+A string can be turned from text into markup using `acre.markup.bless()`. If you have some markup you know to be safe, you can make sure the browser interprets it like so:
+
+#### code
+>     $${acre.markup.bless('&lt;h3&gt;hello&lt;/h3&gt;')}
+
+#### output
+<blockquote>
+    ${acre.markup.bless('&lt;h3&gt;hello&lt;/h3&gt;')}
+</blockquote>
+
+
+Compare that to the identical string without the `acre.markup.bless()` call. The angle brackets are quoted by the Acre templating engine so they don't get interpreted as markup in the output:
+
+#### code  
+>     $${'&lt;h3&gt;hello&lt;/h3&gt;'}
+
+#### output
+<blockquote>
+    ${'&lt;h3&gt;hello&lt;/h3&gt;'}
+</blockquote>
+

@@ -1,0 +1,93 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+var h = acre.require("helpers.sjs");
+var urlfetch = acre.require("lib/promise/apis").urlfetch;
+var freebase = acre.require("lib/promise/apis").freebase;
+var validators = acre.require("lib/validator/validators.sjs");
+
+var SPEC = {
+  
+  cache_policy: "nocache",
+
+  validate: function(params) {
+    params = h.extend(acre.form.decode(params.state), params);
+    return [
+      validators.String(params, "provider", {required:false, if_empty:"freebase"}),
+      validators.Uri(params, "onsucceed", {required:false, if_empty:h.fb_url(true, "/")}),
+      validators.Uri(params, "onfail", {required:false, if_empty:h.fb_url(true, "/")})
+    ];
+  },
+
+  run: function(provider, onsucceed, onfail) {
+    var freebase_provider = h.account_provider(provider);
+    
+    var success = acre.oauth.get_authorization(freebase_provider);
+    if (!success) {
+      h.clear_account_cookie();
+      acre.oauth.remove_credentials(freebase_provider);
+      h.temporary_redirect(onfail, false);
+    }
+
+    // Remove metaweb-user cookies
+    // because they mess up googleapis requests.
+    if (acre.request.cookies['metaweb-user'] ||
+        acre.request.cookies['metaweb-user-info']) {
+      acre.response.clear_cookie('metaweb-user');
+      acre.response.clear_cookie('metaweb-user-info');
+    }
+
+    // If we're using a custom provider, we're done
+    if (freebase_provider.name !== h.account_provider().name) {
+      h.temporary_redirect(onsucceed, false);
+    }
+
+    // Custom user_info function in account helpers
+    // is necessary to handle specific error conditions
+    // (i.e., account not linked) that the acre.freebase
+    // version would just return as null
+    return h.user_info()
+      .then(function(user) {
+        h.set_account_cookie(user);
+        h.temporary_redirect(onsucceed, false);
+      }, function(failure) {
+        if (failure instanceof h.UnauthorizedError) {
+          // The credentials must be incorrect, so remove them.
+          acre.oauth.remove_credentials(freebase_provider);
+          h.clear_account_cookie();
+          console.warn('Authorization credentials are not correct', failure);
+        } else if (failure instanceof h.UnregisteredError) {
+          return {template: 'register_template.mjt'};
+        }
+        h.temporary_redirect(onfail, false);
+      });
+  }
+};

@@ -14,7 +14,9 @@
   <div id="page-content">
     <div class="module">
       <acre:script>
-        var api_error = acre.request.base_path.indexOf('/api') === 0;
+        var base_path = acre.request.base_path;
+        var api_error = base_path.indexOf('/api') === 0 ||
+            base_path.indexOf('/experimental') === 0 ;
       </acre:script>
       <acre:block if="api_error">
         <h1 class="module-title">Not Found</h1>

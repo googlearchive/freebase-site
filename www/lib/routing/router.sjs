@@ -887,6 +887,9 @@ function init_rules(lib) {
     // Old API endpoints
     {prefix:"/api",          app:"lib",
                              script:"error/deprecated_path.template"},
+    {prefix:"/experimental", app:"lib",
+                             script:"error/deprecated_path.template"},
+
 
 
     // Review queue

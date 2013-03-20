@@ -1,0 +1,82 @@
+#summary Different types in Astronomy commons
+
+= Astronomy commons =
+
+Content for Architecture Commons
+
+== Types ==
+
+ * [Star Star]
+   * [Data_entry_Star  Data Entry for Star]
+
+ * [Constellation]
+   * [Data_entry_Constellation Data Entry for Constellation]
+
+ * [Planet]
+   * [Data_entry_Planet  Data Entry for Planet]
+
+ * [Asteroid Spectral Type]
+   * [Data_entry_Asteroid_Spectral_Type  Data Entry for Asteroid Spectral Type]
+
+ * [Spectral Type]
+   * [Data_entry_Spectral_Type  Data Entry for Spectral Type]
+
+ * [Asteroid Asteroid]
+   * [Data_entry_Asteroid  Data Entry for Asteroid ]
+
+ * [Astronomer]
+   * [Data_entry_Astronomer  Data Entry for Astronomer]
+
+ * [Celestial Object]
+   * [Data_entry_Celestial Object  Data Entry for Celestial Object]
+
+ * [Star System]
+   * [Data_entry_Star_System  Data Entry for Star System]
+
+ * [Meteor Shower]
+   * [Data_entry_Meteor_Shower  Data Entry for Meteor Shower]
+
+ * [Nebula]
+   * [Data_entry_Nebula  Data Entry for Nebula]
+
+ * [Galaxy]
+   * [Data_entry_Galaxy  Data Entry for Galaxy]
+
+ * [Dwarf Planet]
+   * [Data_entry_Dwarf_Planet  Data Entry for Dwarf Planet]
+
+  * [Comet]
+   * [Data_entry_Comet  Data Entry for Comet]
+
+  * [Comet group]
+   * [Data_entry_Comet_group  Data Entry for Comet group]
+
+  * [Meteorite]
+   * [Data_entry_Meteorite Data Entry for Meteorite]
+
+  * [Meteorite classfication]
+   * [Data_entry_Meteorite classfication  Data Entry for Meteorite classfication]
+
+ * [Trans-Neptunian Object]
+   * [Data_entry_Trans-Neptunian Object  Data Entry for Trans-Neptunian Object]
+
+  * [Trans-Neptunian region]
+   * [Data_entry_Trans-Neptunian region  Data Entry for Trans-Neptunian region]
+
+  * [Moon]
+   * [Data_entry_Moon  Data Entry for Moon]
+
+  * [Orbital Relationship]
+   * [Data_entry_Orbital_Relationship  Data Entry for Orbital Relationship]
+
+  * [Orbit Type]
+   * [Data_entry_Orbit Type  Data Entry forOrbit Type ]
+
+  * []
+   * [Data_entry_  Data Entry for ]
+
+  * []
+   * [Data_entry_  Data Entry for ]
+
+  * []
+   * [Data_entry_  Data Entry for ]

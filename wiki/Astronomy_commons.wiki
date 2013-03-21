@@ -72,11 +72,104 @@ Content for Architecture Commons
   * [Orbit Type]
    * [Data_entry_Orbit Type  Data Entry forOrbit Type ]
 
-  * []
+  * [Astronomical Discovery Status]
+   * [Data_entry_Astronomical_Discovery_Status  Data Entry for Astronomical Discovery Status]
+
+  * [Astronomical Discovery Technique]
+   * [Data_entry_Astronomical_Discovery_Technique  Data Entry for Astronomical Discovery Technique]
+
+  * [Astronomical Discovery Technique]
+   * [Data_entry_Astronomical Discovery Technique  Data Entry for Astronomical Discovery Technique]
+
+   * [Astronomical Observatory]
+   * [Data_entry_Astronomical_Observatory  Data Entry for Astronomical Observatory]
+
+   * [Astronomical Survey Project Organization]
+   * [Data_entry_Astronomical_Survey_Project_Organization  Data Entry for Astronomical Survey_Project Organization]
+
+   * [Astronomical Discovery]
+   * [Data_entry_Astronomical_Discovery  Data Entry for Astronomical Discovery]
+
+   * [Meteorite Source]
+   * [Data_entry_Meteorite_Source  Data Entry for Meteorite Source]
+
+   * [Plutoid]
+   * [Data_entry_Plutoid  Data Entry for Plutoid]
+
+ * [Asteroid Group]
+   * [Data_entry_Asteroid_Group  Data Entry for Asteroid Group]
+
+ * [Asteroid Family]
+   * [Data_entry_Asteroid_Family  Data Entry for Asteroid Family]
+
+ * [Supernova]
+   * [Data_entry_Supernova  Data Entry for Supernova]
+
+ * [Scattered Disc Object]
+   * [Data_entry_Scattered_Disc_Object  Data Entry for Scattered Disc Object]
+
+ * [Near-Earth Object]
+   * [Data_entry_Near-Earth_Object  Data Entry for Near-Earth Object]
+
+ * [Near-Earth Object Classification]
+   * [Data_entry_Near-Earth_Object_Classification  Data Entry for Near-Earth Object Classification]
+
+ * [Meteor Shower Observation]
+   * [Data_entry_Meteor_Shower_Observation  Data Entry for Meteor Shower Observation]
+
+ * [Star system body]
+   * [Data_entry_Star system body  Data Entry for Star system body]
+
+ * [Celestial object category]
+   * [Data_entry_Celestial_object_category  Data Entry for Celestial object category]
+
+ * [Telescope type]
+   * [Data_entry_Telescope type  Data Entry for Telescope type]
+
+ * [Telescope principle type]
+   * [Data_entry_Telescope_principle_type  Data Entry for Telescope principle type]
+
+ * [Telescope]
+   * [Data_entry_Telescope  Data Entry for Telescope]
+
+ * [Telescope platform]
+   * [Data_entry_Telescope_platform  Data Entry for Telescope platform]
+
+ * [Constellation bordering relationship]
+   * [Data_entry_Constellation_bordering_relationship  Data Entry for Constellation bordering relationship]
+
+ * [Asterism]
+   * [Data_entry_Asterism  Data Entry for Asterism]
+
+ * [Galactic group]
+   * [Data_entry_Galactic_group  Data Entry for Galactic group]
+
+ * [Galactic cluster]
+   * [Data_entry_Galactic_cluster  Data Entry for Galactic cluster]
+
+ * [Galactic supercluster]
+   * [Data_entry_Galactic_supercluster  Data Entry for Galactic supercluster]
+
+ * [Galactic filament]
+   * [Data_entry_Galactic filament  Data Entry for Galactic filament]
+
+ * [Celestial object age]
+   * [Data_entry_Celestial_object_age  Data Entry for Celestial object age]
+
+ * []
    * [Data_entry_  Data Entry for ]
 
-  * []
+ * []
    * [Data_entry_  Data Entry for ]
 
-  * []
+ * []
+   * [Data_entry_  Data Entry for ]
+
+ * []
+   * [Data_entry_  Data Entry for ]
+
+ * []
+   * [Data_entry_  Data Entry for ]
+
+ * []
    * [Data_entry_  Data Entry for ]

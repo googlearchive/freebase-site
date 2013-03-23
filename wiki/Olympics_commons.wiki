@@ -1,0 +1,27 @@
+#summary Different types in Olympics Commons.
+
+= Types =
+
+Here are the following types in Olympics Commons
+
+Olympic athlete
+Olympic athlete affiliation
+Olympic event competition
+Olympic event
+Olympic games
+Olympic host city
+Olympic mascot
+Olympic medal
+Olympic athlete/competition relationship
+Olympic participating country
+Olympic discipline
+Olympic venue
+Olympic demonstration competition
+Demonstration event/athlete relationship
+Olympic athlete/demonstration competition relationship
+Olympic medal (demonstration)
+Olympic bidding city
+Olympic city bid
+Olympic Torchbearer
+Olympic torch relay location
+Olympic Torch Relay

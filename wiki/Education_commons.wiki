@@ -1,0 +1,17 @@
+#summary Different types in Education Commons
+
+= Types =
+
+Here are the following types in Education Commons
+
+Degree
+Educational Institution
+School mascot
+School newspaper
+School category
+Fraternity/Sorority
+Fraternity/sorority type
+School
+School district
+College/University
+Education

@@ -1,0 +1,27 @@
+#summary Different types in Book Commons.
+
+= Types =
+
+Here are the following types in Book Commons
+
+Book
+Book Edition
+Pagination
+Book Binding
+Audio book reader
+Literature Subject
+Publisher
+Short Story
+Poem
+Poetic Meter
+Poetic Verse Form
+Book Character
+Short Non-fiction
+Short Non-fiction Variety
+Technical report
+Report issuing institution
+Poem character
+ISBN
+Book edition series
+Series editor
+Publisher/imprint tenure

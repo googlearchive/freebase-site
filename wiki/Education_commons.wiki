@@ -1,36 +1,98 @@
-#summary Different types in Education Commons
+/#summary Different types in Education Commons
+
+= Education Commons =
+This is education commons
 
 = Types =
 
 Here are the following types in Education Commons
 
-Degree
-Educational Institution
-School mascot
-School newspaper
-School category
-Fraternity/Sorority
-Fraternity/sorority type
-School
-School district
-College/University
-Education
-Field Of Study
-Dissertation
-Academic
-Academic institution
-Academic post
-Academic post title
-Grade level
-Student:teacher ratio
-School magazine
-Student organization
-Student radio station
-Gender enrollment
-Department
-University system
-Honorary Degree
-Honorary Degree Recipient
-Educational Institution Campus
-Acceptance rate
-Athletics brand
+ * [Degree Degree]
+   * [Data_entry_Degree Data Entry for Degree]
+
+ * [Educational_Institution Educational Institution]
+   * [Data_entry_Educational_Institution Data entry for Educational Institution ]
+
+ * [School_mascot School mascot]
+   * [Data_entry_School_mascot Data entry for School mascot]
+
+ * [School_newspaper School newspaper]
+   * [Data_entry_School_newspaper  Data entry for School newspaper]
+
+ * [School_category School category]
+   * [Data_entry_School_category  Data entry for School category]
+
+ * [Fraternity_Sorority Fraternity Sorority]
+   * [Data_entry_Fraternity_Sorority  Data entry for Fraternity Sorority]
+
+ * [Fraternity_sorority_type Fraternity sorority type]
+   * [Data_entry_Fraternity_sorority_type  Data entry for Fraternity sorority type]
+
+ * [School School]
+   * [Data_entry_School  Data entry for School]
+
+ * [School_district School district]
+   * [Data_entry_School district  Data entry School district]
+
+ * [College_University College University]
+   * [Data_entry_College_University  Data entry for College University]
+
+ * [Education Education]
+   * [Data_entry_Education  Data entry for Education]
+
+ * [Field_Of_Study Field Of Study]
+   * [Data_entry_Field_Of_Study  Data entry for Field Of Study]
+
+ * [Dissertation Dissertation]
+   * [Data_entry_Dissertation  Data entry for Dissertation]
+
+ * [Academic Academic]
+   * [Data_entry_Academic  Data entry for Academic] 
+
+ * [Academic_institution Academic institution]
+   * [Data_entry_Academic_institution  Data entry for Academic institution]
+
+ * [Academic_post Academic post]
+   * [Data_entry_Academic_post  Data entry for Academic post]
+
+ * [Academic post title]
+   * [Data_entry_Academic_post_title  Data entry for Academic post title]
+
+ * [Grade_level Grade level]
+   * [Data_entry_Grade_level  Data entry for Grade level]
+
+ * [Student_teacher_ratio Student_teacher_ratio]
+   * [Data_entry_Student_teacher_ratio  Data entry for Student teacher ratio]
+
+ * [School_magazine School magazine]
+   * [Data_entry_School_magazine  Data entry for School magazine]
+
+ * [Student_organization Student organization]
+   * [Data_entry_Student_organization  Data entry for Student organization]
+
+ * [Student radio station]
+   * [Data_entry_  Data_entry]
+
+ * [Gender enrollment]
+   * [Data_entry_  Data_entry]
+
+ * [Department]
+   * [Data_entry_  Data_entry]
+
+ * [University system]
+   * [Data_entry_  Data_entry]
+
+ * [Honorary_Degree Honorary_Degree]
+   * [Data_entry_Honorary_Degree  Data_entry Honorary_Degree]
+
+ * [Honorary_Degree_Recipient Honorary_Degree_Recipient]
+   * [Data_entry_Honorary_Degree_Recipient  Data_entry Honorary_Degree_Recipient]
+
+ * [Educational_Institution_Campus Educational_Institution_Campus
+   * [Data_entry_Educational_Institution_Campus  Data_entry Educational_Institution_Campus]
+
+ * [Acceptance_rate Acceptance_rate]
+   * [Data_entry_Acceptance_rate  Data_entry Acceptance_rate]
+
+ * [Athletics_brand Athletics_brand]
+   * [Data_entry_Athletics_brand  Data_entry Athletics_brand]

@@ -1,0 +1,34 @@
+#summary Different types in People Commons.
+
+= Types =
+
+Here are the following types in People Commons
+
+Cause Of Death
+Gender
+Person
+Marriage
+Sibling Relationship
+Deceased Person
+Profession
+Family name
+Family
+Marriage/union type
+Wedding venue
+Place lived	
+Ethnicity
+American Indian group
+Canadian aboriginal group
+Chinese ethnic group
+Place of interment
+Family member
+Measured person
+Human measurement
+Measured body part	
+Professional field
+Appointment
+Appointment Nominee
+Appointed Role
+Appointee
+Appointment Nomination	
+Appointer

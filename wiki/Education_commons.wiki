@@ -15,3 +15,22 @@ School
 School district
 College/University
 Education
+Field Of Study
+Dissertation
+Academic
+Academic institution
+Academic post
+Academic post title
+Grade level
+Student:teacher ratio
+School magazine
+Student organization
+Student radio station
+Gender enrollment
+Department
+University system
+Honorary Degree
+Honorary Degree Recipient
+Educational Institution Campus
+Acceptance rate
+Athletics brand

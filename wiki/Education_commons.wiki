@@ -32,7 +32,7 @@ Here are the following types in Education Commons
    * [Data_entry_School  Data entry for School]
 
  * [School_district School district]
-   * [Data_entry_School district  Data entry School district]
+   * [Data_entry_School district  Data entry for School district]
 
  * [College_University College University]
    * [Data_entry_College_University  Data entry for College University]
@@ -55,13 +55,13 @@ Here are the following types in Education Commons
  * [Academic_post Academic post]
    * [Data_entry_Academic_post  Data entry for Academic post]
 
- * [Academic post title]
+ * [Academic_post_title Academic post title]
    * [Data_entry_Academic_post_title  Data entry for Academic post title]
 
  * [Grade_level Grade level]
    * [Data_entry_Grade_level  Data entry for Grade level]
 
- * [Student_teacher_ratio Student_teacher_ratio]
+ * [Student_teacher_ratio Student teacher ratio]
    * [Data_entry_Student_teacher_ratio  Data entry for Student teacher ratio]
 
  * [School_magazine School magazine]
@@ -70,29 +70,29 @@ Here are the following types in Education Commons
  * [Student_organization Student organization]
    * [Data_entry_Student_organization  Data entry for Student organization]
 
- * [Student radio station]
-   * [Data_entry_  Data_entry]
+ * [Student_radio_station Student radio station]
+   * [Data_entry_Student_radio_station  Data entry for Student radio station]
 
- * [Gender enrollment]
-   * [Data_entry_  Data_entry]
+ * [Gender_enrollment Gender enrollment]
+   * [Data_entry_Gender_enrollment  Data entry for Gender enrollment]
 
- * [Department]
-   * [Data_entry_  Data_entry]
+ * [Department Department]
+   * [Data_entry_Department  Data entry for Department]
 
- * [University system]
-   * [Data_entry_  Data_entry]
+ * [University_system University system]
+   * [Data_entry_University_system  Data entry for University system]
 
- * [Honorary_Degree Honorary_Degree]
-   * [Data_entry_Honorary_Degree  Data_entry Honorary_Degree]
+ * [Honorary_Degree Honorary Degree]
+   * [Data_entry_Honorary_Degree  Data entry for Honorary Degree]
 
- * [Honorary_Degree_Recipient Honorary_Degree_Recipient]
-   * [Data_entry_Honorary_Degree_Recipient  Data_entry Honorary_Degree_Recipient]
+ * [Honorary_Degree_Recipient Honorary Degree Recipient]
+   * [Data_entry_Honorary_Degree_Recipient  Data entry for Honorary Degree Recipient]
 
- * [Educational_Institution_Campus Educational_Institution_Campus
-   * [Data_entry_Educational_Institution_Campus  Data_entry Educational_Institution_Campus]
+ * [Educational_Institution_Campus Educational Institution Campus]
+   * [Data_entry_Educational_Institution_Campus  Data entry for Educational Institution Campus]
 
- * [Acceptance_rate Acceptance_rate]
-   * [Data_entry_Acceptance_rate  Data_entry Acceptance_rate]
+ * [Acceptance_rate Acceptance rate]
+   * [Data_entry_Acceptance_rate  Data entry for Acceptance rate]
 
- * [Athletics_brand Athletics_brand]
-   * [Data_entry_Athletics_brand  Data_entry Athletics_brand]
+ * [Athletics_brand Athletics brand]
+   * [Data_entry_Athletics_brand  Data entry for Athletics brand]

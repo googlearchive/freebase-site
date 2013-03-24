@@ -1,27 +1,71 @@
 #summary Different types in Book Commons.
 
+= Education Commons =
+This is education commons
+
 = Types =
 
-Here are the following types in Book Commons
+Here are the following types in Education Commons
 
-Book
-Book Edition
-Pagination
-Book Binding
-Audio book reader
-Literature Subject
-Publisher
-Short Story
-Poem
-Poetic Meter
-Poetic Verse Form
-Book Character
-Short Non-fiction
-Short Non-fiction Variety
-Technical report
-Report issuing institution
-Poem character
-ISBN
-Book edition series
-Series editor
-Publisher/imprint tenure
+ * [Book Book]
+   * [Data_entry_Book Data Entry for Book]
+
+ * [Book_Edition Book Edition]
+   * [Data_entry_Book_Edition Data Entry for Book Edition]
+
+ * [Pagination Pagination]
+   * [Data_entry_Pagination Data Entry for Pagination]
+
+ * [Book_Binding Book Binding]
+   * [Data_entry_Book_Binding Data Entry for Book Binding]
+
+ * [Audio_book_reader Audio book reader]
+   * [Data_entry_Audio_book_reader Data Entry for Audio book reader]
+
+ * [Literature_Subject Literature Subject]
+   * [Data_entry_Literature_Subject Data Entry for Literature Subject]
+
+ * [Publisher Publisher]
+   * [Data_entry_Publisher Data Entry for Publisher]
+
+ * [Short_Story Short Story]
+   * [Data_entry_Short_Story Data Entry for Short Story]
+
+ * [Poem Poem]
+   * [Data_entry_Poem Data Entry for Poem]
+
+ * [Poetic_Meter Poetic Meter]
+   * [Data_entry_Poetic_Meter Data Entry for Poetic Meter]
+
+ * [Poetic_Verse_Form Poetic Verse Form]
+   * [Data_entry_Poetic_Verse_Form Data Entry for Poetic Verse Form]
+ 
+ * [Book_Character Book Character]
+   * [Data_entry_Book_Character Data Entry for Book Character]
+
+ * [Short_Non_fiction Short Non-fiction]
+   * [Data_entry_Short_Non_fiction Data Entry for Short Non-fiction]
+
+ * [Short_Non_fiction_Variety Short Non-fiction Variety]
+   * [Data_entry_Short_Non_fiction_Variety Data Entry for Short Non-fiction Variety]
+
+ * [Technical_report Technical report]
+   * [Data_entry_Technical_report Data Entry for Technical report]
+
+ * [Report_issuing_institution Report issuing institution]
+   * [Data_entry_Report_issuing_institution Data Entry for Report issuing institution]
+
+ * [Poem_character Poem character]
+   * [Data_entry_Poem_character Data Entry for Poem character]
+
+ * [ISBN ISBN]
+   * [Data_entry_ISBN Data Entry for ISBN]
+
+ * [Book_edition_series Book edition series]
+   * [Data_entry_Book_edition_series Data Entry for Book edition series]
+
+ * [Series_editor Series editor]
+   * [Data_entry_Series_editor Data Entry for Series editor]
+
+ * [Publisher_imprint_tenure Publisher/imprint tenure]
+   * [Data_entry_Publisher_imprint_tenure Data Entry for Publisher/imprint tenure]

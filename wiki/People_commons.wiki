@@ -4,31 +4,89 @@
 
 Here are the following types in People Commons
 
-Cause Of Death
-Gender
-Person
-Marriage
-Sibling Relationship
-Deceased Person
-Profession
-Family name
-Family
-Marriage/union type
-Wedding venue
-Place lived	
-Ethnicity
-American Indian group
-Canadian aboriginal group
-Chinese ethnic group
-Place of interment
-Family member
-Measured person
-Human measurement
-Measured body part	
-Professional field
-Appointment
-Appointment Nominee
-Appointed Role
-Appointee
-Appointment Nomination	
-Appointer
+ * [Cause_of_Death Cause of Death]
+   * [Data_entry_Cause_of_Death Data Entry for Cause of Death]
+
+ * [Gender Gender]
+   * [Data_entry_Gender Data Entry for Gender]
+
+ * [Person Person]
+   * [Data_entry_Person Data Entry for Person]
+
+ * [Marriage Marriage]
+   * [Data_entry_Marriage Data Entry for Marriage]
+
+ * [Sibling_Relationship Sibling Relationship]
+   * [Data_entry_Sibling_Relationship Data Entry for Sibling Relationship]
+
+ * [Deceased_Person Deceased Person]
+   * [Data_entry_Deceased_Person Data Entry for Deceased Person]
+
+ * [Profession Profession]
+   * [Data_entry_Profession Data Entry for Profession]
+
+ * [Family_name Family name]
+   * [Data_entry_Family_name Data Entry for Family name]
+
+ * [Family Family]
+   * [Data_entry_Family Data Entry for Family]
+
+ * [Marriage_union_type Marriage/union type]
+   * [Data_entry_Marriage_union_type Data Entry for Marriage/union type]
+
+ * [Wedding_venue Wedding venue]
+   * [Data_entry_Wedding_venue Data Entry for Wedding venue]
+
+ * [Place_lived Place lived]
+   * [Data_entry_Place_lived Data Entry for Place lived]
+
+ * [Ethnicity Ethnicity]
+   * [Data_entry_Ethnicity Data Entry for Ethnicity]
+
+ * [American_Indian_group American Indian group]
+   * [Data_entry_American_Indian_group Data Entry for American Indian group]
+	
+ * [Canadian_aboriginal_group Canadian aboriginal group]
+   * [Data_entry_Canadian_aboriginal_group Data Entry for Canadian aboriginal group]
+
+ * [Chinese_ethnic_group Chinese ethnic group]
+   * [Data_entry_Chinese_ethnic_group Data Entry for Chinese ethnic group]
+
+ * [Place_of_interment Place of interment]
+   * [Data_entry_Place_of_interment Data Entry for Place of interment]
+
+ * [Family_member Family member]
+   * [Data_entry_Family_member Data Entry for Family member]
+
+ * [Measured_person Measured person]
+   * [Data_entry_Measured_person Data Entry for Measured person]
+
+ * [Human_measurement Human measurement]
+   * [Data_entry_Human_measurement Data Entry for Human measurement]
+
+ * [Measured_body_part Measured body part]
+   * [Data_entry_Measured_body_part Data Entry for Measured body part]
+
+ * [Professional_field Professional field]
+   * [Data_entry_Professional_field Data Entry for Professional field]
+
+ * [Appointment Appointment]
+   * [Data_entry_Appointment Data Entry for Appointment]
+
+ * [Appointment_Nominee Appointment Nominee]
+   * [Data_entry_Appointment_Nominee Data Entry for Appointment Nominee]
+
+ * [Appointed_Role Appointed Role]
+   * [Data_entry_Appointed_Role Data Entry for Appointed Role]
+
+ * [Appointee Appointee]
+   * [Data_entry_Appointee Data Entry for Appointee]
+
+ * [Appointment_Nomination Appointment Nomination]
+   * [Data_entry_Appointment_Nomination Data Entry for Appointment Nomination]
+
+ * [Appointer Appointer]
+   * [Data_entry_Appointer Data Entry for Appointer]
+
+
+	

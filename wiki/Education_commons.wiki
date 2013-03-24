@@ -1,4 +1,4 @@
-/#summary Different types in Education Commons
+#summary Different types in Education Commons
 
 = Education Commons =
 This is education commons

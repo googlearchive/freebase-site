@@ -6,8 +6,11 @@ This is Fictional Universes commons
 =Types=
 Here are the following types in Fictional Universes Commons
 
- * []
-   * [Data_entry_ Data Entry for ]
+ * [Character Gender Character Gender]
+   * [Data_entry_Character Gender Data Entry for Character Gender]
+
+ * [Character Species Character Species]
+   * [Data_entry_Character Species Data Entry for Character Species]
 
  * []
    * [Data_entry_ Data Entry for ]
@@ -24,5 +27,39 @@ Here are the following types in Fictional Universes Commons
  * []
    * [Data_entry_ Data Entry for ]
 
- * []
-   * [Data_entry_ Data Entry for ]
+
+
+Character Occupation
+Character Power
+Character Rank
+Organization in fiction
+Fictional Organization Type
+Marriage (of Fictional Characters)
+Sibling Relationship (of Fictional Characters)
+Work of Fiction
+Person Or Being In Fiction
+Fictional Character
+Fictional Setting
+Fictional Universe
+Fictional Character Creator
+Language in fiction
+Fictional Object
+Material in fiction
+Employer in fiction
+Fictional employment tenure
+Fictional job title
+Fictional Creature
+Fictional Plant
+Romantic involvement
+Fictional universe creator
+Ethnicity in fiction
+School in fiction
+Medical condition in fiction
+Type of fictional setting
+Fictional Organization Founder
+Fictional Object Destroyer
+Fictional Object Destruction Method
+Event in fiction
+Calendar System Directionality
+Fictional Calendar System
+Fictional Date/Time

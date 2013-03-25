@@ -36,8 +36,8 @@
       * [Freebase_commons   Freebase commons]
     * *G*
       * [Games_commons   Games commons]
-      * [Geology_commons   Games commons]
-      * [Government_commons   Games commons]
+      * [Geology_commons   Geology commons]
+      * [Government_commons   Government commons]
     * *H*
       * [Hobbies_commons   Hobbies commons]
     * *I*

@@ -6,83 +6,77 @@ This is  commons
 =Types=
 Here are the following types in Commons
 
- * [TV Station TV Station]
-   * [Data_entry_TV Station Data Entry for TV Station]
+ * [TV_Station TV Station]
+   * [Data_entry_TV_Station Data Entry for TV Station]
 
- * [TV Channel TV Channel]
-   * [Data_entry_TV Channel Data Entry for TV Channel]
+ * [TV_Channel TV Channel]
+   * [Data_entry_TV_Channel Data Entry for TV Channel]
 
- * [TV station owner TV station owner]
-   * [Data_entry_TV station owner Data Entry for TV station owner]
+ * [TV_station_owner TV station owner]
+   * [Data_entry_TV_station_owner Data Entry for TV station owner]
 
- * [TV signal type TV signal type]
+ * [TV_signal_type TV signal type]
    * [Data_entry_TV signal type Data Entry for TV signal type]
 
- * [Radio Station Radio Station]
-   * [Data_entry_Radio Station Data Entry for Radio Station]
+ * [Radio_Station Radio Station]
+   * [Data_entry_Radio_Station Data Entry for Radio Station]
 
- * [Radio format Radio format]
-   * [Data_entry_Radio format Data Entry for Radio format]
+ * [Radio_format Radio format]
+   * [Data_entry_Radio_format Data Entry for Radio format]
 	 
- * [Radio station owner Radio station owner]
-   * [Data_entry_Radio station owner Data Entry for Radio station owner]
+ * [Radio_station_owner Radio station owner]
+   * [Data_entry_Radio_station_owner Data Entry for Radio station owner]
 
- * [Broadcast station class Broadcast station class]
-   * [Data_entry_Broadcast station class Data Entry for Broadcast station class]
+ * [Broadcast_station_class Broadcast station class]
+   * [Data_entry_Broadcast_station_class Data Entry for Broadcast station class]
 
- * [Callsign duration Callsign duration]
-   * [Data_entry_Callsign duration Data Entry for Callsign duration]
+ * [Callsign_duration Callsign duration]
+   * [Data_entry_Callsign_duration Data Entry for Callsign duration]
 
- * [Affiliation duration Affiliation duration]
-   * [Data_entry_Affiliation duration Data Entry for Affiliation duration]
+ * [Affiliation_duration Affiliation duration]
+   * [Data_entry_Affiliation_duration Data Entry for Affiliation duration]
 
- * [Cable/satellite availability Cable/satellite availability]
-   * [Data_entry_Cable/satellite availability Data Entry for Cable/satellite availability]
+ * [Cable_satellite_availability Cable/satellite availability]
+   * [Data_entry_Cable_satellite_availability Data Entry for Cable/satellite availability]
 
- * [Broadcast Advisory Broadcast Advisory]
-   * [Data_entry_Broadcast Advisory Data Entry for Broadcast Advisory]
+ * [Broadcast_Advisory Broadcast Advisory]
+   * [Data_entry_Broadcast_Advisory Data Entry for Broadcast Advisory]
 
- * [Broadcast Artist Broadcast Artist]
-   * [Data_entry_Broadcast Artist Data Entry for Broadcast Artist]
+ * [Broadcast_Artist Broadcast Artist]
+   * [Data_entry_Broadcast_Artist Data Entry for Broadcast Artist]
 
  * [Broadcast Broadcast]
    * [Data_entry_Broadcast Data Entry for Broadcast]
 
- * [Broadcast Content Broadcast Content]
-   * [Data_entry_Broadcast Content Data Entry for Broadcast Content]
+ * [Broadcast_Content Broadcast Content]
+   * [Data_entry_Broadcast_Content Data Entry for Broadcast Content]
 				
- * [Broadcast Distributor Broadcast Distributor]
-   * [Data_entry_Broadcast Distributor Data Entry for Broadcast Distributor]
+ * [Broadcast_Distributor Broadcast Distributor]
+   * [Data_entry_Broadcast_Distributor Data Entry for Broadcast Distributor]
 
- * [Broadcast Genre Broadcast Genre]
-   * [Data_entry_Broadcast Genre Data Entry for Broadcast Genre]
+ * [Broadcast_Genre Broadcast Genre]
+   * [Data_entry_Broadcast_Genre Data Entry for Broadcast Genre]
 
- * [Internet Stream Internet Stream]
-   * [Data_entry_Internet Stream Data Entry for Internet Stream]
+ * [Internet_Stream Internet Stream]
+   * [Data_entry_Internet_Stream Data Entry for Internet Stream]
 
- * [Podcast Feed Podcast Feed]
-   * [Data_entry_Podcast Feed Data Entry for Podcast Feed]
+ * [Podcast_Feed Podcast Feed]
+   * [Data_entry_Podcast_Feed Data Entry for Podcast Feed]
 
- * [Broadcast Producer Broadcast Producer]
-   * [Data_entry_Broadcast Producer Data Entry for Broadcast Producer]
+ * [Broadcast_Producer Broadcast Producer]
+   * [Data_entry_Broadcast_Producer Data Entry for Broadcast Producer]
 
- * [Radio affiliation duration Radio affiliation duration]
-   * [Data_entry_ Data Entry for ]
+ * [Radio_affiliation_duration Radio affiliation duration]
+   * [Data_entry_Radio_affiliation_duration Data Entry for Radio affiliation duration]
 	
- * []
-   * [Data_entry_ Data Entry for ]
+ * [Radio_network Radio network]
+   * [Data_entry_Radio_network Data Entry for Radio network]
 
- * []
-   * [Data_entry_ Data Entry for ]
+ * [AM_terrestrial_broadcast_facility AM terrestrial broadcast facility]
+   * [Data_entry_AM_terrestrial_broadcast_facility Data Entry for AM terrestrial broadcast facility]
 
- * []
-   * [Data_entry_ Data Entry for ]
+ * [FM_terrestrial_broadcast_facility FM terrestrial broadcast facility]
+   * [Data_entry_FM_terrestrial_broadcast_facility Data Entry for FM terrestrial broadcast facility]
 
- * []
-   * [Data_entry_ Data Entry for ]
-
-
-Radio network
-AM terrestrial broadcast facility
-FM terrestrial broadcast facility
-TV terrestrial broadcast facility
+ * [TV_terrestrial_broadcast_facility TV terrestrial broadcast facility]
+   * [Data_entry_TV_terrestrial_broadcast_facility Data Entry for TV terrestrial broadcast facility]

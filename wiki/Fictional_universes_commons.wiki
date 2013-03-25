@@ -6,60 +6,110 @@ This is Fictional Universes commons
 =Types=
 Here are the following types in Fictional Universes Commons
 
- * [Character Gender Character Gender]
-   * [Data_entry_Character Gender Data Entry for Character Gender]
+ * [Character_Gender Character Gender]
+   * [Data_entry_Character_Gender Data Entry for Character Gender]
 
- * [Character Species Character Species]
+ * [Character_Species Character Species]
    * [Data_entry_Character Species Data Entry for Character Species]
 
- * []
+ * [Character_Occupation Character Occupation]
+   * [Data_entry_Character_Occupation Data Entry for Character Occupation]
+
+ * [Character_Power Character Power]
+   * [Data_entry_Character_Power Data Entry for Character Power]
+
+ * [Character_Rank Character Rank]
+   * [Data_entry_Character_Rank Data Entry for Character Rank]
+
+ * [Organization_in_fiction Organization in fiction]
+   * [Data_entry_Organization_in_fiction Data Entry for Organization in fiction]
+
+ * [Fictional_Organization_Type Fictional Organization Type]
+   * [Data_entry_Fictional_Organization_Type Data Entry for Fictional Organization Type]
+
+ * [Marriage_of_Fictional_Characters Marriage (of Fictional Characters)]
+   * [Data_entry_Marriage_of_Fictional_Characters Data Entry for Marriage (of Fictional Characters)]
+
+ * [Sibling_Relationship_of_Fictional_Characters Sibling Relationship (of Fictional Characters)]
+   * [Data_entry_Sibling_Relationship_of_Fictional_Characters Data Entry for Sibling Relationship (of Fictional Characters)]
+
+ * [Work_of_Fiction Work of Fiction]
+   * [Data_entry_Work_of_Fiction Data Entry for Work of Fiction]
+
+ * [Person_Or_Being_In_Fiction Person Or Being In Fiction]
+   * [Data_entry_Person_Or_Being_In_Fiction Data Entry for Person Or Being In Fiction]
+
+ * [Fictional_Character Fictional Character]
+   * [Data_entry_Fictional_Character Data Entry for Fictional Character]
+
+ * [Fictional_Setting Fictional Setting]
+   * [Data_entry_Fictional_Setting Data Entry for Fictional Setting]
+
+ * [Fictional_Universe Fictional Universe]
+   * [Data_entry_Fictional_Universe Data Entry for Fictional Universe]
+
+ * [Fictional_Character_Creator Fictional Character Creator]
+   * [Data_entry_Fictional_Character_Creator Data Entry for Fictional Character Creator]
+
+ * [Language in fiction Language in fiction]
+   * [Data_entry_Language in fiction Data Entry for Language in fiction]
+
+ * [Fictional Object Fictional Object]
+   * [Data_entry_Fictional Object Data Entry for Fictional Object]
+
+ * [Material in fiction Material in fiction]
+   * [Data_entry_Material in fiction Data Entry for Material in fiction]
+
+ * [Employer in fiction Employer in fiction]
+   * [Data_entry_Employer in fiction Data Entry for Employer in fiction]
+
+ * [Fictional employment tenure Fictional employment tenure]
+   * [Data_entry_Fictional employment tenure Data Entry for Fictional employment tenure]
+
+ * [Fictional job title Fictional job title]
+   * [Data_entry_Fictional job title Data Entry for Fictional job title]
+
+ * [Fictional Creature Fictional Creature]
+   * [Data_entry_Fictional Creature Data Entry for Fictional Creature]
+
+ * [Fictional Plant Fictional Plant]
    * [Data_entry_ Data Entry for ]
 
- * []
-   * [Data_entry_ Data Entry for ]
+ * [Romantic involvement Romantic involvement]
+   * [Data_entry_Romantic involvement Data Entry for Romantic involvement]
 
- * []
-   * [Data_entry_ Data Entry for ]
+ * [Fictional universe creator Fictional universe creator]
+   * [Data_entry_Fictional universe creator Data Entry for Fictional universe creator]
 
- * []
-   * [Data_entry_ Data Entry for ]
+ * [Ethnicity in fiction Ethnicity in fiction]
+   * [Data_entry_Ethnicity in fiction Data Entry for Ethnicity in fiction]
 
- * []
-   * [Data_entry_ Data Entry for ]
+ * [School in fiction School in fiction]
+   * [Data_entry_School in fiction Data Entry for School in fiction]
 
+ * [Medical condition in fiction Medical condition in fiction]
+   * [Data_entry_Medical condition in fiction Data Entry for Medical condition in fiction]
 
+ * [Type of fictional setting Type of fictional setting]
+   * [Data_entry_Type of fictional setting Data Entry for Type of fictional setting]
 
-Character Occupation
-Character Power
-Character Rank
-Organization in fiction
-Fictional Organization Type
-Marriage (of Fictional Characters)
-Sibling Relationship (of Fictional Characters)
-Work of Fiction
-Person Or Being In Fiction
-Fictional Character
-Fictional Setting
-Fictional Universe
-Fictional Character Creator
-Language in fiction
-Fictional Object
-Material in fiction
-Employer in fiction
-Fictional employment tenure
-Fictional job title
-Fictional Creature
-Fictional Plant
-Romantic involvement
-Fictional universe creator
-Ethnicity in fiction
-School in fiction
-Medical condition in fiction
-Type of fictional setting
-Fictional Organization Founder
-Fictional Object Destroyer
-Fictional Object Destruction Method
-Event in fiction
-Calendar System Directionality
-Fictional Calendar System
-Fictional Date/Time
+ * [Fictional Organization Founder Fictional Organization Founder]
+   * [Data_entry_Fictional Organization Founder Data Entry for Fictional Organization Founder]
+
+ * [Fictional Object Destroyer Fictional Object Destroyer]
+   * [Data_entry_Fictional Object Destroyer Data Entry for Fictional Object Destroyer]
+
+ * [Fictional Object Destruction Method Fictional Object Destruction Method]
+   * [Data_entry_Fictional Object Destruction Method Data Entry for Fictional Object Destruction Method]
+
+ * [Event in fiction Event in fiction]
+   * [Data_entry_Event in fiction Data Entry for Event in fiction]
+
+ * [Calendar System Directionality Calendar System Directionality]
+   * [Data_entry_Calendar System Directionality Data Entry for Calendar System Directionality]
+
+ * [Fictional Calendar System Fictional Calendar System]
+   * [Data_entry_Fictional Calendar System Data Entry for Fictional Calendar System]
+
+ * [Fictional Date/Time Fictional Date/Time]
+   * [Data_entry_Fictional Date/Time Data Entry for Fictional Date/Time]

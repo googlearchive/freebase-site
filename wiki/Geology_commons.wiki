@@ -1,0 +1,13 @@
+#summary Different types in Geology Commons.
+
+= Geology Commons =
+This is geology commons
+
+=Types=
+Here are the following types in Geology Commons
+
+ * [Rock_type Rock type]
+   * [Data_entry_Rock_type Data Entry for Rock type]
+
+ * [Geological_formation Geological formation]
+   * [Data_entry_Geological_formation Data Entry for Geological formation]

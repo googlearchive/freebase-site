@@ -1,0 +1,81 @@
+#summary Different types in Commons.
+
+= Commons =
+This is  commons
+
+=Types=
+Here are the following types in Commons
+
+ * []
+   * [Data_entry_ Data Entry for ]
+
+ * []
+   * [Data_entry_ Data Entry for ]
+
+ * []
+   * [Data_entry_ Data Entry for ]
+
+ * []
+   * [Data_entry_ Data Entry for ]
+
+ * []
+   * [Data_entry_ Data Entry for ]
+
+ * []
+   * [Data_entry_ Data Entry for ]
+
+ * []
+   * [Data_entry_ Data Entry for ]
+
+ * []
+   * [Data_entry_ Data Entry for ]
+
+ * []
+   * [Data_entry_ Data Entry for ]
+
+ * []
+   * [Data_entry_ Data Entry for ]
+
+Legislative committee	
+US President		
+Political party		
+US Vice President		
+Government	
+Government Agency	
+Form of Government	
+Government Position Held	
+Political Appointer		
+Political Party Tenure		
+Politician			
+Governmental Jurisdiction	
+Governmental Body		
+Government Office or Title	
+Political District		
+Election contest	
+Election campaign	
+Primary election	
+Legislative session	
+Legislative committee membership
+Legislative committee title	
+National Anthem	
+National anthem of a country
+US Vice Presidential campaign
+US Presidential campaign	
+General election	
+Legislative election results
+Canadian Member of Parliament		-
+Australian Member of Parliament			-
+Political ideology	
+U.S. Congressperson	
+Parliamentary election	
+Indirect election	
+Electoral college	
+Electoral college elected office
+Government office category
+Election poll score	
+Polling authority	
+Poll respondent category	
+Polled entity
+Election with polls			 1
+Election poll
+Polled area		-

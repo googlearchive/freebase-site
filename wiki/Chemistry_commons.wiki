@@ -1,0 +1,30 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+Add your content here.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
+[Chemical Compound]
+[Isotope]
+[Chemical Element]
+[Chemical Series]
+[Phase of Matter]
+[Chemical Bond]
+[Periodic table block]
+[Isotope decay]
+[Radioactive decay mode]
+[Chemical Element Discoverer]
+[Particle spin]
+[Atomic mass]
+[Electron affinity]
+[Chemical Classification]
+[Molecular entity]
+[Solubility relationship]
+[Solubility]	

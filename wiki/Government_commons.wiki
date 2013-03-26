@@ -6,76 +6,131 @@ This is  commons
 =Types=
 Here are the following types in Commons
 
- * []
-   * [Data_entry_ Data Entry for ]
+ * [Legislative_committee Legislative committee]
+   * [Data_entry_Legislative_committee Data Entry for Legislative committee]
 
- * []
-   * [Data_entry_ Data Entry for ]
+ * [US_President US President]
+   * [Data_entry_US President Data Entry for US President]
 
- * []
-   * [Data_entry_ Data Entry for ]
+ * [Political_party Political party]
+   * [Data_entry_Political_party Data Entry for Political party]
 
- * []
-   * [Data_entry_ Data Entry for ]
+ * [US_Vice_President US Vice President]
+   * [Data_entry_US_Vice_President Data Entry for US Vice President]
 
- * []
-   * [Data_entry_ Data Entry for ]
+ * [Government Government]
+   * [Data_entry_Government Data Entry for Government]
 
- * []
-   * [Data_entry_ Data Entry for ]
+ * [Government_Agency Government Agency]
+   * [Data_entry_Government_Agency Data Entry for Government Agency]
 
- * []
-   * [Data_entry_ Data Entry for ]
+ * [Form_of_Government Form of Government]
+   * [Data_entry_Form_of_Government Data Entry for Form of Government]
 
- * []
-   * [Data_entry_ Data Entry for ]
+ * [Government_Position_Held Government Position Held]
+   * [Data_entry_Government_Position_Held Data Entry for Government Position Held]
 
- * []
-   * [Data_entry_ Data Entry for ]
+ * [Political_Appointer Political Appointer]
+   * [Data_entry_Political_Appointer Data Entry for Political Appointer]
 
- * []
-   * [Data_entry_ Data Entry for ]
+ * [Political_Party_Tenure Political Party Tenure]
+   * [Data_entry_Political_Party_Tenure Data Entry for Political Party Tenure]
 
-Legislative committee	
-US President		
-Political party		
-US Vice President		
-Government	
-Government Agency	
-Form of Government	
-Government Position Held	
-Political Appointer		
-Political Party Tenure		
-Politician			
-Governmental Jurisdiction	
-Governmental Body		
-Government Office or Title	
-Political District		
-Election contest	
-Election campaign	
-Primary election	
-Legislative session	
-Legislative committee membership
-Legislative committee title	
-National Anthem	
-National anthem of a country
-US Vice Presidential campaign
-US Presidential campaign	
-General election	
-Legislative election results
-Canadian Member of Parliament		-
-Australian Member of Parliament			-
-Political ideology	
-U.S. Congressperson	
-Parliamentary election	
-Indirect election	
-Electoral college	
-Electoral college elected office
-Government office category
-Election poll score	
-Polling authority	
-Poll respondent category	
-Polled entity
-Election with polls			 1
-Election poll
-Polled area		-
+ * [Politician Politician]
+   * [Data_entry_Politician Data Entry for Politician]
+
+ * [Governmental_Jurisdiction Governmental Jurisdiction]
+   * [Data_entry_Governmental_Jurisdiction Data Entry for Governmental Jurisdiction]
+
+ * [Governmental_Body Governmental Body]
+   * [Data_entry_Governmental_Body Data Entry for Governmental Body]
+
+ * [Government_Office_or_Title Government Office or Title]
+   * [Data_entry_Government_Office_or_Title Data Entry for Government Office or Title]
+
+ * [Political_District Political District]
+   * [Data_entry_Political_District Data Entry for Political District]
+
+ * [Election_contest Election contest]
+   * [Data_entry_Election_contest Data Entry for Election contest]
+
+ * [Election_campaign Election campaign]
+   * [Data_entry_Election_campaign Data Entry for Election campaign]
+
+ * [Primary_election Primary election]
+   * [Data_entry_Primary_election Data Entry for Primary election]
+
+ * [Legislative_session Legislative session]
+   * [Data_entry_Legislative_session Data Entry for Legislative session]
+
+ * [Legislative_committee_membership Legislative committee membership]
+   * [Data_entry_Legislative_committee_membership Data Entry for Legislative committee membership]
+
+ * [Legislative_committee_title Legislative committee title]
+   * [Data_entry_Legislative_committee_title Data Entry for Legislative committee title]
+
+ * [National_Anthem National Anthem]
+   * [Data_entry_National_Anthem Data Entry for National Anthem]
+
+ * [National_anthem_of_a_country National anthem of a country]
+   * [Data_entry_National_anthem_of_a_country Data Entry for National anthem of a country]
+
+ * [US_Vice_Presidential_campaign US Vice Presidential campaign]
+   * [Data_entry_US_Vice_Presidential_campaign Data Entry for US Vice Presidential campaign]
+
+ * [US_Presidential_campaign US Presidential campaign]
+   * [Data_entry_US_Presidential_campaign Data Entry for US Presidential campaign]
+
+ * [General_election General election]
+   * [Data_entry_General_election Data Entry for General election]
+
+ * [Legislative_election_results Legislative election results]
+   * [Data_entry_Legislative_election_results Data Entry for Legislative election results]
+
+ * [Canadian_Member_of_Parliament Canadian Member of Parliament]
+   * [Data_entry_Canadian_Member_of_Parliament Data Entry for Canadian Member of Parliament]
+
+ * [Australian_Member_of_Parliament Australian Member of Parliament]
+   * [Data_entry_Australian_Member_of_Parliament Data Entry for Australian Member of Parliament]
+
+ * [Political_ideology Political ideology]
+   * [Data_entry_Political_ideology Data Entry for Political ideology]
+	
+ * [US_Congressperson U.S. Congressperson]
+   * [Data_entry_US_Congressperson Data Entry for U.S. Congressperson]
+
+ * [Parliamentary_election Parliamentary election]
+   * [Data_entry_Parliamentary_election Data Entry for Parliamentary election]
+
+ * [Indirect_election Indirect election]
+   * [Data_entry_Indirect_election Data Entry for Indirect election]
+
+ * [Electoral_college Electoral college]
+   * [Data_entry_Electoral_college Data Entry for Electoral college]
+
+ * [Electoral_college_elected_office Electoral college elected office]
+   * [Data_entry_Electoral_college_elected_office Data Entry for Electoral college elected office]
+
+ * [Government_office_category Government office category]
+   * [Data_entry_Government_office_category Data Entry for Government office category]
+
+ * [Election_poll_score Election poll score]
+   * [Data_entry_Election_poll_score Data Entry for Election poll score]
+
+ * [Polling_authority Polling authority]
+   * [Data_entry_Polling_authority Data Entry for Polling authority]
+
+ * [Poll_respondent_category Poll respondent category]
+   * [Data_entry_Poll_respondent_category Data Entry for Poll respondent category]
+
+ * [Polled_entity Polled entity]
+   * [Data_entry_Polled_entity Data Entry for Polled entity]
+
+ * [Election_with_polls Election with polls]
+   * [Data_entry_Election_with_polls Data Entry for Election with polls]
+
+ * [Election_poll Election poll]
+   * [Data_entry_Election_poll Data Entry for Election poll]
+
+ * [Polled_area Polled area]
+   * [Data_entry_Polled_area Data Entry for Polled area]

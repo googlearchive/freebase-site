@@ -1,0 +1,88 @@
+#summary Different types in Commons.
+
+= Commons =
+This is  commons
+
+=Types=
+Here are the following types in Commons
+
+ * [Newspaper Owner Newspaper Owner]
+   * [Data_entry_Newspaper Owner Data Entry for Newspaper Owner]
+
+ * [Serial Installment Serial Installment]
+   * [Data_entry_Serial Installment Data Entry for Serial Installment]
+
+ * [Magazine Magazine]
+   * [Data_entry_Magazine Data Entry for Magazine]
+
+ * [Journal Journal]
+   * [Data_entry_Journal Data Entry for Journal]
+
+ * [Periodical Publisher Period Periodical Publisher Period]
+   * [Data_entry_Periodical Publisher Period Data Entry for Periodical Publisher Period]
+
+ * [Periodical editor Periodical editor]
+   * [Data_entry_Periodical editor Data Entry for Periodical editor]
+
+ * [Editor title Editor title]
+   * [Data_entry_Editor title Data Entry for Editor title]
+
+ * [Newspaper circulation Newspaper circulation]
+   * [Data_entry_Newspaper circulation Data Entry for Newspaper circulation]
+
+ * [Newspaper edition type Newspaper edition type]
+   * [Data_entry_Newspaper edition type Data Entry for Newspaper edition type]
+
+ * [Journal publication Journal publication]
+   * [Data_entry_Journal publication Data Entry for Journal publication]
+
+ * [Magazine Issue Magazine Issue]
+   * [Data_entry_Magazine Issue Data Entry for Magazine Issue]
+
+ * [Newspaper Issue Newspaper Issue]
+   * [Data_entry_Newspaper Issue Data Entry for Newspaper Issue]
+
+ * [Serialized Work Serialized Work]
+   * [Data_entry_Serialized Work Data Entry for Serialized Work]
+	
+ * [Periodical Periodical]
+   * [Data_entry_Periodical Data Entry for Periodical]
+		
+ * [Periodical Publication Date Periodical Publication Date]
+   * [Data_entry_Periodical Publication Date Data Entry for Periodical Publication Date]
+
+ * [Editorial tenure Editorial tenure]
+   * [Data_entry_Editorial tenure Data Entry for Editorial tenure]
+
+ * [Periodical Publisher Periodical Publisher]
+   * [Data_entry_Periodical Publisher Data Entry for Periodical Publisher]
+
+ * [Journal article Journal article]
+   * [Data_entry_Journal article Data Entry for Journal article]
+
+ * [Place of Publication Period Place of Publication Period]
+   * [Data_entry_Place of Publication Period Data Entry for Place of Publication Period]
+
+ * [Periodical Frequency Periodical Frequency]
+   * [Data_entry_Periodical Frequency Data Entry for Periodical Frequency]
+
+ * [Periodical Format Period Periodical Format Period]
+   * [Data_entry_Periodical Format Period Data Entry for Periodical Format Period]
+
+ * [Periodical Format Periodical Format]
+   * [Data_entry_Periodical Format Data Entry for Periodical Format]
+
+ * [Magazine genre Magazine genre]
+   * [Data_entry_Magazine genre Data Entry for Magazine genre]
+
+ * [Newspaper Newspaper]
+   * [Data_entry_Newspaper Data Entry for Newspaper]
+
+ * [Newspaper price Newspaper price]
+   * [Data_entry_Newspaper price Data Entry for Newspaper price]
+
+ * [Periodical Subject Periodical Subject]
+   * [Data_entry_Periodical Subject Data Entry for Periodical Subject]
+
+ * [Newspaper circulation area Newspaper circulation area]
+   * [Data_entry_Newspaper circulation area Data Entry for Newspaper circulation area]	

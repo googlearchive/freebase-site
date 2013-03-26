@@ -50,7 +50,7 @@
       * [Library_commons   Library commons]
       * [Location_commons   Location commons]
     * *M*
-      * [Martial_arts commons Martial arts commons]
+      * [Martial_arts_commons Martial arts commons]
       * [Measurement_unit_commons Measurement unit commons]
       * [Media_commons Media commons]
       * [Medicine_commons Medicine commons]
@@ -64,7 +64,7 @@
     * *P*
       * [People_commons People commons]
       * [Periodicals_commons Periodicals commons]
-      * [Physical_geography commons Physical geography commons]
+      * [Physical_geography_commons Physical geography commons]
       * [Projects_commons Projects commons]
       * [Protected_places_commons Protected places commons]
     * *R*

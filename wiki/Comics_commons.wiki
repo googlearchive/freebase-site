@@ -28,7 +28,7 @@ Here are the following types in Comics Commons
    * [Data_entry_Comic_Book_Issue Data Entry for Comic Book Issue]
 
  * [Comic_Book_Letterer Comic Book Letterer]
-   * [Data_entry_Comic Book Letterer Data Entry for Comic Book Letterer]
+   * [Data_entry_Comic_Book_Letterer Data Entry for Comic Book Letterer]
 
  * [Comic_Book_Penciler Comic Book Penciler]
    * [Data_entry_Comic_Book_Penciler Data Entry for Comic Book Penciler]

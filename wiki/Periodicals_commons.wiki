@@ -1,16 +1,16 @@
-#summary Different types in Commons.
+#summary Different types in Periodicals Commons.
 
-= Commons =
-This is  commons
+= Periodicals Commons =
+This is Periodicals commons
 
 =Types=
-Here are the following types in Commons
+Here are the following types in Periodicals Commons
 
- * [Newspaper Owner Newspaper Owner]
-   * [Data_entry_Newspaper Owner Data Entry for Newspaper Owner]
+ * [Newspaper_Owner Newspaper Owner]
+   * [Data_entry_Newspaper_Owner Data Entry for Newspaper Owner]
 
- * [Serial Installment Serial Installment]
-   * [Data_entry_Serial Installment Data Entry for Serial Installment]
+ * [Serial_Installment Serial Installment]
+   * [Data_entry_Serial_Installment Data Entry for Serial Installment]
 
  * [Magazine Magazine]
    * [Data_entry_Magazine Data Entry for Magazine]
@@ -18,71 +18,71 @@ Here are the following types in Commons
  * [Journal Journal]
    * [Data_entry_Journal Data Entry for Journal]
 
- * [Periodical Publisher Period Periodical Publisher Period]
-   * [Data_entry_Periodical Publisher Period Data Entry for Periodical Publisher Period]
+ * [Periodical_Publisher_Period Periodical Publisher Period]
+   * [Data_entry_Periodical_Publisher_Period Data Entry for Periodical Publisher Period]
 
- * [Periodical editor Periodical editor]
-   * [Data_entry_Periodical editor Data Entry for Periodical editor]
+ * [Periodical_editor Periodical editor]
+   * [Data_entry_Periodical_editor Data Entry for Periodical editor]
 
- * [Editor title Editor title]
-   * [Data_entry_Editor title Data Entry for Editor title]
+ * [Editor_title Editor title]
+   * [Data_entry_Editor_title Data Entry for Editor title]
 
- * [Newspaper circulation Newspaper circulation]
-   * [Data_entry_Newspaper circulation Data Entry for Newspaper circulation]
+ * [Newspaper_circulation Newspaper circulation]
+   * [Data_entry_Newspaper_circulation Data Entry for Newspaper circulation]
 
- * [Newspaper edition type Newspaper edition type]
-   * [Data_entry_Newspaper edition type Data Entry for Newspaper edition type]
+ * [Newspaper_edition_type Newspaper edition type]
+   * [Data_entry_Newspaper_edition_type Data Entry for Newspaper edition type]
 
- * [Journal publication Journal publication]
-   * [Data_entry_Journal publication Data Entry for Journal publication]
+ * [Journal_publication Journal publication]
+   * [Data_entry_Journal_publication Data Entry for Journal publication]
 
- * [Magazine Issue Magazine Issue]
-   * [Data_entry_Magazine Issue Data Entry for Magazine Issue]
+ * [Magazine_Issue Magazine Issue]
+   * [Data_entry_Magazine_Issue Data Entry for Magazine Issue]
 
- * [Newspaper Issue Newspaper Issue]
-   * [Data_entry_Newspaper Issue Data Entry for Newspaper Issue]
+ * [Newspaper_Issue Newspaper Issue]
+   * [Data_entry_Newspaper_Issue Data Entry for Newspaper Issue]
 
- * [Serialized Work Serialized Work]
-   * [Data_entry_Serialized Work Data Entry for Serialized Work]
+ * [Serialized_Work Serialized Work]
+   * [Data_entry_Serialized_Work Data Entry for Serialized Work]
 	
  * [Periodical Periodical]
    * [Data_entry_Periodical Data Entry for Periodical]
 		
- * [Periodical Publication Date Periodical Publication Date]
-   * [Data_entry_Periodical Publication Date Data Entry for Periodical Publication Date]
+ * [Periodical_Publication_Date Periodical Publication Date]
+   * [Data_entry_Periodical_Publication_Date Data Entry for Periodical Publication Date]
 
- * [Editorial tenure Editorial tenure]
-   * [Data_entry_Editorial tenure Data Entry for Editorial tenure]
+ * [Editorial_tenure Editorial tenure]
+   * [Data_entry_Editorial_tenure Data Entry for Editorial tenure]
 
- * [Periodical Publisher Periodical Publisher]
-   * [Data_entry_Periodical Publisher Data Entry for Periodical Publisher]
+ * [Periodical_Publisher Periodical Publisher]
+   * [Data_entry_Periodical_Publisher Data Entry for Periodical Publisher]
 
- * [Journal article Journal article]
-   * [Data_entry_Journal article Data Entry for Journal article]
+ * [Journal_article Journal article]
+   * [Data_entry_Journal_article Data Entry for Journal article]
 
- * [Place of Publication Period Place of Publication Period]
-   * [Data_entry_Place of Publication Period Data Entry for Place of Publication Period]
+ * [Place_of_Publication_Period Place of Publication Period]
+   * [Data_entry_Place_of_Publication_Period Data Entry for Place of Publication Period]
 
- * [Periodical Frequency Periodical Frequency]
-   * [Data_entry_Periodical Frequency Data Entry for Periodical Frequency]
+ * [Periodical_Frequency Periodical Frequency]
+   * [Data_entry_Periodical_Frequency Data Entry for Periodical Frequency]
 
- * [Periodical Format Period Periodical Format Period]
-   * [Data_entry_Periodical Format Period Data Entry for Periodical Format Period]
+ * [Periodical_Format_Period Periodical Format Period]
+   * [Data_entry_Periodical_Format_Period Data Entry for Periodical Format Period]
 
- * [Periodical Format Periodical Format]
-   * [Data_entry_Periodical Format Data Entry for Periodical Format]
+ * [Periodical_Format Periodical Format]
+   * [Data_entry_Periodical_Format Data Entry for Periodical Format]
 
- * [Magazine genre Magazine genre]
-   * [Data_entry_Magazine genre Data Entry for Magazine genre]
+ * [Magazine_genre Magazine genre]
+   * [Data_entry_Magazine_genre Data Entry for Magazine genre]
 
  * [Newspaper Newspaper]
    * [Data_entry_Newspaper Data Entry for Newspaper]
 
- * [Newspaper price Newspaper price]
-   * [Data_entry_Newspaper price Data Entry for Newspaper price]
+ * [Newspaper_price Newspaper price]
+   * [Data_entry_Newspaper_price Data Entry for Newspaper price]
 
- * [Periodical Subject Periodical Subject]
-   * [Data_entry_Periodical Subject Data Entry for Periodical Subject]
+ * [Periodical_Subject Periodical Subject]
+   * [Data_entry_Periodical_Subject Data Entry for Periodical Subject]
 
- * [Newspaper circulation area Newspaper circulation area]
-   * [Data_entry_Newspaper circulation area Data Entry for Newspaper circulation area]	
+ * [Newspaper_circulation_area Newspaper circulation area]
+   * [Data_entry_Newspaper_circulation_area Data Entry for Newspaper circulation area]	

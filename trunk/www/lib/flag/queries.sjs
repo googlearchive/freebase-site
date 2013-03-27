@@ -91,6 +91,9 @@ function create(user, kind, id1/**, id2, ..., id_N **/) {
         var autoMergeDelete = false;
         for(var i = 0, l = results.length; i < l; i++) {
             var result = results[i];
+
+            if (!result) break;
+
             var creator = h.get_first_value(result, '/type/object/attribution');
 
             if (creator && creator.id === user.id) {

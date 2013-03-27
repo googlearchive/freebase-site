@@ -1,0 +1,32 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+Add your content here.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
+[Opera Production]
+[Opera Company]
+[Opera Producer]
+[Opera Director]
+[Opera Designer Gig]
+[Opera Designer]
+[Opera Production Staff Gig]
+[Opera Production Staffmember]
+[Opera Designer Role]
+[Opera Production Staff Role]
+[Opera Role]
+[Opera Character]
+[Opera House]
+[Opera Genre]
+[Opera Recording]
+[Opera]
+[Opera character voice]
+[Opera Libretto]
+[Librettist]

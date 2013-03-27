@@ -1,32 +1,62 @@
-#summary One-sentence summary of this page.
+#summary Different types in Opera Commons.
 
-= Introduction =
+=Opera Commons =
+This is opera commons
 
-Add your content here.
+=Types=
+Here are the following types in Opera Commons
 
+ 
+ * [Opera_Production Opera Production]
+   * [Data_entry_Opera_Production Data Entry for Opera Production]
 
-= Details =
+ * [Opera_Company Opera Company]
+   * [Data_entry_Opera_Company Data Entry for Opera Company]
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
-[Opera Production]
-[Opera Company]
-[Opera Producer]
-[Opera Director]
-[Opera Designer Gig]
-[Opera Designer]
-[Opera Production Staff Gig]
-[Opera Production Staffmember]
-[Opera Designer Role]
-[Opera Production Staff Role]
-[Opera Role]
-[Opera Character]
-[Opera House]
-[Opera Genre]
-[Opera Recording]
-[Opera]
-[Opera character voice]
-[Opera Libretto]
-[Librettist]
+ * [Opera_Producer Opera Producer]
+   * [Data_entry_Opera_Producer Data Entry for Opera Producer]
+
+ * [Opera_Director Opera Director]
+   * [Data_entry_Opera_Director Data Entry for Opera Director]
+
+ * [Opera_Designer Opera Designer]
+   * [Data_entry_Opera_Designer Data Entry for Opera Designer]
+
+ * [Opera_Production Opera Production]
+   * [Data_entry_Opera_Production Data Entry for Opera Production]
+
+ * [Opera_Production Opera Production]
+   * [Data_entry_Opera_Production Data Entry for Opera Production]
+
+ * [Opera_Designer Opera Designer]
+   * [Data_entry_Opera_Designer Data Entry for Opera Designer]
+
+ * [Opera_Production Opera Production]
+   * [Data_entry_Opera_Production Data Entry for Opera Production]
+
+ * [Opera_Role Opera Role]
+   * [Data_entry_Opera_Role Data Entry for Opera Role]
+
+ * [Opera_Character Opera Character]
+   * [Data_entry_Opera_Character Data Entry for Opera Character]
+
+ * [Opera_House Opera House]
+   * [Data_entry_Opera_House Data Entry for Opera House]
+
+ * [Opera_Genre Opera Genre]
+   * [Data_entry_Opera_Genre Data Entry for Opera Genre]
+
+ * [Opera_Recording Opera Recording]
+   * [Data_entry_Opera_Recording Data Entry for Opera Recording]
+
+ * [Opera Opera]
+   * [Data_entry_Opera Data Entry for Opera]
+
+ * [Opera_character_voice Opera character voice]
+   * [Data_entry_Opera_character_voice Data Entry for Opera character voice]
+
+ * [Opera_Libretto Opera Libretto]
+   * [Data_entry_Opera_Libretto Data Entry for Opera Libretto]
+
+ * [Librettist Librettist]
+   * [Data_entry_Librettist Data Entry for Librettist]

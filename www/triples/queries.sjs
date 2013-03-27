@@ -610,3 +610,21 @@ function get_key_link(namespace_id, object_id, value, lang) {
       return env.result;
     });
 }
+
+/**
+ * Check User Right
+ * @param  {mid} user_id user mid
+ * @return {Promise}
+ */
+function is_expert_user(user_id) {
+  var q = {
+    "id": "/freebase/badges/freebaseexpert",
+    "/type/usergroup/member": {
+      "id": user_id
+    }
+  };
+  return freebase.mqlread(q).then(function(envelope) {
+    var result = envelope.result;
+    return result != null;
+  });
+}

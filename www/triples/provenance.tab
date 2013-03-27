@@ -81,7 +81,7 @@ var SPEC = {
     return links.get_valid_provenance_type(id, object_type)
       .then(function(provenance_type) {
         if (!provenance_type) {
-throw "Invalid provenance " + id;
+          throw "Invalid provenance " + id;
         }
         var promises = {
           links: links.get_links_by_provenance(

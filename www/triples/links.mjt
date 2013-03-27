@@ -34,6 +34,7 @@
   var h = acre.require("lib/helper/helpers.sjs");
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var _ = i18n.gettext;
+  var form = acre.require("lib/propbox/form.mjt");
 
   var FILTER_BY_PROP = _("Filter by property");
   var FILTER_BY_CREATOR = _("Filter by creator");
@@ -184,7 +185,7 @@
     ${link_triple(link)}
     <td class="menu-col">${creator(link)}</td>
     <td class="menu-col">${attribution(link)}</td>
-    <td>${timestamp(link)}</td>
+    <td>${timestamp(link, true)}</td>
     <acre:block if="historical">
       <td>${link.operation}</td>
     </acre:block>
@@ -306,7 +307,7 @@
     ${creator_write_triple(link)}
     <td class="menu-col">${creator(link, !is_attribution)}</td>
     <td class="menu-col">${attribution(link, is_attribution)}</td>
-    <td>${timestamp(link)}</td>
+    <td>${timestamp(link, true)}</td>
     <acre:block if="historical">
       <td>${link.operation}</td>
     </acre:block>
@@ -355,6 +356,45 @@
       <td>${link.operation}</td>
     </acre:block>
   </tr>
+</acre:block>
+
+<!!--
+   Writes Revert form
+   !!-->
+<acre:block def="revert_writes_form(id, is_user, timestamp, lang)">
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <acre:block if="is_user">
+          <span>${_('Revert User Writes')}</span>
+        </acre:block>
+        <acre:block else="">
+          <span>${_('Revert Topic Links')}</span>
+        </acre:block>
+      </h1>
+      <div class="modal-content">
+        <acre:block if="is_user">
+          <p>
+            Are you sure you want to delete all writes from ${timestamp}
+            up to now?
+          </p>
+        </acre:block>
+        <acre:block else="">
+          <p>
+            Are you sure you want to delete all links from ${timestamp}
+            up to now?
+          </p>
+        </acre:block>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <input type="hidden" name="id" value="${id}"/>
+      <input type="hidden" name="is_user" value="${is_user}"/>
+      <input type="hidden" name="timestamp" value="${timestamp}"/>
+      <input type="hidden" name="lang" value="${lang}"/>
+      ${form.submit_buttons(_('Revert'))}
+    </div>
+  </div>
 </acre:block>
 
 <!!--
@@ -510,10 +550,26 @@
   </acre:block>
 </acre:block>
 
-<acre:block def="timestamp(link)">
+<acre:block def="timestamp(link, revert)">
   <acre:script>
     var parts = link.timestamp.split('T');
   </acre:script>
+  <ul class="inline-menu nicemenu" acre:if="revert">
+    <li class="nicemenu-item">
+      <span class="headmenu">
+        <a href="javascript:void(0)" class="more-action"></a>
+      </span>
+      <ul class="submenu row-menu">
+        <li class="row-menu-item">
+            <a href="javascript:void(0);"
+                onclick="fb.links.revert_links(fb.c.id,'${link.timestamp}');">
+              ${_("Revert links")}
+            </a>
+
+        </li>
+      </ul>
+    </li>
+  </ul>
   <span class="timestamp">
     <span class="date">${parts[0]}</span><span class="time fullts">T${parts[1]}</span>
   </span>

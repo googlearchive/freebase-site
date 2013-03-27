@@ -28,7 +28,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-(function($, fb, lh) {
+(function($, fb, lh, formlib) {
 
   var links = fb.links = {
 
@@ -65,6 +65,68 @@
     click_filter: function(e) {
       lh.add_filter($(this).text());
       return false;
+    },
+
+    /**
+     * Revert all links for object id from timestamp up to now
+     */
+    revert_links: function(id, timestamp) {
+      var data = {
+        timestamp: timestamp,
+        lang: fb.lang,
+        id: id
+      };
+      $.ajax($.extend(formlib.default_begin_ajax_options(), {
+        url: fb.h.ajax_url('revert_writes_begin.ajax'),
+        data: data,
+        onsuccess: function(data) {
+          if(data && data.result) {
+            if (data.result.error) {
+              formlib.status_error(data.result.error);
+              return;
+            }
+          }
+          var form = $(data.result.html);
+          var event_prefix = 'fb.links.revert_writes.';
+          var options = {
+            event_prefix: event_prefix,
+            // callbacks
+            init: function(options){
+              formlib.enable_submit(options);
+              form.find(".cancel").focus();
+            },
+            validate: function() {
+              return true;
+            },
+            submit: links.revert_submit,
+            // submit ajax options
+            ajax: {
+              url: fb.h.ajax_url('revert_writes_submit.ajax')
+            },
+            // jQuery objects
+            form: form
+          };
+          formlib.init_modal_form(options);
+        }
+      }));
+    },
+
+    revert_submit: function(options, ajax_options) {
+      $.ajax($.extend(ajax_options, {
+        onsuccess: function(data) {
+          if(data && data.result) {
+            if (data.result.info) {
+              formlib.status_info(data.result.info);
+            } else if (data.result.error) {
+              formlib.status_error(data.result.error);
+            }
+          } else {
+            formlib.status_error("Oops! Something went wrong. " +
+                "Please try again.");
+          }
+          formlib.cancel_modal_form(options);
+        }
+      }));
     },
 
     get_ajax_params_callback: function(params) {
@@ -189,4 +251,4 @@
 
   $(links.init);
 
-})(jQuery, window.freebase, window.freebase.links_helpers);
+})(jQuery, window.freebase, window.freebase.links_helpers, window.formlib);

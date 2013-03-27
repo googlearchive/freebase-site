@@ -69,7 +69,7 @@ function create_job(name) {
  * @return {lib.promise.deferred.Deferred} A promise for FreeQ call
  * @throw error if fb_writeuser is not enabled
  */
-function add_task(job_id, query, execute) {
+function add_task(job_id, query, execute, name) {
   if(!is_fb_writeuser_enabled()) {
     throw new Error("fb_writeuser is not enabled");
   }
@@ -87,7 +87,7 @@ function add_task(job_id, query, execute) {
     });
   } else {
     // Create new job and then add task
-    defer = create_job().then(function(result){
+    defer = create_job(name).then(function(result){
       var job_id = result.id;
       return freebase.freeq.add_task(job_id, options).then(function(){
         return { "id": job_id };
@@ -158,6 +158,44 @@ function delete_topic(job_id, topic_id, execute) {
       'topic_id': topic_id
   }]};
   return add_task(job_id, query, execute);
+}
+
+/**
+ * Revert user writes from timestamp upto now
+ * @param  {string=} job_id    ID of a Job (optional)
+ * @param  {!string} user_id MID of a User
+ * @param  {!string} timestamp Timestamp from which to revert upto now
+ * @param  {boolean=} execute   (optional)
+ * @return {lib.promise.deferred.Deferred} A promise for adding a task
+ * @throw error if fb_writeuser is not enabled
+ */
+function revert_user(job_id, user_id, timestamp, execute) {
+  var query = {
+    'revert_users': [{
+      'user_id': user_id,
+      'timestamp': timestamp
+    }]
+  };
+  return add_task(job_id, query, execute, "Freebase Revert User");
+}
+
+/**
+ * Revert topic links from timestamp upto now
+ * @param  {string=} job_id    ID of a Job (optional)
+ * @param  {!string} topic_id MID of a Topic
+ * @param  {!string} timestamp Timestamp from which to revert upto now
+ * @param  {boolean=} execute   (optional)
+ * @return {lib.promise.deferred.Deferred} A promise for adding a task
+ * @throw error if fb_writeuser is not enabled
+ */
+function revert_topic(job_id, topic_id, timestamp, execute) {
+  var query = {
+    'revert_topics': [{
+      'topic_id': topic_id,
+      'timestamp': timestamp
+    }]
+  };
+  return add_task(job_id, query, execute, "Freebase Revert Topic");
 }
 
 /**

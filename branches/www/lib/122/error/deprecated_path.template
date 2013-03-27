@@ -1,0 +1,39 @@
+<acre:script>
+  acre.response.status = 404;
+</acre:script>
+
+<acre:block def="title()">
+  Not Found
+</acre:block>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="error/error.mf.css" />
+</acre:block>
+
+<acre:block def="content_body()">
+  <div id="page-content">
+    <div class="module">
+      <acre:script>
+        var base_path = acre.request.base_path;
+        var api_error = base_path.indexOf('/api') === 0 ||
+            base_path.indexOf('/experimental') === 0 ;
+      </acre:script>
+      <acre:block if="api_error">
+        <h1 class="module-title">Not Found</h1>
+        <div class="module-section">
+          You are doing requests against deprecated APIs. To switch to the
+          new Freebase APIs, please read this documentation:
+          <a href="https://developers.google.com/freebase">
+            https://developers.google.com/freebase
+          </a>
+        </div>
+      </acre:block>
+      <acre:block else="">
+        <h1 class="module-title">Not Found</h1>
+        <div class="module-section">
+          This page is deprecated: ${acre.request.base_path}
+        </div>
+      </acre:block>
+    </div>
+  </div>
+</acre:block>

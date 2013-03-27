@@ -94,6 +94,8 @@ function flagContent(flag, user) {
         if (!reviewHelpers.userCanVoteForFlag(flagInfo, userInfo)) {
             displayInfo.authToVote = false;
         }
+        displayInfo.adminVote = h.has_value(flagInfo,
+                '/freebase/review_flag/status');
 
         // Check for most recent previous vote
         displayInfo.previousVote = null;

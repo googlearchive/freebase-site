@@ -72,6 +72,11 @@
     ${votepanel(displayInfo)}
     <div class="flagreview-separator">
     </div>
+    <acre:block if="displayInfo.adminVote">
+      <div class="page-flag" style="text-align: center; margin: 0">
+       <span class="page-flag-msg">${_("Admin Voting")}</span>
+      </div>
+    </acre:block>
     ${itempanel(displayInfo)}
   </acre:block>
 </acre:block>
@@ -110,6 +115,12 @@
       ${flagreview_title(displayInfo)}
       <acre:block if="displayInfo.authToVote">
         ${flagreview_buttons(displayInfo)}
+      </acre:block>
+      <acre:block else="">
+        <p class="vote-choices vote-label">
+          You don't have authorization to vote on this flag.
+          Please click on Forward (K)
+        </p>
       </acre:block>
   </div>
 </acre:block>

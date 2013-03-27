@@ -1,0 +1,104 @@
+#summary Different types in Video Games Commons.
+
+= Video Games Commons =
+This is  video games commons
+
+=Types=
+Here are the following types in Video Games Commons
+
+
+ * [Video Game]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Genre]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Platform]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Designer]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Publisher]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Developer]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Character]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Performance]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Actor]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Series]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Version]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Region]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Performance Type]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Engine]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Engine Developer]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Gameplay Mode]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Mod]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Musical Game]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Musical Game Song]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Input Method]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Expansion]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Engine Family]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Compilation]
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Subject]
+   * [Data_entry_ Data Entry for ]
+
+ * [Musical game/song relationship]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Distribution System]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Content Descriptor]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Rating System]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Evaluation]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video Game Rating]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Video game soundtrack]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Data Summary]
+   * [Data_entry_ Data Entry for ]

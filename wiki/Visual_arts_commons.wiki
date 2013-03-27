@@ -1,0 +1,27 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+Add your content here.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
+[Visual Art Medium]
+[Visual Art Form]
+[Art owner]	
+[Art Period/Movement]	
+[Color]
+[Visual Artist]
+[Artwork]	
+[Visual Art Genre]	
+[Art Subject]	
+[Artwork/location relationship]	
+[Artwork/owner relationship]	
+[Art acquisition method]	
+[Art Series]	
+[Visual art support]

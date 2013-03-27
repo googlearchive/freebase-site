@@ -4,23 +4,67 @@
    "rules": [
      {
         "from": {
-          "path": "/_fs_routing" 
+          "path": "/_fs_routing"
         },
         "to": {
           "route_as": "script",
           "location": "//environments.svn.freebase-site.googlecode.dev/@ACRE_SITE_HOST@/_fs_routing"
-        } 
-     
+        }
+
      },
      {
         "from": {
-          "path": "/robots.txt" 
+          "path": "/robots.txt"
         },
         "to": {
           "route_as": "script",
           "location": "//environments.svn.freebase-site.googlecode.dev/@ACRE_SITE_HOST@/robots.txt"
-        } 
-     
+        }
+     },
+     {
+        "from": {
+          "path": "/policies/freebase-cc-by-61x23.png"
+        },
+        "to": {
+          "route_as": "redirect",
+          "location": "http://www.gstatic.com/freebase/img/freebase-cc-by-61x23.png"
+        }
+     },
+     {
+        "from": {
+          "path": "/api"
+        },
+        "to": {
+          "route_as": "redirect",
+          "location": "https://developers.google.com/freebase/v1/getting-started"
+        }
+     },
+     {
+        "from": {
+          "path": "/private/suggest"
+        },
+        "to": {
+          "route_as": "redirect",
+          "location": "https://developers.google.com/freebase/v1/search-widget"
+        }
+     },
+     {
+        "from": {
+          "path": "/experimental"
+        },
+        "to": {
+          "route_as": "redirect",
+          "location": "https://developers.google.com/freebase/v1/getting-started"
+        }
+     },
+     {
+        "from": {
+          "path": "/widget/topic"
+        },
+        "to": {
+          "route_as": "redirect",
+          "location": "https://developers.google.com/freebase/v1/getting-started"
+        }
      }
    ]
   },
@@ -29,12 +73,12 @@
     "rules": [
       {
         "from": {
-          "path": "/" 
+          "path": "/"
         },
         "to": {
           "route_as": "script",
           "location": "//environments.svn.freebase-site.googlecode.dev/@ACRE_SITE_HOST@"
-        } 
+        }
       }
     ]
   }

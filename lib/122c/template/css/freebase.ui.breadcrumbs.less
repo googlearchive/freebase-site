@@ -1,0 +1,209 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+  Breadcrumbs
+*/
+
+.breadcrumb ol,
+.breadcrumb ul {
+  list-style: none;
+  /* fix this border issue */
+  border-top: 1px solid #e1e2e3;
+}
+
+.breadcrumb-item {
+  float: left;
+  position: relative;
+  line-height: 1;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #e4e6e7;
+  padding: 5px 9px 5px 7px; 
+  margin-bottom: -1px;
+  margin-left: 10px;
+}
+
+.breadcrumb-item.label {
+  top: -1px;
+  text-shadow:1px 1px 1px #fff;
+  padding-left: 28px;
+  margin-left: 0;
+  background-color: #a1a2a3;
+  .linear_gradient(#b1b2b3,#a1a2a3);
+}
+
+.breadcrumb-item:after {
+  content: '';
+  position: absolute;
+  right:-7px;
+  top: 0;
+  height: 30px;
+  width: 30px;
+  overflow: hidden;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  .box_shadow(1px, 1px, 0px, #b6b7b8);
+}
+
+.breadcrumb-item:nth-child(1):after {
+  background-color: #a1a2a3;
+  .linear_gradient(#b1b2b3,#a1a2a3);
+}
+
+.breadcrumb-item.label:after {
+  .box_shadow(1px, 1px, 2px, #999);
+}
+
+.breadcrumb-item.last:after {
+  content: none;
+}
+
+/* User Label */
+.breadcrumb-item.user,
+.breadcrumb-item.user:after {
+  background-color: #d2d24a;
+  .linear_gradient(#d2d24a,#cccc34);
+}
+
+/* Domain Label */
+.breadcrumb-item.domain,
+.breadcrumb-item.user-domain,
+.breadcrumb-item.user-domain:after,
+.breadcrumb-item.domain:after {
+  background-color: #ffde64;
+  .linear_gradient(#ffde64,#ffcd04);
+}
+
+/* Type Label */
+.breadcrumb-item.type,
+.breadcrumb-item.type:after {
+  background-color: #ffa51e;
+  .linear_gradient(#ffa51e,#ff9901);
+}
+
+/* Property Label */
+.breadcrumb-item.property,
+.breadcrumb-item.property:after {
+  background-color: #ca9683; 
+  .linear_gradient(#ca9683, #c88d6a);
+}
+
+/* Topic Label */
+.breadcrumb-item.topic,
+.breadcrumb-item.topic:after {
+  background-color: #9dc9db;
+  .linear_gradient(#9dc9db,#7ab9e1);
+}
+
+/* App Label */
+.breadcrumb-item.app,
+.breadcrumb-item.app:after {
+  background-color: #77d2d2;
+  .linear_gradient(#77d2d2,#67cccc);
+}
+
+.breadcrumb-item.label a,
+.breadcrumb-item.label a:hover {
+  cursor: default;
+  text-decoration: none;
+}
+
+.breadcrumb-item-inner {
+  overflow: hidden;
+  height: 30px;
+  width: 30px;
+}
+
+#breadcrumb-siblings {
+  display: none;
+  z-index: 1;
+  width: 200px;
+  background: #222;
+  padding: 5px;
+  border: 1px solid #222;
+  .rounded_corners(5px);
+}
+
+#breadcrumb-siblings strong {
+  display: block;
+  padding-left: 5px;
+  margin-bottom: 3px;
+  font-size: 10px;
+}
+
+#breadcrumb-siblings ul {
+  background: #fff;
+  height: 175px;
+  overflow-y: scroll;
+  padding: 0;
+  margin: 0;
+}
+
+#breadcrumb-siblings a {
+  display: block;
+  color: @link_blue;
+  font-weight: normal;
+  padding: 3px 5px;
+}
+
+.breadcrumb-item .breadcrumb-link {
+  display: block;
+  position: relative;
+  z-index: 2;
+  padding: 4px 7px;
+  color: #333;
+}
+
+.breadcrumb-item.label .breadcrumb-link {
+  padding-left: 0;
+}
+
+.last .breadcrumb-link,
+.last a.breadcrumb-link,
+.last a.breadcrumb-link:hover {
+  text-decoration: none;
+  pointer: default;
+  color: #666;
+}
+
+.breadcrumb-item-inner a.breadcrumb-sibling-trigger {
+    background: url(template/img/ui-icons.png) no-repeat right -248px;
+    padding-right: 22px;
+}
+
+.breadcrumb-item a.active {
+    background: #222 url(template/img/ui-icons.png) no-repeat right -226px;
+    .rounded_corners(5px);
+}
+

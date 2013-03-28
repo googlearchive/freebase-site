@@ -1,0 +1,41 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+Add your content here.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
+Aircraft model	
+Aircraft type	
+Aircraft manufacturer	
+Airline alliance	
+Airport	
+Airport type	
+Airport operator	
+Airport runway	
+Airport runway surface	
+Cargo moved by year	
+Aviation incident	
+Aircraft accident type	
+IATA airline designator	
+ICAO airline designator	
+Aircraft Ownership Count
+Aircraft Owner	
+Aircraft Line	
+Aircraft Engine Type	
+Airline Airport Presence
+Aviation waypoint	
+Waypoint type	
+Comparable Aircraft Relationship
+Aviation incident/aircraft relationship	
+Aircraft	
+Airport terminal
+Data Summary
+
+

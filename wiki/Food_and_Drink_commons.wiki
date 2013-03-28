@@ -1,0 +1,149 @@
+#summary Different types in Food and Drink Commons.
+
+= Food and Drink Commons =
+This is  food and drink commons
+
+=Types=
+Here are the following types in Food and Drink Commons
+
+ * [Cheese Cheese]	
+   * [Data_entry_Cheese Data Entry for Cheese]
+
+ * [Cheese texture Cheese texture]	
+   * [Data_entry_Cheese texture Data Entry for Cheese texture]
+
+ * [Cheese certification Cheese certification]	
+   * [Data_entry_Cheese certification Data Entry for Cheese certification]
+
+ * [Brewery / Brand of beer Brewery / Brand of beer]	
+   * [Data_entry_Brewery / Brand of beer Data Entry for Brewery / Brand of beer]
+
+ * [Beer style Beer style]	
+   * [Data_entry_Beer style Data Entry for Beer style]
+
+ * [Beer Beer]	
+   * [Data_entry_Beer Data Entry for Beer]
+
+ * [Tea Tea]	
+   * [Data_entry_Tea Data Entry for Tea]
+
+ * [Tea type Tea type]	
+   * [Data_entry_Tea type Data Entry for Tea type]
+
+ * [Bottled water Bottled water]	
+   * [Data_entry_Bottled water Data Entry for Bottled water]
+
+ * [Beverage type Beverage type]	
+   * [Data_entry_Beverage type Data Entry for Beverage type]
+
+ * [Beverage Beverage]	
+   * [Data_entry_Beverage Data Entry for Beverage]
+
+ * [Candy bar Candy bar]	
+   * [Data_entry_Candy bar Data Entry for Candy bar]
+
+ * [Candy bar manufacturer Candy bar manufacturer]	
+   * [Data_entry_Candy bar manufacturer Data Entry for Candy bar manufacturer]
+
+ * [Cheese milk source Cheese milk source]	
+   * [Data_entry_Cheese milk source Data Entry for Cheese milk source]
+
+ * [Beer Style Category Beer Style Category]	
+   * [Data_entry_Beer Style Category Data Entry for Beer Style Category]
+
+ * [Dish Dish]	
+   * [Data_entry_Dish Data Entry for Dish]
+
+ * [Type of dish Type of dish]	
+   * [Data_entry_Type of dish Data Entry for Type of dish]
+
+ * [Ingredient Ingredient]	
+   * [Data_entry_Ingredient Data Entry for Ingredient]
+
+ * [Beer country / region Beer country / region]	
+   * [Data_entry_Beer country / region Data Entry for Beer country / region]
+
+ * [Beer containment Beer containment]	
+   * [Data_entry_Beer containment Data Entry for Beer containment]
+
+ * [Beer container Beer container]	
+   * [Data_entry_Beer container Data Entry for Beer container]
+
+ * [Restaurant Restaurant]	
+   * [Data_entry_Restaurant Data Entry for Restaurant]
+
+ * [Restaurant-chef association Restaurant-chef association]	
+   * [Data_entry_Restaurant-chef association Data Entry for Restaurant-chef association]
+
+ * [Chef Chef]	
+   * [Data_entry_Chef Data Entry for Chef]
+
+ * [Cuisine Cuisine]	
+   * [Data_entry_Cuisine Data Entry for Cuisine]
+
+ * [Blended spirit Blended spirit]	
+   * [Data_entry_Blended spirit Data Entry for Blended spirit]
+
+ * [Infused spirit style Infused spirit style]	
+   * [Data_entry_Infused spirit style Data Entry for Infused spirit style]
+
+ * [Spirit bottler Spirit bottler]	
+   * [Data_entry_Spirit bottler Data Entry for Spirit bottler]
+
+ * [Spirit aging Spirit aging]	
+   * [Data_entry_Spirit aging Data Entry for Spirit aging]
+
+ * [Fermentation base Fermentation base]	
+   * [Data_entry_Fermentation base Data Entry for Fermentation base]
+
+ * [Distilled spirit type Distilled spirit type]	
+   * [Data_entry_Distilled spirit type Data Entry for Distilled spirit type]
+
+ * [Spirit product manufacturer Spirit product manufacturer]	
+   * [Data_entry_Spirit product manufacturer Data Entry for Spirit product manufacturer]
+
+ * [Spirit-producing region Spirit-producing region]	
+   * [Data_entry_Spirit-producing region Data Entry for Spirit-producing region]
+
+ * [Distilled spirit Distilled spirit]	
+   * [Data_entry_Distilled spirit Data Entry for Distilled spirit]
+
+ * [Distillery Distillery]	
+   * [Data_entry_Distillery Data Entry for Distillery]
+
+ * [Infused spirit Infused spirit]	
+   * [Data_entry_Infused spirit Data Entry for Infused spirit]
+
+ * []	
+   * [Data_entry_ Data Entry for ]
+
+Blended spirit style
+Appellation
+Vineyard
+Wine color
+Grape Variety
+Fruit Source
+Grape Variety Composition
+Wine Producer
+Wine Region
+Wine Type
+Wine
+Wine Sub-region
+Licensee tenure
+Drinking establishment licensee
+Drinking establishment
+Drinking establishment type
+Recipe author
+Diet follower
+Culinary tool
+Culinary measure
+Recipe ingredient
+Diet
+Recipe
+Recipe collection Food
+Nutrient
+Nutrition Fact
+Culinary Technique
+Wine style
+Beer production
+Dietary restriction

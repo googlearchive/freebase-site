@@ -70,35 +70,35 @@ Here are the following types in Video Games Commons
  * [Video_Game_Expansion Video Game Expansion]
    * [Data_entry_Video_Game_Expansion Data Entry for Video Game Expansion]
 
- * [Video Game Engine Family Video Game Engine Family]
-   * [Data_entry_Video Game Engine Family Data Entry for Video Game Engine Family]
+ * [Video_Game_Engine_Family Video Game Engine Family]
+   * [Data_entry_Video_Game_Engine_Family Data Entry for Video Game Engine Family]
 
- * [Video Game Compilation Video Game Compilation]
-   * [Data_entry_Video Game Compilation Data Entry for Video Game Compilation]
+ * [Video_Game_Compilation Video Game Compilation]
+   * [Data_entry_Video_Game_Compilation Data Entry for Video Game Compilation]
 
- * [Video Game Subject Video Game Subject]
-   * [Data_entry_Video Game Subject Data Entry for Video Game Subject]
+ * [Video_Game_Subject Video Game Subject]
+   * [Data_entry_Video_Game_Subject Data Entry for Video Game Subject]
 
- * [Musical game/song relationship Musical game/song relationship]	
-   * [Data_entry_Musical game/song relationship Data Entry for Musical game/song relationship]
+ * [Musical_game_song_relationship Musical game/song relationship]	
+   * [Data_entry_Musical_game_song_relationship Data Entry for Musical game/song relationship]
 
- * [Video Game Distribution System]
-   * [Data_entry_Video Game Distribution System Data Entry for Video Game Distribution System]
+ * [Video_Game_Distribution_System]
+   * [Data_entry_Video_Game_Distribution_System Data Entry for Video Game Distribution System]
 
- * [Video Game Content Descriptor Video Game Content Descriptor]
-   * [Data_entry_Video Game Content Descriptor Data Entry for Video Game Content Descriptor]
+ * [Video_Game_Content_Descriptor Video Game Content Descriptor]
+   * [Data_entry_Video_Game_Content_Descriptor Data Entry for Video Game Content Descriptor]
 
- * [Video Game Rating System Video Game Rating System]	
-   * [Data_entry_Video Game Rating System Data Entry for Video Game Rating System]
+ * [Video_Game_Rating_System Video Game Rating System]	
+   * [Data_entry_Video_Game_Rating_System Data Entry for Video Game Rating System]
 
- * [Video Game Evaluation Video Game Evaluation]	
-   * [Data_entry_Video Game Evaluation Data Entry for Video Game Evaluation]
+ * [Video_Game_Evaluation Video Game Evaluation]	
+   * [Data_entry_Video_Game_Evaluation Data Entry for Video Game Evaluation]
 
- * [Video Game Rating Video Game Rating]	
-   * [Data_entry_Video Game Rating Data Entry for Video Game Rating]
+ * [Video_Game_Rating Video Game Rating]	
+   * [Data_entry_Video_Game_Rating Data Entry for Video Game Rating]
 
- * [Video game soundtrack Video game soundtrack]	
-   * [Data_entry_ Data Entry for Video game soundtrack]
+ * [Video_game_soundtrack Video game soundtrack]	
+   * [Data_entry_Video_game_soundtrack Data Entry for Video game soundtrack]
 
- * [Data Summary Data Summary]
-   * [Data_entry_Data Summary Data Entry for Data Summary]
+ * [Data_Summary Data Summary]
+   * [Data_entry_Data_Summary Data Entry for Data Summary]

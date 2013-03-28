@@ -36,7 +36,7 @@
         },
         "to": {
           "route_as": "redirect",
-          "location": "https://developers.google.com/freebase/v1/getting-started"
+          "location": "https://developers.google.com/freebase/v1/getting-started#"
         }
      },
      {
@@ -45,7 +45,7 @@
         },
         "to": {
           "route_as": "redirect",
-          "location": "https://developers.google.com/freebase/v1/search-widget"
+          "location": "https://developers.google.com/freebase/v1/search-widget#"
         }
      },
      {
@@ -54,7 +54,7 @@
         },
         "to": {
           "route_as": "redirect",
-          "location": "https://developers.google.com/freebase/v1/getting-started"
+          "location": "https://developers.google.com/freebase/v1/getting-started#"
         }
      },
      {
@@ -63,7 +63,7 @@
         },
         "to": {
           "route_as": "redirect",
-          "location": "https://developers.google.com/freebase/v1/getting-started"
+          "location": "https://developers.google.com/freebase/v1/getting-started#"
         }
      }
    ]

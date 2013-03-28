@@ -1,1 +1,0 @@
-["lib/propbox/form.omf.js", "js/i18n-edit.js"]

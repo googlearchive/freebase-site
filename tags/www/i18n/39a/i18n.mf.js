@@ -1,1 +1,0 @@
-["lib/template/js/jquery.fixedcolumn.js", "lib/propbox/propbox.omf.js", "js/i18n.js"]

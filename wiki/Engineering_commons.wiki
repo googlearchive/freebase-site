@@ -21,16 +21,16 @@ Here are the following types in Commons
 Power plug standard	
 Battery size cell variation	
 Battery size	
-Battery	11/8/2009	sprocketonline	 2
-Engine cooling method	11
-Engine	11/8/2009	sprocketonline	 721
-Engine designer	11/10/2009	sprocketonline	 4
-Fuel delivery method	11/8/2009	sprocketonline	 7
-Engine category	11/8/2009	sprocketonline	 50
-Location with mains power	11/20/2009	sprocketonline	 3
-Battery cell type	11/8/2009	sprocketonline	 58
-Reaction engine	11/8/2009	sprocketonline	 199
-Engine energy source	11/10/2009	sprocketonline	 10
-Material Composition	7/22/2009	sprocketonline	 2
-Battery shape format	11/8/2009	sprocketonline	 6
-Mains power	11/20/2009	sprocketonline	 3
+Battery	
+Engine cooling method	
+Engine	
+Engine designer	
+Fuel delivery method	
+Engine category	
+Location with mains power	
+Battery cell type	
+Reaction engine	
+Engine energy source	
+Material Composition	
+Battery shape format	
+Mains power	

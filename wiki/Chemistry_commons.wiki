@@ -1,30 +1,58 @@
-#summary One-sentence summary of this page.
+#summary Different types in Chemistry Commons.
 
-= Introduction =
+= Chemistry Commons =
+This is chemistry commons
 
-Add your content here.
+=Types=
+Here are the following types in Chemistry Commons
 
+ * [Chemical_Compound Chemical Compound]
+   * [Data_entry_Chemical_Compound  Data Entry for Chemical Compound]
 
-= Details =
+ * [Isotope Isotope]
+   * [Data_entry_Isotope  Data Entry for Isotope]
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
-[Chemical Compound]
-[Isotope]
-[Chemical Element]
-[Chemical Series]
-[Phase of Matter]
-[Chemical Bond]
-[Periodic table block]
-[Isotope decay]
-[Radioactive decay mode]
-[Chemical Element Discoverer]
-[Particle spin]
-[Atomic mass]
-[Electron affinity]
-[Chemical Classification]
-[Molecular entity]
-[Solubility relationship]
-[Solubility]	
+ * [Chemical_Element Chemical Element]
+   * [Data_entry_Chemical_Element  Data Entry for Chemical Element]
+
+ * [Chemical Series Chemical Series]
+   * [Data_entry_Chemical_Series  Data Entry for Chemical Series]
+
+ * [Phase of_Matter Phase of Matter]
+   * [Data_entry_Phase_of_Matter  Data Entry for Phase of Matter]
+
+ * [Chemical_Bond Chemical Bond]
+   * [Data_entry_Chemical_Bond  Data Entry for Chemical Bond]
+   
+ * [Periodic_table_block Periodic table block]
+   * [Data_entry_Periodic_table_block  Data Entry for Periodic table block]
+
+ * [Isotope_decay Isotope decay]
+   * [Data_entry_Isotope_decay  Data Entry for Isotope decay]
+
+ * [Radioactive_decay_mode Radioactive decay mode]
+   * [Data_entry_Radioactive_decay_mode Data Entry for Radioactive decay mode]
+
+ * [Chemical_Element_Discoverer Chemical Element Discoverer]
+   * [Data_entry_Chemical_Element_Discoverer  Data Entry for Chemical Element Discoverer]
+
+ * [Particle_spin Particle spin]
+   * [Data_entry_Particle_spin  Data Entry for Particle spin]
+
+ * [Atomic_mass Atomic mass]
+   * [Data_entry_Atomic_mass  Data Entry for Atomic mass]
+
+ * [Electron_affinity Electron affinity]
+   * [Data_entry_Electron_affinity  Data Entry for Electron affinity]
+
+ * [Chemical_Classification Chemical Classification]
+   * [Data_entry_Chemical_Classification  Data Entry for Chemical Classification]
+
+ * [Molecular_entity Molecular entity]
+   * [Data_entry_Molecular_entity  Data Entry for Molecular entity]
+
+ * [Solubility_relationship Solubility relationship]
+   * [Data_entry_Solubility_relationship  Data Entry for Solubility relationship]
+
+ * [Solubility Solubility]
+   * [Data_entry_Solubility  Data Entry for Solubility]

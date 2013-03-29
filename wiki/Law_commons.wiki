@@ -1,0 +1,84 @@
+#summary Different types in Law Commons.
+
+= Law Commons =
+This is law commons
+
+=Types=
+Here are the following types in Law Commons
+
+
+
+ * [Patent Patent]
+   * [Data_entry_Patent Data Entry for Patent]
+
+ * [US Patent Category US Patent Category]
+   * [Data_entry_US Patent Category Data Entry for US Patent Category]
+
+ * [International Patent Category International Patent Category]
+   * [Data_entry_International Patent Category Data Entry for International Patent Category]
+
+ * [Invention Invention]
+   * [Data_entry_Invention Data Entry for Invention]
+
+ * [Inventor Inventor]
+   * [Data_entry_Inventor Data Entry for Inventor]
+
+ * [US Patent Type US Patent Type]
+   * [Data_entry_US Patent Type Data Entry for US Patent Type]
+
+ * [Patent Assignee Patent Assignee]
+   * [Data_entry_Patent Assignee Data Entry for Patent Assignee]
+
+ * [Constitutional Convention Constitutional Convention]
+   * [Data_entry_Constitutional Convention Data Entry for Constitutional Convention]
+
+ * [Constitutional Amendment Constitutional Amendment]
+   * [Data_entry_Constitutional Amendment Data Entry for Constitutional Amendment]
+
+ * [Constitution Constitution]
+   * [Data_entry_Constitution Data Entry for Constitution]
+
+ * [Patent office Patent office]
+   * [Data_entry_Patent office Data Entry for Patent office]
+
+ * [Constitutional Convention Delegate Constitutional Convention Delegate]
+   * [Data_entry_Constitutional Convention Delegate Data Entry for Constitutional Convention Delegate]
+
+ * [Constitutional Amendment Proposer Constitutional Amendment Proposer]
+   * [Data_entry_Constitutional Amendment Proposer Data Entry for Constitutional Amendment Proposer]
+
+ * [Legal case Legal case] 
+   * [Data_entry_Legal case Data Entry for Legal case]
+
+ * [Courthouse Courthouse]
+   * [Data_entry_Courthouse Data Entry for Courthouse]
+
+ * [Judicial title Judicial title]
+   * [Data_entry_Judicial title Data Entry for Judicial title]
+
+ * [Court jurisdiction area Court jurisdiction area]
+   * [Data_entry_Court jurisdiction area Data Entry for Court jurisdiction area]
+
+ * [Legal subject Legal subject]
+   * [Data_entry_Legal subject Data Entry for Legal subject]
+
+ * [Court Court]
+   * [Data_entry_Court Data Entry for Court]
+
+ * [Judge Judge]
+   * [Data_entry_Judge Data Entry for Judge]
+
+ * [Court-courthouse relationship]
+   * [Data_entry_ Data Entry for ]
+
+ * [Litigant]
+   * [Data_entry_ Data Entry for ]
+
+ * [Litigation role]
+   * [Data_entry_ Data Entry for ]
+
+ * [Legal case/party relationship]
+   * [Data_entry_ Data Entry for ]
+
+ * [Judicial tenure]
+   * [Data_entry_ Data Entry for ]

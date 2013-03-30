@@ -25,23 +25,23 @@ Here are the following types in Digicams Commons
  * [Camera_Sensor_Type Camera Sensor Type]
    * [Data_entry_Camera_Sensor_Type Data Entry for Camera Sensor Type]
 
- * [Camera Sensor Manufacturer Camera Sensor Manufacturer]
-   * [Data_entry_Camera Sensor Manufacturer Data Entry for Camera Sensor Manufacturer]
+ * [Camera_Sensor_Manufacturer Camera Sensor Manufacturer]
+   * [Data_entry_Camera_Sensor_Manufacturer Data Entry for Camera Sensor Manufacturer]
 
- * [Camera ISO Capability Camera ISO Capability]
-   * [Data_entry_Camera ISO Capability Data Entry for Camera ISO Capability]
+ * [Camera_ISO_Capability Camera ISO Capability]
+   * [Data_entry_Camera_ISO_Capability Data Entry for Camera ISO Capability]
 
- * [Camera Digital Zoom Capability Camera Digital Zoom Capability]
-   * [Data_entry_Camera Digital Zoom Capability Data Entry for Camera Digital Zoom Capability]
+ * [Camera_Digital_Zoom_Capability Camera Digital Zoom Capability]
+   * [Data_entry_Camera_Digital_Zoom_Capability Data Entry for Camera Digital Zoom Capability]
 
- * [Camera Image Stabilization Camera Image Stabilization]
-   * [Data_entry_Camera Image Stabilization Data Entry for Camera Image Stabilization]
+ * [Camera_Image_Stabilization Camera Image Stabilization]
+   * [Data_entry_Camera_Image_Stabilization Data Entry for Camera Image Stabilization]
 
- * [Camera Storage Type Camera Storage Type]
-   * [Data_entry_Camera Storage Type Data Entry for Camera Storage Type]
+ * [Camera_Storage_Type Camera Storage Type]
+   * [Data_entry_Camera_Storage_Type Data Entry for Camera Storage Type]
 
- * [Camera Uncompressed Format Camera Storage Type]
-   * [Data_entry_Camera Storage Type Data Entry for Camera Storage Type]
+ * [Camera_Uncompressed_Format Camera Uncompressed Format]
+   * [Data_entry_Camera_Uncompressed_Format Data Entry for Camera Uncompressed Format]
 
  * [Camera_Compressed_Format Camera Compressed Format]
    * [Data_entry_Camera_Compressed_Format Data Entry for Camera Compressed Format]

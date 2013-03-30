@@ -11,11 +11,11 @@ Here are the following types in Law Commons
  * [Patent Patent]
    * [Data_entry_Patent Data Entry for Patent]
 
- * [US Patent Category US Patent Category]
-   * [Data_entry_US Patent Category Data Entry for US Patent Category]
+ * [US_Patent_Category US Patent Category]
+   * [Data_entry_US_Patent_Category Data Entry for US Patent Category]
 
- * [International Patent Category International Patent Category]
-   * [Data_entry_International Patent Category Data Entry for International Patent Category]
+ * [International_Patent_Category International Patent Category]
+   * [Data_entry_International_Patent_Category Data Entry for International Patent Category]
 
  * [Invention Invention]
    * [Data_entry_Invention Data Entry for Invention]
@@ -23,44 +23,44 @@ Here are the following types in Law Commons
  * [Inventor Inventor]
    * [Data_entry_Inventor Data Entry for Inventor]
 
- * [US Patent Type US Patent Type]
-   * [Data_entry_US Patent Type Data Entry for US Patent Type]
+ * [US_Patent_Type US Patent Type]
+   * [Data_entry_US_Patent_Type Data Entry for US Patent Type]
 
- * [Patent Assignee Patent Assignee]
-   * [Data_entry_Patent Assignee Data Entry for Patent Assignee]
+ * [Patent_Assignee Patent Assignee]
+   * [Data_entry_Patent_Assignee Data Entry for Patent Assignee]
 
- * [Constitutional Convention Constitutional Convention]
-   * [Data_entry_Constitutional Convention Data Entry for Constitutional Convention]
+ * [Constitutional_Convention Constitutional Convention]
+   * [Data_entry_Constitutional_Convention Data Entry for Constitutional Convention]
 
- * [Constitutional Amendment Constitutional Amendment]
-   * [Data_entry_Constitutional Amendment Data Entry for Constitutional Amendment]
+ * [Constitutional_Amendment Constitutional Amendment]
+   * [Data_entry_Constitutional_Amendment Data Entry for Constitutional Amendment]
 
  * [Constitution Constitution]
    * [Data_entry_Constitution Data Entry for Constitution]
 
- * [Patent office Patent office]
-   * [Data_entry_Patent office Data Entry for Patent office]
+ * [Patent_office Patent office]
+   * [Data_entry_Patent_office Data Entry for Patent office]
 
- * [Constitutional Convention Delegate Constitutional Convention Delegate]
-   * [Data_entry_Constitutional Convention Delegate Data Entry for Constitutional Convention Delegate]
+ * [Constitutional_Convention_Delegate Constitutional Convention Delegate]
+   * [Data_entry_Constitutional_Convention_Delegate Data Entry for Constitutional Convention Delegate]
 
- * [Constitutional Amendment Proposer Constitutional Amendment Proposer]
-   * [Data_entry_Constitutional Amendment Proposer Data Entry for Constitutional Amendment Proposer]
+ * [Constitutional_Amendment_Proposer Constitutional Amendment Proposer]
+   * [Data_entry_Constitutional_Amendment_Proposer Data Entry for Constitutional Amendment Proposer]
 
- * [Legal case Legal case] 
-   * [Data_entry_Legal case Data Entry for Legal case]
+ * [Legal_case Legal case] 
+   * [Data_entry_Legal_case Data Entry for Legal case]
 
  * [Courthouse Courthouse]
    * [Data_entry_Courthouse Data Entry for Courthouse]
 
- * [Judicial title Judicial title]
-   * [Data_entry_Judicial title Data Entry for Judicial title]
+ * [Judicial_title Judicial title]
+   * [Data_entry_Judicial_title Data Entry for Judicial title]
 
- * [Court jurisdiction area Court jurisdiction area]
-   * [Data_entry_Court jurisdiction area Data Entry for Court jurisdiction area]
+ * [Court_jurisdiction_area Court jurisdiction area]
+   * [Data_entry_Court_jurisdiction_area Data Entry for Court jurisdiction area]
 
- * [Legal subject Legal subject]
-   * [Data_entry_Legal subject Data Entry for Legal subject]
+ * [Legal_subject Legal subject]
+   * [Data_entry_Legal_subject Data Entry for Legal subject]
 
  * [Court Court]
    * [Data_entry_Court Data Entry for Court]
@@ -68,17 +68,17 @@ Here are the following types in Law Commons
  * [Judge Judge]
    * [Data_entry_Judge Data Entry for Judge]
 
- * [Court-courthouse relationship]
-   * [Data_entry_ Data Entry for ]
+ * [Court_courthouse_relationship Court  courthouse relationship]
+   * [Data_entry_Court_courthouse_relationship Data Entry for Court courthouse relationship]
 
- * [Litigant]
-   * [Data_entry_ Data Entry for ]
+ * [Litigant Litigant]
+   * [Data_entry_Litigant Data Entry for Litigant]
 
- * [Litigation role]
-   * [Data_entry_ Data Entry for ]
+ * [Litigation_role Litigation role]
+   * [Data_entry_Litigation_role Data Entry for Litigation role]
 
- * [Legal case/party relationship]
-   * [Data_entry_ Data Entry for ]
+ * [Legal_case_party_relationship Legal case/party relationship]
+   * [Data_entry_Legal_case_party_relationship Data Entry for Legal case/party relationship]
 
- * [Judicial tenure]
-   * [Data_entry_ Data Entry for ]
+ * [Judicial_tenure Judicial tenure]
+   * [Data_entry_Judicial_tenure Data Entry for Judicial tenure]

@@ -1,79 +1,203 @@
-#summary One-sentence summary of this page.
+#summary Different types in Music Commons.
 
-= Introduction =
+= Music Commons =
+This is music commons
 
-Add your content here.
+=Types=
+Here are the following types in Music Commons
 
 
-= Details =
+ * [Musical Group Membership]	
+   * [Data_entry_ Data Entry for ]
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
-Musical Group Membership	
-Musical Contribution	
-Musical Recording	
-Musical Album	
-Musical Album Type	
-Musical Artist	
-Musical genre	
-Musician	
-Musical instrument	
-Musical Performance Role	
-Record label	
-Musical voice	
-Conductor	
-Guitar	
-Musical instrument company	
-Drummer	
-Musical scale	
-Record Producer	
-Opera singer	
-Music Festival	
-Concert tour	
-Synthesizer	
-Bassist	
-Soundtrack	
-Composer	
-Musical chord	
-Orchestra	
-Guitarist	
-Songwriter	
-Musical Release	
-Composition	
-Arrangement	
-Lyricist	
-Musical Group	
-Multi-Part Musical Release	
-Musical Release Component	
-Recording Engineer	
-Track Contribution	
-Media Format	
-Conducted Ensemble	
-Conducting Tenure	
-Composition type	
-Concert Performance Venue	
-Concert Film	
-Concert Performance	
-Tour Manager	
-Concert Performance Role	
-Concert	
-Concert Set List	
-Live Album	
-Canonical Version	
-Music video gig	
-Music video crewmember	
-Music video character	
-Music video subject	
-Music video choreographer	
-Music video genre	
-Special music video performance type		 
-Music video	
-Music video job	
-Music video director	
-Music video performance	
-Music video performer	
-Release track	
-Musical tribute act	
+ * [Musical Contribution]	
+   * [Data_entry_ Data Entry for ]
 
+ * [Musical Recording]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Musical Album]
+   * [Data_entry_ Data Entry for ]
+
+ * [Musical Album Type]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Musical Artist]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Musical genre]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Musician]
+   * [Data_entry_ Data Entry for ]
+
+ * [Musical instrument]
+   * [Data_entry_ Data Entry for ]
+
+ * [Musical Performance Role]
+   * [Data_entry_ Data Entry for ]
+
+ * [Record label]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Musical voice]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Conductor]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Guitar]
+   * [Data_entry_ Data Entry for ]
+
+ * [Musical instrument company]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Drummer]
+   * [Data_entry_ Data Entry for ]
+
+ * [Musical scale]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Record Producer]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Opera singer]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Music Festival]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Concert tour]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Synthesizer]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Bassist]
+   * [Data_entry_ Data Entry for ]
+
+ * [Soundtrack]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Composer]
+   * [Data_entry_ Data Entry for ]
+
+ * [Musical chord]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Orchestra]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Guitarist]
+   * [Data_entry_ Data Entry for ]
+
+ * [Songwriter]
+   * [Data_entry_ Data Entry for ]
+
+ * [Musical Release]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Composition]
+    * [Data_entry_ Data Entry for ]
+
+ * [Arrangement]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Lyricist]
+   * [Data_entry_ Data Entry for ]
+
+ * [Musical Group]
+   * [Data_entry_ Data Entry for ]
+
+ * [Multi-Part Musical Release]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Musical Release Component]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Recording Engineer]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Track Contribution]	
+    * [Data_entry_ Data Entry for ]
+
+ * [Media Format]
+   * [Data_entry_ Data Entry for ]
+
+ * [Conducted Ensemble]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Conducting Tenure]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Composition type]
+   * [Data_entry_ Data Entry for ]
+
+ * [Concert Performance Venue]
+   * [Data_entry_ Data Entry for ]
+
+ * [Concert Film]
+   * [Data_entry_ Data Entry for ]
+
+ * [Concert Performance]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Tour Manager]
+   * [Data_entry_ Data Entry for ]
+
+ * [Concert Performance Role]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Concert]
+   * [Data_entry_ Data Entry for ]
+
+ * [Concert Set List]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Live Album]
+   * [Data_entry_ Data Entry for ]
+
+ * [Canonical Version]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Music video gig]
+   * [Data_entry_ Data Entry for ]
+
+ * [Music video crewmember]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Music video character]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Music video subject]
+   * [Data_entry_ Data Entry for ]
+
+ * [Music video choreographer]
+   * [Data_entry_ Data Entry for ]
+
+ * [Music video genre]
+   * [Data_entry_ Data Entry for ]
+
+ * [Special music video performance type]		 
+   * [Data_entry_ Data Entry for ]
+
+ * [Music video]
+   * [Data_entry_ Data Entry for ]
+
+ * [Music video job]
+   * [Data_entry_ Data Entry for ]
+
+ * [Music video director]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Music video performance]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Music video performer]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Release track]
+   * [Data_entry_ Data Entry for ]
+
+ * [Musical tribute act]
+   * [Data_entry_ Data Entry for ]

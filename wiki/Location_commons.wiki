@@ -1,116 +1,114 @@
-#summary One-sentence summary of this page.
+#summary Different types in Commons.
 
-= Introduction =
+= Commons =
+This is  commons
 
-Add your content here.
+=Types=
+Here are the following types in Commons
 
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
-City/Town/Village
-Continent	
-Country	
-Geocode	
-Location	
-Neighborhood	
-Canadian Province	
-Region	
-US County	
-US Census Designated Place	
-US State	
-Address	
-Postal Code	
-Administrative Division	
-French Department	
-French Region	
-Adjoining Relationship	
-US Federal District	
-US Territory	
-Canadian Territory	
-US Indian Reservation	
-Canadian Indian Reserve	
-Canadian Census Division	
-Chinese province	
-Chinese autonomous region	
-Chinese municipality	
-Chinese special administrative region	
-Chinese prefecture-level city	
-Chinese prefecture	
-Chinese autonomous prefecture	
-Chinese county	
-Chinese county-level city	
-Chinese autonomous county	
-Chinese city district	
-Chinese township	
-Chinese town	
-Chinese subdistrict	
-Chinese county district	
-Hong Kong district	
-Brazilian state	
-Brazilian federal district	
-South Korean province	
-South Korean metropolitan city	
-South Korean special city	
-South Korean county	
-South Korean city	
-Japanese prefecture	
-Japanese subprefecture	
-Japanese designated city	
-Japanese district	
-Japanese special ward	
-Japanese ward	
-Japanese city/town	
-Indian state	
-Indian union territory	
-Indian division	
-Indian district	
-Indian sub-division	
-Indian city	
-Italian region	
-Italian province	
-Italian comune	
-Italian frazione	
-German state	
-German regierungsbezirk	
-German rural district	
-German urban district	
-German borough	
-German city	
-UK constituent country	
-English region	
-English metropolitan county	
-English non-metropolitan county	
-English unitary authority	
-English metropolitan borough	
-English non-metropolitan district	
-London borough	
-English civil parish	
-Northern Irish district	
-Scottish council area	
-Welsh principal area	
-UK crown dependency	
-UK overseas territory	
-Spanish autonomous community	
-Spanish autonomous city	
-Spanish province	
-Spanish place of sovereignty	
-Spanish comarca	
-Dutch province	
-Dutch municipality	
-Mexican state	
-Mexican federal district	
-Mexican municipality	
-Mexican federal district borough	
-Turkish province	
-Turkish district	
-Malaysian state	
-Malaysian federal territory	
-Malaysian division	
-Malaysian district	
+ * []
+   * [Data_entry_ Data Entry for ]
 
 
 
+
+ * [City/Town/Village
+ * [Continent	
+ * [Country	
+ * [Geocode	
+ * [Location	
+ * [Neighborhood	
+ * [Canadian Province	
+ * [Region	
+ * [US County	
+ * [US Census Designated Place	
+ * [US State	
+ * [Address	
+ * [Postal Code	
+ * [Administrative Division	
+ * [French Department	
+ * [French Region	
+ * [Adjoining Relationship	
+ * [US Federal District	
+ * [US Territory	
+ * [Canadian Territory	
+ * [US Indian Reservation	
+ * [Canadian Indian Reserve	
+ * [Canadian Census Division	
+ * [Chinese province	
+ * [Chinese autonomous region	
+ * [Chinese municipality	
+ * [Chinese special administrative region	
+ * [Chinese prefecture-level city	
+ * [Chinese prefecture	
+ * [Chinese autonomous prefecture	
+ * [Chinese county	
+ * [Chinese county-level city	
+ * [Chinese autonomous county	
+ * [Chinese city district	
+ * [Chinese township	
+ * [Chinese town	
+ * [Chinese subdistrict	
+ * [Chinese county district	
+ * [Hong Kong district	
+ * [Brazilian state	
+ * [Brazilian federal district	
+ * [South Korean province	
+ * [South Korean metropolitan city	
+ * [South Korean special city	
+ * [South Korean county	
+ * [South Korean city	
+ * [Japanese prefecture	
+ * [Japanese subprefecture	
+ * [Japanese designated city	
+ * [Japanese district	
+ * [Japanese special ward	
+ * [Japanese ward	
+ * [Japanese city/town	
+ * [Indian state	
+ * [Indian union territory	
+ * [Indian division	
+ * [Indian district	
+ * [Indian sub-division	
+ * [Indian city	
+ * [Italian region	
+ * [Italian province	
+ * [Italian comune	
+ * [Italian frazione	
+ * [German state	
+ * [German regierungsbezirk	
+ * [German rural district	
+ * [German urban district	
+ * [German borough	
+ * [German city	
+ * [UK constituent country	
+ * [English region	
+ * [English metropolitan county	
+ * [English non-metropolitan county	
+ * [English unitary authority	
+ * [English metropolitan borough	
+ * [English non-metropolitan district	
+ * [London borough	
+ * [English civil parish	
+ * [Northern Irish district	
+ * [Scottish council area	
+ * [Welsh principal area	
+ * [UK crown dependency	
+ * [UK overseas territory	
+ * [Spanish autonomous community	
+ * [Spanish autonomous city	
+ * [Spanish province	
+ * [Spanish place of sovereignty	
+ * [Spanish comarca	
+ * [Dutch province	
+ * [Dutch municipality	
+ * [Mexican state	
+ * [Mexican federal district	
+ * [Mexican municipality	
+ * [Mexican federal district borough	
+ * [Turkish province	
+ * [Turkish district	
+ * [Malaysian state	
+ * [Malaysian federal territory	
+ * [Malaysian division	
+ * [Malaysian district	

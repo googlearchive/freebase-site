@@ -41,13 +41,13 @@ Here are the following types in Internet Commons
    * [Data_entry_Top_Level_Domain_Registry Data Entry for Top Level Domain Registry]
 
  * [Top_Level_Domain_Type_Top Level Domain Type]
-   * [Data_entry_Top Level Domain Type Data Entry for Top Level Domain Type]
+   * [Data_entry_Top_Level_Domain_Type Data Entry for Top Level Domain Type]
 
  * [Website_Owner Website Owner]
    * [Data_entry_Website_Owner Data Entry for Website Owner]
 
- * [Social network user]	
-   * [Data_entry_ Data Entry for ]
+ * [Social_network_user Social network user]	
+   * [Data_entry_Social_network_user Data Entry for Social network user]
 
- * [Website ownership]
-   * [Data_entry_ Data Entry for ]
+ * [Website_ownership Website ownership]
+   * [Data_entry_Website_ownership Data Entry for Website ownership]

@@ -63,17 +63,17 @@ Here are the following types in Engineering Commons
  * [Battery_cell_type Battery cell type]	
    * [Data_entry_Battery_cell_type Data Entry for Battery cell type]
 
- * [Reaction engine Reaction engine]
-   * [Data_entry_Reaction engine Data Entry for Reaction engine]
+ * [Reaction_engine Reaction engine]
+   * [Data_entry_Reaction_engine Data Entry for Reaction engine]
 
- * [Engine energy source Engine energy source]
-   * [Data_entry_Engine energy source Data Entry for Engine energy source]
+ * [Engine_energy_source Engine energy source]
+   * [Data_entry_Engine_energy_source Data Entry for Engine energy source]
 
- * [Material Composition Material Composition]
-   * [Data_entry_Material Composition Data Entry for Material Composition]
+ * [Material_Composition Material Composition]
+   * [Data_entry_Material_Composition Data Entry for Material Composition]
 
- * [Battery shape format Battery shape format]
-   * [Data_entry_Battery shape format Data Entry for Battery shape format]
+ * [Battery_shape_format Battery shape format]
+   * [Data_entry_Battery_shape_format Data Entry for Battery shape format]
 
- * [Mains power	 Mains power]
-   * [Data_entry_Mains power Data Entry for Mains power	]
+ * [Mains_power Mains power]
+   * [Data_entry_Mains_power Data Entry for Mains power	]

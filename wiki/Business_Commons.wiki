@@ -1,0 +1,71 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+Add your content here.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
+Industry	
+Stock listing	
+Employment tenure	
+Job title	
+Open Times	
+Employer	
+Board Member Title	
+Asset	
+Asset Owner	 
+Asset Ownership	
+Oil Field	
+Consumer product	
+Shopping center	
+Shopping center owner	
+Exchange rate	
+Market Index	
+Currency	
+Stock exchange	
+Venture Investment	
+Venture Investor	
+Investment Round	
+Venture Funded Company	
+Brand	
+Company-brand relationship	
+Company-product-line relationship	
+Product line	
+Brand colors	
+Brand slogan	
+Advertising slogan	
+Company-product relationship	
+Sponsorship	
+Sponsor	
+Sponsored Recipient	
+Product theme	
+Product Endorsee	
+Product Endorser	
+Product Endorsement	
+Endorsed Product	
+Product with ingredients	
+Product ingredient	
+Trade union	
+Customer	
+Market size	
+Competitive Space	
+Market share	
+Competitive space mediator	
+Business Operation	
+Consumer company	
+Issue	
+Shareholder	
+Issue Type	
+Issuer	
+Holding		
+Product category	
+Currency sub-unit	
+
+
+

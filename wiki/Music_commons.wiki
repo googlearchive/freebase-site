@@ -7,197 +7,197 @@ This is music commons
 Here are the following types in Music Commons
 
 
- * [Musical Group Membership]	
-   * [Data_entry_ Data Entry for ]
+ * [Musical_Group_Membership Musical Group Membership]	
+   * [Data_entry_Musical_Group_Membership Data Entry for Musical Group Membership]
 
- * [Musical Contribution]	
-   * [Data_entry_ Data Entry for ]
+ * [Musical_Contribution Musical Contribution]	
+   * [Data_entry_Musical_Contribution Data Entry for Musical Contribution]
 
- * [Musical Recording]	
-   * [Data_entry_ Data Entry for ]
+ * [Musical_Recording Musical Recording]
+   * [Data_entry_Musical_Recording Data Entry for Musical Recording]
 
- * [Musical Album]
-   * [Data_entry_ Data Entry for ]
+ * [Musical_Album Musical Album]
+   * [Data_entry_Musical_Album Data Entry for Musical Album]
 
- * [Musical Album Type]	
-   * [Data_entry_ Data Entry for ]
+ * [Musical_Album_Type Musical Album Type]
+   * [Data_entry_Musical_Album_Type Data Entry for Musical Album Type]
 
- * [Musical Artist]	
-   * [Data_entry_ Data Entry for ]
+ * [Musical_Artist Musical Artist]
+   * [Data_entry_Musical_Artist Data Entry for Musical Artist]
 
- * [Musical genre]	
-   * [Data_entry_ Data Entry for ]
+ * [Musical_genre Musical genre]
+   * [Data_entry_Musical_genre Data Entry for Musical genre]
 
- * [Musician]
-   * [Data_entry_ Data Entry for ]
+ * [Musician Musician]
+   * [Data_entry_Musician Data Entry for Musician]
 
- * [Musical instrument]
-   * [Data_entry_ Data Entry for ]
+ * [Musical_instrument Musical instrument]
+   * [Data_entry_Musical_instrument Data Entry for Musical instrument]
 
- * [Musical Performance Role]
-   * [Data_entry_ Data Entry for ]
+ * [Musical_Performance_Role Musical Performance Role]
+   * [Data_entry_Musical_Performance_Role Data Entry for Musical Performance Role]
 
- * [Record label]	
-   * [Data_entry_ Data Entry for ]
+ * [Record_label Record label]
+   * [Data_entry_Record_label Data Entry for Record label]
 
- * [Musical voice]	
-   * [Data_entry_ Data Entry for ]
+ * [Musical_voice Musical voice]
+   * [Data_entry_Musical_voice Data Entry for Musical voice]
 
- * [Conductor]	
-   * [Data_entry_ Data Entry for ]
+ * [Conductor Conductor]
+   * [Data_entry_Conductor Data Entry for Conductor]
 
- * [Guitar]
-   * [Data_entry_ Data Entry for ]
+ * [Guitar Guitar]
+   * [Data_entry_Guitar Data Entry for Guitar]
 
- * [Musical instrument company]	
-   * [Data_entry_ Data Entry for ]
+ * [Musical_instrument_company Musical instrument company]
+   * [Data_entry_Musical_instrument_company Data Entry for Musical instrument company]
 
- * [Drummer]
-   * [Data_entry_ Data Entry for ]
+ * [Drummer Drummer]
+   * [Data_entry_Drummer Data Entry for Drummer]
 
- * [Musical scale]	
-   * [Data_entry_ Data Entry for ]
+ * [Musical_scale Musical scale]
+   * [Data_entry_Musical_scale Data Entry for Musical scale]
 
- * [Record Producer]	
-   * [Data_entry_ Data Entry for ]
+ * [Record Producer Record Producer]
+   * [Data_entry_Record Producer Data Entry for Record Producer]
 
- * [Opera singer]	
-   * [Data_entry_ Data Entry for ]
+ * [Opera_singer Opera singer]
+   * [Data_entry_Opera_singer Data Entry for Opera singer]
 
- * [Music Festival]	
-   * [Data_entry_ Data Entry for ]
+ * [Music_Festival Music Festival]
+   * [Data_entry_Music_Festival Data Entry for Music Festival]
 
- * [Concert tour]	
-   * [Data_entry_ Data Entry for ]
+ * [Concert_tour Concert tour]
+   * [Data_entry_Concert_tour Data Entry for Concert tour]
 
- * [Synthesizer]	
-   * [Data_entry_ Data Entry for ]
+ * [Synthesizer Synthesizer]
+   * [Data_entry_Synthesizer Data Entry for Synthesizer]
 
- * [Bassist]
-   * [Data_entry_ Data Entry for ]
+ * [Bassist Bassist]
+   * [Data_entry_Bassist Data Entry for Bassist]
 
- * [Soundtrack]	
-   * [Data_entry_ Data Entry for ]
+ * [Soundtrack Soundtrack]
+   * [Data_entry_Soundtrack Data Entry for Soundtrack]
 
- * [Composer]
-   * [Data_entry_ Data Entry for ]
+ * [Composer Composer]
+   * [Data_entry_Composer Data Entry for Composer]
 
- * [Musical chord]	
-   * [Data_entry_ Data Entry for ]
+ * [Musical_chord Musical chord]
+   * [Data_entry_Musical_chord Data Entry for Musical chord]
 
- * [Orchestra]	
-   * [Data_entry_ Data Entry for ]
+ * [Orchestra Orchestra]
+   * [Data_entry_Orchestra Data Entry for Orchestra]
 
- * [Guitarist]
-   * [Data_entry_ Data Entry for ]
+ * [Guitarist Guitarist]
+   * [Data_entry_Guitarist Data Entry for Guitarist]
 
- * [Songwriter]
-   * [Data_entry_ Data Entry for ]
+ * [Songwriter Songwriter]
+   * [Data_entry_Songwriter Data Entry for Songwriter]
 
- * [Musical Release]	
-   * [Data_entry_ Data Entry for ]
+ * [Musical_Release Musical Release]
+   * [Data_entry_Musical_Release Data Entry for Musical Release]
 
- * [Composition]
-    * [Data_entry_ Data Entry for ]
+ * [Composition Composition]
+    * [Data_entry_Composition Data Entry for Composition]
 
- * [Arrangement]	
-   * [Data_entry_ Data Entry for ]
+ * [Arrangement Arrangement]
+   * [Data_entry_Arrangement Data Entry for Arrangement]
 
- * [Lyricist]
-   * [Data_entry_ Data Entry for ]
+ * [Lyricist Lyricist]
+   * [Data_entry_Lyricist Data Entry for Lyricist]
 
- * [Musical Group]
-   * [Data_entry_ Data Entry for ]
+ * [Musical_Group Musical Group]
+   * [Data_entry_Musical_Group Data Entry for Musical Group]
 
- * [Multi-Part Musical Release]	
-   * [Data_entry_ Data Entry for ]
+ * [Multi_Part_Musical_Release Multi-Part Musical Release]
+   * [Data_entry_Multi_Part_Musical_Release Data Entry for Multi-Part Musical Release]
 
- * [Musical Release Component]	
-   * [Data_entry_ Data Entry for ]
+ * [Musical_Release_Component Musical Release Component]	
+   * [Data_entry_Musical_Release_Component Data Entry for Musical Release Component]
 
- * [Recording Engineer]	
-   * [Data_entry_ Data Entry for ]
+ * [Recording_Engineer Recording Engineer]
+   * [Data_entry_Recording_Engineer Data Entry for Recording Engineer]
 
- * [Track Contribution]	
-    * [Data_entry_ Data Entry for ]
+ * [Track_Contribution Track Contribution]
+    * [Data_entry_Track_Contribution Data Entry for Track Contribution]
 
- * [Media Format]
-   * [Data_entry_ Data Entry for ]
+ * [Media_Format Media Format]
+   * [Data_entry_Media_Format Data Entry for Media Format]
 
- * [Conducted Ensemble]	
-   * [Data_entry_ Data Entry for ]
+ * [Conducted_Ensemble Conducted Ensemble]	
+   * [Data_entry_Conducted_Ensemble Data Entry for Conducted Ensemble]
 
- * [Conducting Tenure]	
-   * [Data_entry_ Data Entry for ]
+ * [Conducting_Tenure Conducting Tenure]	
+   * [Data_entry_Conducting_Tenure Data Entry for Conducting Tenure]
 
- * [Composition type]
-   * [Data_entry_ Data Entry for ]
+ * [Composition_type Composition type]
+   * [Data_entry_Composition_type Data Entry for Composition type]
 
- * [Concert Performance Venue]
-   * [Data_entry_ Data Entry for ]
+ * [Concert_Performance_Venue Concert Performance Venue]
+   * [Data_entry_Concert Performance Venue Data Entry for Concert Performance Venue]
 
- * [Concert Film]
-   * [Data_entry_ Data Entry for ]
+ * [Concert_Film Concert Film]
+   * [Data_entry_Concert_Film Data Entry for Concert Film]
 
- * [Concert Performance]	
-   * [Data_entry_ Data Entry for ]
+ * [Concert_Performance Concert Performance]
+   * [Data_entry_Concert_Performance Data Entry for Concert Performance]
 
- * [Tour Manager]
-   * [Data_entry_ Data Entry for ]
+ * [Tour_Manager Tour Manager]
+   * [Data_entry_Tour_Manager Data Entry for Tour Manager]
 
- * [Concert Performance Role]	
-   * [Data_entry_ Data Entry for ]
+ * [Concert_Performance_Role Concert Performance Role]
+   * [Data_entry_Concert_Performance_Role Data Entry for Concert Performance Role]
 
- * [Concert]
-   * [Data_entry_ Data Entry for ]
+ * [Concert Concert]
+   * [Data_entry_Concert Data Entry for Concert]
 
- * [Concert Set List]	
-   * [Data_entry_ Data Entry for ]
+ * [Concert_Set_List Concert Set List]
+   * [Data_entry_Concert_Set_List Data Entry for Concert Set List]
 
- * [Live Album]
-   * [Data_entry_ Data Entry for ]
+ * [Live_Album Live Album]
+   * [Data_entry_Live_Album Data Entry for Live Album]
 
- * [Canonical Version]	
-   * [Data_entry_ Data Entry for ]
+ * [Canonical_Version Canonical Version]
+   * [Data_entry_Canonical_Version Data Entry for Canonical Version]
 
- * [Music video gig]
-   * [Data_entry_ Data Entry for ]
+ * [Music_video_gig Music video gig]
+   * [Data_entry_Music_video_gig Data Entry for Music video gig]
 
- * [Music video crewmember]	
-   * [Data_entry_ Data Entry for ]
+ * [Music_video_crewmember Music video crewmember]
+   * [Data_entry_Music_video_crewmember Data Entry for Music video crewmember]
 
- * [Music video character]	
-   * [Data_entry_ Data Entry for ]
+ * [Music_video_character Music video character]
+   * [Data_entry_Music video character Data Entry for Music video character]
 
- * [Music video subject]
-   * [Data_entry_ Data Entry for ]
+ * [Music_video_subject Music video subject] 
+   * [Data_entry_Music_video_subject Data Entry for Music video subject]
 
- * [Music video choreographer]
-   * [Data_entry_ Data Entry for ]
+ * [Music_video_choreographer Music video choreographer]
+   * [Data_entry_Music_video_choreographer Data Entry for Music video choreographer]
 
- * [Music video genre]
-   * [Data_entry_ Data Entry for ]
+ * [Music_video_genre Music video genre]
+   * [Data_entry_Music_video_genre Data Entry for Music video genre]
 
- * [Special music video performance type]		 
-   * [Data_entry_ Data Entry for ]
+ * [Special_music_video_performance_type Special music video performance type]		 
+   * [Data_entry_Special_music_video_performance_type Data Entry for Special music video performance type]
 
- * [Music video]
-   * [Data_entry_ Data Entry for ]
+ * [Music_video Music video]
+   * [Data_entry_Music_video Data Entry for Music video]
 
- * [Music video job]
-   * [Data_entry_ Data Entry for ]
+ * [Music_video_job Music video job]
+   * [Data_entry_Music_video_job Data Entry for Music video job]
 
- * [Music video director]	
-   * [Data_entry_ Data Entry for ]
+ * [Music_video_director Music video director]
+   * [Data_entry_Music_video_director Data Entry for Music video director]
 
- * [Music video performance]	
-   * [Data_entry_ Data Entry for ]
+ * [Music_video_performance Music video performance]
+   * [Data_entry_Music_video_performance Data Entry for Music video performance]
 
- * [Music video performer]	
-   * [Data_entry_ Data Entry for ]
+ * [Music_video_performer Music video performer]
+   * [Data_entry_Music_video_performer Data Entry for Music video performer]
 
- * [Release track]
-   * [Data_entry_ Data Entry for ]
+ * [Release_track Release track]
+   * [Data_entry_Release_track Data Entry for Release track]
 
- * [Musical tribute act]
-   * [Data_entry_ Data Entry for ]
+ * [Musical_tribute_act Musical tribute act]
+   * [Data_entry_Musical_tribute_act Data Entry for Musical tribute act]

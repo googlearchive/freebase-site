@@ -49,7 +49,7 @@
   <html lang="en" dir="ltr" class="no-js">
     <head>
       <meta charset="utf-8" />
-      <title acre:if="exports.title">Freebase - ${exports.title()}</title>
+      <title acre:if="exports.title">${exports.title()} - Freebase</title>
       <title acre:else="">Freebase</title>
 
       <!-- acre variables useful for client-side javascript -->

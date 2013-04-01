@@ -70,5 +70,5 @@ Here are the following types in Commons
  * [Religious_Jurisdiction Religious Jurisdiction]
    * [Data_entry_Religious_Jurisdiction Data Entry for Religious Jurisdiction]
 
- * [Religious Leadership Title Religious Leadership Title] 
-   * [Data_entry_Religious Leadership Title Data Entry for Religious Leadership Title]
+ * [Religious_Leadership_Title Religious Leadership Title] 
+   * [Data_entry_Religious_Leadership_Title Data Entry for Religious Leadership Title]

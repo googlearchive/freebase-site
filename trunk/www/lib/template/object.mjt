@@ -98,7 +98,7 @@
   <!-- canonical url -->
   <link rel="canonical" href="${h.fb_url(true, c.object.id)}" />
   <!-- rdf -->
-  <link rel="alternate" type="application/turtle" 
+  <link rel="alternate" type="application/turtle"
         href="${h.rdf_url(c.object.id)}">
   <!-- Update address bar if ID changed in object router -->
   <script acre:if="c.object && acre.request.path_info !== c.object.id">
@@ -108,7 +108,7 @@
         history.replaceState(null, "", new_url);
       } else {
         window.loaction.href = new_url;
-      }      
+      }
     })();
   </script>
   <acre:block if="that_exports.head">
@@ -117,10 +117,17 @@
 </acre:block>
 
 <acre:block def="title()">
-  ${i18n.display_name(c.object)}
+  <acre:block if="c.object">
+    <acre:block if="c.object.name">
+      ${c.object.name.text}
+    </acre:block>
+    <acre:block else="">
+      ${c.object.id}
+    </acre:if>
+  </acre:block>
 </acre:block>
 
-<acre:block def="body(exports)">  
+<acre:block def="body(exports)">
   <!!-- over-ride default body to add "embed" class !!-->
   <acre:script>
     var embed = validators.StringBool(
@@ -177,7 +184,7 @@
       <acre:script>
         var label = c.object_type.name;
         var classname = 'object-label ';
-        var show_img = (c.object_type.id == '/common/topic' 
+        var show_img = (c.object_type.id == '/common/topic'
             || c.object_type.id == '/type/user');
         var img_class =  show_img ? 'img' : 'no-img';
       </acre:script>
@@ -274,7 +281,7 @@
                 </a>
               </span>
             </span>
-            <span acre:for="nk in c.nav_keys" 
+            <span acre:for="nk in c.nav_keys"
                   acre:if="(exec(nk, c) && nk.key)" class="key">
               <strong>${nk.label}:</strong>
               <span acre:if="nk.url" >
@@ -335,12 +342,12 @@
                 <acre:block if="citation">
                   ${components.citation(citation)}
                 </acre:block>
-                <a acre:if="less" href="#" title="${_('Show less')}" 
+                <a acre:if="less" href="#" title="${_('Show less')}"
                    id="less-blurb">[ - ]</a>
               </p>
               <p acre:if="less" id="min-blurb" style="display:none;">
                 ${d.text}
-                <a href="#" title="${_('Show more')}" 
+                <a href="#" title="${_('Show more')}"
                    id="more-blurb">[ + ]</a>
               </p>
             </acre:block>
@@ -472,7 +479,7 @@
     }
   </acre:script>
   <acre:block if="show">
-    <li acre:attrs="nav.auth ? {'class':'edit'} : {}">               
+    <li acre:attrs="nav.auth ? {'class':'edit'} : {}">
       <acre:block if="href">
         <acre:block if="onclick">
           <a href="${href}" onclick="${onclick}">

@@ -56,9 +56,11 @@ var SPEC = {
   validate: function(params) {
     return [
       validators.MqlId(params, "s", {required:true}), // subject id
-      validators.OneOf(params, "p", {required:true, oneof:["/type/usergroup/member"]}), // property id
+      validators.OneOf(params, "p", {required:true,
+          oneof:["/type/usergroup/member"]}), // property id
       validators.Json(params, "o", {required:true}), // object operations
-      validators.MqlId(params, "type", {required:false, if_empty:"/type/domain"}) // type id
+      validators.MqlId(params, "type", {required:false,
+          if_empty:"/type/domain", if_invalid:"/type/domain"}) // type id
     ];
   },
 
@@ -74,7 +76,7 @@ var SPEC = {
         var userid = clause.id;
 
         // invalidate cache for review
-        acre.cache.remove('review_user_cached_' + s)
+        acre.cache.remove('review_user_cached_' + s);
 
         // deleted
         if (!CONNECTED[clause.connect]) {

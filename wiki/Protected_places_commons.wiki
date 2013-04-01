@@ -1,0 +1,36 @@
+#summary Different types in Protected Places Commons.
+
+= Protected Places Commons =
+This is protected places commons
+
+=Types=
+Here are the following types in Protected Places Commons
+
+
+
+ * [Natural_or_Cultural_Site_Listing Natural or Cultural Site Listing]
+   * [Data_entry_Natural_or_Cultural_Site_Listing Data Entry for Natural or Cultural Site Listing]
+
+ * [Natural_or_Cultural_Site_Designation Natural or Cultural Site Designation]
+   * [Data_entry_Natural_or_Cultural_Site_Designation Data Entry for Natural or Cultural Site Designation]
+
+ * [Natural_or_Cultural_Preservation_Agency Natural or Cultural Preservation Agency]
+   * [Data_entry_Natural_or_Cultural_Preservation_Agency Data Entry for Natural or Cultural Preservation Agency]
+
+ * [Site_Listing_Category Site Listing Category]
+   * [Data_entry_Site_Listing_Category Data Entry for Site Listing Category]
+
+ * [IUCN_Category IUCN Category]
+   * [Data_entry_IUCN_Category Data Entry for IUCN Category]
+
+ * [Governing_Body_of_Protected_Sites Governing Body of Protected Sites]
+   * [Data_entry_Governing_Body_of_Protected_Sites Data Entry for Governing Body of Protected Sites]
+
+ * [Park_System Park System]
+   * [Data_entry_Park_System Data Entry for Park System]
+
+ * [Listed_Site Listed Site]
+   * [Data_entry_Listed_Site Data Entry for Listed Site]
+
+ * [Protected_Site Protected Site]
+   * [Data_entry_Protected_Site Data Entry for Protected Site]

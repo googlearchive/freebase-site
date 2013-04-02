@@ -571,7 +571,7 @@
       /**
        * Used when linking to an existing topic
        */
-      instance: function(type, create_new, lang, strict) {
+      instance: function(type, create_new, lang, strict, not_mid) {
         var filters = [
           "type:" + type
         ];
@@ -611,6 +611,9 @@
 
         // only get /m mids (no /g mids)
         o.filter = [o.filter, '(all namespace:/m)'];
+        if (not_mid) {
+          o.filter.push('(not mid:"' + not_mid + '")');
+        }
 
         return o;
       },

@@ -134,7 +134,7 @@
           suggest_options =
             o.suggest_impl.instance(
                 type, true, self.metadata && self.metadata.lang || o.lang,
-                o.strict);
+                o.strict, o.not_mid);
         }
         var included_types = null;
         if (o.structure && self.options.incompatible_types) {

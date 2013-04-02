@@ -19,8 +19,19 @@ An American football player is an individual who participates in games of Americ
   * Use the Athlete type for these
 
 == Properties ==
- * Current team : The team that the player plays on
- * Former teams : The teams that the player has played on during his NFL career.
+ * Current team
+ * Former teams
+ * Position(s)
+ * Current Team
+ * Former Teams
+ * Passing
+ * Rushing
+ * Receiving
+ * Games
+ * databaseFootball.com ID
+ * Football Almanac ID
+ * footballdb ID
+ * 40-yard dash time
 
 == Identity Criterion==
  * [American_football_player_id_criteria American Football Player Identity Criteria]

@@ -1,22 +1,33 @@
-#summary One-sentence summary of this page.
+#summary Different types in Commons.
 
-= Introduction =
+= Commons =
+This is  commons
 
-Add your content here.
+=Types=
+Here are the following types in Commons
 
 
-= Details =
+ * [Tropical Cyclone]
+   * [Data_entry_ Data Entry for ]
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
-Tropical Cyclone	
-Tropical cyclone season	
-Tropical cyclone category	
-Cloud	
-Cloud classification	
-Meteorological service	
-Beaufort Wind Force	
-Cyclone-affected area	
-Forecast Zone
+ * [Tropical cyclone season]
+   * [Data_entry_ Data Entry for ]
+
+ * [Tropical cyclone category]
+   * [Data_entry_ Data Entry for ]
+
+ * [Cloud]
+   * [Data_entry_ Data Entry for ]
+
+ * [Cloud classification]
+   * [Data_entry_ Data Entry for ]
+
+ * [Meteorological service]
+   * [Data_entry_ Data Entry for ]
+ * [Beaufort Wind Force]
+
+ * [Cyclone-affected area]
+   * [Data_entry_ Data Entry for ]
+
+ * [Forecast Zone]
+   * [Data_entry_ Data Entry for ]

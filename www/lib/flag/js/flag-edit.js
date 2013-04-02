@@ -63,7 +63,8 @@
         .data_input({
           lang: fb.lang,
           suggest_impl: fb.suggest_options,
-          strict: true
+          strict: true,
+          not_mid: fb.c.id
         })
         .bind("valid", function() {
           formlib.enable_submit(options);

@@ -1,0 +1,33 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+Add your content here.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
+Armed Force	
+Military Person	
+Military Conflict	
+Casualties	
+Military Combatant	
+Casualties Type
+Military Command	
+Military Commander	
+Force Strength	
+Military Resource	
+Military Theater	
+Military Service	
+Military rank	
+Military combatant group	
+Military posting	
+Military post
+Military post use	
+Military unit	
+Military unit size designation	
+Military unit place of origin	

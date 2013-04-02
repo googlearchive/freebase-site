@@ -1,0 +1,82 @@
+#summary Different types in Commons.
+
+= Commons =
+This is  commons
+
+=Types=
+Here are the following types in Commons
+
+ * []
+   * [Data_entry_ Data Entry for ]
+
+
+
+ * [Artery
+ * [Muscle
+ * [Surgeon
+ * [Ligament
+ * [Disease or medical condition
+ * [Brain Structure
+ * [Hospital
+ * [Nerve
+ * [Symptom
+ * [Drug
+ * [Anatomical structure
+ * [Bone]
+ * [Cranial nerve]
+ * [Vein]
+ * [Physician]
+ * [Condition prevention factors]
+ * [Medical Treatment]
+ * [Contraindication]
+ * [Drug class]
+ * [Drug brand]
+ * [Drug administration route]
+ * [Drug pregnancy category]
+ * [Drug legal status]
+ * [Medical device]
+ * [Medical trial]
+ * [Medical trial sponsor]
+ * [Medical trial type]
+ * [Medical trial design]
+ * [Medical trial phase]
+ * [Medical trial health authority]
+ * [Biofluid]
+ * [Medical specialty]
+ * [Disease cause]
+ * [Hormone]
+ * [Hospital Ownership]
+ * [Hospital Ownership Status]
+ * [Vaccine]
+ * [Vaccine Developer]
+ * [Risk Factor]
+ * [Disease Stage]
+ * [Survival Rate]
+ * [Cancer Center]
+ * [Cancer Center Constituent]
+ * [Cancer Center Type]
+ * [Public figure with medical condition]
+ * [Infectious Disease]
+ * [Route of infection transmission]
+ * [Disease vector]
+ * [Type of infectious agent]
+ * [ICD-9-CM Classification]
+ * [Diagnostic Sign]
+ * [Diagnostic Test]
+ * [Diagnostic Test Sign]
+ * [Drug formulation]
+ * [FDA OTC drug monograph part]
+ * [Drug mechanism of action]
+ * [Drug manufacturer]
+ * [Drug label section]
+ * [Drug dosage flavor]
+ * [Drug ingredient]
+ * [Manufactured drug form]	
+ * [Drug physiologic effect]
+ * [Drug formulation category]
+ * [Drug form shape]
+ * [Drug strength]
+ * [Drug therapeutic equivalence relationship]
+ * [Drug dosage form]
+ * [Compound drug]
+ * [Drug regulating authority]

@@ -27,7 +27,7 @@ var environment_rules = {
         "static",
         "ajax",
         "prefix",
-        "object",
+        "object"
     ]
 };
 

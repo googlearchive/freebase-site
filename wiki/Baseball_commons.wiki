@@ -1,17 +1,55 @@
 #summary Different types in Baseball Commons.
 
 = Baseball commons =
-content
+This is baseball commons content
 
 ==Types==
 Here are the following types in baseball commons
 
-  * [Type1 Type1OnFB]
-    * Type Definition on Wiki
-    * Data Entry tutorial
-    * Identity Criterion
+ * [Baseball_Manager Baseball Manager]
+   * [Data_entry_Baseball_Manager Data Entry for Baseball Manager]
 
-  * [Type2 Type2OnFB]
-    * Type Definition on Wiki
-    * Data Entry
-    * Identity Criterion
+ * [Baseball_Team Baseball Team]
+   * [Data_entry_Baseball_Team Data Entry for Baseball Team]
+
+ * [Baseball_Player Baseball Player]
+   * [Data_entry_Baseball_Player Data Entry for Baseball Player]
+
+ * [Baseball_Division Baseball Division]
+   * [Data_entry_Baseball_Division Data Entry for Baseball Division]
+
+ * [Baseball_League Baseball League]
+   * [Data_entry_Baseball_League Data Entry for Baseball League]
+
+ * [Baseball_Position Baseball Position]
+   * [Data_entry_Baseball_Position Data Entry for Baseball Position]
+
+ * [Baseball_Roster_Position Baseball Roster Position]
+   * [Data_entry_Baseball_Roster_Position Data Entry for Baseball Roster Position]
+
+ * [Baseball_Historical_Roster_Position Baseball Historical Roster Position]
+   * [Data_entry_Baseball_Historical_Roster_Position Data Entry for Baseball Historical Roster Position]
+
+ * [Baseball_Historical_Managerial_Position Baseball Historical Managerial Position]
+   * [Data_entry_Baseball_Historical_Managerial_Position Data Entry for Baseball Historical Managerial Position]
+
+ * [Current_Coaching_Tenure Current Coaching Tenure]
+   * [Data_entry_Current_Coaching_Tenure Data Entry for Current Coaching Tenure]
+
+ * [Historical_Coaching_Tenure Historical Coaching Tenure]
+   * [Data_entry_Historical_Coaching_Tenure Data Entry for Historical Coaching Tenure]
+
+ * [Baseball_Coach Baseball Coach]
+   * [Data_entry_Baseball_Coach Data Entry for Baseball Coach]
+
+ * [Baseball_Coaching_Position Baseball Coaching Position]
+   * [Data_entry_Baseball_Coaching_Position Data Entry for Baseball Coaching Position]
+
+ * [Baseball_Team_Stats Baseball Team Stats]
+   * [Data_entry_Baseball_Team_Stats Data Entry for Baseball Team Stats]
+
+ * [Batting_Statistics Batting Statistics]
+   * [Data_entry_Batting_Statistics Data Entry for Batting Statistics]
+
+ * [Lifetime_Batting_Statistics Lifetime Batting Statistics]
+   * [Data_entry_Lifetime_Batting_Statistics Data Entry for Lifetime Batting Statistics]

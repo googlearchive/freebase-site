@@ -1,0 +1,140 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var h = acre.require("helper/helpers.sjs");
+  var i18n = acre.require("i18n/i18n.sjs");
+</acre:script>
+
+<acre:block def="lang_select()">
+  <acre:script>
+    var base_url = acre.request.url.split("?").shift();
+    // we need to get the original request query string parameters
+    // since our object/tab/controller handler modifies acre.request.params
+    // with object routing promises (i.e., object, blurb, current_tab, etc.)
+    var params = acre.request.query_string.split("&").filter(function(q) {
+      return q.indexOf("lang=") === -1;
+    });
+    var current_lang = 'English';
+  </acre:script>
+  <form action="${base_url}" method="GET" id="data-lang" class="language-picker">
+    <acre:block for="param in params">
+      <acre:script>
+        var parts = param.split("=", 2);
+      </acre:script>
+      <input type="hidden" name="${parts[0]}" value="${parts.length === 2 ? decodeURIComponent(parts[1]) : ''}" />
+    </acre:block>
+    <select name="lang" 
+            onchange="return freebase.dispatch(event, freebase.lang_select, [this.value], this);">
+      <acre:block for="lang in i18n.mql.langs(true)">
+        <acre:script>
+          if (lang.id === i18n.lang) {
+            current_lang = lang.name
+          } 
+        </acre:script>
+        <option value="${h.lang_code(lang.id)}"
+                acre:attrs="lang.id === i18n.lang ? {'selected':'selected'} : {}">${lang.name}</option>
+      </acre:block>
+    </select>
+    <label for="lang" class="current-lang">$current_lang</span>
+  </form>
+</acre:block>
+
+<!!--
+  Format number into current lang's (i18n.lang) locale.
+  @param val - The raw (mql) value
+  @param attrs:Object (optional) - acre:attrs of <span>. Can be a dictionary, an array of tuples or null.  
+  @param format:String (optional) - Use the specified format output instead of the default.
+!!-->
+<acre:block def="number(val, attrs, is_float, format)" trim="1">
+  <acre:script>
+    attrs = attrs ? h.parse_params(attrs) : {};
+    attrs["data-value"] = val;
+    attrs["class"] = (attrs["class"] || "") + " number";
+  </acre:script>
+  <span acre:attrs="attrs" acre:trim="1">
+    ${i18n.format_number(val, is_float, format)}
+  </span>
+</acre:block>
+
+<acre:block def="integer(val, attrs, format)" trim="1">
+  ${number(val, attrs, false, format)}
+</acre:block>
+
+<acre:block def="decimal(val, attrs, format)" trim="1">
+  ${number(val, attrs, true, format)}
+</acre:block>
+
+<!!--
+  Format datetime into current lang's (i18n.lang) locale.
+  @param val - The raw (mql) value
+  @param attrs:Object (optional) - acre:attrs of <span>. Can be a dictionary, an array of tuples or null.  
+  @param format:String (optional) - Use the specified format output instead of the default.
+!!-->
+<acre:block def="datetime(val, attrs, format)" trim="1">
+  <acre:script>
+    attrs = attrs ? h.parse_params(attrs) : {};
+    attrs.datetime = val;   
+  </acre:script>
+  <span acre:attrs="attrs" acre:trim="1">
+    ${i18n.format_datetime(val, format)}
+  </span>  
+</acre:block>
+
+
+<!!--
+!!-->
+<acre:block def="relative_date(val, attrs, text)" trim="1">
+  <acre:script>
+    attrs = h.parse_params(attrs) || {};
+    var date;
+    if (h.type(val) === "date") {
+      date = val;
+      val = acre.freebase.date_to_iso(val);
+    }
+    attrs.datetime = val;
+    text = text || h.relative_date(date || acre.freebase.date_from_iso(val));
+  </acre:script>
+  <time acre:attrs="attrs" data-i18n="off">${text}</time>
+</acre:block>
+
+<!!--
+  Superscript language code if this_lang !== current_lang (default to i18n.lang)
+!!-->
+<acre:block def="lang_code(this_lang, current_lang, force_display)" trim="1" if="this_lang">
+  <acre:script>
+    var this_lang_code = i18n.get_lang_code(false, this_lang);
+    var current_lang_code = i18n.get_lang_code(false, current_lang || i18n.get_lang_code());
+  </acre:script>
+  <acre:block if="force_display || this_lang_code !== current_lang_code" trim="1">
+    <sup class="lang-code ${this_lang_code}">${this_lang_code}</sup>
+  </acre:block>
+</acre:block>

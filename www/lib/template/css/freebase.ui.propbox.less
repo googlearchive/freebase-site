@@ -36,7 +36,7 @@
 ----------------------------
 */
 
-@gutter-value: 15px;
+@gutter-value: 16px;
 @hover-bg: darken(#f1f2f3, 1%);
 
 .edit-row-style() {
@@ -449,7 +449,6 @@ td.vert-form-fields .form-field {
   .more {
     line-height: 1;
     padding: 5px 5px 5px 15px;
-    border-top: 1px solid #eee;
   }
 }
 
@@ -544,7 +543,7 @@ a.type-section-delete:hover {
 .type-label,
 .property-label {
     display: inline-block;
-    padding: 7px 7px 7px 1px;
+    padding: 7px 0px 7px 1px;
 }
 
 .type-label a {
@@ -557,37 +556,16 @@ a.type-section-delete:hover {
     color: #393939;
 }
 
-.property-modify {
-  display: inline-block;
-  position: relative;
-  top: -2px;
-  padding: 1px 4px 2px 4px;
-  text-align: center;
-  background-color: #FFD02F;
-  .rounded_corners(7px);
-
-  a {
-    font-size: 12px;
-    font-weight: bold;
-    color: white;
-  }
-
-  a:after {
-    content: "+";
-  }
-}
-
-.property-modify.locked {
-  background-color: #e8ebee;
-}
-
 .data-row-requires-permission .nicemenu {
     visibility: hidden !important;
 }
 
+.property-requires-authority .outer-menu .headmenu,
 .data-row-requires-authority .outer-menu .headmenu {
     background:  #e8ebee url(template/img/ui-icons.png) no-repeat 4px -1585px;
 }
+
+.property-requires-authority .outer-menu .headmenu .more-action,
 .data-row-requires-authority .outer-menu .headmenu .more-action {
     border: 0;
 }
@@ -610,12 +588,10 @@ a.type-section-delete:hover {
 }
 
 a.schema-id {
-  font-size: .8em;
-  padding-left: .5em;
+  font-size: 12px;
   color: rgba(0,0,0,0.3) !important;
 }
 
 a.prop-id {
-  padding-right: .5em;
-  font-size: 1.1em;
+  font-size: 12px;
 }

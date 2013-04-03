@@ -169,10 +169,10 @@
         prop_section = $(context).parents(".submenu")
           .data("headmenu").parents(".property-section");
       }
-      var value_menu = prop_section.find(".data-section .data-row:first:visible " +
-        ".nicemenu:first .headmenu:first a");
+      var value_menu = prop_section.find(
+          ".data-section .data-row:first:visible .nicemenu:first .headmenu");
       if (value_menu.length) {
-        value_menu.click();
+        value_menu.data("submenu").find("a:first").click();
       }
       else {
         propbox.prop_add(context, unique);

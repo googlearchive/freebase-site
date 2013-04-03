@@ -533,7 +533,7 @@ function get_property_status(topic, prop_structure, prop_values) {
   var prop = h.get_property(topic, prop_structure.id);
   var empty = !prop_values || !prop_values.length;
   var status = prop && prop.status;
-  var unique_edit = (prop && prop.unique && !empty) ? true : false;
+  var unique_edit = (prop_structure && prop_structure.unique && !empty);
   return {
     is_empty: empty,
     has_status: status != null,

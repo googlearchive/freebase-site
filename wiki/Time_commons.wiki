@@ -1,24 +1,40 @@
-#summary One-sentence summary of this page.
+#summary Different types in Time Commons.
 
-= Introduction =
+= Time Commons =
+This is time commons
 
-Add your content here.
+=Types=
+Here are the following types in Time Commons
 
+ * [Month Month]
+   * [Data_entry_Month Data Entry for Month]
 
-= Details =
+ * [Day_Of_Year Day Of Year]
+   * [Data_entry_Day_Of_Year Data Entry for Day Of Year]
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
-Month	4/28/2007	danny	 39
-Day Of Year	4/28/2007	danny	 725
-Holiday	4/28/2007	danny	 601
-Holiday Category	
-Calendar System	
-Holiday Period	
-Day Of Week	
-Commemorative event	
-Time Zone	
-Geologic time period	
-Geologic time period uncertainty	
+ * [Holiday Holiday]
+   * [Data_entry_Holiday Data Entry for Holiday]
+
+ * [Holiday_Category Holiday Category]	
+   * [Data_entry_Holiday_Category Data Entry for Holiday Category]
+
+ * [Calendar_System Calendar System]
+   * [Data_entry_Calendar_System Data Entry for Calendar System]
+
+ * [Holiday_Period Holiday Period]
+   * [Data_entry_Holiday_Period Data Entry for Holiday Period]
+
+ * [Day_Of_Week Day Of Week]
+   * [Data_entry_Day_Of_Week Data Entry for Day Of Week]
+
+ * [Commemorative_event Commemorative event]	
+   * [Data_entry_Commemorative_event Data Entry for Commemorative event]
+
+ * [Time_Zone Time Zone]
+   * [Data_entry_Time_Zone Data Entry for Time Zone]
+
+ * [Geologic_time_period Geologic time period]
+   * [Data_entry_Geologic_time_period Data Entry for Geologic time period]
+
+ * [Geologic_time_period_uncertainty Geologic time period uncertainty]
+   * [Data_entry_Geologic_time_period_uncertainty Data Entry for Geologic time period uncertainty]

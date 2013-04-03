@@ -1,10 +1,36 @@
-[
-  "template/css/freebase.ui.scrollbar.less",
-  "cuecard/css/cuecard.css",
-  "cuecard/css/query-editor.css",
-  "cuecard/css/popup.css",
-  "cuecard/css/suggestion.css",
-  "cuecard/css/output-pane.css",
-  "cuecard/css/control-pane.css",
-  "cuecard/css/dialogs.css",
-]
+
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Additional Licenses for Third Party components can be found here:
+ * http://wiki.freebase.com/wiki/Freebase_Site_License
+ *
+ */
+::-webkit-scrollbar{width:20px;height:20px;background:white}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.1)}::-webkit-scrollbar-thumb:vertical{border-left:6px solid white;border-right:8px solid white}::-webkit-scrollbar-thumb:horizontal{border-top:6px solid white;border-bottom:8px solid white}:hover::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.1)}::-webkit-scrollbar-thumb:horizontal:hover,::-webkit-scrollbar-thumb:vertical:hover{background:rgba(0,0,0,0.15)}::-webkit-scrollbar-track-piece:vertical:start{margin-top:8px}::-webkit-scrollbar-track-piece:horizontal:start{margin-left:8px}div.cuecard-progress{z-index:1000;position:fixed;top:300px;left:40%;right:40%;text-align:center;padding:2em;background:rgba(192,192,192,0.7);font-size:200%;color:#a88;font-weight:bold;font-style:italic;-moz-border-radius:2em}#the-output-pane h1{font-size:16px;color:#666;line-height:1.4}#the-output-pane h2{font-style:italic;font-size:14px;margin:20px auto}#help-links li{float:left;font-size:12px;font-weight:bold;margin-right:20px}#help-links a{padding-left:0}#examples{margin:0 -15px;border:0}#examples h1{font-weight:normal;padding-left:15px;border-top:1px solid #e1e2e3;border-bottom:1px solid #e1e2e3}.header .cuecard-examples-technique,.header .chzn-container{float:right;margin-top:5px;margin-right:15px}#the-output-pane .cuecard-outputPane-helpContent{padding-left:15px;padding-right:15px}div.cuecard-queryEditor{position:relative;background:#e5e5e7;height:100%;width:100%}div.iframe{border:1px solid #ddd}.cuecard-queryEditor-controls-bottom{text-align:right;padding:7px}div.cuecard-popup-container{position:absolute;z-index:1000;width:30em;border:1px solid #ddd;padding:1px;background:#FFFFE0}div.cuecard-popup-container-wide{width:35em}.cuecard-popup-message{padding:1em;background:#FFFFE0;color:#FF8000;font-weight:bold}div.cuecard-suggestion-container{border-top:1px solid #aaa;height:200px;overflow:auto}div.cuecard-suggestion-progress{text-align:center;padding:2em}div.cuecard-suggestion-hint-message{padding:.5em;font-weight:bold;color:#FF8000}a.cuecard-suggestion-entry{display:block;text-decoration:none;padding:3px 8px;color:black}.cuecard-suggestion-selected{background:#ccc}.cuecard-suggestion-entry table{font-size:100%}.cuecard-suggestion-entry tr{vertical-align:top}.cuecard-suggestion-entry td{padding-right:5px;vertical-align:top}.cuecard-suggestion-entry img{border:none}.cuecard-suggestion-noEntryMessage{padding:6px 15px}.cuecard-suggestion-hint{color:#aaa}div.cuecard-suggestion-input-container{padding:3px}.cuecard-suggestion-input-container input{display:block;padding:0;margin:0;width:100%;border:none;background:white;outline:none}.cuecard-suggestion-input-container input:focus{outline:none}.cuecard-suggestion-thumbnail-empty{width:40px;height:40px;background:#eee}.cuecard-suggestion-id{font-size:90%;color:#888}.cuecard-outputPane-tabs{position:relative;z-index:9;border-bottom:solid 1px #E4E6E7}.cuecard-outputPane-tabs ul.section-tabset{height:29px}div.cuecard-outputPane-tabBody{width:100%;height:100%;background:white;overflow:auto}.cuecard-outputPane-tabBody pre{white-space:pre-wrap;font-family:monospace;font-size:13px;line-height:auto;color:black;padding:10px}div.cuecard-outputPane-status{float:right;text-align:right;height:100%;overflow:auto}div.cuecard-outputPane-help{height:100%;overflow:auto}div.cuecard-outputPane-json .panel-content{overflow:hidden}div.cuecard-outputPane-json iframe{width:100%;height:100%;margin:0;padding:0;font-family:monospace;font-size:10pt;background-color:white}div.cuecard-outputPane-json .panel-header{border-top:1px solid #ddd}div.cuecard-outputPane-json .drawer-content{overflow:auto}div.cuecard-outputPane-list{width:100%;height:100%}div.cuecard-outputPane-list iframe{width:100%;height:100%;margin:0;padding:0;font-size:10pt;background-color:white;overflow:auto}.cuecard-outputPane-responseHeaders{padding:0 2em}.cuecard-outputPane-helpContent{padding:1em 2em}.cuecard-outputPane-responseHeaders a{text-decoration:underline}.cuecard-outputPane-responseHeaders h3{margin:1em 0}.cuecard-outputPane-responseHeaders table{width:100%;margin-bottom:1em}.cuecard-outputPane-odd{background:#eee}.cuecard-outputPane-cost-important td{font-weight:bold;color:#f33}h1.title{color:#f1f2f3;font-size:21px}a.cuecard-examples-example{display:block;text-decoration:none;padding:.25em 15px;-webkit-transition:all .2s;-moz-transition:all .2s;transition:all .2s}a.cuecard-examples-example:hover{background:#eee}.cuecard-examples-example-selected{background:#FFFFE0}a.cuecard-examples-technique{display:block;text-decoration:none;padding:.25em .5em;border-bottom:1px solid #ddd}a.cuecard-examples-technique:hover{background:#eee}.cuecard-examples-technique-selected{background:#FFFFE0}div.cuecard-controlPane{height:100%}div.cuecard-controlPane-tabBody.ui-tabs-panel{padding:10px 20px}div.cuecard-controlPane-tabBody{overflow:auto;height:208px;-moz-box-sizing:border-boz;-webkit-box-sizing:border-box;box-sizing:border-box}div.cuecard-controlPane-tabBody input{vertical-align:middle}.cuecard-controlPane-tabBody button{margin-left:0}.cuecard-controlPane-configurations td{padding:2px}.cuecard-controlPane-configurations select{width:8em}select.cuecard-controlPane-configurations-languages{width:20em}div.cuecard-controlPane-configurations-cursor{padding:1em}.cuecard-controlPane-configurations-cursor input{display:block;width:100%;margin-bottom:.25em}.cuecard-controlPane-explanation{margin-bottom:1em}.cuecard-controlPane-hint{color:#888;font-size:80%;padding:.25em 0 .5em 0}.cuecard-controlPane .ui-tabs .ui-tabs-nav li a{padding:.15em 1em}.cuecard-controlPane-section table{border-collapse:separate;border-spacing:10px}.cuecard-controlPane-powerTool{margin-bottom:1em}.cuecard-controlPane-powerTool button{margin-left:0}div.cuecard-controlPane-powerTool-hint{color:#aaa;font-size:80%;margin-top:.25em}.cuecard-controlPane-variables{width:100%;border-collapse:collapse}.cuecard-controlPane-variables th{padding:2px;text-align:left;font-weight:bold}.cuecard-controlPane-variables td{padding-right:2px;padding-bottom:2px}.cuecard-controlPane-variables td input{width:100%;border:1px solid #ddd}.cuecard-controlPane-customEnvelope{width:100%;border-collapse:collapse}.cuecard-controlPane-customEnvelope th{padding:2px;text-align:left;font-weight:bold}.cuecard-controlPane-customEnvelope td{padding-right:2px;padding-bottom:2px}.cuecard-controlPane-customEnvelope td input{width:100%;border:1px solid #ddd}.cuecard-controlPane-setting{height:30px}.cuecard-controlPane-setting input{float:left;margin-right:5px}#dialog-acre_template{width:800px;height:500px}#template-code{width:780px;height:400px;font-family:monospace;font-size:12px}

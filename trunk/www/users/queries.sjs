@@ -51,7 +51,7 @@ function usergroup(id) {
 };
 
 /**
-* Gets the permitted users (grouped by usergroup) 
+* Gets the permitted users (grouped by usergroup)
 * for any permissioned object.
 *
 * @param id:String - permissioned object id
@@ -82,7 +82,7 @@ function permission_usergroups(id, type) {
 };
 
 /**
-* Get the data for an individual user in the context of an object, 
+* Get the data for an individual user in the context of an object,
 * including other objects of the same type they edit.
 *
 * @param id:String - user id
@@ -173,7 +173,8 @@ function user_query(userid, objectid, object_type) {
       },
       "optional": true,
       "limit": 3
-    }]
+    }],
+    "optional": true
   };
   if (objectid) {
     acre.freebase.extend_query(q, {

@@ -1,0 +1,63 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+Add your content here.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
+Sports Team	
+Sports Facility	
+Sports Team Owner	
+Sport	
+Sports Association	
+Sports League Championship Event
+Sports League Season	
+Sports League Award Winner	
+Sports League Award Type	
+Sports League Award	
+Sports League Championship	
+Handedness	
+Athlete	
+Sports League Draft	
+Sports League Draft Pick	
+Golfer	
+Mascot	
+Australian Rules Footballer	
+Cyclist	
+Triathlon	
+Sports Equipment	
+School sports team	
+Professional Sports Team	
+Defunct Sports Team	
+Sports Team Location	
+Sports official tenure	
+Sports official	
+Sports Team Season Record	
+Tournament event	
+Sport Medal	
+Multi-event tournament	
+Sport Country	
+Tournament event competitor	
+Competitor/competition relationship
+Competitor/country relationship	
+Tournament Team	
+Tournament event competition	
+Sports league participation	
+Sports played	
+Drafted athlete	
+Golf Facility Access	
+Golf Course	
+Golf Course Architect	
+Golf Facility	
+Fight song	
+Sports team roster	
+Sports position	
+Sports team coach	
+Sports team coach tenure	
+Coaching position	

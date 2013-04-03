@@ -1,0 +1,82 @@
+tr .combo-menu,
+li .combo-menu {
+  list-style: none;
+  position: relative;
+/**  right: 0;**/
+  top: 0;
+  display: inline-block;
+  visibility: hidden;
+  padding: 2px;
+  border: 1px solid transparent;
+  .transition(all);
+}
+
+.row-hover .combo-menu {
+  visibility: visible;
+}
+
+
+tr:hover .combo-menu:hover,
+li:hover .combo-menu:hover {
+  border: 1px solid #d4d6d7;
+  .linear_gradient(#e4e6e7, #d4d6d7);
+  .box_shadow(0 2px 2px, #a1a2a3);
+}
+
+.combo-menu .default-action {
+  color: #C4C4C4;
+  display: inline-block;
+  width: 20px;
+}
+
+.combo-menu .default-action-hidden {
+  visibility: hidden;
+}
+
+ul.combo-menu li,
+.data-table tbody tr ul.combo-menu li {
+  padding: 0;
+}
+
+.combo-menu .more-action {
+  display: inline-block;
+  width: 11px;
+  height: 17px;
+  text-indent: -9999px;
+  background: url(template/img/ui-icons.png) no-repeat 2px -686px;
+}
+
+.combo-menu:hover .more-action {
+  background-position: 2px -720px;
+}
+
+.combo-menu:hover .more-action:hover {
+  background-position: 2px -753px;
+}
+
+.default-action.edit-action {
+  width: 17px;
+  height: 17px;
+  line-height: 1;
+  background: #fff;
+  text-indent: -9999px;
+  background: url(template/img/ui-icons.png) no-repeat 2px -855px;
+}
+
+.combo-menu:hover .default-action.edit-action {
+  background-color: #fff;
+}
+
+
+.combo-menu:hover .edit-action {
+  background-position: 2px -875px;
+}
+
+.combo-menu:hover .edit-action:hover {
+  background-position: 2px -895px;
+}
+
+.combo-menu:hover .default-action.loading,
+.combo-menu:hover .default-action.loading:hover {
+  background: url(template/img/loader-snake-small-grey.gif) no-repeat;
+}

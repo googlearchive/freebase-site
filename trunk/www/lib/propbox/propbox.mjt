@@ -194,7 +194,13 @@
 <acre:block def="propbox(topic, prop_structure, prop_values, lang)">
   <div class="property-section"
        data-id="${prop_structure.id}">
-    <div class="sub-foobar kbs hover-row">
+    <acre:script>
+      var extra_class = '';
+      if (prop_structure.authorities != null) {
+        extra_class = ' property-requires-authority';
+      }
+    </acre:script>
+    <div class="sub-foobar kbs hover-row${extra_class}">
       <span class="header-label">
         ${prop_menu(topic, prop_structure, prop_values, lang)}
         <acre:block if="prop_structure.deprecated">
@@ -497,6 +503,7 @@
     var ps = ph.get_property_status(topic, prop_structure, prop_values);
     var lock = prop_structure.authorities == null &&
         prop_structure.requires_permission === true;
+    var is_blob = (ect === "/common/document" || ect === "/common/image");
   </acre:script>
   <span class="wrapper">
     <ul class="outer-menu nicemenu">
@@ -505,7 +512,7 @@
           <a href="javascript:void(0)" class="more-action"></a>
         </span>
         <ul class="row-menu submenu">
-          <acre:block if="! (ps.has_status || lock)">
+          <acre:block if="! (ps.has_status || lock || is_blob)">
             <li acre:if="ps.unique_edit" class="row-menu-item">
               <a href="#" onclick="return propbox.prop_edit(this, ${prop_structure.unique});">${EDIT_VALUE}</a>
             </li>
@@ -541,51 +548,40 @@
     <acre:block if="lock">
       <span class="lock" title="${PROPERTY_LOCKED}"></span>
     </acre:block>
-    <acre:block else="">
-      <acre:script>
-        var attrs = {"class": "property-modify"};
-        if (prop_structure.authorities != null) {
-          attrs["class"] += " locked";
-          attrs["title"] = PROPERTY_REQUIRES_AUTHORITY;
-        }
-      </acre:script>
-      <div acre:if="!ps.has_status" acre:attrs="attrs">
-          <a href="#" acre:if="ps.unique_edit" onclick="return propbox.prop_edit(this, ${prop_structure.unique});"></a>
-          <a href="#" acre:else="" onclick="return propbox.prop_add(this, ${prop_structure.unique});"></a>
-      </div>
-    </acre:block>
-    <acre:block
-
-    </acre:block>
   </span>
 </acre:block>
 
 <acre:block def="value_menu(topic, prop_structure, prop_value, lang, parent_prop_structure)">
   <acre:script>
     var ect = prop_structure.expected_type.id;
-    var is_blob = false;
-    if (ect === "/common/document" || ect === "/common/image") {
-      is_blob = true;
-    }
+    var is_blob = (ect === "/common/document" || ect === "/common/image");
+    var is_cvt = topic && parent_prop_structure &&
+        parent_prop_structure.expected_type.mediator;
     var lock = prop_structure.authorities == null &&
         prop_structure.requires_permission === true;
   </acre:script>
-  <ul class="outer-menu nicemenu">
+  <ul acre:if="!(is_blob || lock) || is_cvt" class="outer-menu nicemenu">
     <li class="nicemenu-item">
       <span class="headmenu">
         <a href="javascript:void(0)" class="more-action"></a>
       </span>
       <ul class="submenu row-menu">
         <acre:block if="!lock">
-          <li class="row-menu-item"><a href="#" onclick="return propbox.value_edit(this);">${EDIT}</a></li>
-          <li class="row-menu-item"><a href="#" onclick="return propbox.value_delete(this);">${DELETE}</a></li>
-          <acre:block if="!is_blob && topic && prop_structure && prop_value && lang">
-            <li acre:if="!h.is_literal_type(prop_structure.expected_type.id)" class="row-menu-item fb-site-only">
-              <a href="${h.fb_url(prop_value.id, [['i18n']])}">${EDIT_LOCALIZED_TEXT}</a>
+          <li class="row-menu-item">
+            <a href="#" onclick="return propbox.value_edit(this);">${EDIT}</a>
+          </li>
+          <li class="row-menu-item">
+            <a href="#" onclick="return propbox.value_delete(this);">${DELETE}</a>
+          </li>
+          <acre:block if="topic && prop_structure && prop_value && lang">
+            <li acre:if="!h.is_literal_type(prop_structure.expected_type.id)"
+                class="row-menu-item fb-site-only">
+              <a href="${h.fb_url(prop_value.id, [['i18n']])}">
+                ${EDIT_LOCALIZED_TEXT}</a>
             </li>
           </acre:block>
         </acre:block>
-        <acre:block if="topic && parent_prop_structure && parent_prop_structure.expected_type.mediator">
+        <acre:block if="is_cvt">
           <li class="row-menu-item fb-site-only">
             <a href="${h.fb_url(topic.id, [['props']])}">${VIEW_CVT}</a>
           </li>

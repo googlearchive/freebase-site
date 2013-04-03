@@ -473,7 +473,17 @@
         status: ["", "Searching...", "Select an item from the list:"],
         service_url: fb.h.fb_googleapis_url(),
         key: fb.acre.freebase.api_key,
-        lang: 's/all'
+        lang: (function() {
+          // s/<primary>,d/<primary>,s/<fallback-lang>,d/<fallback>,s/all,d/all
+          // Search in primary lang, then fallback lang then all the rest.
+          // Display in primary lang, then fallback lang then all the rest.
+          var langs = [];
+          $.each(fb.suggest_lang.lang().split(','), function(i, lang) {
+            langs.push('s/' + lang + ',d/' + lang);
+          });
+          langs.push('s/all,d/all');
+          return langs.join(',');
+        })()
       },
 
       /**

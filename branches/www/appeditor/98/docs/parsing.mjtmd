@@ -1,0 +1,60 @@
+Acre Templates - *Parsing Modes*
+================================
+
+Acre has two parsing modes, HTML and XML. The default parsing mode HTML.
+
+In order to trigger XML mode, your template first line must start with 
+
+>     <?xml ...?>
+
+
+## HTML Mode
+
+In HTML mode, the parser is more relaxed (as in a browser). The parser will allow you to leave empty tags open (`<img>`,`<br>`,`<hr>` in the `<body>`; `<link>`,`<meta>`,`<script>` in the `<head>`), and doesn't require you to escape special characters like `<`,`>` and `&`, making mixing code and HTML markup a lot easier and more readable.
+
+Be aware that the parser in HTML mode will treat empty HTML tags in a special way and it might misbehave if you try to use `<acre:*>` elements nested inside elements that HTML expects to be empty (such as `<img>`,`<br>`,`<hr>`,`<param>` etc). You can use acre scripting as attributes of those elements, but make sure you don't use them as nesting containers or the results might not be what you'd expect. 
+
+It's always better to use proper containment elements such `<p>` or `<div>`, or even just `<acre:block>`. 
+
+In short, leave HTML empty tags empty when in HTML parsing mode.
+
+
+## XML Mode
+
+In XML mode, the parser is more strict and behaves like any other XML parser. It will complain if you don't close or balance your empty tags (so `<img/>` or `<img></img>` instead of just `<img>`) and it will complain if you don't escape special characters: `<` and `&` characters must be escaped in content (with `&lt;` and `&amp;` respectively), *including* inside scripts and Acre template attributes. 
+
+Alternatively, in cases where the content doesn't need to be evaluated by the Acre server, such as `<script>` blocks being sent to the browser, the content can be enclosed in a `CDATA` block:
+
+>     <script><![CDATA[
+>       if (10 < 20) {
+>          var result = "10 is less than 20";
+>       }
+>     ]]></script>
+
+By default, an XML template outputs an `<?xml version="1.0" encoding="utf-8"?>` processing instruction at the start of the file. You can disable this using an `<acre:doc>` tag at the top level of the template file:
+
+>     <acre:doc xml-pi="0">
+>        ...
+>     </acre:doc>
+
+
+## Acre and Namespaces
+
+The Acre parser is *not* namespace aware in the XML sense of the term. This means that even if you have a namespaced element such as `<acre:script>` or `<atom:title>`, the parser won't complain if you didn't declare the namespace prefix with `xmlns:acre` or `xmlns:atom`. It will simply treat the prefix as part of the element name.
+
+This is done to make the developer's life easier, but at the same time, if you're generating XML that might be consumed by parsers that *are* namespace aware, make sure you do declare the namespace prefixes correctly and Acre will just pass those `xmlns` attributes along untouched. 
+
+
+## The `acre:` namespace
+
+All Acre template tags and attributes must be within the acre namespace, and because the parser is not namespace aware, this means they MUST prefaced with `acre:`.  Note that if an Acre attribute is on an element in the `acre:` namespace, then it doesn't need to be namespaced.
+
+>     <div acre:if="true">
+>        ...
+>     </div>
+> 
+>     <acre:block if="true">
+>        ...
+>     </acre:block>
+
+

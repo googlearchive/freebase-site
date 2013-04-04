@@ -667,7 +667,6 @@
          _error: function(xhr) {
            // handle 401: Not authorized
            if (xhr.status === 401) { // unauthorized
-             status.info("Authorizing...");
              $(window).trigger("fb.user.unauthorized");
              return;
            }
@@ -715,7 +714,6 @@
      check_api_response: function(data, textStatus, xhr) {
        if ($.isPlainObject(data)) {
          if (data.error && data.error.code === 401) {
-           status.info("Authorizing...");
            $(window).trigger("fb.user.unauthorized");
            return false;
          }

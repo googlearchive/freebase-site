@@ -163,13 +163,22 @@
      .bind("fb.user.signedout", function(e) {
        //console.log("fb.user.signedout");
        // signed out
+       $("#signedin").hide();
        $("#signedout").show();
-       $(".signedout").show();
      })
      .bind("fb.user.unauthorized", function() {
-       // TODO: invoke fb.login_popup() without the popup blocker
-       // for now, go directly to signin page
-       window.location.href = fb.h.fb_url("/account/signin", {onsignin:window.location.href});
+       // Sign the user out to remove all cookies (credentials) that are
+       // no longer valid or stale.
+       setTimeout(function() {
+         $.get(fb.h.ajax_url('lib/template/signout.ajax'));
+         $(window).trigger('fb.user.signedout');
+         fb.status.clear();
+         fb.status.sprintf('info', 'Please %s to continue.',
+           'Sign In', function() {
+             window.location.href = $('#fb-signin-link').attr('href');
+             return false;
+           });
+       });
      })
      .bind("fb.user.feedback", function(e, data) {
        if (confirm("Uh oh! Something went wrong. Please report this using our feedback tool.")) {

@@ -73,7 +73,7 @@ Here are the following types in architecture commons
    * [Data_entry_Landscape_architect  Data Entry for Landscape architect]
 
   * [Landscape_project Landscape project]
-   * [Data_entry_Landscape project  Data Entry for Landscape project]
+   * [Data_entry_Landscape_project  Data Entry for Landscape project]
 
   * [Ownership Ownership]
    * [Data_entry_Ownership  Data Entry for Ownership]

@@ -58,7 +58,7 @@ Content for Architecture Commons
    * [Data_entry_Meteorite_classfication  Data Entry for Meteorite classfication]
 
  * [Trans_Neptunian_Object Trans Neptunian Object]
-   * [Data_entry_Trans-Neptunian_Object  Data Entry for Trans-Neptunian Object]
+   * [Data_entry_Trans_Neptunian_Object  Data Entry for Trans-Neptunian Object]
 
  * [Trans_Neptunian_region Trans Neptunian region]
    * [Data_entry_Trans_Neptunian_region  Data Entry for Trans-Neptunian region]

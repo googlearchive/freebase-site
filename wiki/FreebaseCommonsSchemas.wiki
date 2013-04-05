@@ -13,8 +13,8 @@ This wiki contains documentation for freebase commons schemas. There are current
   * *B*
    * [Baseball_commons   Baseball commons]
    * [Bicycles_commons   Bicycles commons]
-   * [Biology_commons   Bicycles commons]
-   * [Boats_commons   Bicycles commons]
+   * [Biology_commons   Biology commons]
+   * [Boats_commons   Boats commons]
    * [Book_commons   Book Commons]
    * [Broadcast_commons   Broadcast commons]
    * [Business_Commons  Business Commons]

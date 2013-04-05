@@ -8,26 +8,26 @@ var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
 var environment_rules = {
 
     "labels" : {
-        "lib": "//122c.lib.www.tags.svn.freebase-site.googlecode.dev",
+        "lib": "//126a.lib.www.tags.svn.freebase-site.googlecode.dev",
         "default" : "//default.dev",
 
-        "account": "//95b.account" + tags_codebase,
-        "appeditor": "//96b.appeditor" + tags_codebase,
-        "apps": "//97b.apps" + tags_codebase,
-        "create": "//92b.create" + tags_codebase,
-        "data": "//93b.data" + tags_codebase,
-        "formbuilder": "//39b.formbuilder" + tags_codebase,
-        "i18n": "//39a.i18n" + tags_codebase,
-        "mdo": "//73a.mdo" + tags_codebase,
-        "policies": "//95a.policies" + tags_codebase,
-        "query": "//92a.query" + tags_codebase,
-        "review": "//74a.review" + tags_codebase,
-        "sample": "//94a.sample" + tags_codebase,
-        "schema": "//100a.schema" + tags_codebase,
-        "search": "//23a.search" + tags_codebase,
-        "topic": "//98a.topic" + tags_codebase,
-        "triples": "//94a.triples" + tags_codebase,
-        "users": "//72a.users" + tags_codebase
+        "account": "//99a.account" + tags_codebase,
+        "appeditor": "//100a.appeditor" + tags_codebase,
+        "apps": "//101a.apps" + tags_codebase,
+        "create": "//96a.create" + tags_codebase,
+        "data": "//97a.data" + tags_codebase,
+        "formbuilder": "//43a.formbuilder" + tags_codebase,
+        "i18n": "//43a.i18n" + tags_codebase,
+        "mdo": "//77a.mdo" + tags_codebase,
+        "policies": "//99a.policies" + tags_codebase,
+        "query": "//96a.query" + tags_codebase,
+        "review": "//78a.review" + tags_codebase,
+        "sample": "//98a.sample" + tags_codebase,
+        "schema": "//104a.schema" + tags_codebase,
+        "search": "//27a.search" + tags_codebase,
+        "topic": "//102a.topic" + tags_codebase,
+        "triples": "//98a.triples" + tags_codebase,
+        "users": "//76a.users" + tags_codebase
 
     },
 

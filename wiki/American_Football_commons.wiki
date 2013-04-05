@@ -9,7 +9,7 @@ Here are the following types in American Football Commons
  * [American_football_player American Football Player]
    * [Data_entry_AmeFootballPlayer Data Entry for American Football Player]
 
- * [american_football_super_bowl Super Bowl]
+ * [american_football8super_bowl Super Bowl]
    * [Data_entry_SuperBowl Data Entry for Super Bowl]
 
  * [American_football_head_coach American football head coach] 

@@ -1,0 +1,68 @@
+#summary Different types in Boats Commons.
+
+= Boats Commons =
+This is boats commons
+
+=Types=
+Here are the following types in Boats Commons
+
+
+ * [Ship Builder Ship Builder]
+   * [Data_entry_Ship Builder Data Entry for Ship Builder]
+
+ * [Ship Designer Ship Designer]
+   * [Data_entry_Ship Designer Data Entry for Ship Designer]
+
+ * [Boat Disposition Boat Disposition]
+   * [Data_entry_Boat Disposition Data Entry for Boat Disposition]
+
+ * [Boat Fate Boat Fate ]
+   * [Data_entry_Boat Fate Data Entry for Boat Fate]
+
+ * [Warship Armament Warship Armament]
+   * [Data_entry_Warship Armament Data Entry for Warship Armament]
+
+ * [Warship Service Period]
+   * [Data_entry_ Data Entry for ]
+
+ * [Hull Configuration]
+   * [Data_entry_ Data Entry for ]
+
+ * [Ship class]
+   * [Data_entry_ Data Entry for ]
+
+ * [Ship Powerplant System]
+   * [Data_entry_ Data Entry for ]
+
+ * [Ship Powerplant]
+   * [Data_entry_ Data Entry for ]
+
+ * [Engine]
+   * [Data_entry_ Data Entry for ]
+
+ * [Nuclear Powerplant]
+   * [Data_entry_ Data Entry for ]
+
+ * [Motor]
+   * [Data_entry_ Data Entry for ]
+
+ * [Engine Fuel]
+   * [Data_entry_ Data Entry for ]
+
+ * [Ship type]
+   * [Data_entry_ Data Entry for ]
+
+ * [Ship]
+   * [Data_entry_ Data Entry for ]
+
+ * [Means of propulsion]
+   * [Data_entry_ Data Entry for ]
+
+ * [Hull material]
+   * [Data_entry_ Data Entry for ]
+
+ * [Ship ownership]
+   * [Data_entry_ Data Entry for ]
+
+ * [Ship owner]
+   * [Data_entry_ Data Entry for ]

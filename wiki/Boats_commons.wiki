@@ -7,62 +7,62 @@ This is boats commons
 Here are the following types in Boats Commons
 
 
- * [Ship Builder Ship Builder]
-   * [Data_entry_Ship Builder Data Entry for Ship Builder]
+ * [Ship_Builder Ship Builder]
+   * [Data_entry_Ship_Builder Data Entry for Ship Builder]
 
- * [Ship Designer Ship Designer]
-   * [Data_entry_Ship Designer Data Entry for Ship Designer]
+ * [Ship_Designer Ship Designer]
+   * [Data_entry_Ship_Designer Data Entry for Ship Designer]
 
- * [Boat Disposition Boat Disposition]
-   * [Data_entry_Boat Disposition Data Entry for Boat Disposition]
+ * [Boat_Disposition Boat Disposition]
+   * [Data_entry_Boat_Disposition Data Entry for Boat Disposition]
 
- * [Boat Fate Boat Fate ]
-   * [Data_entry_Boat Fate Data Entry for Boat Fate]
+ * [Boat_Fate Boat Fate ]
+   * [Data_entry_Boat_Fate Data Entry for Boat Fate]
 
- * [Warship Armament Warship Armament]
-   * [Data_entry_Warship Armament Data Entry for Warship Armament]
+ * [Warship_Armament Warship Armament]
+   * [Data_entry_Warship_Armament Data Entry for Warship Armament]
 
- * [Warship Service Period]
-   * [Data_entry_ Data Entry for ]
+ * [Warship_Service_Period Warship Service Period]
+   * [Data_entry_Warship_Service_Period Data Entry for Warship Service Period]
 
- * [Hull Configuration]
-   * [Data_entry_ Data Entry for ]
+ * [Hull_Configuration Hull Configuration]
+   * [Data_entry_Hull_Configuration Data Entry for Hull Configuration]
 
- * [Ship class]
-   * [Data_entry_ Data Entry for ]
+ * [Ship_class Ship class]
+   * [Data_entry_Ship_class Data Entry for Ship class]
 
- * [Ship Powerplant System]
-   * [Data_entry_ Data Entry for ]
+ * [Ship_Powerplant_System Ship Powerplant System]
+   * [Data_entry_Ship_Powerplant_System Data Entry for Ship Powerplant System]
 
- * [Ship Powerplant]
-   * [Data_entry_ Data Entry for ]
+ * [Ship_Powerplant Ship Powerplant]
+   * [Data_entry_Ship_Powerplant Data Entry for Ship Powerplant]
 
- * [Engine]
-   * [Data_entry_ Data Entry for ]
+ * [Engine Engine]
+   * [Data_entry_Engine Data Entry for Engine]
 
- * [Nuclear Powerplant]
-   * [Data_entry_ Data Entry for ]
+ * [Nuclear_Powerplant Nuclear Powerplant]
+   * [Data_entry_Nuclear_Powerplant Data Entry for Nuclear Powerplant]
 
- * [Motor]
-   * [Data_entry_ Data Entry for ]
+ * [Motor Motor]
+   * [Data_entry_Motor Data Entry for Motor]
 
- * [Engine Fuel]
-   * [Data_entry_ Data Entry for ]
+ * [Engine_Fuel Engine Fuel]
+   * [Data_entry_Engine_Fuel Data Entry for Engine Fuel]
 
- * [Ship type]
-   * [Data_entry_ Data Entry for ]
+ * [Ship_type Ship type]
+   * [Data_entry_Ship_type Data Entry for Ship type]
 
- * [Ship]
-   * [Data_entry_ Data Entry for ]
+ * [Ship Ship]
+   * [Data_entry_Ship Data Entry for Ship]
 
- * [Means of propulsion]
-   * [Data_entry_ Data Entry for ]
+ * [Means_of_propulsion Means of propulsion]
+   * [Data_entry_Means_of_propulsion Data Entry for Means of propulsion]
 
- * [Hull material]
-   * [Data_entry_ Data Entry for ]
+ * [Hull_material Hull material]
+   * [Data_entry_Hull_material Data Entry for Hull material]
 
- * [Ship ownership]
-   * [Data_entry_ Data Entry for ]
+ * [Ship_ownership Ship ownership]
+   * [Data_entry_Ship_ownership Data Entry for Ship ownership]
 
- * [Ship owner]
-   * [Data_entry_ Data Entry for ]
+ * [Ship_owner Ship owner]
+   * [Data_entry_Ship_owner Data Entry for Ship owner]

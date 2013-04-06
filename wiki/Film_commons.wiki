@@ -1,17 +1,5 @@
-#summary One-sentence summary of this page.
+* [Film^d Film]
 
-= Introduction =
-
-Add your content here.
-
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
-Film	
 Film performance	
 Film rating	
 Film director	
@@ -60,4 +48,3 @@ Person or entity appearing in film
 Film song relationship	
 Film song performer	
 Film song	
-

@@ -1,25 +1,23 @@
-#summary One-sentence summary of this page.
+#summary Different types in Computers Commons.
 
-= Introduction =
+= Computers Commons =
+This is computers commons
 
-Add your content here.
+=Types=
+Here are the following types in Computers Commons
 
 
-= Details =
+   * [Data_entry_ Data Entry for ]
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
-Operating System	1/7/2007	robert	 566
-Operating System Developer	1/7/2007	robert	 110
-Computer Processor	1/8/2007	robert	 292
-Processor Manufacturer	1/8/2007	robert	 52
-Computer Manufacturer/Brand	1/8/2007	robert	 100
-Computer Product Line	1/8/2007	robert	 8
-Computer	1/8/2007	robert	 648
-Computer Designer	1/10/2007	robert	 45
-Programming Language	1/11/2007	robert	 1,180
+ * [Operating System	1/7/2007	robert	 566
+ * [Operating System Developer	1/7/2007	robert	 110
+ * [Computer Processor	1/8/2007	robert	 292
+ * [Processor Manufacturer	1/8/2007	robert	 52
+ * [Computer Manufacturer/Brand	1/8/2007	robert	 100
+ * [Computer Product Line	1/8/2007	robert	 8
+ * [Computer	1/8/2007	robert	 648
+ * [Computer Designer	1/10/2007	robert	 45
+ * [Programming Language	1/11/2007	robert	 1,180
 Programming Language Paradigm	
 Programming Language Designer	
 OS Compatibility	1/14/2007	robert	 147
@@ -42,4 +40,3 @@ HTML Layout Engine
 Computer Emulator	
 Computer Peripheral	
 Computer Peripheral Class	
-

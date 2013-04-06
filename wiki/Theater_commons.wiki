@@ -1,35 +1,75 @@
-#summary One-sentence summary of this page.
+#summary Different types in Theater Commons.
 
-= Introduction =
+= Theater Commons =
+This is  theater commons
 
-Add your content here.
+=Types=
+Here are the following types in Theater Commons
 
 
-= Details =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
-Play	
-Theatrical Composer	
-Theatrical Lyricist	
-Theatrical Orchestrator	
-Theater Production	
-Theater Company	
-Theater Producer
-Theater Director	
-Theater Choreographer	
-Musical Director	
-Theater Designer Gig	
-Theater Designer	
-Theater Production Staff Gig
-Theater Production Staffmember	
-Theater Designer Role	
-Theater Production Staff Role	
-Theater Actor	
-Theater Role	
-Theater Character	
-Theater	
-Theater Genre	
-Musical Soundtrack	
+ * [Play Play]
+   * [Data_entry_Play Data Entry for Play]
+
+ * [Theatrical_Composer Theatrical Composer]
+   * [Data_entry_Theatrical_Composer Data Entry for Theatrical Composer]
+
+ * [Theatrical_Lyricist Theatrical Lyricist]
+   * [Data_entry_Theatrical_Lyricist Data Entry for Theatrical Lyricist]
+
+ * [Theatrical_Orchestrator Theatrical Orchestrator]
+   * [Data_entry_Theatrical_Orchestrator Data Entry for Theatrical Orchestrator]
+
+ * [Theater_Production Theater Production]
+   * [Data_entry_Theater_Production Data Entry for Theater Production]
+
+ * [Theater_Company Theater Company]
+   * [Data_entry_Theater_Company Data Entry for Theater Company]
+
+ * [Theater_Producer Theater Producer]
+   * [Data_entry_Theater_Producer Data Entry for Theater Producer]
+
+ * [Theater_Director Theater Director]
+   * [Data_entry_Theater_Director Data Entry for Theater Director]
+
+ * [Theater_Choreographer Theater Choreographer]
+   * [Data_entry_Theater_Choreographer Data Entry for Theater Choreographer]
+
+ * [Musical Director Musical Director]
+   * [Data_entry_Musical Director Data Entry for Musical Director]
+
+ * [Theater_Designer_Gig Theater Designer Gig]
+   * [Data_entry_Theater_Designer_Gig Data Entry for Theater Designer Gig]
+
+ * [Theater_Designer Theater Designer]
+   * [Data_entry_Theater_Designer Data Entry for Theater Designer]
+
+ * [Theater_Production_Staff_Gig Theater Production Staff Gig]
+   * [Data_entry_Theater_Production_Staff_Gig Data Entry for Theater Production Staff Gig]
+
+ * [Theater_Production_Staffmember Theater Production Staffmember]
+   * [Data_entry_Theater_Production_Staffmember Data Entry for Theater Production Staffmember]
+
+ * [Theater_Designer_Role Theater Designer Role]
+   * [Data_entry_Theater_Designer_Role Data Entry for Theater Designer Role]
+
+ * [Theater_Production_Staff_Role Theater Production Staff Role]
+   * [Data_entry_Theater_Production_Staff Role Data Entry for Theater Production Staff Role]
+
+ * [Theater_Actor Theater Actor]
+   * [Data_entry_Theater_Actor Data Entry for Theater Actor]
+
+ * [Theater_Role Theater Role]
+   * [Data_entry_Theater_Role Data Entry for Theater Role	]
+
+ * [Theater_Character Theater Character]
+   * [Data_entry_Theater_Character Data Entry for Theater Character]
+
+ * [Theater Theater]
+   * [Data_entry_Theater Data Entry for Theater]
+
+ * [Theater_Genre Theater Genre]
+   * [Data_entry_Theater_Genre Data Entry for Theater Genre]
+
+ * [Musical_Soundtrack Musical Soundtrack]
+   * [Data_entry_Musical_Soundtrack Data Entry for Musical Soundtrack]

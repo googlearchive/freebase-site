@@ -1,5 +1,5 @@
  * [https://code.google.com/p/freebase-site/source/browse/wiki/american_football/football_player.wiki film]
- * [Film performance]
+ * [http://freebase-site.googlecode.com/svn/wiki/american_football/football_player.wiki Film performance]
  * [Film rating]
  * [Film director]
  * [Film producer]

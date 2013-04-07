@@ -1,37 +1,80 @@
-#summary One-sentence summary of this page.
+#summary Different types in Commons.
 
-= Introduction =
+= Commons =
+This is  commons
 
-Add your content here.
+=Types=
+Here are the following types in Commons
 
 
-= Details =
+ * [Football world cup Football world cup]
+   * [Data_entry_ Data Entry for ]
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
-[Football world cup]	
-[Football player]	
-[Football team]	
-[Football team manager]	
-[Football Organization]	
-[Football League]	
-[Football Competition]	
-[Football Position]	
-[Football Roster Position]	
-[Football Match]	
-[Football Goal]	
-[Football Player Match Participation]	 
-[Football Disciplinary Action]	
-[Football Disciplinary Punishment]		 
-[Football Pitch]	
-[Football Team Management Tenure]	
-[Football Team Manager Match Participation]	
-[Football Referee]	
-[Football Player Substitution]
-[Football Player Transfer]	
-[Football Player Loan]	
-[Football League Participation]	
-[Football League Season]	
-[Football League System]
+ * [Football player]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Football team]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Football team manager]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Football Organization]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Football League]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Football Competition]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Football Position]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Football Roster Position]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Football Match]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Football Goal]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Football Player Match Participation]	 
+   * [Data_entry_ Data Entry for ]
+
+ * [Football Disciplinary Action]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Football Disciplinary Punishment]		 
+   * [Data_entry_ Data Entry for ]
+
+ * [Football Pitch]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Football Team Management Tenure]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Football Team Manager Match Participation]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Football Referee]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Football Player Substitution]
+   * [Data_entry_ Data Entry for ]
+
+ * [Football Player Transfer]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Football Player Loan]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Football League Participation]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Football League Season]	
+   * [Data_entry_ Data Entry for ]
+
+ * [Football League System]
+   * [Data_entry_ Data Entry for ]

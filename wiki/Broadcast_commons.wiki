@@ -16,7 +16,7 @@ Here are the following types in Commons
    * [Data_entry_TV_station_owner Data Entry for TV station owner]
 
  * [TV_signal_type TV signal type]
-   * [Data_entry_TV signal type Data Entry for TV signal type]
+   * [Data_entry_TV_signal type Data Entry for TV signal type]
 
  * [Radio_Station Radio Station]
    * [Data_entry_Radio_Station Data Entry for Radio Station]

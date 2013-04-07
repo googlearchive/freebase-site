@@ -1,23 +1,32 @@
-#summary One-sentence summary of this page.
+#summary Different types in Ice Hockey Commons.
 
-= Introduction =
+= Ice Hockey Commons =
+This is ice hockey commons
 
-Add your content here.
-
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+=Types=
+Here are the following types in Ice Hockey Commons
 
 
-Ice hockey team	
-Ice hockey player	
-Ice hockey division	
-Ice hockey conference
-Ice hockey coach
-Ice hockey position	
-Ice hockey roster position
-Ice hockey previous roster position
+ * [Ice_hockey_team Ice hockey team]
+   * [Data_entry_Ice_hockey_team Data Entry for Ice hockey team]
+
+ * [Ice_hockey_player Ice hockey player]
+   * [Data_entry_Ice_hockey_player Data Entry for Ice hockey player]
+
+ * [Ice_hockey_division Ice hockey division]
+   * [Data_entry_Ice_hockey_division Data Entry for Ice hockey division]
+
+ * [Ice_hockey_conference Ice hockey conference]
+   * [Data_entry_Ice_hockey_conference Data Entry for Ice hockey conference]
+
+ * [Ice_hockey_coach Ice hockey coach]
+   * [Data_entry_Ice_hockey_coach Data Entry for Ice hockey coach]
+
+ * [Ice_hockey_position Ice hockey position]
+   * [Data_entry_Ice_hockey_position Data Entry for Ice hockey position]
+
+ * [Ice_hockey_roster_position Ice hockey roster position]
+   * [Data_entry_Ice_hockey_roster_position Data Entry for Ice hockey roster position]
+
+ * [Ice_hockey_previous_roster_position Ice hockey previous roster position]
+   * [Data_entry_Ice_hockey_previous_roster_position Data Entry for Ice hockey previous roster position]

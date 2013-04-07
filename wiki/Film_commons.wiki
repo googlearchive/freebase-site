@@ -48,10 +48,10 @@ Here are the following types in Film Commons
    * [Data_entry_Film_collection Data Entry for Film collection]
 
  * [Film_theorist Film theorist]
-   * [Data_entry_Film theorist Data Entry for Film theorist] 
+   * [Data_entry_Film_theorist Data Entry for Film theorist] 
 
  * [Film_festival Film festival]
-   * [Data_entry_Film festival Data Entry for Film festival]
+   * [Data_entry_Film_festival Data Entry for Film festival]
 
  * [Film_company Film company]
    * [Data_entry_Film_company Data Entry for Film company] 
@@ -84,7 +84,7 @@ Here are the following types in Film Commons
    * [Data_entry_Film_character Data Entry for Film character] 
 
  * [Special_film_performance_type Special film performance type]
-   * [Data_entry_Special film_performance_type Data Entry for Special film performance type]
+   * [Data_entry_Special_film_performance_type Data Entry for Special film performance type]
 
  * [Personal_film_appearance Personal film appearance]
    * [Data_entry_Personal_film_appearance Data Entry for Personal film appearance]
@@ -122,7 +122,7 @@ Here are the following types in Film Commons
  * [Film_festival_sponsorship Film festival sponsorship]
    * [Data_entry_Film_festival_sponsorship Data Entry for Film festival sponsorship]
 
- * [Film festival_sponsor Film festival sponsor]
+ * [Film_festival_sponsor Film festival sponsor]
    * [Data_entry_Film_festival_sponsor Data Entry for Film festival sponsor]
 
  * [Film_festival_focus Film festival focus]
@@ -138,7 +138,7 @@ Here are the following types in Film Commons
    * [Data_entry_Film_production_designer Data Entry for Film production designer]
 
  * [Film_art_director Film art director]
-   * [Data_entry_Film art director Data Entry for Film art director]
+   * [Data_entry_Film_art_director Data Entry for Film art director]
 
  * [Film_set_decorator Film set decorator]
    * [Data_entry_Film_set_decorator Data Entry for Film set decorator]

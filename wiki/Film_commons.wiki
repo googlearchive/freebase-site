@@ -7,8 +7,13 @@ This is film commons
 Here are the following types in Film Commons
 
 
-* [https://code.google.com/p/freebase-site/source/browse/wiki/american_football/football_player.wiki film]
- * [http://freebase-site.googlecode.com/svn/wiki/american_football/football_player.wiki Film performance]
+ * [https://code.google.com/p/freebase-site/source/browse/wiki/american_football/football_player.wiki film]
+ 
+ * [http://freebase-site.googlecode.com/svn/wiki/american_football/football_player.wiki film]
+
+ * [Film Film]
+   * [Data_entry_Film Data Entry for Film] 
+
  * [Film_rating Film rating]
    * [Data_entry_Film_rating Data Entry for Film rating] 
 

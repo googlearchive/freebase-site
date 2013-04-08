@@ -67,5 +67,5 @@ Here are the following types in Travel Commons
  * [Hotel_Brand_Owner Hotel Brand Owner]
    * [Data_entry_Hotel_Brand_Owner Data Entry for Hotel Brand Owner]
 
- * [Hotel Grading Authority Hotel Grading Authority]
+ * [Hotel_Grading_Authority Hotel Grading Authority]
    * [Data_entry_Hotel_Grading_Authority Data Entry for Hotel Grading Authority]

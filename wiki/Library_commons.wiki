@@ -1,18 +1,13 @@
-#summary One-sentence summary of this page.
+#summary Different types in Library Commons.
 
-= Introduction =
+= Library Commons =
+This is library commons
 
-Add your content here.
+=Types=
+Here are the following types in Library Commons
 
+ * [Public_Library Public Library]
+    * [Data_entry_Public_Library Data entry for Public Library]
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
-
- * [Public Library Public Library]
-    * [Data_entry_Public Library Data entry for	
- * [Public Library System Public Library System]
-   * [Data_entry_Public Library System Data Entry for Public Library System]
+ * [Public_Library_System Public Library System]
+   * [Data_entry_Public_Library_System Data Entry for Public Library System]

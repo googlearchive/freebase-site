@@ -1,47 +1,47 @@
-#summary Different types in Commons.
+#summary Different types in Soccer Commons.
 
-= Commons =
-This is  commons
+= Soccer Commons =
+This is soccer commons
 
 =Types=
-Here are the following types in Commons
+Here are the following types in Soccer Commons
 
 
  * [Football world cup Football world cup]
-   * [Data_entry_ Data Entry for ]
+   * [Data_entry_Football world cup Data Entry for Football world cup]
 
- * [Football player]	
-   * [Data_entry_ Data Entry for ]
+ * [Football player Football player]
+   * [Data_entry_Football player Data Entry for Football player]
 
- * [Football team]	
-   * [Data_entry_ Data Entry for ]
+ * [Football team Football team]
+   * [Data_entry_Football team Data Entry for Football team]
 
- * [Football team manager]	
-   * [Data_entry_ Data Entry for ]
+ * [Football team manager Football team manager]
+   * [Data_entry_Football team manager Data Entry for Football team manager]
 
- * [Football Organization]	
-   * [Data_entry_ Data Entry for ]
+ * [Football Organization Football Organization]
+   * [Data_entry_Football Organization Data Entry for Football Organization]
 
- * [Football League]	
-   * [Data_entry_ Data Entry for ]
+ * [Football League Football League]
+   * [Data_entry_Football League Data Entry for Football League]
 
- * [Football Competition]	
-   * [Data_entry_ Data Entry for ]
+ * [Football Competition Football Competition]
+   * [Data_entry_Football Competition Data Entry for Football Competition]
 
- * [Football Position]	
-   * [Data_entry_ Data Entry for ]
+ * [Football Position Football Position]	
+   * [Data_entry_Football Position Data Entry for Football Position]
 
- * [Football Roster Position]	
-   * [Data_entry_ Data Entry for ]
+ * [Football Roster Position Football Roster Position]
+   * [Data_entry_Football Roster Position Data Entry for Football Roster Position]
 
- * [Football Match]	
-   * [Data_entry_ Data Entry for ]
+ * [Football Match Football Match]
+   * [Data_entry_Football Match Data Entry for Football Match]
 
- * [Football Goal]	
-   * [Data_entry_ Data Entry for ]
+ * [Football Goal Football Goal]
+   * [Data_entry_Football Goal Data Entry for Football Goal]
 
- * [Football Player Match Participation]	 
-   * [Data_entry_ Data Entry for ]
+ * [Football Player Match Participation Football Player Match Participation]
+   * [Data_entry_Football Player Match Participation Data Entry for Football Player Match Participation]
 
  * [Football Disciplinary Action]	
    * [Data_entry_ Data Entry for ]

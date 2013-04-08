@@ -10,7 +10,7 @@ Here are the following types in Commons
 
 
 
- * [Artery]
+ * [Artery ]
  * [Muscle]
  * [Surgeon]
  * [Ligament]

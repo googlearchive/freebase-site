@@ -1,22 +1,35 @@
-#summary One-sentence summary of this page.
+#summary Different types in Language Commons.
 
-= Introduction =
+= Language Commons =
+This is language commons
 
-Add your content here.
+=Types=
+Here are the following types in Language Commons
 
 
-= Details =
+ * [Human_Language Human Language]	
+   * [Data_entry_Human_Language Data Entry for Human Language]
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
-Human Language	
-Language Family	
-Language Writing System	
-Language Regulator	
-Language Writing Type	
-Language Creator	
-Conlang type	
-Language Dialect	
-Conlang
+ * [Language_Family Language Family]
+   * [Data_entry_Language_Family Data Entry for Language Family]
+
+ * [Language_Writing_System Language Writing System]
+   * [Data_entry_Language_Writing_System Data Entry for Language Writing System]
+
+ * [Language_Regulator Language Regulator]
+   * [Data_entry_Language_Regulator Data Entry for Language Regulator]
+
+ * [Language_Writing_Type Language Writing Type]
+   * [Data_entry_Language_Writing_Type Data Entry for Language Writing Type]
+
+ * [Language_Creator Language Creator]
+   * [Data_entry_Language_Creator Data Entry for Language Creator]
+
+ * [Conlang_type Conlang type]
+   * [Data_entry_Conlang_type Data Entry for Conlang type]
+
+ * [Language_Dialect Language Dialect]
+   * [Data_entry_Language_Dialect Data Entry for Language Dialect]
+
+ * [Conlang Conlang]
+   * [Data_entry_Conlang Data Entry for Conlang]

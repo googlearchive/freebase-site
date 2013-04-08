@@ -6,22 +6,21 @@ This is  commons
 =Types=
 Here are the following types in Commons
 
- * []
    * [Data_entry_ Data Entry for ]
 
 
 
- * [Artery
- * [Muscle
- * [Surgeon
- * [Ligament
- * [Disease or medical condition
- * [Brain Structure
- * [Hospital
- * [Nerve
- * [Symptom
- * [Drug
- * [Anatomical structure
+ * [Artery]
+ * [Muscle]
+ * [Surgeon]
+ * [Ligament]
+ * [Disease or medical condition]
+ * [Brain Structure]
+ * [Hospital]
+ * [Nerve]
+ * [Symptom]
+ * [Drug]
+ * [Anatomical structure]
  * [Bone]
  * [Cranial nerve]
  * [Vein]

@@ -889,7 +889,10 @@ function init_rules(lib) {
                              script:"error/deprecated_path.template"},
     {prefix:"/experimental", app:"lib",
                              script:"error/deprecated_path.template"},
-
+    {prefix:"/feed",         app:"lib",
+                             script:"error/deprecated_path.template"},
+    {prefix:"/private",      app:"lib",
+                             script:"error/deprecated_path.template"},
 
 
     // Review queue

@@ -7,36 +7,95 @@ This is computers commons
 Here are the following types in Computers Commons
 
 
-   * [Data_entry_ Data Entry for ]
+ * [Operating_System Operating System]
+   * [Data_entry_Operating_System Data Entry for Operating System]
 
- * [Operating System	1/7/2007	robert	 566
- * [Operating System Developer	1/7/2007	robert	 110
- * [Computer Processor	1/8/2007	robert	 292
- * [Processor Manufacturer	1/8/2007	robert	 52
- * [Computer Manufacturer/Brand	1/8/2007	robert	 100
- * [Computer Product Line	1/8/2007	robert	 8
- * [Computer	1/8/2007	robert	 648
- * [Computer Designer	1/10/2007	robert	 45
- * [Programming Language	1/11/2007	robert	 1,180
-Programming Language Paradigm	
-Programming Language Designer	
-OS Compatibility	1/14/2007	robert	 147
-Programming Language Developer	1/16/2007	robert	 52
-Software Compatibility	1/17/2007	robert	 8,365
-Software	1/17/2007	robert	 8,789
-Software Developer	
-Software License	
-Software Genre	
-Content License	
-Computer Scientist	
-Protocol Provider	
-Internet Protocol	
-File Format	
-File Format Genre	
-Computing Platform	
-Web browser	
-Web browser extension	
-HTML Layout Engine	
-Computer Emulator	
-Computer Peripheral	
-Computer Peripheral Class	
+ * [Operating_System_Developer Operating System Developer]
+   * [Data_entry_Operating_System_Developer Data Entry for Operating System Developer]
+
+ * [Computer_Processor Computer Processor]
+   * [Data_entry_Computer_Processor Data Entry for Computer Processor ]
+
+ * [Processor_Manufacturer Processor Manufacturer]	
+   * [Data_entry_Processor_Manufacturer Data Entry for Processor Manufacturer]
+
+ * [Computer_Manufacturer_Brand Computer Manufacturer/Brand]
+   * [Data_entry_Computer_Manufacturer_Brand Data Entry for Computer Manufacturer/Brand ]
+
+ * [Computer_Product_Line Computer Product Line]
+   * [Data_entry_Computer_Product_Line Data Entry for Computer Product Line ]
+
+ * [Computer Computer]
+   * [Data_entry_Computer Data Entry for Computer]
+
+ * [Computer_Designer Computer Designer]
+   * [Data_entry_Computer_Designer Data Entry for Computer Designer ]	
+
+ * [Programming_Language Programming Language]
+   * [Data_entry_Programming_Language Data Entry for Programming Language]	
+
+ * [Programming_Language_Paradigm Programming Language Paradigm]
+   * [Data_entry_Programming_Language_Paradigm Data Entry for Programming Language Paradigm ]
+
+ * [Programming_Language_Designer Programming Language Designer]
+   * [Data_entry_Programming_Language_Designer Data Entry for Programming Language Designer ]	
+
+ * [OS_Compatibility OS Compatibility]
+   * [Data_entry_OS_Compatibility Data Entry for OS Compatibility ]
+
+ * [Programming_Language_Developer Programming Language Developer]
+   * [Data_entry_Programming_Language Developer Data Entry for Programming Language Developer ]
+
+ * [Software_Compatibility	Software Compatibility]
+   * [Data_entry_Software_Compatibility Data Entry for Software Compatibility]
+
+ * [Software Software]	
+  * [Data_entry_Software Data Entry for Software]
+
+ * [Software_Developer Software Developer]
+   * [Data_entry_Software_Developer Data Entry for Software Developer]
+
+ * [Software_License Software License]
+   * [Data_entry_Software_License Data Entry for Software License]
+
+ * [Software_Genre Software Genre]
+   * [Data_entry_Software_Genre Data Entry for Software Genre]
+
+ * [Content_License Content License]	
+   * [Data_entry_Content_License Data Entry for Content License]
+
+ * [Computer_Scientist Computer Scientist]
+   * [Data_entry_Computer_Scientist Data Entry for Computer Scientist]
+
+ * [Protocol_Provider Protocol Provider]
+   * [Data_entry_Protocol_Provider Data Entry for Protocol Provider]
+
+ * [Internet_Protocol Internet Protocol]
+   * [Data_entry_Internet_Protocol Data Entry for Internet Protocol]
+
+ * [File_Format File Format]
+   * [Data_entry_File_Format Data Entry for File Format]
+
+ * [File_Format_Genre File Format Genre ]
+   * [Data_entry_File_Format_Genre Data Entry for File Format Genre]
+
+ * [Computing_Platform Computing Platform]
+   * [Data_entry_Computing_Platform Data Entry for Computing Platform]
+
+ * [Web_browser Web browser]
+   * [Data_entry_Web_browser Data Entry for Web browser]
+
+ * [Web_browser_extension Web browser extension]	
+   * [Data_entry_Web_browser_extension Data Entry for Web browser extension]
+
+ * [HTML_Layout_Engine HTML Layout Engine]
+   * [Data_entry_HTML_Layout_Engine Data Entry for HTML Layout Engine]
+
+ * [Computer_Emulator Computer Emulator]
+   * [Data_entry_Computer_Emulator Data Entry for Computer Emulator]
+
+ * [Computer_Peripheral Computer Peripheral]
+   * [Data_entry_Computer_Peripheral Data Entry for Computer Peripheral]
+
+ * [Computer_Peripheral_Class Computer Peripheral Class]
+   * [Data_entry_Computer_Peripheral_Class Data Entry for Computer Peripheral Class]

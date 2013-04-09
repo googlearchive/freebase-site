@@ -35,7 +35,7 @@ var freebase = acre.require("lib/promise/apis").freebase;
 var validators = acre.require("lib/validator/validators.sjs");
 
 var SPEC = {
-  
+
   cache_policy: "nocache",
 
   validate: function(params) {
@@ -49,7 +49,7 @@ var SPEC = {
 
   run: function(provider, onsucceed, onfail) {
     var freebase_provider = h.account_provider(provider);
-    
+
     var success = acre.oauth.get_authorization(freebase_provider);
     if (!success) {
       h.clear_account_cookie();
@@ -85,7 +85,10 @@ var SPEC = {
           h.clear_account_cookie();
           console.warn('Authorization credentials are not correct', failure);
         } else if (failure instanceof h.UnregisteredError) {
-          return {template: 'register_template.mjt'};
+          return {
+            template: 'register_template.mjt',
+            access: acre.cache.request.get("access") || ""
+          };
         }
         h.temporary_redirect(onfail, false);
       });

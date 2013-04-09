@@ -39,7 +39,9 @@ var SPEC = {
   template: 'register_template.mjt',
 
   run: function() {
-    return {};
+    return {
+      access: acre.cache.request.get("access") || ""
+    };
   }
 };
 

@@ -46,34 +46,48 @@
   <acre:script>
     // allow account creation only on '.freebase.com'
     var fb_site = h.endsWith(acre.request.server_name, ".freebase.com");
+    var readonly = c.access == 'readonly';
   </acre:script>
   <div id="page-content">
     <div id="registration" class="module">
       <div id="register-accordion">
-        <acre:block if="fb_site">
+        <acre:block if="fb_site && !readonly">
           ${create_account_pane()}
           ${claim_account_pane()}
         </acre:block>
         <acre:block else="">
-          ${disabled_creation_pane()}
+          ${disabled_creation_pane(readonly)}
         </acre:block>
       </div>
     </div>
   </div>
 </acre:block>
 
-<acre:block def="disabled_creation_pane()">
+<acre:block def="disabled_creation_pane(readonly)">
   <h2 class="current">Account Creation Disabled</h2>
-  <div class="pane">
-    <p>
-      <i>
-        You cannot register a new account or connect to a freebase account on
-        this site. Please visit
-        <a href="https://dev.freebase.com/account/signin">dev.freebase.com</a>
-        to do so.
-      </i>
-    </p>
-  </div>
+  <acre:block if="readonly">
+    <div class="pane">
+      <p>
+        <i>
+          Unfortunately, <strong>Freebase is currently in read-only
+          mode</strong> and new user registration is disabled.
+          Sorry for the inconvenience, please try again later.
+        </i>
+      </p>
+    </div>
+  </acre:block>
+  <acre:block else="">
+    <div class="pane">
+      <p>
+        <i>
+          You cannot register a new account or connect to a freebase account on
+          this site. Please visit
+          <a href="https://www.freebase.com/account/signin">www.freebase.com</a>
+          to do so.
+        </i>
+      </p>
+    </div>
+  </acre:block>
 </acre:block>
 
 <acre:block def="create_account_pane()">

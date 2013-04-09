@@ -6,6 +6,7 @@ This is event commons
 =Types=
 Here are the following types in Event Commons
 
+ * [Event-commons Page]
   
  * [Disaster Disaster]
    * [Data_entry_Disaster Data Entry for Disaster]

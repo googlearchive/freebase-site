@@ -1,3 +1,0 @@
-[
-    "discuss/js/discuss.js"
-]

@@ -1,0 +1,7 @@
+<acre:script>
+  var c = this.exports.c = {};
+</acre:script>
+
+<acre:block def="content_body()">
+  Hello ${c.name}!
+</acre:block>

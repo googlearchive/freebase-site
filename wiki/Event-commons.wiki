@@ -1,0 +1,59 @@
+#summary Different types in Event Commons.
+
+= Event Commons =
+This is event commons
+
+=Types=
+Here are the following types in Event Commons
+
+  
+ * [Disaster Disaster]
+   * [Data_entry_Disaster Data Entry for Disaster]
+
+ * [Disaster_type Disaster type]
+   * [Data_entry_Disaster_type Data Entry for Disaster type]
+
+ * [Disaster_victim Disaster victim]
+   * [Data_entry_Disaster_victim Data Entry for Disaster victim]
+
+ * [Disaster_survivor Disaster survivor]
+   * [Data_entry_Disaster_survivor Data Entry for Disaster survivor]
+
+ * [Disaster_affected_structure Disaster-affected structure]
+   * [Data_entry_Disaster_affected_structure Data Entry for Disaster-affected structure]
+
+ * [Event Event]
+   * [Data_entry_Event Data Entry for Event]
+
+ * [Promoted_event Promoted event]
+   * [Data_entry_Promoted_event Data Entry for Promoted event]
+
+ * [Event_producer Event producer]
+   * [Data_entry_Event_producer Data Entry for Event producer]
+
+ * [Produced_event Produced event]
+   * [Data_entry_Produced_event Data Entry for Produced event]
+
+ * [Event_promoter Event promoter]
+   * [Data_entry_Event_promoter Data Entry for Event promoter]
+
+ * [Presented_work Presented work]
+   * [Data_entry_Presented_work Data Entry for Presented work]
+
+ * [Speech_or_presentation Speech or presentation]
+   * [Data_entry_Speech_or_presentation Data Entry for Speech or presentation]
+
+ * [Type_of_public_presentation Type of public presentation]
+   * [Data_entry_Type_of_public_presentation Data Entry for Type of public presentation]
+
+ * [Public_speaker Public speaker]
+   * [Data_entry_Public_speaker Data Entry for Public speaker]
+
+ * [Public_speaking_event Public speaking event]
+   * [Data_entry_Public_speaking_event Data Entry for Public speaking event]
+
+ * [Speech_topic Speech topic]
+   * [Data_entry_Speech_topic Data Entry for Speech topic]
+
+ * [Recurring_event Recurring event]
+   * [Data_entry_Recurring_event Data Entry for Recurring event]

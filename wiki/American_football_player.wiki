@@ -18,20 +18,6 @@ An American football player is an individual who participates in games of Americ
  * Other kinds of footballers we don't currently have types for such as Canadian football players, Australian rules football players and Gaelic football players (e.g. Greg Battle, Jonathan Brown, Sean Purcell)
   * Use the Athlete type for these
 
-== Properties ==
- * Current team
- * Former teams
- * Position(s)
- * Current Team
- * Former Teams
- * Passing
- * Rushing
- * Receiving
- * Games
- * databaseFootball.com ID
- * Football Almanac ID
- * footballdb ID
- * 40-yard dash time
 
 == Identity Criterion==
  * [American_football_player_id_criteria American Football Player Identity Criteria]

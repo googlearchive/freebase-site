@@ -1,1 +1,0 @@
-["propbox/form.omf.js", "schema/js/schema.js"]

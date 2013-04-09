@@ -1,33 +1,68 @@
-#summary One-sentence summary of this page.
+#summary Different types in Meteorology Commons.
 
-= Introduction =
+= Meteorology Commons =
+This is meteorology commons
 
-Add your content here.
+=Types=
+Here are the following types in Meteorology Commons
 
 
-= Details =
+ * [Armed Force Armed Force]
+   * [Data_entry_Armed Force Data Entry for Armed Force]
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
-Armed Force		 
-Military Person	
-Military Conflict	
-Casualties	
-Military Combatant	
-Casualties Type	
-Military Command	
-Military Commander	
-Force Strength	
-Military Resource	
-Military Theater	
-Military Service	
-Military rank	
-Military combatant group	
-Military posting	
-Military post	
-Military post use	
-Military unit	
-Military unit size designation	
-Military unit place of origin	
+ * [Military_Person Military Person]
+   * [Data_entry_Military_Person Data Entry for Military Person]
+
+ * [Military_Conflict Military Conflict]
+   * [Data_entry_Military_Conflict Data Entry for Military Conflict]
+
+ * [Casualties Casualties]
+   * [Data_entry_Casualties Data Entry for Casualties]
+
+ * [Military_Combatant Military Combatant]
+   * [Data_entry_Military_Combatant Data Entry for Military Combatant]
+
+ * [Casualties_Type Casualties Type]
+   * [Data_entry_Casualties_Type Data Entry for Casualties Type]
+
+ * [Military_Command Military Command]
+   * [Data_entry_Military_Command Data Entry for Military Command]
+
+ * [Military_Commander Military Commander]
+   * [Data_entry_Military_Commander Data Entry for Military Commander]
+
+ * [Force_Strength Force Strength]
+   * [Data_entry_Force_Strength Data Entry for Force Strength]
+
+ * [Military_Resource Military Resource]
+   * [Data_entry_Military_Resource Data Entry for Military Resource]
+
+ * [Military_Theater Military Theater]
+   * [Data_entry_Military_Theater Data Entry for Military Theater]
+
+ * [Military_Service Military Service]
+   * [Data_entry_Military_Service Data Entry for Military Service]
+
+ * [Military_rank Military rank]
+   * [Data_entry_Military_rank Data Entry for Military rank]
+
+ * [Military_combatant_group Military combatant group]
+   * [Data_entry_Military_combatant_group Data Entry for Military combatant group]
+
+ * [Military_posting Military posting]
+   * [Data_entry_Military_posting Data Entry for Military posting]
+
+ * [Military_post Military post]
+   * [Data_entry_Military_post Data Entry for Military post]
+
+ * [Military_post_use Military post use]
+   * [Data_entry_Military_post_use Data Entry for Military post use]
+
+ * [Military_unit Military unit]
+   * [Data_entry_Military_unit Data Entry for Military unit]
+
+ * [Military_unit_size_designation Military unit size designation]
+   * [Data_entry_Military_unit_size_designation Data Entry for Military unit size designation]
+
+ * [Military_unit_place_of_origin Military unit place of origin]
+   * [Data_entry_Military_unit_place_of_origin Data Entry for Military unit place of origin]

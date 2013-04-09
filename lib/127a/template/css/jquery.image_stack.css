@@ -1,0 +1,22 @@
+.image-stack {
+  position: relative;
+  text-align: center;
+  min-width: 75px;
+  min-height: 75px;
+  .transition(all, 0.1s, ease-in-out, 0.1s);
+}
+
+.image-stack .img-stack-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  .transition(all, 0.2s, ease-in-out, 0.1s);
+}
+
+.img-stack-item img {
+  display: inline-block;
+  padding: 3px;
+  background: #fff;
+  .transition;
+  .box_shadow(1px,1px,1px, #a1a2a3);
+}

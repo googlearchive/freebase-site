@@ -504,6 +504,10 @@
     var lock = prop_structure.authorities == null &&
         prop_structure.requires_permission === true;
     var is_blob = (ect === "/common/document" || ect === "/common/image");
+
+    // HACK: We allow adding new "lang values" on text even if
+    // the property is unique
+    var is_text = ect === "/type/text";
   </acre:script>
   <span class="wrapper">
     <ul class="outer-menu nicemenu">
@@ -512,8 +516,8 @@
           <a href="javascript:void(0)" class="more-action"></a>
         </span>
         <ul class="row-menu submenu">
-          <acre:block if="! (ps.has_status || lock || is_blob)">
-            <li acre:if="ps.unique_edit" class="row-menu-item">
+          <acre:block if="! (ps.has_status || lock || is_blob ) || is_text">
+            <li acre:if="ps.unique_edit && !is_text" class="row-menu-item">
               <a href="#" onclick="return propbox.prop_edit(this, ${prop_structure.unique});">${EDIT_VALUE}</a>
             </li>
             <li acre:else="" class="row-menu-item" >

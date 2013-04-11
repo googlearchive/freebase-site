@@ -261,7 +261,9 @@
       </a>
       <a title="${acre.request.script.path}" href="/appeditor#!path=${acre.request.script.path}" id="sourcelink">${_("View Source")}</a>
       &nbsp;
-      <a href="#" onclick="window.location.reload(true); return false;" id="cachelink">${_("Clear Cache")}</a>
+      <a href="#" onclick="fb.touch_and_reload();" id="cachelink">
+        ${_("Clear Cache")}
+      </a>
     </div>
     <acre:block if="exports.footer_nav">
       ${exports.footer_nav()}

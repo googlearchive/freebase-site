@@ -953,6 +953,14 @@
      return $.ajax(mqlread_options);
    };
 
+  // Make AJAX request to /acre/touch to set fb-dateline cookie
+  // and then reload page
+  fb.touch_and_reload = function() {
+    $.ajax({url: "/acre/touch"}).done(function(){
+      window.location.reload(true);
+    });
+    return false;
+  };
 
   /**
    * init topic link hover

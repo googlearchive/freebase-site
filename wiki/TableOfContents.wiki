@@ -3,7 +3,7 @@
   * Freebase Commons
     * *A*
       * [american_football  American Football]
-      * [Architecture_commons  Architecture]
+      * [architecture  Architecture]
       * [Astronomy_commons  Astronomy]
       * [Aviations_commons  Aviations]
       * [Awards_commons  Awards]

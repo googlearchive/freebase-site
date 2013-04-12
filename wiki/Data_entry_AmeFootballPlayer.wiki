@@ -1,7 +1,0 @@
-#summary Entering American Football Player
-
-= Entering American Football Player =
-
-content.
-
-== Details ==

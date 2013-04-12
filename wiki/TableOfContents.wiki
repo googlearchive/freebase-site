@@ -3,9 +3,11 @@
   * Freebase Commons
     * *A*
       * [american_football  American Football]
+      * [amusement_parks Amusement Parks]
       * [architecture  Architecture]
-      * [Astronomy_commons  Astronomy]
-      * [Aviations_commons  Aviations]
+      * [Astronomy Astronomy]
+      * [automotive Automotive]
+      * [Aviation  Aviation]
       * [Awards_commons  Awards]
     * *B*
       * [Baseball_commons   Baseball]

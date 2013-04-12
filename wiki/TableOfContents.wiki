@@ -22,7 +22,7 @@
     * *C*
       * [celebrities Celebrities]
       * [chemistry Chemistry]
-      * [comics_books Comics]
+      * [comic_books Comics]
       * [computer Computers]
       * [conferences Conferences and Conventions]
       * [cricket Cricket]
@@ -36,7 +36,7 @@
     * *F*
       * [fashion Fashion Clothing and Textiles]
       * [fictional_universe Fictional universes]
-      * [Film Film]
+      * [film Film]
       * [food Food and Drink]
     * *G*
       * [games Games]

@@ -7,73 +7,72 @@ This is american football commons
 Here are the following types in American Football Commons
 
  * [american_football__football_player American Football Player]
-   * [Data_entry_AmeFootballPlayer Data Entry for American Football Player]
 
  * [american_football8super_bowl Super Bowl]
-   * [Data_entry_SuperBowl Data Entry for Super Bowl]
+  
 
  * [American_football_head_coach American football head coach] 
-   * [Data_entry_American_football_head_coach Data Entry for American football head coach]
+ 
 
  * [American_football_team American football team]
-   * [Data_entry_American_football_team Data Entry for American football team]
+  
 
  * [American_football_division American football division]
-   * [Data_entry_American_football_division Data Entry for American football division]
+  
 
  * [American_football_conference American football conference]
-   * [Data_entry_American_football_conference Data Entry for American football conference]
+ 
 
  * [American_football_position American football position]
-   * [Data_entry_American_football_position Data Entry for American football position]
+   
 
  * [American_football_roster_position American football roster position]
-   * [Data_entry_American_football_roster_position Data Entry for American football roster position]
+   
 
  * [American_football_historical_roster_position American football historical roster position]
-   * [Data_entry_American_football_historical_roster_position Data Entry for American football historical roster position]
+  
 
  * [American_football_historical_coach_position American football historical coach position]
-   * [Data_entry_American_football_historical_coach_position Data Entry for American football historical coach position]
+   
 
  * [American_football_coach_position American football coach position]
-   * [Data_entry_American_football_coach_position Data Entry for American football coach position]
+ 
 
  * [Player_Receiving_Statistics Player Receiving Statistics]
-   * [Data_entry_Player_Receiving_Statistics Data Entry for Player Receiving Statistics]
+   
  
  * [Player_Rushing_Statistics Player Rushing Statistics]
-   * [Data_entry_Player_Rushing_Statistics Data Entry for Player Rushing Statistics]
+  
 
  * [Player_Passing_Statistics Player Passing Statistics]
-   * [Data_entry_Player_Passing_Statistics Data Entry for Player Passing Statistics]
+   
 
  * [American_football_game American football game]
-   * [Data_entry_American_football_game Data Entry for American football game]
+   
 
  * [Game_Passing_Statistics Game Passing Statistics]
-   * [Data_entry_Game_Passing_Statistics Data Entry for Game Passing Statistics]
+   
 
  * [Game_Rushing_Statistics Game Rushing Statistics]
-   * [Data_entry_Game_Rushing_Statistics Data Entry for Game Rushing Statistics]
+   
 
  * [Game_Receiving_Statistics Game Receiving Statistics]
-   * [Data_entry_Game_Receiving_Statistics Data Entry for Game Receiving Statistics]
+  
 
  * [American_football_game_score American football game score]
-   * [Data_entry_American_football_game_score Data Entry for American football game score]
+  
 
  * [Scoreboard_Quarter Scoreboard Quarter]
-   * [Data_entry_Scoreboard_Quarter Data Entry for Scoreboard Quarter]
+   
 
  * [Football_Scoring_Event Football Scoring Event]
-   * [Data_entry_Football_Scoring_Event Data Entry for Football Scoring Event]
+ 
 
  * [NFL_Game NFL Game]
-   * [Data_entry_NFL_Game Data Entry for NFL Game]
+   
 
  * [Player_Game_Statistics Player Game Statistics]
-   * [Data_entry_Player_Game_Statistics Data Entry for Player Game Statistics]
+   
 
  * [Fortyyard_dash_time Forty-yard dash time]
-   * [Data_entry_Fortyyard_dash_time Data Entry for Forty-yard dash time]
+   

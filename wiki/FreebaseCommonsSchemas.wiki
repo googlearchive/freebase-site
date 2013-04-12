@@ -3,104 +3,114 @@
 = Freebase Commons Schemas Categories=
 This wiki contains documentation for freebase commons schemas. There are currently 68 Freebase commons schemas listed here. Follow the links to navigate about each schema, their types, properties and identity criteria.
 
- * *A*
-   * [American_Football_commons  American Football commons]
-   * [Architecture_commons  Architecture commons]
-   * [Astronomy_commons  Astronomy commons]
-   * [Aviation_commons  Aviations commons]
-   * [Awards_commons  Awards commons]
-  
-  * *B*
-   * [Baseball_commons   Baseball commons]
-   * [Bicycles_commons   Bicycles commons]
-   * [Biology_commons   Biology commons]
-   * [Boats_commons   Boats commons]
-   * [Book_commons   Book Commons]
-   * [Broadcast_commons   Broadcast commons]
-   * [Business_Commons  Business Commons]
+   * *A*
+      * [american_football  American Football]
+      * [amusement_parks Amusement Parks]
+      * [architecture Architecture]
+      * [astronomy Astronomy]
+      * [automotive Automotive]
+      * [aviation Aviation]
+      * [awards Awards]
 
-  * *C*
-   * [Celebrities_commons   Celebrities commons]
-   * [Chemistry_commons   Chemistry commons]
-   * [Comics_commons   Comics commons]
-   * [Computers_commons   Computers commons]
-   * [Conferences_commons   Conferences commons]
-   * [Cricket_commons   Cricket commons]
+    * *B*
+      * [baseball Baseball]
+      * [basketball Basketball]
+      * [bicycles Bicycles]
+      * [biology Biology]
+      * [boats Boats]
+      * [book Books]
+      * [boxing Boxing]
+      * [broadcast Broadcast]
+      * [business Business]
 
-  * *D*
-   * [Digicams_commons   Digicams commons]
+    * *C*
+      * [celebrities Celebrities]
+      * [chemistry Chemistry]
+      * [comics_books Comics]
+      * [computer Computers]
+      * [conferences Conferences and Conventions]
+      * [cricket Cricket]
 
-  * *E*
-   * [Education_commons   Education commons]
-   * [Engineering_commons   Engineering commons]
-   * [Event_commons   Event commons]
+    * *D*
+      * [digicams Digicams]
 
-  * *F*
-   * [Fashion_commons   Fashion commons]
-   * [Fictional_universes_commons   Fictional universes commons]
-   * [Film_commons   Film commons]
-   * [Food_and_Drink_commons   Food and Drink commons]
-   * [Freebase_commons   Freebase commons]
+    * *E*
+      * [education Education]
+      * [engineering Engineering]
+      * [event Event]
+      * [exhibitions Exhibitions]
 
-  * *G*
-   * [Games_commons   Games commons]
-   * [Geology_commons   Games commons]
-   * [Government_commons   Games commons]
+    * *F*
+      * [fashion Fashion Clothing and Textiles]
+      * [fictional_universe Fictional universes]
+      * [Film Film]
+      * [food Food and Drink]
 
-  * *H*
-   * [Hobbies_commons   Hobbies commons]
+    * *G*
+      * [games Games]
+      * [geology Geology]
+      * [government Government]
 
-  * *I*
-   * [Ice_Hockey_commons   Ice Hockey commons]
-   * [Influence_commons   Influence commons]
-   * [Internet_commons   Internet commons]
+    * *H*
+      * [interests Hobbies and Interests]
 
-  * *L*
-   * [Language_commons Language commons]
-   * [Law_commons  Law commons]
-   * [Library_commons   Library commons]
-   * [Location_commons   Location commons]
+    * *I*
+      * [ice_hockey Ice Hockey]
+      * [influence Influence]
+      * [internet Internet]
 
-  * *M*
-   * [Martial_arts_commons Martial arts commons]
-   * [Measurement_unit_commons Measurement unit commons]
-   * [Media_commons Media commons]
-   * [Medicine_commons Medicine commons]
-   * [Meteorology_commons Meteorology commons]
-   * [Military_commons Military commons]
-   * [Music_commons Music commons]
+    * *L*
+      * [language Language]
+      * [law Law]
+      * [library Library]
+      * [location Location]
 
-  * *O*
-   * [Olympics_commons Olympics commons]
-   * [Opera_commons Opera commons]
-   * [Organization_commons Organization commons]
+    * *M*
+      * [martial_arts Martial arts]
+      * [measurement_unit Measurement unit]
+      * [media_common Media]
+      * [medicine Medicine]
+      * [meteorology Meteorology]
+      * [military Military]
+      * [music Music]
 
-  * *P*
-   * [People_commons People commons]
-   * [Periodicals_commons Periodicals commons]
-   * [Physical_geography_commons Physical geography commons]
-   * [Projects_commons Projects commons]
-   * [Protected_places_commons Protected places commons]
+    * *O*
+      * [olympics Olympics]
+      * [opera Opera]
+      * [organization Organization]
 
-  * *R*
-   * [Radio_commons Radio commons]
-   * [Rail_commons Rail commons]
-   * [Religion_commons Religion commons]
-   * [Royalty_and_nobility_commons Royalty and nobility commons]
+    * *P*
+      * [people People]
+      * [periodicals Periodicals]
+      * [geography Physical geography]
+      * [physics Physics]
+      * [projects Projects]
+      * [protected_sites Protected Places]
 
-  * *S*
-   * [Soccer_commons Soccer commons]
-   * [Spaceflight_commons Spaceflight commons]
-   * [Sports_commons Sports commons]
+    * *R*
+      * [radio Radio]
+      * [rail Rail]
+      * [religion Religion]
+      * [royalty Royalty and Nobility]
 
-  * *T*
-   * [TV_commons TV commons]
-   * [Tennis_commons Tennis commons]
-   * [Theater_commons Theater commons]
-   * [Time_commons Time commons]
-   * [Transportation_commons Transportation commons]
-   * [Travel_commons Travel commons]
+    * *S*
+      * [skiing Skiing]
+      * [soccer Soccer]
+      * [spaceflight Spaceflight]
+      * [sports Sports]
+      * [symbols Symbols]
+
+    * *T*
+      * [tv TV]
+      * [tennis Tennis]
+      * [theater Theater]
+      * [time Time]
+      * [transportation Transportation]
+      * [travel Travel]
 
   * *V*
-   * [Video_Games_commons Video Games commons]
-   * [Visual_arts_commons Visual arts commons]
+   * [cvg Video Games]
+   * [visual_art Visual art]
+
+  * *Z*
+   * [zoos Zoos and Aquariums]

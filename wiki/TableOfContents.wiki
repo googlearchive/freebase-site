@@ -11,7 +11,7 @@
       * [awards Awards]
     * *B*
       * [baseball Baseball]
-      * [basketball Basketball
+      * [basketball Basketball]
       * [bicycles Bicycles]
       * [biology Biology]
       * [boats Boats]

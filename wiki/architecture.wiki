@@ -7,106 +7,106 @@ Content for Architecture Commons
 Here are the following types in architecture commons
 
  * [Skyscraper Skyscraper]
-   * [Data_entry_Skyscraper  Data Entry for Skyscraper]
+  
 
  * [House House]
-   * [Data_entry_House  Data Entry for House]
+  
 
  * [Architect Architect]
-   * [Data_entry_Architect  Data Entry for Architect]
+ 
 
  * [Structure Structure]
-   * [Data_entry_Structure  Data Entry for Structure]
+   
 
  * [Building Building]
-   * [Data_entry_Building  Data Entry for Building]
+   
 
  * [Architecture_firm Architecture firm]
-   * [Data_entry_Architecture_firm  Data Entry for Architecture firm ]
+   
 
  * [Architectural_contractor Architectural contractor]
-   * [Data_entry_Architectural_contractor  Data Entry for Architectural contractor]
+   
 
  * [Architectural_structure_owner Architectural structure owner]
-   * [Data_entry_Architectural_structure_owner  Data Entry for Architectural structure owner]
+   
 
  * [Architecture_firm_partner Architecture firm partner]
-   * [Data_entry_Architecture_firm_partner  Data Entry for Architecture firm partner]
+   
 
  * [Building_complex Building complex]
-   * [Data_entry_Building_complex  Data Entry for Building complex]
+   
 
  * [Tower Tower]
-   * [Data_entry_Tower  Data Entry for Tower]
+   
 
  * [Museum Museum]
-   * [Data_entry_Museum  Data Entry for Museum ]
+  
 
  * [Museum_director Museum director]
-   * [Data_entry_Museum_director  Data Entry for Museum director]
+   
 
   * [Engineer Engineer]
-   * [Data_entry_Engineer  Data Entry for Engineer]
+   
 
   * [Structural_engineer Structural engineer]
-   * [Data_entry_Structural_engineer  Data Entry for Structural engineer]
+  
 
   * [Civil_engineer Civil engineer]
-   * [Data_entry_Civil_engineer  Data Entry for Civil engineer ]
+   
 
   * [Engineering_firm Engineering firm]
-   * [Data_entry_Engineering_firm  Data Entry for Engineering firm]
+  
 
   * [Architectural_style Architectural style]
-   * [Data_entry_Architectural_style  Data Entry for Architectural style]
+   
 
   * [Unrealized_design Unrealized design]
-   * [Data_entry_Unrealized_design  Data Entry for Unrealized design]
+   
 
   * [Building_function Building function]
-   * [Data_entry_Building_function  Data Entry for Building function]
+  
 
   * [Destruction_method Destruction method]
-   * [Data_entry_Destruction_method  Data Entry for Destruction method]
+  
 
   * [Landscape_architect Landscape architect]
-   * [Data_entry_Landscape_architect  Data Entry for Landscape architect]
+   
 
   * [Landscape_project Landscape project]
-   * [Data_entry_Landscape_project  Data Entry for Landscape project]
+   
 
   * [Ownership Ownership]
-   * [Data_entry_Ownership  Data Entry for Ownership]
+   
 
   * [Type_of_museum Type of museum]
-   * [Data_entry_Type_of_museum  Data Entry for Type of museum]
+   
 
   * [Building_Occupant Building Occupant]
-   * [Data_entry_Building_Occupant  Data Entry for Building Occupant]
+   
 
   * [Occupancy Occupancy]
-   * [Data_entry_Occupancy  Data Entry for Occupancy]
+   
 
  * [Light_characteristic Light characteristic]
-   * [Data_entry_Light_characteristic  Data Entry for Light characteristic]
+   
 
  * [Tower_shape Tower shape]
-   * [Data_entry_Tower_shape  Data Entry for Tower shape]
+   
 
  * [Light_color_range Light color range]
-   * [Data_entry_Light_color_range  Data Entry for Light color range]
+   
 
  * [Light_sequence Light sequence]
-   * [Data_entry_Light_sequence  Data Entry for Light sequence]
+   
 
  * [Lighthouse_construction_material Lighthouse construction material]
-   * [Data_entry_Lighthouse_construction_material  Data Entry for Lighthouse construction material]
+
 
  * [Lighthouse Lighthouse]
-   * [Data_entry_Lighthouse  Data Entry for Lighthouse]
+   
 
   * [Light_attributes Light attributes]
-   * [Data_entry_Light_attributes  Data Entry for Light attributes]
+   
 
   * [Venue Venue]
-   * [Data_entry_Venue  Data Entry for Venue]
+   

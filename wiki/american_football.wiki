@@ -8,71 +8,71 @@ Here are the following types in American Football Commons
 
  * [american_football__football_player American Football Player]
 
- * [american_football8super_bowl Super Bowl]
+ * [american_football__super_bowl Super Bowl]
   
 
- * [American_football_head_coach American football head coach] 
+ * [american_football__football_coach American football head coach] 
  
 
- * [American_football_team American football team]
+ * [american_football__football_team American football team]
   
 
- * [American_football_division American football division]
+ * [american_football__football_division American football division]
   
 
- * [American_football_conference American football conference]
+ * [american_football__football_conference American football conference]
  
 
- * [American_football_position American football position]
+ * [american_football__football_position American football position]
    
 
- * [American_football_roster_position American football roster position]
+ * [american_football__football_roster_position American football roster position]
    
 
- * [American_football_historical_roster_position American football historical roster position]
+ * [american_football__football_historical_roster_position American football historical roster position]
   
 
- * [American_football_historical_coach_position American football historical coach position]
+ * [american_football__football_historical_coach_position American football historical coach position]
    
 
- * [American_football_coach_position American football coach position]
+ * [american_football__football_coach_position American football coach position]
  
 
- * [Player_Receiving_Statistics Player Receiving Statistics]
+ * [american_football__player_receiving_statistics Player Receiving Statistics]
    
  
- * [Player_Rushing_Statistics Player Rushing Statistics]
+ * [american_football__player_rushing_statistics Player Rushing Statistics]
   
 
- * [Player_Passing_Statistics Player Passing Statistics]
+ * [american_football__player_passing_statistics Player Passing Statistics]
    
 
- * [American_football_game American football game]
+ * [american_football__football_game American football game]
    
 
- * [Game_Passing_Statistics Game Passing Statistics]
+ * [american_football__game_passing_statistics Game Passing Statistics]
    
 
- * [Game_Rushing_Statistics Game Rushing Statistics]
+ * [american_football__game_rushing_statistics Game Rushing Statistics]
    
 
- * [Game_Receiving_Statistics Game Receiving Statistics]
+ * [american_football__game_receiving_statistics Game Receiving Statistics]
   
 
- * [American_football_game_score American football game score]
+ * [american_football__football_game_score American football game score]
   
 
- * [Scoreboard_Quarter Scoreboard Quarter]
+ * [american_football__scoreboard_quarter Scoreboard Quarter]
    
 
- * [Football_Scoring_Event Football Scoring Event]
+ * [american_football__football_scoring_event Football Scoring Event]
  
 
- * [NFL_Game NFL Game]
+ * [american_football__nfl_game NFL Game]
    
 
- * [Player_Game_Statistics Player Game Statistics]
+ * [american_football__player_game_statistics Player Game Statistics]
    
 
- * [Fortyyard_dash_time Forty-yard dash time]
+ * [american_football__fortyyard_dash_time Forty-yard dash time]
    

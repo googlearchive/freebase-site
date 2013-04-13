@@ -7,26 +7,26 @@ This is awards commons
 Here are the following types in Awards Commons
 
 
- * [Award_Honor Award Honor]
+ * [award__award_honor Award Honor]
    
 
- * [Award_Nomination Award Nomination]
+ * [award__award_nomination Award Nomination]
    
 
- * [Award_Nominated_Work Award-Nominated Work]
+ * [award__award_nominated_work Award-Nominated Work]
    
 
- * [Award_Nominee Award Nominee]
+ * [award__award_nominee Award Nominee]
    
 
- * [Award_Presenting_Organization Award Presenting Organization]
+ * [award__award_presenting_organization Award Presenting Organization]
    
 
- * [Award_Winner Award Winner]
+ * [award__award_winner Award Winner]
    
 
- * [Award_Winner Award Winner]
+ * [award__award_winner Award Winner]
    
 
- * [Award_category Award category]
+ * [award__award_category Award category]
    

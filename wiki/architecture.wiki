@@ -6,107 +6,107 @@ Content for Architecture Commons
 ==Types==
 Here are the following types in architecture commons
 
- * [Skyscraper Skyscraper]
+ * [architecture__skyscraper Skyscraper]
   
 
- * [House House]
+ * [architecture__house House]
   
 
- * [Architect Architect]
+ * [architecture__architect Architect]
  
 
- * [Structure Structure]
+ * [architecture__structure Structure]
    
 
- * [Building Building]
+ * [architecture__building Building]
    
 
- * [Architecture_firm Architecture firm]
+ * [architecture__architecture_firm Architecture firm]
    
 
- * [Architectural_contractor Architectural contractor]
+ * [architecture__architectural_contractor Architectural contractor]
    
 
- * [Architectural_structure_owner Architectural structure owner]
+ * [architecture__architectural_structure_owner Architectural structure owner]
    
 
- * [Architecture_firm_partner Architecture firm partner]
+ * [architecture__architecture_firm_partner Architecture firm partner]
    
 
- * [Building_complex Building complex]
+ * [architecture__building_complex Building complex]
    
 
- * [Tower Tower]
+ * [architecture__tower Tower]
    
 
- * [Museum Museum]
+ * [architecture__museum Museum]
   
 
- * [Museum_director Museum director]
+ * [architecture__museum_director Museum director]
    
 
-  * [Engineer Engineer]
+  * [architecture__engineer Engineer]
    
 
-  * [Structural_engineer Structural engineer]
+  * [architecture__structural_engineer Structural engineer]
   
 
-  * [Civil_engineer Civil engineer]
+  * [architecture__civil_engineer Civil engineer]
    
 
-  * [Engineering_firm Engineering firm]
+  * [architecture__engineering_firm Engineering firm]
   
 
-  * [Architectural_style Architectural style]
+  * [architecture__architectural_style Architectural style]
    
 
-  * [Unrealized_design Unrealized design]
+  * [architecture__unrealized_design Unrealized design]
    
 
-  * [Building_function Building function]
+  * [architecture__building_function Building function]
   
 
-  * [Destruction_method Destruction method]
+  * [architecture__destruction_method Destruction method]
   
 
-  * [Landscape_architect Landscape architect]
+  * [architecture__landscape_architect Landscape architect]
    
 
-  * [Landscape_project Landscape project]
+  * [architecture__landscape_project Landscape project]
    
 
-  * [Ownership Ownership]
+  * [architecture__ownership Ownership]
    
 
-  * [Type_of_museum Type of museum]
+  * [architecture__type_of_museum Type of museum]
    
 
-  * [Building_Occupant Building Occupant]
+  * [architecture__building_occupant Building Occupant]
    
 
-  * [Occupancy Occupancy]
+  * [architecture__occupancy Occupancy]
    
 
- * [Light_characteristic Light characteristic]
+ * [architecture__light_characteristic Light characteristic]
    
 
- * [Tower_shape Tower shape]
+ * [architecture__tower_shape Tower shape]
    
 
- * [Light_color_range Light color range]
+ * [architecture__light_color_range Light color range]
    
 
- * [Light_sequence Light sequence]
+ * [architecture__light_sequence Light sequence]
    
 
- * [Lighthouse_construction_material Lighthouse construction material]
+ * [architecture__lighthouse_construction_material Lighthouse construction material]
 
 
- * [Lighthouse Lighthouse]
+ * [architecture__lighthouse Lighthouse]
    
 
-  * [Light_attributes Light attributes]
+  * [architecture__light_attributes Light attributes]
    
 
-  * [Venue Venue]
+  * [architecture__venue Venue]
    

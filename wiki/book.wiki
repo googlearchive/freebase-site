@@ -1,7 +1,7 @@
-#summary Different types in Book Commons.
+#summary Different types in Books Commons.
 
-= Education Commons =
-This is education commons
+= Books Commons =
+This is bookscommons
 
 = Types =
 

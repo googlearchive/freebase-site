@@ -193,7 +193,7 @@ function executeVote(flagInfo, verifiedJudgements) {
         '/freebase/flag_judgment/item');
 
     if (!flagItems || !flagItems.length) return deferred.rejected(INVALID_ITEM);
-    var promise;
+    var promise, key, execute;
 
     // Is vote agree?
     if (judgementVote.id === agreeVote) {
@@ -209,12 +209,26 @@ function executeVote(flagInfo, verifiedJudgements) {
                 } else {
                     return deferred.rejected(INVALID_ITEM);
                 }
-                promise = freeq.merge_topics(null, id_target, id_source, true);
+                // Get the immortal job id from keystore
+                key = acre.keystore.get('review_queue_merge_job');
+                var review_merge_id = key && key[0];
+                // We don't need to execute immortal job, it is always executed
+                execute = !review_merge_id;
+
+                promise = freeq.merge_topics(review_merge_id, id_target,
+                        id_source, execute);
                 break;
 
             case "delete": // call FreeQ
                 var topic_id = flagItems[0].id;
-                promise = freeq.delete_topic(null, topic_id, true);
+                // Get the immortal job id from keystore
+                key = acre.keystore.get('review_queue_delete_job');
+                var review_delete_id = key && key[0];
+                // We don't need to execute immortal job, it is always executed
+                execute = !review_delete_id;
+
+                promise = freeq.delete_topic(review_delete_id,
+                        topic_id, execute);
                 break;
 
             case "offensive": // we don't do anything for offensive for now

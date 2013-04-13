@@ -8,25 +8,24 @@ Here are the following types in Hobbies and Interests Commons
 
 
  * [Collector Collector]
-   * [Data_entry_Collector Data Entry for Collector]
+   
 
  * [Interest Interest]
-   * [Data_entry_Interest Data Entry for Interest]
-
+   
  * [Collection_activity Collection activity]
-   * [Data_entry_Collection_activity Data Entry for Collection activity]
+   
 
  * [Hobbyist Hobbyist]
-   * [Data_entry_Hobbyist Data Entry for Hobbyist]
+   
 
  * [Collection_category Collection category]
-   * [Data_entry_Collection_category Data Entry for Collection category]
+   
 
  * [Hobby Hobby]
-   * [Data_entry_Hobby Data Entry for Hobby]
+   
 
  * [Collectable_item Collectable item]
-   * [Data_entry_Collectable_item Data Entry for Collectable item]
+  
 
  * [Collection Collection]
-   * [Data_entry_Collection Data Entry for Collection]
+   

@@ -6,80 +6,76 @@ This is aviation commons
 =Types=
 Here are the following types in Aviation Commons
 
- * [Aircraft_model Aircraft model]
+ * [aviation__aircraft_model Aircraft model]
    
 
- * [Aircraft_type Aircraft type]
+ * [aviation__aircraft_type Aircraft type]
    
 
- * [Aircraft_manufacturer Aircraft manufacturer]
+ * [aviation__aircraft_manufacturer Aircraft manufacturer]
    
 
- * [Airline_alliance Airline alliance]
+ * [aviation__airline_alliance Airline alliance]
    
 
- * [Airport Airport]
+ * [aviation__airport Airport]
    
 
- * [Airport_type Airport type]
+ * [aviation__airport_type Airport type]
    
 
- * [Airport_operator Airport operator]
+ * [aviation__airport_operator Airport operator]
    
 
- * [Airport_runway Airport runway]
+ * [aviation__airport_runway Airport runway]
    
 
- * [Airport_runway_surface Airport runway surface]
+ * [aviation__airport_runway_surface Airport runway surface]
    
 	
- * [Cargo_moved_by_year Cargo moved by year]
+ * [aviation__cargo_moved_by_year Cargo moved by year]
    
 
- * [Aviation_incident Aviation incident]
+ * [aviation__aviation_incident Aviation incident]
    
 
- * [Aircraft_accident_type Aircraft accident type]
+ * [aviation__aircraft_accident_type Aircraft accident type]
    
 
- * [IATA_airline_designator IATA airline designator]
+ * [aviation__iata_airline_designator IATA airline designator]
    
 
- * [ICAO_airline_designator ICAO airline designator]
+ * [aviation__icao_airline_designator ICAO airline designator]
    
 
- * [Aircraft_Ownership_Count Aircraft Ownership Count]
+ * [aviation__aircraft_ownership_count Aircraft Ownership Count]
    
 
- * [Aircraft_Owner Aircraft Owner]
+ * [aviation__aircraft_owner Aircraft Owner]
    
 
- * [Aircraft_Line Aircraft Line]
+ * [aviation__aircraft_line Aircraft Line]
    
 
- * [Aircraft_Engine_Type Aircraft Engine Type]
+ * [aviation__aircraft_engine_type Aircraft Engine Type]
    
 
- * [Airline_Airport_Presence Airline Airport Presence]
+ * [aviation__airline_airport_presence Airline Airport Presence]
    
 
- * [Aviation_waypoint Aviation waypoint]
+ * [aviation__aviation_waypoint Aviation waypoint]
    
 
- * [Waypoint_type Waypoint type]
+ * [aviation__waypoint_type Waypoint type]
    
 
- * [Comparable_Aircraft_Relationship Comparable Aircraft Relationship]
+ * [aviation__comparable_aircraft_relationship Comparable Aircraft Relationship]
    
 	
- * [Aviation_incident_aircraft_relationship Aviation incident/aircraft relationship]
+ * [aviation__aviation_incident_aircraft_relationship Aviation incident/aircraft relationship]
    
 
- * [Aircraft Aircraft]
+ * [aviation__aircraft Aircraft]
    
 
- * [Airport_terminal Airport terminal]
-   
-
- * [Data_Summary Data Summary]
-   
+ * [aviation__airport_terminal Airport terminal]

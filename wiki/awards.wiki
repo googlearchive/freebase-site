@@ -8,25 +8,25 @@ Here are the following types in Awards Commons
 
 
  * [Award_Honor Award Honor]
-   * [Data_entry_Award_Honor Data Entry for Award Honor]
+   
 
  * [Award_Nomination Award Nomination]
-   * [Data_entry_Award_Nomination Data Entry for Award Nomination]
+   
 
  * [Award_Nominated_Work Award-Nominated Work]
-   * [Data_entry_Award_Nominated_Work Data Entry for Award-Nominated Work]
+   
 
  * [Award_Nominee Award Nominee]
-   * [Data_entry_Award_Nominee Data Entry for Award Nominee]
+   
 
  * [Award_Presenting_Organization Award Presenting Organization]
-   * [Data_entry_Award_Presenting_Organization Data Entry for Award Presenting Organization]
+   
 
  * [Award_Winner Award Winner]
-   * [Data_entry_Award_Winner Data Entry for Award Winner]
+   
 
  * [Award_Winner Award Winner]
-   * [Data_entry_Award_Winner Data Entry for Award Winner]
+   
 
  * [Award_category Award category]
-   * [Data_entry_Award_category Data Entry for Award category]
+   

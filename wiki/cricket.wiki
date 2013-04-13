@@ -6,105 +6,68 @@ This is cricket commons
 =Types=
 Here are the following types in Cricket Commons
 
+ * [cricket__dismissal_type Dismissal Type]
+  
+ * [cricket__cricket_stadium Cricket Stadium]  
 
- * [Dismissal_Type Dismissal Type]
-   * [Data_entry_Dismissal_Type Data Entry for Dismissal Type]
+ * [cricket__cricket_league Cricket League]   
 
- * [Cricket_Stadium Cricket Stadium]
-   * [Data_entry_Cricket_Stadium Data Entry for Cricket Stadium]
+ * [cricket__cricket_delivery_type Cricket Delivery Type]
 
- * [Cricket_League Cricket League]
-   * [Data_entry_Cricket_League Data Entry for Cricket League]
+ * [cricket__cricket_bowling_technique Cricket Bowling Technique]
 
- * [Cricket_Delivery_Type Cricket Delivery Type]
-   * [Data_entry_Cricket_Delivery_Type Data Entry for Cricket Delivery Type]
+ * [cricket__cricket_batting_stroke Cricket Batting Stroke]
 
- * [Cricket_Bowling_Technique Cricket Bowling Technique]
-   * [Data_entry_Cricket_Bowling_Technique Data Entry for Cricket Bowling Technique]
+ * [cricket__cricket_administrative_body Cricket Administrative Body]  
 
- * [Cricket_Batting_Stroke Cricket Batting Stroke]
-   * [Data_entry_Cricket_Batting_Stroke Data Entry for Cricket Batting Stroke]
+ * [cricket__cricket_bowler Cricket Bowler]
+  
+ * [cricket__cricket_bowler_stats Cricket Bowler Stats]
+   
+ * [cricket__cricket_bowling_pace Cricket Bowling Pace]
+   
+ * [cricket__cricket_coach Cricket Coach]
+   
+ * [cricket__cricket_match Cricket Match]
 
- * [Cricket_Administrative_Body Cricket Administrative Body]
-   * [Data_entry_Cricket_Administrative_Body Data Entry for Cricket Administrative Body]
+ * [cricket__cricket_match_type Cricket Match Type]
 
- * [Cricket_Bowler Cricket Bowler]
-   * [Data_entry_Cricket_Bowler Data Entry for Cricket Bowler]
+ * [cricket__cricket_player_stats Cricket Player Stats]
 
- * [Cricket_Bowler_Stats Cricket Bowler Stats]
-   * [Data_entry_Cricket_Bowler_Stats Data Entry for Cricket Bowler Stats]
+ * [cricket__cricket_roster Cricket Roster]
+   
+ * [cricket__cricket_roster_batting Cricket Roster Batting]
+   
+ * [cricket__cricket_roster_bowling Cricket Roster Bowling]
 
- * [Cricket_Bowling_Pace Cricket Bowling Pace]
-   * [Data_entry_Cricket_Bowling_Pace Data Entry for Cricket Bowling Pace]
+ * [cricket__cricket_roster_extras Cricket Roster Extras]
+   
+ * [cricket__cricket_roster_keeping Cricket Roster Keeping]
+   
+ * [cricket__cricket_series Cricket Series]
+   
+ * [cricket__cricket_series_event Cricket Series Event]
 
- * [Cricket_Coach Cricket Coach]
-   * [Data_entry_Cricket_Coach Data Entry for Cricket Coach]
+ * [cricket__cricket_team Cricket Team]
 
- * [Cricket_Match Cricket Match]
-   * [Data_entry_Cricket_Match Data Entry for Cricket Match]
+ * [cricket__cricket_team_stats Cricket Team Stats]
 
- * [Cricket_Match_Type Cricket Match Type]
-   * [Data_entry_Cricket_Match_Type Data Entry for Cricket Match Type]
+ * [cricket__cricket_tournament Cricket Tournament]
 
- * [Cricket_Player_Stats Cricket Player Stats]
-   * [Data_entry_Cricket_Player_Stats Data Entry for Cricket Player Stats]
+ * [cricket__cricket_tournament_event Cricket Tournament Event]
 
- * [Cricket_Roster Cricket Roster]
-   * [Data_entry_Cricket_Roster Data Entry for Cricket Roster]
+ * [cricket__cricket_umpire Cricket Umpire]
 
- * [Cricket_Roster_Batting Cricket Roster Batting]
-   * [Data_entry_Cricket_Roster_Batting Data Entry for Cricket Roster Batting]
+ * [cricket__cricket_umpire_panel Cricket Umpire Panel]
 
- * [Cricket_Roster_Bowling Cricket Roster Bowling]
-   * [Data_entry_Cricket_Roster_Bowling Data Entry for Cricket Roster Bowling]
+ * [cricket__fall_of_wicket Fall Of Wicket]
 
- * [Cricket_Roster_Extras Cricket Roster Extras]
-   * [Data_entry_Cricket_Roster_Extras Data Entry for Cricket Roster Extras]
+ * [cricket__cricket_umpire_panel_membership Cricket Umpire Panel Membership]
 
- * [Cricket_Roster_Keeping Cricket Roster Keeping]
-   * [Data_entry_Cricket_Roster_Keeping Data Entry for Cricket Roster Keeping]
+ * [cricket__cricket_player_debut Cricket Player Debut]
 
- * [Cricket_Series Cricket Series]
-   * [Data_entry_Cricket_Series Data Entry for Cricket Series]
+ * [cricket__team_inning_batting_stats Team Inning Batting Stats]
 
- * [Cricket_Series_Event Cricket Series Event]
-   * [Data_entry_Cricket_Series_Event Data Entry for Cricket Series Event]
+ * [cricket__cricket_coach_tenure Cricket Coach Tenure]
 
- * [Cricket_Team Cricket Team]
-   * [Data_entry_Cricket_Team Data Entry for Cricket Team]
-
- * [Cricket_Team_Stats Cricket Team Stats]
-   * [Data_entry_Cricket_Team_Stats Data Entry for Cricket Team Stats]
-
- * [Cricket_Tournament Cricket Tournament]
-   * [Data_entry_Cricket_Tournament Data Entry for Cricket Tournament]
-
- * [Cricket_Tournament_Event Cricket Tournament Event]
-   * [Data_entry_Cricket_Tournament_Event Data Entry for Cricket Tournament Event]
-
- * [Cricket_Umpire Cricket Umpire]
-   * [Data_entry_Cricket_Umpire Data Entry for Cricket Umpire]
-
- * [Cricket_Umpire_Panel Cricket Umpire Panel]
-   * [Data_entry_Cricket_Umpire_Panel Data Entry for Cricket Umpire Panel]
-
- * [Fall_Of_Wicket Fall Of Wicket]
-   * [Data_entry_Fall_Of_Wicket Data Entry for Fall Of Wicket]
-
- * [Cricket_Umpire_Panel_Membership Cricket Umpire Panel Membership]
-   * [Data_entry_Cricket_Umpire_Panel_Membership Data Entry for Cricket Umpire Panel Membership]
-
- * [Cricket_Umpire_Panel_Membership Cricket Umpire Panel Membership]
-   * [Data_entry_Cricket_Umpire_Panel_Membership Data Entry for Cricket Umpire Panel Membership]
-
- * [Cricket_Player_Debut Cricket Player Debut]
-   * [Data_entry_Cricket_Player_Debut Data Entry for Cricket Player Debut]
-
- * [Team_Inning_Batting_Stats Team Inning Batting Stats]
-   * [Data_entry_Team_Inning_Batting_Stats Data Entry for Team Inning Batting Stats]
-
- * [Cricket_Coach_Tenure Cricket Coach Tenure]
-   * [Data_entry_Cricket_Coach_Tenure Data Entry for Cricket Coach Tenure]
-
- * [Cricket_Player Cricket Player]
-   * [Data_entry_Cricket_Player Data Entry for Cricket Player]
+ * [cricket__cricket_player Cricket Player]

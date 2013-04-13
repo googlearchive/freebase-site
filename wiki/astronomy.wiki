@@ -7,10 +7,10 @@ Content for Architecture Commons
 == Types ==
 
  * [Star Star]
-   * [Data_entry_Star  Data Entry for Star]
+  
 
  * [Constellation Constellation]
-   * [Data_entry_Constellation Data Entry for Constellation]
+  
 
  * [Planet Planet]
    * [Data_entry_Planet  Data Entry for Planet]

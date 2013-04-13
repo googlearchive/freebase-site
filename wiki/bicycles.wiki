@@ -6,11 +6,11 @@ This is Bicycles commons
 =Types=
 Here are the following types in Bicycles Commons
 
- * [Bicycle_type Bicycle type]
+ * [bicycles__bicycle_type Bicycle type]
    * [Data_entry_Bicycle_type Data Entry for Bicycle type]
 
- * [Bicycle_model Bicycle model]
+ * [bicycles__bicycle_model Bicycle model]
    * [Data_entry_Bicycle_model Data Entry for Bicycle model]
 
- * [Bicycle_manufacturer Bicycle manufacturer]
+ * [bicycles__bicycle_manufacturer Bicycle manufacturer]
    * [Data_entry_Bicycle_manufacturer Data Entry for Bicycle manufacturer]

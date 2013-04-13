@@ -1,82 +1,82 @@
-#summary Different types in Commons.
+#summary Different types in Broadcast Commons.
 
-= Commons =
-This is  commons
+= Broadcast Commons =
+This is broadcast commons
 
 =Types=
-Here are the following types in Commons
+Here are the following types in Broadcast Commons
 
- * [TV_Station TV Station]
+ * [broadcast__tv_station TV Station]
    * [Data_entry_TV_Station Data Entry for TV Station]
 
- * [TV_Channel TV Channel]
+ * [broadcast__tv_channel TV Channel]
    * [Data_entry_TV_Channel Data Entry for TV Channel]
 
- * [TV_station_owner TV station owner]
+ * [broadcast__tv_station_owner TV station owner]
    * [Data_entry_TV_station_owner Data Entry for TV station owner]
 
- * [TV_signal_type TV signal type]
+ * [broadcast__tv_signal_type TV signal type]
    * [Data_entry_TV_signal type Data Entry for TV signal type]
 
- * [Radio_Station Radio Station]
+ * [broadcast__radio_station Radio Station]
    * [Data_entry_Radio_Station Data Entry for Radio Station]
 
- * [Radio_format Radio format]
+ * [broadcast__radio_format Radio format]
    * [Data_entry_Radio_format Data Entry for Radio format]
 	 
- * [Radio_station_owner Radio station owner]
+ * [broadcast__radio_station_owner Radio station owner]
    * [Data_entry_Radio_station_owner Data Entry for Radio station owner]
 
- * [Broadcast_station_class Broadcast station class]
+ * [broadcast__broadcast_station_class Broadcast station class]
    * [Data_entry_Broadcast_station_class Data Entry for Broadcast station class]
 
- * [Callsign_duration Callsign duration]
+ * [broadcast__callsign_duration Callsign duration]
    * [Data_entry_Callsign_duration Data Entry for Callsign duration]
 
- * [Affiliation_duration Affiliation duration]
+ * [broadcast__affiliation_duration Affiliation duration]
    * [Data_entry_Affiliation_duration Data Entry for Affiliation duration]
 
- * [Cable_satellite_availability Cable/satellite availability]
+ * [broadcast__cable_satellite_availability Cable/satellite availability]
    * [Data_entry_Cable_satellite_availability Data Entry for Cable/satellite availability]
 
- * [Broadcast_Advisory Broadcast Advisory]
+ * [broadcast__broadcast_advisory Broadcast Advisory]
    * [Data_entry_Broadcast_Advisory Data Entry for Broadcast Advisory]
 
- * [Broadcast_Artist Broadcast Artist]
+ * [broadcast__broadcast_artist Broadcast Artist]
    * [Data_entry_Broadcast_Artist Data Entry for Broadcast Artist]
 
- * [Broadcast Broadcast]
+ * [broadcast__broadcast Broadcast]
    * [Data_entry_Broadcast Data Entry for Broadcast]
 
- * [Broadcast_Content Broadcast Content]
+ * [broadcast__broadcast_content Broadcast Content]
    * [Data_entry_Broadcast_Content Data Entry for Broadcast Content]
 				
- * [Broadcast_Distributor Broadcast Distributor]
+ * [broadcast__broadcast_distributor Broadcast Distributor]
    * [Data_entry_Broadcast_Distributor Data Entry for Broadcast Distributor]
 
- * [Broadcast_Genre Broadcast Genre]
+ * [broadcast__broadcast_genre Broadcast Genre]
    * [Data_entry_Broadcast_Genre Data Entry for Broadcast Genre]
 
- * [Internet_Stream Internet Stream]
+ * [broadcast__internet_stream Internet Stream]
    * [Data_entry_Internet_Stream Data Entry for Internet Stream]
 
- * [Podcast_Feed Podcast Feed]
+ * [broadcast__podcast_feed Podcast Feed]
    * [Data_entry_Podcast_Feed Data Entry for Podcast Feed]
 
- * [Broadcast_Producer Broadcast Producer]
+ * [broadcast__broadcast_producer Broadcast Producer]
    * [Data_entry_Broadcast_Producer Data Entry for Broadcast Producer]
 
- * [Radio_affiliation_duration Radio affiliation duration]
+ * [broadcast__radio_affiliation_duration Radio affiliation duration]
    * [Data_entry_Radio_affiliation_duration Data Entry for Radio affiliation duration]
 	
- * [Radio_network Radio network]
+ * [broadcast__radio_network Radio network]
    * [Data_entry_Radio_network Data Entry for Radio network]
 
- * [AM_terrestrial_broadcast_facility AM terrestrial broadcast facility]
+ * [broadcast__am_terrestrial_broadcast_facility AM terrestrial broadcast facility]
    * [Data_entry_AM_terrestrial_broadcast_facility Data Entry for AM terrestrial broadcast facility]
 
- * [FM_terrestrial_broadcast_facility FM terrestrial broadcast facility]
+ * [broadcast__fm_terrestrial_broadcast_facility FM terrestrial broadcast facility]
    * [Data_entry_FM_terrestrial_broadcast_facility Data Entry for FM terrestrial broadcast facility]
 
- * [TV_terrestrial_broadcast_facility TV terrestrial broadcast facility]
+ * [broadcast__tv_terrestrial_broadcast_facility TV terrestrial broadcast facility]
    * [Data_entry_TV_terrestrial_broadcast_facility Data Entry for TV terrestrial broadcast facility]

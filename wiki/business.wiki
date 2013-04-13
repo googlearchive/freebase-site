@@ -1,69 +1,69 @@
 #summary Different types in Business Commons.
 
 = Business Commons =
-This is  business commons
+This is business commons
 
 =Types=
 Here are the following types in Business Commons
 
- * [Industry Industry]
+ * [business__industry Industry]
    * [Data_entry_Industry Data Entry for Industry]
 
- * [Stock_listing Stock listing]
+ * [business__stock_listing Stock listing]
    * [Data_entry_Stock_listing Data Entry for Stock listing]
 
- * [Employment_tenure Employment tenure]
+ * [business__employment_tenure Employment tenure]
    * [Data_entry_Employment_tenure Data Entry for Employment tenure]
 
- * [Job_title Job title]
+ * [business__job_title Job title]
    * [Data_entry_Job_title Data Entry for Job title]
 
- * [Open_Times Open Times]
+ * [business__open_times Open Times]
    * [Data_entry_Open_Times Data Entry for Open Times]
 
- * [Employer Employer]
+ * [business__employer Employer]
    * [Data_entry_Employer Data Entry for Employer]
 
- * [Board_Member_Title Board Member Title]
+ * [business__board_member_title Board Member Title]
    * [Data_entry_Board_Member_Title Data Entry for Board Member Title]
 
- * [Asset Asset]
+ * [business__asset Asset]
    * [Data_entry_Asset Data Entry for Asset]
 
- * [Asset_Owner Asset Owner] 
+ * [business__asset_owner Asset Owner] 
    * [Data_entry_Asset_Owner Data Entry for Asset Owner]
 
- * [Asset_Ownership Asset Ownership]
+ * [business__asset_ownership Asset Ownership]
    * [Data_entry_Asset_Ownership Data Entry for Asset Ownership]
 
- * [Oil_Field Oil Field]
+ * [business__oil_field Oil Field]
    * [Data_entry_Oil_Field Data Entry for Oil Field]
 
- * [Consumer_product Consumer product]
+ * [business__consumer_product Consumer product]
    * [Data_entry_Consumer_product Data Entry for Consumer product]
 
- * [Shopping_center Shopping center]
+ * [business__shopping_center Shopping center]
    * [Data_entry_Shopping_center Data Entry for Shopping center]
 
- * [Shopping_center_owner Shopping center owner]
+ * [business__shopping_center_owner Shopping center owner]
    * [Data_entry_Shopping_center_owner Data Entry for Shopping center owner]
 
- * [Exchange_rate Exchange rate]
+ * [business__exchange_rate Exchange rate]
    * [Data_entry_Exchange_rate Data Entry for Exchange rate]
 
- * [Market_Index Market Index]
+ * [business__market_index Market Index]
    * [Data_entry_Market_Index Data Entry for Market Index]
 
- * [Currency Currency]
+ * [business__currency Currency]
    * [Data_entry_Currency Data Entry for Currency]
 
- * [Stock_exchange Stock exchange]
+ * [business__stock_exchange Stock exchange]
    * [Data_entry_Stock_exchange Data Entry for Stock exchange]
 
- * [Venture Investment Venture Investment]
+ * [business__venture_investment Venture Investment]
    * [Data_entry_Venture Investment Data Entry for Venture Investment]
 
- * [Venture Investor Venture Investor]
+ * [business__venture_investor Venture Investor]
    * [Data_entry_Venture Investor Data Entry for Venture Investor]
 
  * [Investment Round Investment Round]

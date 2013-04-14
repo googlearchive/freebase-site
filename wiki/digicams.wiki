@@ -8,55 +8,55 @@ Here are the following types in Digicams Commons
 
 
  * [Digital_Camera Digital Camera]
-   * [Data_entry_Digital_Camera Data Entry for Digital Camera]
+   
 
  * [Camera_Format Camera Format]
-   * [Data_entry_Camera_Format Data Entry for Camera Format]
+   
 
  * [Camera_Resolution Camera Resolution]
-   * [Data_entry_Camera_Resolution Data Entry for Camera Resolution]
+   
 
  * [Camera_Image_Ratio Camera Image Ratio]
-   * [Data_entry_Camera_Image_Ratio Data Entry for Camera Image Ratio]
+   
 
  * [Camera_Sensor_Size Camera Sensor Size]
-   * [Data_entry_Camera_Sensor_Size Data Entry for Camera Sensor Size]
+   
 
  * [Camera_Sensor_Type Camera Sensor Type]
-   * [Data_entry_Camera_Sensor_Type Data Entry for Camera Sensor Type]
+   
 
  * [Camera_Sensor_Manufacturer Camera Sensor Manufacturer]
-   * [Data_entry_Camera_Sensor_Manufacturer Data Entry for Camera Sensor Manufacturer]
+   
 
  * [Camera_ISO_Capability Camera ISO Capability]
-   * [Data_entry_Camera_ISO_Capability Data Entry for Camera ISO Capability]
+   
 
  * [Camera_Digital_Zoom_Capability Camera Digital Zoom Capability]
-   * [Data_entry_Camera_Digital_Zoom_Capability Data Entry for Camera Digital Zoom Capability]
+   
 
  * [Camera_Image_Stabilization Camera Image Stabilization]
-   * [Data_entry_Camera_Image_Stabilization Data Entry for Camera Image Stabilization]
+   
 
  * [Camera_Storage_Type Camera Storage Type]
-   * [Data_entry_Camera_Storage_Type Data Entry for Camera Storage Type]
+   
 
  * [Camera_Uncompressed_Format Camera Uncompressed Format]
-   * [Data_entry_Camera_Uncompressed_Format Data Entry for Camera Uncompressed Format]
+   
 
  * [Camera_Compressed_Format Camera Compressed Format]
-   * [Data_entry_Camera_Compressed_Format Data Entry for Camera Compressed Format]
+   
 
  * [Camera_Viewfinder_Type Camera Viewfinder Type]
-   * [Data_entry_Camera_Viewfinder_Type Data Entry for Camera Viewfinder Type]
+    
 
  * [Camera_Dimensions Camera Dimensions]
-   * [Data_entry_Camera_Dimensions Data Entry for Camera Dimensions]
+   
 
  * [Camera_Image_Stabilization_Type Camera Image Stabilization Type]
-   * [Data_entry_Camera_Image_Stabilization_Type Data Entry for Camera Image Stabilization Type]
+   
 
  * [Camera_Color_Filter_Array_Type Camera Color Filter Array Type]
-   * [Data_entry_Camera_Color_Filter_Array_Type Data Entry for Camera Color Filter Array Type]
+   
 
  * [Digital_Camera_Brand Digital Camera Brand]
-   * [Data_entry_Digital_Camera_Brand Data Entry for Digital Camera Brand]
+   

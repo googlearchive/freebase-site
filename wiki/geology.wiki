@@ -7,7 +7,7 @@ This is geology commons
 Here are the following types in Geology Commons
 
  * [Rock_type Rock type]
-   * [Data_entry_Rock_type Data Entry for Rock type]
+   
 
  * [Geological_formation Geological formation]
-   * [Data_entry_Geological_formation Data Entry for Geological formation]
+   

@@ -7,22 +7,22 @@ This is soccer commons
 Here are the following types in Soccer Commons
 
 
- * [Football world cup Football world cup]
+ * [soccer__football world cup Football world cup]
    * [Data_entry_Football world cup Data Entry for Football world cup]
 
- * [Football player Football player]
+ * [soccer__football-player Football player]
    * [Data_entry_Football player Data Entry for Football player]
 
- * [Football team Football team]
+ * [soccer__football_team Football team]
    * [Data_entry_Football team Data Entry for Football team]
 
- * [Football team manager Football team manager]
+ * [soccer__football_team_manager Football team manager]
    * [Data_entry_Football team manager Data Entry for Football team manager]
 
- * [Football Organization Football Organization]
+ * [soccer__football_organization Football Organization]
    * [Data_entry_Football Organization Data Entry for Football Organization]
 
- * [Football League Football League]
+ * [soccer__football_league Football League]
    * [Data_entry_Football League Data Entry for Football League]
 
  * [Football Competition Football Competition]

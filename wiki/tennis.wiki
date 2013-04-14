@@ -6,23 +6,23 @@ This is  tennis commons
 =Types=
 Here are the following types in Tennis Commons
 
- * [Tennis_Player Tennis Player]
-   * [Data_entry_Tennis_Player Data Entry for Tennis Player]
+ * [tennis__tennis_player Tennis Player]
+   
 
- * [Tennis_Match Tennis Match]
-   * [Data_entry_Tennis_Match Data Entry for Tennis Match]
+ * [theater__tennis_match Tennis Match]
+   
 
- * [Tennis_Match_Type Tennis Match Type]
-   * [Data_entry_Tennis_Match_Type Data Entry for Tennis Match Type]
+ * [theater__tennis_match_type Tennis Match Type]
+   
 
- * [Tennis_Tournament_Championship Tennis Tournament Championship]
-   * [Data_entry_Tennis_Tournament_Championship Data Entry for Tennis Tournament Championship]
+ * [theater__tennis_tournament_championship Tennis Tournament Championship]
+   
 
- * [Tennis_Tournament_Champion Tennis Tournament Champion]
-   * [Data_entry_Tennis_Tournament_Champion Data Entry for Tennis Tournament Champion]
+ * [theater__tennis_tournament_champion Tennis Tournament Champion]
+   
 
- * [Tennis_Tournament Tennis Tournament]
-   * [Data_entry_Tennis_Tournament Data Entry for Tennis Tournament]
+ * [theater__tennis_tournament Tennis Tournament]
+   
 
- * [Tennis_Grip_Style Tennis Grip Style]
-   * [Data_entry_Tennis_Grip_Style Data Entry for Tennis Grip Style]
+ * [theater__tennis_grip_style Tennis Grip Style]
+   

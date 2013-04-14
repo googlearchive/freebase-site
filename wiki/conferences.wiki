@@ -8,22 +8,22 @@ Here are the following types in Conferences Commons
 
 
  * [Conference_event Conference event]
-   * [Data_entry_Conference_event Data Entry for Conference event]
+   
 
  * [Conference_series	 Conference series]
-   * [Data_entry_Conference_series Data Entry for Conference series]
+   
 
  * [Conference_sponsor Conference sponsor]
-   * [Data_entry_Conference_sponsor Data Entry for Conference sponsor]
+   
 
  * [Conference_proceedings Conference proceedings]
-   * [Data_entry_Conference_proceedings Data Entry for Conference proceedings]
+   
 
  * [Conference_subject Conference subject]
-   * [Data_entry_Conference_subject Data Entry for Conference subject]
+   
 
  * [Type_of_conference Type of conference]
-   * [Data_entry_Type_of_conference Data Entry for Type of conference]
+   
 
  * [Conference_venue Conference venue]	
-   * [Data_entry_Conference_venue Data Entry for Conference venue]
+   

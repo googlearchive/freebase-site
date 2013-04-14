@@ -7,98 +7,95 @@ This is  video games commons
 Here are the following types in Video Games Commons
 
 
- * [Video_Game Video Game]	
+ * [cvg__computer_video_game Video Game]	
    * [Data_entry_Video_Game Data Entry for Video Game]
 
- * [Video_Game_Genre Video Game Genre]	
+ * [cvg__cvg_genre Video Game Genre]	
    * [Data_entry_Video_Game_Genre Data Entry for Video Game Genre]
 
- * [Video_Game_Platform Video Game Platform]	
+ * [cvg__cvg_platform Video Game Platform]	
    * [Data_entry_Video_Game_Platform Data Entry for Video Game Platform]
 
- * [Video_Game_Designer Video Game Designer]	
+ * [cvg__cvg_designer Video Game Designer]	
    * [Data_entry_Video_Game_Designer Data Entry for Video Game Designer]
 
- * [Video_Game_Publisher Video Game Publisher]	
+ * [cvg__cvg_publisher Video Game Publisher]	
    * [Data_entry_Video_Game_Publisher Data Entry for Video Game Publisher]
 
- * [Video_Game_Developer Video Game Developer]
+ * [cvg__cvg_developer Video Game Developer]
    * [Data_entry_Video_Game_Developer Data Entry for Video Game Developer]
 
- * [Video_Game_Character Video Game Character]	
+ * [cvg__cvg_character Video Game Character]	
    * [Data_entry_Video_Game_Character Data Entry for Video Game Character]
 
- * [Video_Game_Performance Video Game Performance]	
+ * [cvg__game_performance Video Game Performance]	
    * [Data_entry_Video_Game_Performance Data Entry for Video Game Performance]
 
- * [Video_Game_Actor Video Game Actor]
+ * [cvg__game_voice_actor Video Game Actor]
    * [Data_entry_Video_Game_Actor Data Entry for Video Game Actor]
 
- * [Video_Game_Series Video Game Series]
+ * [cvg__game_series Video Game Series]
    * [Data_entry_Video_Game_Series Data Entry for Video Game Series]
 
- * [Video_Game_Version Video Game Version]
+ * [cvg__game_version Video Game Version]
    * [Data_entry_Video_Game_Version Data Entry for Video Game Version]
 
- * [Video_Game_Region Video Game Region]
+ * [cvg__computer_game_region Video Game Region]
    * [Data_entry_Video_Game_Region Data Entry for Video Game Region]
 
- * [Video_Game_Performance_Type Video Game Performance Type]
+ * [cvg__computer_game_performance_type Video Game Performance Type]
    * [Data_entry_Video_Game_Performance_Type Data Entry for Video Game Performance Type]
 
- * [Video_Game_Engine Video Game Engine]
+ * [cvg__computer_game_engine Video Game Engine]
    * [Data_entry_Video_Game_Engine Data Entry for Video Game Engine]
 
- * [Video_Game_Engine_Developer Video Game Engine Developer]
+ * [cvg__computer_game_engine_developer Video Game Engine Developer]
    * [Data_entry_Video_Game_Engine_Developer Data Entry for Video Game Engine Developer]
 
- * [Gameplay_Mode Gameplay Mode]
+ * [cvg__gameplay_mode Gameplay Mode]
    * [Data_entry_Gameplay_Mode Data Entry for Gameplay Mode]
 
- * [Video_Game_Mod Video Game Mod]	
+ * [cvg__computer_game_mod Video Game Mod]	
    * [Data_entry_Video_Game_Mod Data Entry for Video Game Mod]
 
- * [Musical_Game Musical Game]
+ * [cvg__musical_game Musical Game]
    * [Data_entry_Musical_Game Data Entry for Musical Game]
 
- * [Musical_Game_Song Musical Game Song]	
+ * [cvg__musical_game_song Musical Game Song]	
    * [Data_entry_Musical_Game_Song Data Entry for Musical Game Song]
 
- * [Input_Method Input Method]
+ * [cvg__input_method Input Method]
    * [Data_entry_Input_Method Data Entry for Input Method]
 
- * [Video_Game_Expansion Video Game Expansion]
+ * [cvg__computer_game_expansion Video Game Expansion]
    * [Data_entry_Video_Game_Expansion Data Entry for Video Game Expansion]
 
- * [Video_Game_Engine_Family Video Game Engine Family]
+ * [cvg__computer_game_engine_family Video Game Engine Family]
    * [Data_entry_Video_Game_Engine_Family Data Entry for Video Game Engine Family]
 
- * [Video_Game_Compilation Video Game Compilation]
+ * [cvg__computer_game_compilation Video Game Compilation]
    * [Data_entry_Video_Game_Compilation Data Entry for Video Game Compilation]
 
- * [Video_Game_Subject Video Game Subject]
+ * [cvg__computer_game_subject Video Game Subject]
    * [Data_entry_Video_Game_Subject Data Entry for Video Game Subject]
 
- * [Musical_game_song_relationship Musical game/song relationship]	
+ * [cvg__musical_game_song_relationship Musical game/song relationship]	
    * [Data_entry_Musical_game_song_relationship Data Entry for Musical game/song relationship]
 
- * [Video_Game_Distribution_System]
+ * [cvg__computer_game_distribution_system Video Game Distribution System]
    * [Data_entry_Video_Game_Distribution_System Data Entry for Video Game Distribution System]
 
- * [Video_Game_Content_Descriptor Video Game Content Descriptor]
+ * [cvg__computer_game_content_descriptor Video Game Content Descriptor]
    * [Data_entry_Video_Game_Content_Descriptor Data Entry for Video Game Content Descriptor]
 
- * [Video_Game_Rating_System Video Game Rating System]	
+ * [cvg__Video_Game_Rating_System Video Game Rating System]	
    * [Data_entry_Video_Game_Rating_System Data Entry for Video Game Rating System]
 
- * [Video_Game_Evaluation Video Game Evaluation]	
+ * [cvg__computer_game_evaluation Video Game Evaluation]	
    * [Data_entry_Video_Game_Evaluation Data Entry for Video Game Evaluation]
 
- * [Video_Game_Rating Video Game Rating]	
+ * [cvg__computer_game_rating Video Game Rating]	
    * [Data_entry_Video_Game_Rating Data Entry for Video Game Rating]
 
- * [Video_game_soundtrack Video game soundtrack]	
+ * [cvg__video_game_soundtrack Video game soundtrack]	
    * [Data_entry_Video_game_soundtrack Data Entry for Video game soundtrack]
-
- * [Data_Summary Data Summary]
-   * [Data_entry_Data_Summary Data Entry for Data Summary]

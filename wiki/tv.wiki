@@ -8,79 +8,54 @@ Here are the following types in TV Commons
 
 
  * [tv__tv_program TV Program]
-   * [Data_entry_TV_Program Data Entry for TV Program]
 
  * [tv__tv_series_season TV Season]
-   * [Data_entry_TV_Season Data Entry for TV Season]
 
  * [tv__tv_program_creator TV Program Creator]
-   * [Data_entry_TV_Program_Creator Data Entry for TV Program Creator]
 
  * [tv__tv_genre TV Genre]
-   * [Data_entry_TV_Genre Data Entry for TV Genre]
 
  * [tv__regular_tv_performance TV Regular Performance]
-   * [Data_entry_TV_Regular_Performance Data Entry for TV Regular Performance]
 
  * [tv__tv_guest_role TV episode performance]
-   * [Data_entry_TV_episode_performance Data Entry for TV episode performance]
 
  * [tv__tv_series_episode TV Episode]
-   * [Data_entry_TV_Episode Data Entry for TV Episode]
 
  * [tv__tv_character TV Character]
-   * [Data_entry_TV_Character Data Entry for TV Character]
 
  * [tv__tv_actor TV Actor]
-   * [Data_entry_TV_Actor Data Entry for TV Actor]
 
  * [tv__tv_writer TV Writer]
-   * [Data_entry_TV_Writer Data Entry for TV Writer]
 
  * [tv__tv_director TV Director]
-   * [Data_entry_TV_Director Data Entry for TV Director]
 
  * [tv__producer_term TV Producer term]
-   * [Data_entry_TV_Producer_term Data Entry for TV Producer term]
 
  * [tv__tv_producer TV Producer]
-   * [Data_entry_TV_Producer Data Entry for TV Producer]
 
  * [tv__tv_network_duration TV Program Duration At Network]
-   * [Data_entry_TV_Program_Duration_At_Network Data Entry for TV Program Duration At Network]
 
  * [tv__tv_network TV Network]
-   * [Data_entry_TV_Network Data Entry for TV Network]
 
  * [tv__non_character_role Personal appearance role]
-   * [Data_entry_Personal_appearance_role Data Entry for Personal appearance role]
 
  * [tv__tv_guest_personal_appearance TV episode personal appearance]
-   * [Data_entry_TV_episode_personal_appearance Data Entry for TV episode personal appearance]
 
  * [tv__the_colbert_report_episode The Colbert Report episode]
-   * [Data_entry_The_Colbert_Report_episode Data Entry for The Colbert Report episode]
 
  * [tv__tv_regular_personal_appearance TV regular personal appearance]
-   * [Data_entry_TV_regular_personal_appearance Data Entry for TV regular personal appearance]
 
  * [tv__tv_personality TV Personality]
-   * [Data_entry_TV_Personality Data Entry for TV Personality]
 
  * [tv__tv_producer_type TV Producer type]
-   * [Data_entry_TV_Producer_type Data Entry for TV Producer type]
 
  * [tv__special_tv_performance_type Special TV performance type]
-   * [Data_entry_Special_TV_performance_type Data Entry for Special TV performance type]
 
  * [tv__tv_crewmember TV crewmember]
-   * [Data_entry_TV_crewmember Data Entry for TV crewmember]
 
  * [tv__tv_crew_gig TV crew gig]
-   * [Data_entry_TV_crew_gig Data Entry for TV crew gig]
 
  * [tv__tv_crew_role TV crew role]
-   * [Data_entry_TV_crew_role Data Entry for TV crew role]
 
  * [tv__tv_producer_episode_credit TV producer episode credit]
    

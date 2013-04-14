@@ -7,43 +7,42 @@ This is  games commons
 Here are the following types in games Commons
 
  * [Game_publisher Game publisher]
-   * [Data_entry_Game_publisher Data Entry for Game publisher]
+   
 
  * [Game Game]
-   * [Data_entry_Game Data Entry for Game]
 
  * [Game_genre Game genre]
-   * [Data_entry_Game_genre Data Entry for Game genre]
+   
 
  * [Game_designer Game designer]
-   * [Data_entry_Game_designer Data Entry for Game designer]
+   
 
  * [Playing_card_game Playing card game]
-   * [Data_entry_Playing_card_game Data Entry for Playing card game]
+   
 
  * [Playing_card_deck_type Playing card deck type]
-   * [Data_entry_Playing_card_deck_type Data Entry for Playing card deck type]
+   
 
  * [Playing_card_game_play_direction Playing card game play direction]
-   * [Data_entry_Playing_card Data Entry for Playing card game play direction]
+   
 
  * [Chess_Game_Participation Chess Game Participation]
-   * [Data_entry_Chess_Game_Participation Data Entry for Chess Game Participation]
+   
 
  * [Chess_Color Chess Color]
-   * [Data_entry_Chess_Color Data Entry for Chess Color]
+   
 
  * [Chess_Game Chess Game]
-   * [Data_entry_Chess_Game Data Entry for Chess Game]
+   
 
  * [Chess_Game_Outcome Chess Game Outcome]
-   * [Data_entry_Chess_Game_Outcome Data Entry for Chess Game Outcome]
+   
 
  * [Chess_Player Chess Player]
-   * [Data_entry_Chess_Player Data Entry for Chess Player]
+   
 
  * [Chess_Move Chess Move]
-   * [Data_entry_Chess_Move Data Entry for Chess Move]
+   
 
  * [Game_expansion Game expansion]
-   * [Data_entry_Game_expansion Data Entry for Game expansion]
+   

@@ -7,65 +7,65 @@ This is travel commons
 Here are the following types in Travel Commons
 
 
- * [Travel_destination Travel destination]
+ * [travel__travel_destination Travel destination]
    * [Data_entry_Travel_destination Data Entry for Travel destination]
 
- * [Tourist_attraction Tourist attraction]
+ * [travel__tourist_attraction Tourist attraction]
    * [Data_entry_Tourist_attraction Data Entry for Tourist attraction]
 
- * [Accommodation Accommodation]
+ * [travel__accommodation Accommodation]
    * [Data_entry_Accommodation Data Entry for Accommodation]
 
- * [Tour_operator Tour operator]
+ * [travel__tour_operator Tour operator]
    * [Data_entry_Tour_operator Data Entry for Tour operator]
 
- * [Accommodation_type Accommodation type]
+ * [travel__accommodation_type Accommodation type]
    * [Data_entry_Accommodation_type Data Entry for Accommodation type]
 
- * [Accommodation_feature Accommodation feature]
+ * [travel__accommodation_feature Accommodation feature]
    * [Data_entry_Accommodation_feature Data Entry for Accommodation feature]
 
- * [Accommodation_price_range Accommodation price range]
+ * [travel__accommodation_price_range Accommodation price range]
    * [Data_entry_Accommodation_price_range Data Entry for Accommodation price range]
 
- * [Guidebook Guidebook]
+ * [travel__guidebook Guidebook]
    * [Data_entry_Guidebook Data Entry for Guidebook]
 
- * [Transportation Transportation]
+ * [travel__transportation Transportation]
    * [Data_entry_Transportation Data Entry for Transportation]
 
- * [Transportation_mode Transportation mode]
+ * [travel__transportation_mode Transportation mode]
    * [Data_entry_Transportation_mode Data Entry for Transportation mode]
 
- * [Transport_operator Transport operator]
+ * [travel__transport_operator Transport operator]
    * [Data_entry_Transport_operator Data Entry for Transport operator]
 
- * [Transport_terminus Transport terminus]
+ * [travel__transport_terminus Transport terminus]
    * [Data_entry_Transport_terminus Data Entry for Transport terminus]
 
- * [Travel_destination_monthly_climate Travel destination monthly climate]
+ * [travel__travel_destination_monthly_climate Travel destination monthly climate]
    * [Data_entry_Travel_destination_monthly_climate Data Entry for Travel destination monthly climate]
 
- * [Guidebook_series Guidebook series]
+ * [travel__guidebook_series Guidebook series]
    * [Data_entry_Guidebook_series Data Entry for Guidebook series]
 
- * [Hotel_Guest_Visit Hotel Guest Visit]
+ * [travel__hotel_guest_visit Hotel Guest Visit]
    * [Data_entry_Hotel_Guest_Visit Data Entry for Hotel Guest Visit]
 
- * [Hotel_Grade Hotel Grade]
+ * [travel__hotel_grade Hotel Grade]
    * [Data_entry_Hotel_Grade Data Entry for Hotel Grade]
 
- * [Hotel_Brand Hotel Brand]
+ * [travel__hotel_brand Hotel Brand]
    * [Data_entry_Hotel_Brand Data Entry for Hotel Brand]
 
- * [Hotel Hotel]
+ * [travel__hotel Hotel]
    * [Data_entry_Hotel Data Entry for Hotel]
 
- * [Hotel_Operator Hotel Operator]
+ * [travel__hotel_operator Hotel Operator]
    * [Data_entry_Hotel_Operator Data Entry for Hotel Operator]
 
- * [Hotel_Brand_Owner Hotel Brand Owner]
+ * [travel__hotel_brand_owner Hotel Brand Owner]
    * [Data_entry_Hotel_Brand_Owner Data Entry for Hotel Brand Owner]
 
- * [Hotel_Grading_Authority Hotel Grading Authority]
+ * [travel__hotel_grading_authority Hotel Grading Authority]
    * [Data_entry_Hotel_Grading_Authority Data Entry for Hotel Grading Authority]

@@ -8,43 +8,43 @@ Here are the following types in Celebrities Commons
 
 
  * [Criminal_offense Criminal offense]
-   * [Data_entry_Criminal_offense Data Entry for Criminal offense]
+   
 
  * [Supercouple Supercouple]
-   * [Data_entry_Supercouple Data Entry for Supercouple]
+   
 
  * [Abused_substance Abused substance]
-   * [Data_entry_Abused_substance Data Entry for Abused substance]
+   
 
  * [Sexual_orientation Sexual orientation]
-   * [Data_entry_Sexual_orientation Data Entry for Sexual orientation]
+   
 
  * [Friendship Friendship]
-   * [Data_entry_Friendship Data Entry for Friendship]
+   
 
  * [Sexual_orientation_phase Sexual orientation phase]
-   * [Data_entry_Sexual_orientation_phase Data Entry for Sexual orientation phase]
+   
 
  * [Romantic_relationship_type Romantic relationship type]
-   * [Data_entry_Romantic_relationship_type Data Entry for Romantic relationship type]
+   
 
  * [Romantic_relationship Romantic relationship]
-   * [Data_entry_Romantic_relationship Data Entry for Romantic relationship]
+   
 
  * [Rehab Rehab]
-   * [Data_entry_Rehab Data Entry for Rehab]
+   
 
  * [Rivalry Rivalry]
-   * [Data_entry_Rivalry Data Entry for Rivalry]
+   
 
  * [Substance_abuse_problem Substance abuse problem]
-   * [Data_entry_Substance_abuse_problem Data Entry for Substance abuse problem]
+   
 
  * [Celebrity Celebrity]
-   * [Data_entry_Celebrity Data Entry for Celebrity]
+   
 
  * [Rehab_facility Rehab facility]
-   * [Data_entry_Rehab_facility Data Entry for Rehab facility]
+   
 
  * [Legal_entanglement Legal entanglement]
-   * [Data_entry_Legal_entanglement Data Entry for Legal entanglement]
+ 

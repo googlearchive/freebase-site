@@ -7,25 +7,25 @@ This is transportation commons
 Here are the following types in Transportation Commons
 
 
- * [Road Road]
+ * [transportation__road Road]
    * [Data_entry_Road Data Entry for Road]
 
- * [Road_junction Road junction]
+ * [transportation__road_junction Road junction]
    * [Data_entry_Road_junction Data Entry for Road junction]
 
- * [Road_orientation Road orientation]
+ * [transportation__road_orientation Road orientation]
    * [Data_entry_Road_orientation Data Entry for Road orientation]
 
- * [Highway_system Highway system]
+ * [transportation__highway_system Highway system]
    * [Data_entry_Highway_system Data Entry for Highway system]
 
- * [Road_End Road End]
+ * [transportation__road_starting_point Road End]
    * [Data_entry_Road_End Data Entry for Road End]
 
- * [Bridge Bridge]
+ * [transportation__bridge Bridge]
    * [Data_entry_Bridge Data Entry for Bridge]
 
- * [Bridge_Type Bridge Type]
+ * [transportation__bridge_type Bridge Type]
    * [Data_entry_Bridge_Type Data Entry for Bridge Type]
 
  * [Mass_Transportation_System_Operator Mass Transportation System Operator]
@@ -46,5 +46,5 @@ Here are the following types in Transportation Commons
  * [Transit_Service_Type Transit Service Type]
    * [Data_entry_Transit_Service_Type Data Entry for Transit Service Type]
 
- * [Transit_System_Length Transit System Length]
+ * [transportation__transit_system_length Transit System Length]
    * [Data_entry_Transit_System_Length Data Entry for Transit System Length]

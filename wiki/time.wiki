@@ -6,35 +6,35 @@ This is time commons
 =Types=
 Here are the following types in Time Commons
 
- * [Month Month]
+ * [time__month Month]
    * [Data_entry_Month Data Entry for Month]
 
- * [Day_Of_Year Day Of Year]
+ * [time__day_of_year Day Of Year]
    * [Data_entry_Day_Of_Year Data Entry for Day Of Year]
 
- * [Holiday Holiday]
+ * [time__holiday Holiday]
    * [Data_entry_Holiday Data Entry for Holiday]
 
- * [Holiday_Category Holiday Category]	
+ * [time__holiday_category Holiday Category]	
    * [Data_entry_Holiday_Category Data Entry for Holiday Category]
 
- * [Calendar_System Calendar System]
+ * [time__calendar Calendar System]
    * [Data_entry_Calendar_System Data Entry for Calendar System]
 
- * [Holiday_Period Holiday Period]
+ * [time__holiday_period Holiday Period]
    * [Data_entry_Holiday_Period Data Entry for Holiday Period]
 
- * [Day_Of_Week Day Of Week]
+ * [time__day_of_week Day Of Week]
    * [Data_entry_Day_Of_Week Data Entry for Day Of Week]
 
- * [Commemorative_event Commemorative event]	
+ * [time__commemorative_event Commemorative event]	
    * [Data_entry_Commemorative_event Data Entry for Commemorative event]
 
- * [Time_Zone Time Zone]
+ * [time__time_zone Time Zone]
    * [Data_entry_Time_Zone Data Entry for Time Zone]
 
- * [Geologic_time_period Geologic time period]
+ * [time__geologic_time_period Geologic time period]
    * [Data_entry_Geologic_time_period Data Entry for Geologic time period]
 
- * [Geologic_time_period_uncertainty Geologic time period uncertainty]
+ * [time__geologic_time_period_uncertainty Geologic time period uncertainty]
    * [Data_entry_Geologic_time_period_uncertainty Data Entry for Geologic time period uncertainty]

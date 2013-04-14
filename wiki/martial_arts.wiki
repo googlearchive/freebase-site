@@ -7,19 +7,19 @@ This is martial arts commons
 Here are the following types in Martial Arts Commons
 
  * [Martial_Art Martial Art]
-   * [Data_entry_Martial_Art Data Entry for Martial Art]
+   
 
  * [Martial_Art_Category Martial Art Category]
-   * [Data_entry_Martial_Art_Category Data Entry for Martial Art Category]
+   
 
  * [Martial_Artist Martial Artist]
-   * [Data_entry_Martial_Artist Data Entry for Martial Artist]
+   
 
  * [Martial_Arts_Organization Martial Arts Organization]
-   * [Data_entry_Martial_Arts_Organization Data Entry for Martial Arts Organization]
+   
 
  * [Martial_Arts_Certification Martial Arts Certification]
-   * [Data_entry_Martial_Arts_Certification Data Entry for Martial Arts Certification]
+  
 
  * [Martial_Arts_Qualification Martial Arts Qualification]
-   * [Data_entry_Martial_Arts_Qualification Data Entry for Martial Arts Qualification]
+   

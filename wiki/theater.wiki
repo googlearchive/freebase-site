@@ -9,67 +9,67 @@ Here are the following types in Theater Commons
 
 
  * [theater__play Play]
-   * [Data_entry_Play Data Entry for Play]
+   
 
  * [theater__theatrical_composer Theatrical Composer]
-   * [Data_entry_Theatrical_Composer Data Entry for Theatrical Composer]
+   
 
  * [theater__theatrical_lyricist Theatrical Lyricist]
-   * [Data_entry_Theatrical_Lyricist Data Entry for Theatrical Lyricist]
+   
 
  * [theater__theatrical_orchestrator Theatrical Orchestrator]
-   * [Data_entry_Theatrical_Orchestrator Data Entry for Theatrical Orchestrator]
+   
 
  * [theater__theater_production Theater Production]
-   * [Data_entry_Theater_Production Data Entry for Theater Production]
+   
 
  * [theater__theater_company Theater Company]
-   * [Data_entry_Theater_Company Data Entry for Theater Company]
+   
 
  * [theater__theater_producer Theater Producer]
-   * [Data_entry_Theater_Producer Data Entry for Theater Producer]
+   
 
  * [theater__theater_director Theater Director]
-   * [Data_entry_Theater_Director Data Entry for Theater Director]
+   
 
  * [theater__theater_choreographer Theater Choreographer]
-   * [Data_entry_Theater_Choreographer Data Entry for Theater Choreographer]
+   
 
  * [theater__musical_director Musical Director]
-   * [Data_entry_Musical Director Data Entry for Musical Director]
+   
 
  * [theater__theater_designer_gig Theater Designer Gig]
-   * [Data_entry_Theater_Designer_Gig Data Entry for Theater Designer Gig]
+   
 
  * [theater__theater_designer Theater Designer]
-   * [Data_entry_Theater_Designer Data Entry for Theater Designer]
+   
 
  * [theater__theater_production_staff_gig Theater Production Staff Gig]
-   * [Data_entry_Theater_Production_Staff_Gig Data Entry for Theater Production Staff Gig]
+   
 
  * [theater__theater_production_staffmember Theater Production Staffmember]
-   * [Data_entry_Theater_Production_Staffmember Data Entry for Theater Production Staffmember]
+   
 
  * [theater__theater_designer_role Theater Designer Role]
-   * [Data_entry_Theater_Designer_Role Data Entry for Theater Designer Role]
+   
 
  * [theater__theater_production_staff_role Theater Production Staff Role]
-   * [Data_entry_Theater_Production_Staff Role Data Entry for Theater Production Staff Role]
+   
 
  * [theater__theater_actor Theater Actor]
-   * [Data_entry_Theater_Actor Data Entry for Theater Actor]
+   
 
  * [theater__theater_role Theater Role]
-   * [Data_entry_Theater_Role Data Entry for Theater Role	]
+   
 
  * [theater__theater_character Theater Character]
-   * [Data_entry_Theater_Character Data Entry for Theater Character]
+   
 
  * [theater__theater Theater]
-   * [Data_entry_Theater Data Entry for Theater]
+   
 
  * [theater__theater_genre Theater Genre]
-   * [Data_entry_Theater_Genre Data Entry for Theater Genre]
+   
 
  * [theater__musical_soundtrack Musical Soundtrack]
-   * [Data_entry_Musical_Soundtrack Data Entry for Musical Soundtrack]
+   

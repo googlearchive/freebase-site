@@ -7,74 +7,51 @@ This is  commons
 Here are the following types in Commons
 
  * [Legislative_committee Legislative committee]
-   * [Data_entry_Legislative_committee Data Entry for Legislative committee]
-
+  
  * [US_President US President]
-   * [Data_entry_US President Data Entry for US President]
-
+  
  * [Political_party Political party]
-   * [Data_entry_Political_party Data Entry for Political party]
-
+  
  * [US_Vice_President US Vice President]
-   * [Data_entry_US_Vice_President Data Entry for US Vice President]
-
+  
  * [Government Government]
-   * [Data_entry_Government Data Entry for Government]
-
+  
  * [Government_Agency Government Agency]
-   * [Data_entry_Government_Agency Data Entry for Government Agency]
-
+  
  * [Form_of_Government Form of Government]
-   * [Data_entry_Form_of_Government Data Entry for Form of Government]
-
+  
  * [Government_Position_Held Government Position Held]
-   * [Data_entry_Government_Position_Held Data Entry for Government Position Held]
-
+  
  * [Political_Appointer Political Appointer]
-   * [Data_entry_Political_Appointer Data Entry for Political Appointer]
-
+  
  * [Political_Party_Tenure Political Party Tenure]
-   * [Data_entry_Political_Party_Tenure Data Entry for Political Party Tenure]
-
+  
  * [Politician Politician]
-   * [Data_entry_Politician Data Entry for Politician]
-
+  
  * [Governmental_Jurisdiction Governmental Jurisdiction]
-   * [Data_entry_Governmental_Jurisdiction Data Entry for Governmental Jurisdiction]
-
+  
  * [Governmental_Body Governmental Body]
-   * [Data_entry_Governmental_Body Data Entry for Governmental Body]
-
+  
  * [Government_Office_or_Title Government Office or Title]
-   * [Data_entry_Government_Office_or_Title Data Entry for Government Office or Title]
-
+  
  * [Political_District Political District]
-   * [Data_entry_Political_District Data Entry for Political District]
-
+  
  * [Election_contest Election contest]
-   * [Data_entry_Election_contest Data Entry for Election contest]
-
+  
  * [Election_campaign Election campaign]
-   * [Data_entry_Election_campaign Data Entry for Election campaign]
-
+  
  * [Primary_election Primary election]
-   * [Data_entry_Primary_election Data Entry for Primary election]
-
+  
  * [Legislative_session Legislative session]
-   * [Data_entry_Legislative_session Data Entry for Legislative session]
-
+  
  * [Legislative_committee_membership Legislative committee membership]
-   * [Data_entry_Legislative_committee_membership Data Entry for Legislative committee membership]
-
+  
  * [Legislative_committee_title Legislative committee title]
-   * [Data_entry_Legislative_committee_title Data Entry for Legislative committee title]
-
+  
  * [National_Anthem National Anthem]
-   * [Data_entry_National_Anthem Data Entry for National Anthem]
-
+  
  * [National_anthem_of_a_country National anthem of a country]
-   * [Data_entry_National_anthem_of_a_country Data Entry for National anthem of a country]
-
+  
  * [US_Vice_Presidential_campaign US Vice Presidential campaign]
    * [Data_entry_US_Vice_Presidential_campaign Data Entry for US Vice Presidential campaign]
 
@@ -94,7 +71,7 @@ Here are the following types in Commons
    * [Data_entry_Australian_Member_of_Parliament Data Entry for Australian Member of Parliament]
 
  * [Political_ideology Political ideology]
-   * [Data_entry_Political_ideology Data Entry for Political ideology]
+   
 	
  * [US_Congressperson U.S. Congressperson]
    * [Data_entry_US_Congressperson Data Entry for U.S. Congressperson]

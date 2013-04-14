@@ -6,44 +6,44 @@ This is  visual arts commons
 =Types=
 Here are the following types in Visual Arts Commons
 
- * [Visual_Art_Medium Visual Art Medium]
+ * [visual_art__visual_art_medium Visual Art Medium]
    * [Data_entry_Visual_Art_Medium Data Entry for Visual Art Medium]
 
- * [Visual_Art_Form Visual Art Form]
+ * [visual_art__visual_art_form Visual Art Form]
    * [Data_entry_Visual_Art_Form Data Entry for Visual Art Form]
 
- * [Art_owner Art owner]	
+ * [visual_art__art_owner Art owner]	
    * [Data_entry_Art_owner Data Entry for Art owner]
 
- * [Art_Period_Movement Art Period/Movement]	
+ * [visual_art__art_period_movement Art Period/Movement]	
    * [Data_entry_Art_Period_Movement Data Entry for Art Period/Movement]
 
- * [Color Color]
+ * [visual_art__color Color]
    * [Data_entry_Color Data Entry for Color]
 
- * [Visual_Artist Visual Artist]
+ * [visual_art__visual_artist Visual Artist]
    * [Data_entry_Visual_Artist Data Entry for Visual Artist]
 
- * [Artwork Artwork]	
+ * [visual_art__artwork Artwork]	
    * [Data_entry_Artwork Data Entry for Artwork]
 
- * [Visual_Art_Genre Visual Art Genre]	
+ * [visual_art__visual_art_genre Visual Art Genre]	
    * [Data_entry_Visual_Art_Genre Data Entry for Visual Art Genre]
 
- * [Art_Subject Art Subject]	
+ * [visual_art__art_subject Art Subject]	
    * [Data_entry_Art_Subject Data Entry for Art Subject]
 
- * [Artwork_location_relationship Artwork/location relationship]	
+ * [visual_art__artwork_location_relationship Artwork/location relationship]	
    * [Data_entry_Artwork_location_relationship Data Entry for Artwork/location relationship]
 
- * [Artwork_owner_relationship Artwork/owner relationship]	
+ * [visual_art__artwork_owner_relationship Artwork/owner relationship]	
    * [Data_entry_Artwork_owner_relationship Data Entry for Artwork/owner relationship]
 
- * [Art_acquisition_method Art acquisition method]	
+ * [visual_art__art_acquisition_method Art acquisition method]	
    * [Data_entry_Art_acquisition_method Data Entry for Art acquisition method]
 
- * [Art_Series Art Series]	
+ * [visual_art__art_series Art Series]	
    * [Data_entry_Art_Series Data Entry for Art Series]
 
- * [Visual_art_support Visual art support]
+ * [visual_art__visual_art_support Visual art support]
    * [Data_entry_Visual_art_support Data Entry for Visual art support]

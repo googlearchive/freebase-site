@@ -7,143 +7,122 @@ This is tv commons
 Here are the following types in TV Commons
 
 
- * [TV_Program TV Program]
+ * [tv__tv_program TV Program]
    * [Data_entry_TV_Program Data Entry for TV Program]
 
- * [TV_Season TV Season]
+ * [tv__tv_series_season TV Season]
    * [Data_entry_TV_Season Data Entry for TV Season]
 
- * [TV_Program_Creator TV Program Creator]
+ * [tv__tv_program_creator TV Program Creator]
    * [Data_entry_TV_Program_Creator Data Entry for TV Program Creator]
 
- * [TV_Genre TV Genre]
+ * [tv__tv_genre TV Genre]
    * [Data_entry_TV_Genre Data Entry for TV Genre]
 
- * [TV_Regular_Performance TV Regular Performance]
+ * [tv__regular_tv_performance TV Regular Performance]
    * [Data_entry_TV_Regular_Performance Data Entry for TV Regular Performance]
 
- * [TV_episode_performance TV episode performance]
+ * [tv__tv_guest_role TV episode performance]
    * [Data_entry_TV_episode_performance Data Entry for TV episode performance]
 
- * [TV_Episode TV Episode]
+ * [tv__tv_series_episode TV Episode]
    * [Data_entry_TV_Episode Data Entry for TV Episode]
 
- * [TV_Character TV Character]
+ * [tv__tv_character TV Character]
    * [Data_entry_TV_Character Data Entry for TV Character]
 
- * [TV_Actor TV Actor]
+ * [tv__tv_actor TV Actor]
    * [Data_entry_TV_Actor Data Entry for TV Actor]
 
- * [TV_Writer TV Writer]
+ * [tv__tv_writer TV Writer]
    * [Data_entry_TV_Writer Data Entry for TV Writer]
 
- * [TV_Director TV Director]
+ * [tv__tv_director TV Director]
    * [Data_entry_TV_Director Data Entry for TV Director]
 
- * [TV_Producer_term TV Producer term]
+ * [tv__producer_term TV Producer term]
    * [Data_entry_TV_Producer_term Data Entry for TV Producer term]
 
- * [TV_Producer TV Producer]
+ * [tv__tv_producer TV Producer]
    * [Data_entry_TV_Producer Data Entry for TV Producer]
 
- * [TV_Program_Duration_At_Network TV Program Duration At Network]
+ * [tv__tv_network_duration TV Program Duration At Network]
    * [Data_entry_TV_Program_Duration_At_Network Data Entry for TV Program Duration At Network]
 
- * [TV_Network TV Network]
+ * [tv__tv_network TV Network]
    * [Data_entry_TV_Network Data Entry for TV Network]
 
- * [Personal_appearance_role Personal appearance role]
+ * [tv__non_character_role Personal appearance role]
    * [Data_entry_Personal_appearance_role Data Entry for Personal appearance role]
 
- * [TV_episode_personal_appearance TV episode personal appearance]
+ * [tv__tv_guest_personal_appearance TV episode personal appearance]
    * [Data_entry_TV_episode_personal_appearance Data Entry for TV episode personal appearance]
 
- * [The_Colbert_Report_episode The Colbert Report episode]
+ * [tv__the_colbert_report_episode The Colbert Report episode]
    * [Data_entry_The_Colbert_Report_episode Data Entry for The Colbert Report episode]
 
- * [TV_regular_personal_appearance TV regular personal appearance]
+ * [tv__tv_regular_personal_appearance TV regular personal appearance]
    * [Data_entry_TV_regular_personal_appearance Data Entry for TV regular personal appearance]
 
- * [TV_Personality TV Personality]
+ * [tv__tv_personality TV Personality]
    * [Data_entry_TV_Personality Data Entry for TV Personality]
 
- * [TV_Producer_type TV Producer type]
+ * [tv__tv_producer_type TV Producer type]
    * [Data_entry_TV_Producer_type Data Entry for TV Producer type]
 
- * [Special_TV_performance_type Special TV performance type]
+ * [tv__special_tv_performance_type Special TV performance type]
    * [Data_entry_Special_TV_performance_type Data Entry for Special TV performance type]
 
- * [TV_crewmember TV crewmember]
+ * [tv__tv_crewmember TV crewmember]
    * [Data_entry_TV_crewmember Data Entry for TV crewmember]
 
- * [TV_crew_gig TV crew gig]
+ * [tv__tv_crew_gig TV crew gig]
    * [Data_entry_TV_crew_gig Data Entry for TV crew gig]
 
- * [TV_crew_role TV crew role]
+ * [tv__tv_crew_role TV crew role]
    * [Data_entry_TV_crew_role Data Entry for TV crew role]
 
- * [TV_producer_episode_credit TV producer episode credit]
-   * [Data_entry_TV_producer_episode_credit Data Entry for TV producer episode credit]
-
- * [TV_Rating TV Rating]
-   * [Data_entry_TV_Rating Data Entry for TV Rating]
-
- * [TV_Rating_System TV Rating System]
-   * [Data_entry_TV_Rating_System Data Entry for TV Rating System]
-
- * [TV_program_writer_relationship TV program-writer relationship]
-   * [Data_entry_TV_program_writer_relationship Data Entry for TV program-writer relationship]
-
- * [TV_theme_song TV theme song]
-   * [Data_entry_TV_theme_song Data Entry for TV theme song]
-
- * [Multipart_TV_episode Multipart TV episode]
-   * [Data_entry_Multipart_TV_episode Data Entry for Multipart TV episode]
-
- * [TV_program_guest TV program guest]
-   * [Data_entry_TV_program_guest Data Entry for TV program guest]
-
- * [TV_episode_segment TV episode segment]
-   * [Data_entry_TV_episode_segment Data Entry for TV episode segment]
-
- * [TV_segment_performance TV segment performance]
-   * [Data_entry_TV_segment_performance Data Entry for TV segment performance]
-
- * [TV_segment_personal_appearance TV segment personal appearance]
-   * [Data_entry_TV_segment_personal_appearance Data Entry for TV segment personal appearance]
-
- * [TV_segment_guest_appearance TV segment guest appearance]
-   * [Data_entry_TV_segment_guest_appearance Data Entry for TV segment guest appearance]
-
- * [Video Video]
-   * [Data_entry_Video Data Entry for Video]
-
- * [Video_host Video host]
-   * [Data_entry_Video_host Data Entry for Video host]
-
- * [Video_Type Video Type]
-   * [Data_entry_Video_Type Data Entry for Video Type]
-
- * [Sequence_of_tv_episode_segments Sequence of tv episode segments]
-   * [Data_entry_Sequence_of_tv_episode_segments Data Entry for Sequence of tv episode segments]
-
- * [TV_subject TV subject]
-   * [Data_entry_TV_subject Data Entry for TV subject]
-
- * [TV_soundtrack TV soundtrack]
-   * [Data_entry_TV_soundtrack Data Entry for TV soundtrack]
-
- * [TV_Location TV Location]
-   * [Data_entry_TV_Location Data Entry for TV Location]
-
- * [TV_song TV song]
-   * [Data_entry_TV_song Data Entry for TV song]
-
- * [TV_song_performer TV song performer]
-   * [Data_entry_TV_song_performer Data Entry for TV song performer]
-
- * [TV_episode_song_relationship TV episode song relationship]
-   * [Data_entry_TV_episode_song_relationship Data Entry for TV episode song relationship]
-
- * [TV_segment_song_relationship TV segment song relationship]
-   * [Data_entry_TV_segment_song_relationship Data Entry for TV segment song relationship]
+ * [tv__tv_producer_episode_credit TV producer episode credit]
+   
+ * [tv__tv_rating TV Rating]
+   
+ * [tv__tv_rating_system TV Rating System]
+   
+ * [tv__tv_program_writer_relationship TV program-writer relationship]
+   
+ * [tv__tv_theme_song TV theme song]
+   
+ * [tv__multipart_TV_episode Multipart TV episode]
+   
+ * [tv__tv_program_guest TV program guest]
+   
+ * [tv__tv_episode_segment TV episode segment]
+   
+ * [tv__tv_segment_performance TV segment performance]
+   
+ * [tv__tv_segment_personal_appearance TV segment personal appearance]
+   
+ * [tv__tv_segment_guest_appearance TV segment guest appearance]
+   
+ * [tv__video Video]
+   
+ * [tv__video_host Video host]
+   
+ * [tv__video_type Video Type]
+   
+ * [tv__sequence_of_tv_episode_segments Sequence of tv episode segments]
+   
+ * [tv__tv_subject TV subject]
+   
+ * [tv__tv_soundtrack TV soundtrack]
+   
+ * [tv__tv_Location TV Location]
+   
+ * [tv__tv_song TV song]
+  
+ * [tv__tv_song_performer TV song performer]
+   
+ * [tv__tv_episode_song_relationship TV episode song relationship]
+   
+ * [tv__tv_segment_song_relationship TV segment song relationship]
+   

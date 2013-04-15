@@ -7,199 +7,198 @@ This is  food and drink commons
 Here are the following types in Food and Drink Commons
 
  * [Cheese Cheese]	
-   * [Data_entry_Cheese Data Entry for Cheese]
+   
 
  * [Cheese_texture Cheese texture]	
-   * [Data_entry_Cheese_texture Data Entry for Cheese texture]
+  
 
  * [Cheese_certification Cheese certification]	
-   * [Data_entry_Cheese_certification Data Entry for Cheese certification]
+   
 
  * [Brewery_Brand_of_beer Brewery / Brand of beer]	
-   * [Data_entry_Brewery_Brand_of_beer Data Entry for Brewery / Brand of beer]
+   
 
  * [Beer_style Beer style]	
-   * [Data_entry_Beer_style Data Entry for Beer style]
+   
 
  * [Beer Beer]	
-   * [Data_entry_Beer Data Entry for Beer]
+   
 
  * [Tea Tea]	
-   * [Data_entry_Tea Data Entry for Tea]
+   
 
  * [Tea_type Tea type]	
-   * [Data_entry_Tea_type Data Entry for Tea type]
+   
 
  * [Bottled_water Bottled water]	
-   * [Data_entry_Bottled_water Data Entry for Bottled water]
+   
 
  * [Beverage_type Beverage type]	
-   * [Data_entry_Beverage type Data Entry for Beverage type]
+  
 
  * [Beverage Beverage]	
-   * [Data_entry_Beverage Data Entry for Beverage]
+   
 
  * [Candy_bar Candy bar]	
-   * [Data_entry_Candy_bar Data Entry for Candy bar]
+   
 
  * [Candy_bar_manufacturer Candy bar manufacturer]	
-   * [Data_entry_Candy_bar_manufacturer Data Entry for Candy bar manufacturer]
+   
 
  * [Cheese_milk_source Cheese milk source]	
-   * [Data_entry_Cheese_milk_source Data Entry for Cheese milk source]
+   
 
  * [Beer_Style_Category Beer Style Category]	
-   * [Data_entry_Beer_Style_Category Data Entry for Beer Style Category]
+   
 
  * [Dish Dish]	
-   * [Data_entry_Dish Data Entry for Dish]
+   
 
  * [Type_of_dish Type of dish]	
-   * [Data_entry_Type_of_dish Data Entry for Type of dish]
+  
 
  * [Ingredient Ingredient]	
-   * [Data_entry_Ingredient Data Entry for Ingredient]
+   
 
  * [Beer_country_region Beer country / region]	
-   * [Data_entry_Beer_country_region Data Entry for Beer country / region]
+   
 
  * [Beer_containment Beer containment]	
-   * [Data_entry_Beer_containment Data Entry for Beer containment]
+   
 
  * [Beer_container Beer container]	
-   * [Data_entry_Beer_container Data Entry for Beer container]
+   
 
  * [Restaurant Restaurant]	
-   * [Data_entry_Restaurant Data Entry for Restaurant]
+  
 
  * [Restaurant_chef_association Restaurant-chef association]	
-   * [Data_entry_Restaurant_chef_association Data Entry for Restaurant-chef association]
+   
 
  * [Chef Chef]	
-   * [Data_entry_Chef Data Entry for Chef]
+  
 
  * [Cuisine Cuisine]	
-   * [Data_entry_Cuisine Data Entry for Cuisine]
+   
 
  * [Blended_spirit Blended spirit]	
-   * [Data_entry_Blended_spirit Data Entry for Blended spirit]
+   
 
  * [Infused_spirit_style Infused spirit style]	
-   * [Data_entry_Infused_spirit_style Data Entry for Infused spirit style]
+   
 
  * [Spirit_bottler Spirit bottler]	
-   * [Data_entry_Spirit_bottler Data Entry for Spirit bottler]
-
+   
  * [Spirit_aging Spirit aging]	
-   * [Data_entry_Spirit_aging Data Entry for Spirit aging]
+  
 
  * [Fermentation_base Fermentation base]	
-   * [Data_entry_Fermentation_base Data Entry for Fermentation base]
+   
 
  * [Distilled_spirit_type Distilled spirit type]	
-   * [Data_entry_Distilled_spirit_type Data Entry for Distilled spirit type]
+   
 
  * [Spirit product manufacturer Spirit product manufacturer]	
-   * [Data_entry_Spirit product manufacturer Data Entry for Spirit product manufacturer]
+   
 
  * [Spirit-producing region Spirit-producing region]	
-   * [Data_entry_Spirit-producing region Data Entry for Spirit-producing region]
+   
 
  * [Distilled spirit Distilled spirit]	
-   * [Data_entry_Distilled spirit Data Entry for Distilled spirit]
+   
 
  * [Distillery Distillery]	
-   * [Data_entry_Distillery Data Entry for Distillery]
+   
 
  * [Infused spirit Infused spirit]	
-   * [Data_entry_Infused spirit Data Entry for Infused spirit]
+   
 
  * [Blended spirit style Blended spirit style]	
-   * [Data_entry_Blended spirit style Data Entry for Blended spirit style]
+   
 
  * [Appellation Appellation]	
-   * [Data_entry_Appellation Data Entry for Appellation]
+   
 
  * [Vineyard Vineyard]	
-   * [Data_entry_Vineyard Data Entry for Vineyard]
+   
 
  * [Wine color Wine color]	
-   * [Data_entry_Wine color Data Entry for Wine color]
+   
 
  * [Grape Variety Grape Variety]	
-   * [Data_entry_Grape Variety Data Entry for Grape Variety]
+   
 
  * [Fruit Source Fruit Source]	
-   * [Data_entry_Fruit Source Data Entry for Fruit Source]
+   
 
  * [Grape Variety Composition Grape Variety Composition]	
-   * [Data_entry_Grape Variety Composition Data Entry for Grape Variety Composition]
+ 
 
  * [Wine Producer Wine Producer]	
-   * [Data_entry_Wine Producer Data Entry for Wine Producer]
+   
 
  * [Wine Region Wine Region]	
-   * [Data_entry_Wine Region Data Entry for Wine Region]
+   
 
  * [Wine Type Wine Type]	
-   * [Data_entry_Wine Type Data Entry for Wine Type]
+   
 
  * [Wine Wine]	
-   * [Data_entry_Wine Data Entry for Wine]
+   
 
  * [Wine Sub-region Wine Sub-region ]	
-   * [Data_entry_Wine Sub-region Data Entry for Wine Sub-region]
+   
 
  * [Licensee tenure Licensee tenure]	
-   * [Data_entry_Licensee tenure Data Entry for Licensee tenure]
+   
 
  * [Drinking establishment licensee Drinking establishment licensee]	
-   * [Data_entry_Drinking establishment licensee Data Entry for Drinking establishment licensee]
+   
 
  * [Drinking establishment Drinking establishment]	
-   * [Data_entry_Drinking establishment Data Entry for Drinking establishment]
+   
 
  * [Drinking establishment type Drinking establishment type]	
-   * [Data_entry_Drinking establishment type Data Entry for Drinking establishment type]
+   
 
  * [Recipe author Recipe author]	
-   * [Data_entry_Recipe author Data Entry for Recipe author]
+   
 
  * [Diet follower  Diet follower]	
-   * [Data_entry_Diet follower Data Entry for Diet follower]
+   
 
  * [Culinary tool Culinary tool]	
-   * [Data_entry_Culinary tool Data Entry for Culinary tool]
+   
 
  * [Culinary measure Culinary measure]	
-   * [Data_entry_Culinary measure Data Entry for Culinary measure]
+   
 
  * [Recipe ingredient Recipe ingredient ]	
-   * [Data_entry_Recipe ingredient Data Entry for Recipe ingredient]
+   
 
  * [Diet Diet]	
-   * [Data_entry_Diet Data Entry for Diet]
+   
 
  * [Recipe Recipe]	
-   * [Data_entry_Recipe Data Entry for Recipe]
+   
 
  * [Recipe collection Food Recipe collection Food]	
-   * [Data_entry_Recipe collection Food Data Entry for Recipe collection Food]
+   
 
  * [Nutrient Nutrient]	
-   * [Data_entry_Nutrient Data Entry for Nutrient]
+   
 
  * [Nutrition Fact Nutrition Fact]	
-   * [Data_entry_Nutrition Fact Data Entry for Nutrition Fact]
+   
 
  * [Culinary Technique Culinary Technique]	
-   * [Data_entry_Culinary Technique Data Entry for Culinary Technique]
+  
 
  * [Wine style Wine style]	
-   * [Data_entry_Wine style Data Entry for Wine style]
+  
 
  * [Beer production Beer production]	
-   * [Data_entry_Beer production_ Data Entry for Beer production]
+   
 
  * [Dietary restriction Dietary restriction]	
-   * [Data_entry_Dietary restriction Data Entry for Dietary restriction]
+   

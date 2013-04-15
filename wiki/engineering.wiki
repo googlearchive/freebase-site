@@ -7,73 +7,67 @@ This is engineering commons
 Here are the following types in Engineering Commons
 
  * [Electric_current_type Electric current type]	
-   * [Data_entry_Electric_current_type Data Entry for Electric current type]
+   
 
  * [Material Material]
-   * [Data_entry_Material Data Entry for Material]
-
+   
  * [Signal_Modulation_Mode Signal Modulation Mode]	
-   * [Data_entry_Signal_Modulation_Mode Data Entry for Signal Modulation Mode]
+   
 
  * [Channel_access_method Channel access method]
-   * [Data_entry_Channel_access_method Data Entry for Channel access method]
+  
 
  * [Valvetrain_configuration Valvetrain configuration]
-   * [Data_entry_Valvetrain_configuration Data Entry for Valvetrain configuration]
+   
 
  * [Power_plug_standard_type Power plug standard type]
-   * [Data_entry_Power_plug_standard_type Data Entry for Power plug standard type]
+   
 
  * [Piston_configuration Piston configuration]
-   * [Data_entry_Piston_configuration Data Entry for Piston configuration]
+  
 
  * [Piston_engine Piston engine]
-   * [Data_entry_Piston_engine Data Entry for Piston engine]
+   
 
  * [Power_plug_standard Power plug standard]
-   * [Data_entry_Power_plug_standard Data Entry for Power plug standard]
+   
 
  * [Battery_size_cell_variation Battery size cell variation]
-   * [Data_entry_Battery_size_cell_variation Data Entry for Battery size cell variation]
+   
 
  * [Battery_size Battery size]
-   * [Data_entry_Battery_size Data Entry for Battery size]
+   
 
  * [Battery Battery]
-   * [Data_entry_Battery Data Entry for Battery]
+   
 
  * [Engine_cooling_method Engine cooling method]
-   * [Data_entry_Engine_cooling_method Data Entry for Engine cooling method]
 
  * [Engine Engine]
-   * [Data_entry_Engine Data Entry for Engine]
 
  * [Engine_designer Engine designer]
-   * [Data_entry_Engine_designer Data Entry for Engine designer]
 
  * [Fuel_delivery_method Fuel delivery method]
-   * [Data_entry_Fuel_delivery_method Data Entry for Fuel delivery method]
 
  * [Engine_category Engine category]
-   * [Data_entry_Engine_category Data Entry for Engine category]
 
  * [Location_with_mains_power Location with mains power]	
-   * [Data_entry_Location_with_mains_power Data Entry for Location with mains power]
+   
 
  * [Battery_cell_type Battery cell type]	
-   * [Data_entry_Battery_cell_type Data Entry for Battery cell type]
+   
 
  * [Reaction_engine Reaction engine]
-   * [Data_entry_Reaction_engine Data Entry for Reaction engine]
+   
 
  * [Engine_energy_source Engine energy source]
-   * [Data_entry_Engine_energy_source Data Entry for Engine energy source]
+   
 
  * [Material_Composition Material Composition]
-   * [Data_entry_Material_Composition Data Entry for Material Composition]
+   
 
  * [Battery_shape_format Battery shape format]
-   * [Data_entry_Battery_shape_format Data Entry for Battery shape format]
+   
 
  * [Mains_power Mains power]
-   * [Data_entry_Mains_power Data Entry for Mains power	]
+   

@@ -9,72 +9,49 @@ Here are the following types in Soccer Commons
 
  * [soccer__football world cup Football world cup]
    
-
  * [soccer__football-player Football player]
    
-
  * [soccer__football_team Football team]
    
-
  * [soccer__football_team_manager Football team manager]
    
-
  * [soccer__football_organization Football Organization]
    
-
  * [soccer__football_league Football League]
    
-
  * [soccer__football_award Football Competition]
    
-
- * [Football Position Football Position]	
+ * [soccer__football_position Football Position]	
   
-
- * [Football Roster Position Football Roster Position]
+ * [soccer__football_roster_position Football Roster Position]
    
-
- * [Football Match Football Match]
+ * [soccer__football_match Football Match]
    
-
- * [Football Goal Football Goal]
+ * [soccer__football_goal Football Goal]
    
-
- * [Football Player Match Participation Football Player Match Participation]
+ * [soccer__football_player_match_participation Football Player Match Participation]
    
-
- * [Football Disciplinary Action]	
+ * [soccer__football_disciplinary_action Football Disciplinary Action]	
    
-
- * [Football Disciplinary Punishment]		 
+ * [soccer__football_disciplinary_punishment Football Disciplinary Punishment]	
    
-
- * [Football Pitch]	
+ * [soccer__football_pitch Football Pitch]
    
-
- * [Football Team Management Tenure]	
+ * [soccer__football_team_management_tenure Football Team Management Tenure]	
    
-
- * [Football Team Manager Match Participation]	
+ * [soccer__football_team_manager_match_participation Football Team Manager Match Participation]	
    
-
- * [Football Referee]	
+ * [soccer__football_referee Football Referee]
    
-
- * [Football Player Substitution]
+ * [soccer__football_player_substitution Football Player Substitution]
    
-
- * [Football Player Transfer]	
+ * [soccer__football_player_transfer Football Player Transfer]
    
-
- * [Football Player Loan]	
+ * [soccer__football_player_loan Football Player Loan]
    
-
- * [Football League Participation]	
+ * [soccer__football_league_participation Football League Participation]
    
-
- * [Football League Season]	
+ * [soccer__football_league_season Football League Season]	
    
-
- * [Football League System]
+ * [soccer__football_league_system Football League System]
    

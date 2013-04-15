@@ -1,63 +1,107 @@
-#summary One-sentence summary of this page.
+#summary Different types in Sports Commons.
 
-= Introduction =
+= Sports Commons =
+This is sports commons
 
-Add your content here.
+=Types=
+Here are the following types in Sports Commons
 
+ * [sports__sports_team Sports Team]
 
-= Details =
+ * [sports__sports_facility Sports Facility]
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
-Sports Team	
-Sports Facility	
-Sports Team Owner	
-Sport	
-Sports Association	
-Sports League Championship Event
-Sports League Season	
-Sports League Award Winner	
-Sports League Award Type	
-Sports League Award	
-Sports League Championship	
-Handedness	
-Athlete	
-Sports League Draft	
-Sports League Draft Pick	
-Golfer	
-Mascot	
-Australian Rules Footballer	
-Cyclist	
-Triathlon	
-Sports Equipment	
-School sports team	
-Professional Sports Team	
-Defunct Sports Team	
-Sports Team Location	
-Sports official tenure	
-Sports official	
-Sports Team Season Record	
-Tournament event	
-Sport Medal	
-Multi-event tournament	
-Sport Country	
-Tournament event competitor	
-Competitor/competition relationship
-Competitor/country relationship	
-Tournament Team	
-Tournament event competition	
-Sports league participation	
-Sports played	
-Drafted athlete	
-Golf Facility Access	
-Golf Course	
-Golf Course Architect	
-Golf Facility	
-Fight song	
-Sports team roster	
-Sports position	
-Sports team coach	
-Sports team coach tenure	
-Coaching position	
+ * [sports__sports_team_owner Sports Team Owner]
+
+ * [sports__sport Sport]
+
+ * [sports__sports_league Sports Association]
+
+ * [sports__sports_championship_event Sports League Championship Event]
+
+ * [sports__sports_league_season Sports League Season]
+
+ * [sports__sports_award_winner Sports League Award Winner]
+
+ * [sports__sports_award_type Sports League Award Type]
+
+ * [sports__sports_award Sports League Award]
+
+ * [sports__sports_championship Sports League Championship]
+
+ * [sports__handedness Handedness]
+
+ * [sports__pro_athlete Athlete]
+
+ * [sports__sports_league_draft Sports League Draft]
+
+ * [sports__sports_league_draft_pick Sports League Draft Pick]
+
+ * [sports__golfer Golfer]
+
+ * [sports__mascot Mascot]
+
+ * [sports__australian_rules_footballer Australian Rules Footballer]
+
+ * [sports__cyclist Cyclist]
+
+ * [Triathlon Triathlon]
+
+ * [sports__sports_equipment Sports Equipment]
+
+ * [sports__school_sports_team School sports team]
+
+ * [sports__professional_sports_team Professional Sports Team]
+
+ * [sports__defunct_sports_team Defunct Sports Team]
+
+ * [sports__sports_team_location Sports Team Location]
+
+ * [sports__sports_official_tenure Sports official tenure]
+
+ * [sports__sports_official Sports official]
+
+ * [sports__sports_team_season_record Sports Team Season Record]
+
+ * [sports__tournament_event Tournament event]
+
+ * [sports__sport_medal Sport Medal]
+
+ * [sports__multi_event_tournament Multi-event tournament]
+
+ * [sports__sport_country Sport Country]
+
+ * [sports__tournament_event_competitor Tournament event competitor]
+
+ * [sports__competitor_competition_relationship Competitor/competition relationship]
+
+ * [sports__competitor_country_relationship Competitor/country relationship]
+
+ * [sports__tournament_team Tournament Team]
+
+ * [sports__Tournament event competition Tournament event competition]
+
+ * [sports__sports league participation Sports league participation]
+
+ * [sports__sports_played Sports played]
+
+ * [sports__drafted_athlete Drafted athlete]
+
+ * [sports__golf_club_access Golf Facility Access]
+
+ * [sports__golf_course Golf Course]
+
+ * [sports__golf_course_designer Golf Course Architect]
+
+ * [sports__golf_facility Golf Facility]
+
+ * [sports__fight_song Fight song]
+
+ * [sports__sports_team_roster Sports team roster]
+
+ * [sports__sports_position Sports position]
+
+ * [sports__sports_team_coach Sports team coach]
+
+ * [sports__sports_team_coach_tenure Sports team coach tenure]
+
+ * [sports__coaching position Coaching position]

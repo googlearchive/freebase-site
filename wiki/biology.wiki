@@ -7,151 +7,151 @@ This is biology commons
 Here are the following types in Biology Commons
 
  * [biology__protein Protein]
-   * [Data_entry_Protein Data Entry for Protein]
+  
 
  * [biology__chromosome Chromosome]
-   * [Data_entry_Chromosome Data Entry for Chromosome]
+   
 
  * [biology__cytogenetic_band Cytogenetic Band]
-   * [Data_entry_Cytogenetic_Band Data Entry for Cytogenetic Band]
+   
 
  * [biology__gene Gene]
-   * [Data_entry_Gene Data Entry for Gene]
+   
 
  * [biology__gene_group Gene Group]
-   * [Data_entry_Gene_Group Data Entry for Gene Group]
+   
 
  * [biology__gene_group_membership Gene Group Membership]
-   * [Data_entry_Gene_Group_Membership Data Entry for Gene Group Membership]
+   
 
  * [biology__gene_group_membership_evidence Gene Group Membership Evidence]
-   * [Data_entry_Gene_Group_Membership_Evidence Data Entry for Gene Group Membership Evidence]
+   
 
  * [biology__gene_ontology_data_source Gene Ontology Data Source]
-   * [Data_entry_Gene_Ontology_Data_Source Data Entry for Gene Ontology Data Source]
+   
 
  * [biology__gene_ontology_group Gene Ontology Group]
-   * [Data_entry_Gene_Ontology_Group Data Entry for Gene Ontology Group]
+   
 
  * [biology__gene_ontology_group_membership_evidence Gene Ontology Group Membership Evidence]
-   * [Data_entry_Gene_Ontology_Group_Membership_Evidence Data Entry for Gene Ontology Group Membership Evidence]
+   
 
  * [biology__gene_ontology_group_membership_evidence_type Gene Ontology Group Membership Evidence Type]
-   * [Data_entry_Gene_Ontology_Group_Membership_Evidence_Type Data Entry for Gene Ontology Group Membership Evidence Type]
+  
 
  * [biology__gene_ontology_group_type Gene Ontology Group Type]
-   * [Data_entry_Gene_Ontology Group Type Data Entry for Gene Ontology Group Type]
+   
 
  * [biology__genomic_locus Genomic Locus]
-   * [Data_entry_Genomic_Locus Data Entry for Genomic Locus]
+   
      
   * [biology__genome Genome]
-   * [Data_entry_Genome Data Entry for Genome]
+   
 
  * [biology__genome_build Genome Build]
-   * [Data_entry_Genome_Build Data Entry for Genome Build]
+ 
 
  * [biology__genome_curator Genome Curator]
-   * [Data_entry_Genome_Curator Data Entry for Genome Curator]
+  
 
  * [biology__organism_classification Organism Classification]
-   * [Data_entry_Organism_Classification Data Entry for Organism Classification]
+   
 
  * [biology__organism_classification_rank Organism Classification Rank]
-   * [Data_entry_Organism_Classification_Rank Data Entry for Organism Classification Rank]
+   
 
  * [biology__organism Organism]
-   * [Data_entry_Organism Data Entry for Organism]
+   
 
  * [biology__deceased_organism Deceased Organism]
-   * [Data_entry_Deceased_Organism Data Entry for Deceased Organism]
+   
 
  * [biology__amino_acid Amino Acid]
-   * [Data_entry_Amino_Acid Data Entry for Amino Acid]
+   
 
  * [biology__animal Animal]
-   * [Data_entry_Animal Data Entry for Animal]
+   
 
  * [biology__fossil_site Fossil site]
-   * [Data_entry_Fossil_site Data Entry for Fossil site]
+   
 
  * [biology__fossil_specimen Fossil specimen]
-   * [Data_entry_Fossil_specimen Data Entry for Fossil specimen]
+  
 
  * [biology__domesticated_animal Domesticated animal]
-   * [Data_entry_Domesticated_animal Data Entry for Domesticated animal]
+  
 
  * [biology__pedigreed_animal Pedigreed animal]	
-   * [Data_entry_Pedigreed_animal Data Entry for Pedigreed animal]
+   
 
  * [biology__animal_breed Animal breed]
-   * [Data_entry_Animal_breed Data Entry for Animal breed]
+   
 
  * [biology__breed_origin Breed origin]
-   * [Data_entry_Breed_origin Data Entry for Breed origin]
+   
 
  * [biology__breed_registration Breed registration]	
-   * [Data_entry_Breed_registration Data Entry for Breed registration]
+   
 
  * [biology__breed_registry Breed registry]	
-   * [Data_entry_Breed_registry Data Entry for Breed registry]
+   
 
  * [biology__owned_animal Owned animal]
-   * [Data_entry_Owned_animal Data Entry for Owned animal]
+   
 
  * [biology__animal_owner Animal owner] 
-   * [Data_entry_Animal_owner Data Entry for Animal owner]
+   
 
  * [biology__animal_ownership Animal ownership]
-   * [Data_entry_Animal_ownership Data Entry for Animal ownership]
+   
 
  * [biology__breed_group Breed group]
-   * [Data_entry_Breed_group Data Entry for Breed group]
+   
 
  * [biology__organism_classification_placement Organism Classification Placement]
-   * [Data_entry_Organism_Classification_Placement Data Entry for Organism Classification Placement]
+   
 
  * [biology__taxonomic_authority Taxonomic Authority]
-   * [Data_entry_Taxonomic_Authority Data Entry for Taxonomic Authority]
+   
 
  * [biology__hybrid_parent_classification Hybrid parent classification]
-   * [Data_entry_Hybrid_parent_classification Data Entry for Hybrid parent classification]
+   
 
  * [biology__informal_biological_grouping Informal biological grouping]
-   * [Data_entry_Informal_biological_grouping Data Entry for Informal biological grouping]
+   
 
  * [biology__hybrid Hybrid]
-   * [Data_entry_Hybrid Data Entry for Hybrid]
+   
 
  * [biology__hybrid_parent_gender Hybrid parent gender]
-   * [Data_entry_Hybrid_parent_gender Data Entry for Hybrid parent gender]
+   
 
  * [biology__hybrid_parentage Hybrid parentage]
-   * [Data_entry_Hybrid_parentage Data Entry for Hybrid parentage]
+   
 
  * [biology__plant_disease Plant Disease]
-   * [Data_entry_Plant_Disease Data Entry for Plant Disease]
+   
 
  * [biology__plant_disease_cause Plant Disease Cause]
-   * [Data_entry_Plant_Disease_Cause Data Entry for Plant Disease Cause]
+   
 
  * [biology__plant_disease_triangle Plant Disease Triangle]
-   * [Data_entry_Plant_Disease_Triangle Data Entry for Plant Disease Triangle]
+   
 
  * [biology__plant_disease_conditions Plant Disease Conditions]
-   * [Data_entry_Plant_Disease_Conditions Data Entry for Plant Disease Conditions]
+   
 
  * [biology__plant_disease_host Plant Disease Host]
-   * [Data_entry_Plant_Disease_Host Data Entry for Plant Disease Host]
+   
 
  * [biology__plant_disease_documentation Plant disease documentation]	
-   * [Data_entry_Plant_disease_documentation Data Entry for Plant disease documentation]
+   
 
  * [biology__organism_part Organism part]
-   * [Data_entry_Organism_part Data Entry for Organism part]
+   
 
  * [biology__source_organism Source organism]
-   * [Data_entry_Source_organism Data Entry for Source organism]
+   
 
  * [biology__taxon_with_sequenced_genome Taxon with Sequenced Genome]
-   * [Data_entry_Taxon_with_Sequenced_Genome Data Entry for Taxon with Sequenced Genome]
+   

@@ -7,9 +7,9 @@ This is soccer commons
 Here are the following types in Soccer Commons
 
 
- * [soccer__football world cup Football world cup]
+ * [soccer__football_world_cup Football world cup]
    
- * [soccer__football-player Football player]
+ * [soccer__football_player Football player]
    
  * [soccer__football_team Football team]
    

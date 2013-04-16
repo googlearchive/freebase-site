@@ -8,61 +8,61 @@ Here are the following types in Boats Commons
 
 
  * [boats__ship_builder Ship Builder]
-   * [Data_entry_Ship_Builder Data Entry for Ship Builder]
+   
 
  * [boats__ship_designer Ship Designer]
-   * [Data_entry_Ship_Designer Data Entry for Ship Designer]
+  
 
  * [boats__boat_disposition Boat Disposition]
-   * [Data_entry_Boat_Disposition Data Entry for Boat Disposition]
+   
 
  * [boats__boat_fate Boat Fate ]
-   * [Data_entry_Boat_Fate Data Entry for Boat Fate]
+   
 
  * [boats__warship_armament Warship Armament]
-   * [Data_entry_Warship_Armament Data Entry for Warship Armament]
+   
 
  * [boats__warship_service_period Warship Service Period]
-   * [Data_entry_Warship_Service_Period Data Entry for Warship Service Period]
+   
 
  * [boats__hull_configuration Hull Configuration]
-   * [Data_entry_Hull_Configuration Data Entry for Hull Configuration]
+   
 
  * [boats__ship_class Ship class]
-   * [Data_entry_Ship_class Data Entry for Ship class]
+   
 
  * [boats__ship_powerplant_system Ship Powerplant System]
-   * [Data_entry_Ship_Powerplant_System Data Entry for Ship Powerplant System]
+   
 
  * [boats__ship_powerplant Ship Powerplant]
-   * [Data_entry_Ship_Powerplant Data Entry for Ship Powerplant]
+   
 
  * [boats__engine Engine]
-   * [Data_entry_Engine Data Entry for Engine]
+   
 
  * [boats__nuclear_powerplant Nuclear Powerplant]
-   * [Data_entry_Nuclear_Powerplant Data Entry for Nuclear Powerplant]
+   
 
  * [boats__motor Motor]
-   * [Data_entry_Motor Data Entry for Motor]
+ 
 
  * [boats__engine_fuel Engine Fuel]
-   * [Data_entry_Engine_Fuel Data Entry for Engine Fuel]
+   
 
  * [boats__ship_type Ship type]
-   * [Data_entry_Ship_type Data Entry for Ship type]
+ 
 
  * [boats__ship Ship]
-   * [Data_entry_Ship Data Entry for Ship]
+   
 
  * [boats__means_of_propulsion Means of propulsion]
-   * [Data_entry_Means_of_propulsion Data Entry for Means of propulsion]
+   
 
  * [boats__hull_material Hull material]
-   * [Data_entry_Hull_material Data Entry for Hull material]
+   
 
  * [boats__ship_ownership Ship ownership]
-   * [Data_entry_Ship_ownership Data Entry for Ship ownership]
+   
 
  * [boats__ship_owner Ship owner]
-   * [Data_entry_Ship_owner Data Entry for Ship owner]
+   

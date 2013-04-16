@@ -14,32 +14,23 @@ Here are the following types in Visual Arts Commons
 
  * [visual_art__art_period_movement Art Period/Movement]	
    
-
  * [visual_art__color Color]
    
-
  * [visual_art__visual_artist Visual Artist]
   
-
  * [visual_art__artwork Artwork]	
    
-
  * [visual_art__visual_art_genre Visual Art Genre]	
  
-
  * [visual_art__art_subject Art Subject]	
    
-
  * [visual_art__artwork_location_relationship Artwork/location relationship]	
    
-
  * [visual_art__artwork_owner_relationship Artwork/owner relationship]	
   
-
  * [visual_art__art_acquisition_method Art acquisition method]	
    
  * [visual_art__art_series Art Series]	
    
-
  * [visual_art__visual_art_support Visual art support]
    

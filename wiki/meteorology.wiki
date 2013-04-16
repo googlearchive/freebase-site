@@ -8,28 +8,25 @@ Here are the following types in Commons
 
 
  * [Tropical_Cyclone Tropical Cyclone]
-   * [Data_entry_Tropical_Cyclone Data Entry for Tropical Cyclone]
 
  * [Tropical_cyclone_season Tropical cyclone season]
-   * [Data_entry_Tropical_cyclone_season Data Entry for Tropical cyclone season]
 
  * [Tropical_cyclone_category Tropical cyclone category]
-   * [Data_entry_Tropical_cyclone_category Data Entry for Tropical cyclone category]
-
+   
  * [Cloud Cloud]
-   * [Data_entry_Cloud Data Entry for Cloud]
+  
 
  * [Cloud_classification Cloud classification]
-   * [Data_entry_Cloud_classification Data Entry for Cloud classification]
+  
 
  * [Meteorological_service Meteorological service]
-   * [Data_entry_Meteorological_service Data Entry for Meteorological service]
+  
  
  * [Beaufort_Wind_Force Beaufort Wind Force]
-   * [Data_entry_Beaufort_Wind_Force Data Entry for Beaufort Wind Force]
+   
 
  * [Cyclone_affected_area Cyclone-affected area]
-   * [Data_entry_Cyclone_affected_area Data Entry for Cyclone-affected area]
+   
 
  * [Forecast_Zone Forecast Zone]
-   * [Data_entry_Forecast_Zone Data Entry for Forecast Zone]
+   

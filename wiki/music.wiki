@@ -12,189 +12,128 @@ Here are the following types in Music Commons
  * [music__recording_contribution Musical Contribution]	
    
  * [music__recording Musical Recording]
-  
 
  * [music__album Musical Album]
-   * 
 
  * [music__album_release_type Musical Album Type]
-   
 
  * [music__artist Musical Artist]
-   
 
  * [music__genre Musical genre]
-   
 
  * [music__group_member Musician]
-  
 
  * [music__instrument Musical instrument]
-   
 
  * [music__performance_role Musical Performance Role]
-  
 
  * [music__record_label Record label]
-   
 
  * [music__voice Musical voice]
-   
 
  * [music__conductor Conductor]
-   
 
  * [music__guitar Guitar]
-   
 
  * [music__musical_instrument_company Musical instrument company]
-   
 
  * [music__drummer Drummer]
-   
 
  * [music__musical_scale Musical scale]
-   
 
  * [music__producer Record Producer]
-   
 
  * [music__opera_singer Opera singer]
-   
 
  * [music__festival Music Festival]
-   
 
  * [music__concert_tour Concert tour]
-   * 
 
  * [music__synthesizer Synthesizer]
-   
 
  * [music__bassist Bassist]
-   
 
  * [music__soundtrack Soundtrack]
-   
 
  * [music__composer Composer]
-   
 
  * [music__musical_chord Musical chord]
-   
 
  * [music__orchestra Orchestra]
-   
 
  * [music__guitarist Guitarist]
-   
 
  * [music__songwriter Songwriter]
-   
 
  * [music__release Musical Release]
-   
 
  * [music__composition Composition]
-    
 
  * [music__arrangement Arrangement]
-   
 
  * [music__lyricist Lyricist]
-   
 
  * [music__musical_group Musical Group]
-   
 
  * [music__multipart_release Multi-Part Musical Release]
    
  * [music__release_component Musical Release Component]	
-   
 
  * [music__engineer Recording Engineer]
-   
  
  * [music__track_contribution Track Contribution]
-    
 
  * [music__media_format Media Format]
-   
 
  * [music__conducted_ensemble Conducted Ensemble]	
-   
 
  * [music__conducting_tenure Conducting Tenure]	
-   
 
  * [music__compositional_form Composition type]
-   
 
  * [music__performance_venue Concert Performance Venue]
-   
 
  * [music__concert_film Concert Film]
-   
 
  * [music__concert_performance Concert Performance]
+
+ * [music__tour_manager Tour Manager]
+
+ * [music__concert_performance_role Concert Performance Role]
+
+ * [music__concert Concert]
+
+ * [music__concert_set_list Concert Set List]
+
+ * [music__live_album Live Album]
+
+ * [music__single Canonical Version]
+
+ * [music__music_video_gig Music video gig]
+
+ * [music__music_video_crewmember Music video crewmember]
+
+ * [music__music_video_character Music video character]
+
+ * [music__music_video_subject Music video subject] 
+
+ * [music__music_video_choreographer Music video choreographer]
    
-
- * [Tour_Manager Tour Manager]
+ * [music__music_video_genre Music video genre]
    
-
- * [Concert_Performance_Role Concert Performance Role]
+ * [music__special_music_video_performance_type Special music video performance type]		 
    
-
- * [Concert Concert]
+ * [music__music_video Music video]
    
-
- * [Concert_Set_List Concert Set List]
+ * [music__music_video_job Music video job]
    
-
- * [Live_Album Live Album]
+ * [music__music_video_director Music video director]
    
-
- * [Canonical_Version Canonical Version]
+ * [music__music_video_performance Music video performance]
    
-
- * [Music_video_gig Music video gig]
+ * [music__music_video_performer Music video performer]
    
-
- * [Music_video_crewmember Music video crewmember]
+ * [music__release_track Release track]
    
-
- * [Music_video_character Music video character]
-   
-
- * [Music_video_subject Music video subject] 
- 
-
- * [Music_video_choreographer Music video choreographer]
-   
-
- * [Music_video_genre Music video genre]
-   
-
- * [Special_music_video_performance_type Special music video performance type]		 
-   
-
- * [Music_video Music video]
-   
-
- * [Music_video_job Music video job]
-   
-
- * [Music_video_director Music video director]
-   
-
- * [Music_video_performance Music video performance]
-   
-
- * [Music_video_performer Music video performer]
-   
-
- * [Release_track Release track]
-   
-
- * [Musical_tribute_act Musical tribute act]
+ * [music__musical_tribute_act Musical tribute act]
    

@@ -6,43 +6,31 @@ This is  games commons
 =Types=
 Here are the following types in games Commons
 
- * [Game_publisher Game publisher]
+ * [games__game_publisher Game publisher]
    
+ * [games__game Game]
 
- * [Game Game]
-
- * [Game_genre Game genre]
+ * [games__game_genre Game genre]
    
-
- * [Game_designer Game designer]
+ * [games__game_designer Game designer]
    
-
- * [Playing_card_game Playing card game]
+ * [games__playing_card_game Playing card game]
    
-
- * [Playing_card_deck_type Playing card deck type]
+ * [games__playing_card_deck_type Playing card deck type]
    
-
- * [Playing_card_game_play_direction Playing card game play direction]
+ * [games__playing_card_game_play_direction Playing card game play direction]
    
-
- * [Chess_Game_Participation Chess Game Participation]
+ * [games__chess_game_participation Chess Game Participation]
    
-
- * [Chess_Color Chess Color]
+ * [games__chess_color Chess Color]
+  
+ * [games__chess_game Chess Game]
    
-
- * [Chess_Game Chess Game]
+ * [games__chess_game_outcome Chess Game Outcome]
    
-
- * [Chess_Game_Outcome Chess Game Outcome]
+ * [games__chess_player Chess Player]
    
-
- * [Chess_Player Chess Player]
+ * [games__chess_move Chess Move]
    
-
- * [Chess_Move Chess Move]
-   
-
- * [Game_expansion Game expansion]
+ * [games__game_expansion Game expansion]
    

@@ -6,29 +6,29 @@ This is Fashion, Clothing and Textile commons
 =Types=
 Here are the following types in Fashion, Clothing and Textile Commons
 
- * [Clothing_size Clothing size]
+ * [fashion__clothing_size Clothing size]
    
 
- * [Garment Garment]
+ * [fashion__garment Garment]
    
 
- * [Textile Textile]
+ * [fashion__textile Textile]
    
 
- * [Weave Weave]
+ * [fashion__weave Weave]
    
 
- * [Fashion_category Fashion category]
+ * [fashion__fashion_category Fashion category]
    
 
- * [Fashion_week Fashion week]
+ * [fashion__fashion_week Fashion week]
    
 
- * [Fashion_designer Fashion designer]
+ * [fashion__fashion_designer Fashion designer]
   
 
- * [Fashion_label Fashion label]
+ * [fashion__fashion_label Fashion label]
    
 
- * [Designer_label_association Designer-label association]
+ * [fashion__designer_label_association Designer-label association]
  

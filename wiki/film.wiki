@@ -7,150 +7,146 @@ This is film commons
 Here are the following types in Film Commons
 
 
- * [https://code.google.com/p/freebase-site/source/browse/wiki/american_football/football_player.wiki film]
- 
- * [http://freebase-site.googlecode.com/svn/wiki/american_football/football_player.wiki film]
-
- * [Film Film]
+ * [film__film Film]
    * [Data_entry_Film Data Entry for Film] 
 
- * [Film_rating Film rating]
+ * [film__content_rating Film rating]
    * [Data_entry_Film_rating Data Entry for Film rating] 
 
- * [Film_director Film director]
+ * [film__director Film director]
    * [Data_entry_Film_director Data Entry for Film director] 
 
- * [Film_producer Film producer]
+ * [film__producer Film producer]
    * [Data_entry_Film_producer Data Entry for Film producer] 
 
- * [Film_writer Film writer]
+ * [film__writer Film writer]
    * [Data_entry_Film_writer Data Entry for Film writer] 
 
- * [Film_cinematographer Film cinematographer]
+ * [film__cinematographer Film cinematographer]
    * [Data_entry_Film_cinematographer Data Entry for Film cinematographer]
 
- * [Film_editor Film editor]
+ * [film__editor Film editor]
    * [Data_entry_Film_editor Data Entry for Film editor] 
 
- * [Film_music_contributor Film music contributor]
+ * [film__music_contributor Film music contributor]
    * [Data_entry_Film_music_contributor Data Entry for Film music contributor]
 
- * [Film_actor Film actor]
+ * [film__actor Film actor]
    * [Data_entry_Film_actor Data Entry for Film actor] 
 
- * [Film_rating_system Film rating system]
+ * [film__content_rating_system Film rating system]
    * [Data_entry_Film_rating_system Data Entry for Film rating system]
 
- * [Film_cut Film cut]
+ * [film__film_cut Film cut]
    * [Data_entry_Film_cut Data Entry for Film cut] 
 
- * [Film_collection Film collection]
+ * [film__film_collection Film collection]
    * [Data_entry_Film_collection Data Entry for Film collection]
 
- * [Film_theorist Film theorist]
+ * [film__film_theorist Film theorist]
    * [Data_entry_Film_theorist Data Entry for Film theorist] 
 
- * [Film_festival Film festival]
+ * [film__film_festival Film festival]
    * [Data_entry_Film_festival Data Entry for Film festival]
 
- * [Film_company Film company]
+ * [film__film_company Film company]
    * [Data_entry_Film_company Data Entry for Film company] 
 
- * [Film_job Film job]
+ * [film__film_job Film job]
    * [Data_entry_Film_job Data Entry for Film job] 
 
- * [Film_critic Film critic]
+ * [film__film_critic Film critic]
    * [Data_entry_Film_critic Data Entry for Film critic] 
 
- * [Film_series Film series]
+ * [film__film_series Film series]
    * [Data_entry_Film_series Data Entry for Film series] 
 
- * [Film_format Film format]
+ * [film__film_format Film format]
    * [Data_entry_Film_format Data Entry for Film format] 
 
- * [Film_genre Film genre]
+ * [film__film_genre Film genre]
    * [Data_entry_Film_genre Data Entry for Film genre] 
 
- * [Filming_location Filming location]
+ * [film__film_location Filming location]
    * [Data_entry_Filming_location Data Entry for Filming location]
 
- * [Film_story_contributor Film story contributor]
+ * [film__film_story_contributor Film story contributor]
    * [Data_entry_Film_story_contributor Data Entry for Film story contributor]
 
- * [Film_subject Film subject]
+ * [film__film_subject Film subject]
    * [Data_entry_Film_subject Data Entry for Film subject] 
 
- * [Film_character Film character]
+ * [film__film_character Film character]
    * [Data_entry_Film_character Data Entry for Film character] 
 
- * [Special_film_performance_type Special film performance type]
+ * [film__special_film_performance_type Special film performance type]
    * [Data_entry_Special_film_performance_type Data Entry for Special film performance type]
 
- * [Personal_film_appearance Personal film appearance]
+ * [film__personal_film_appearance Personal film appearance]
    * [Data_entry_Personal_film_appearance Data Entry for Personal film appearance]
 
- * [Film_crew_gig Film crew gig]
+ * [film_crew_gig Film crew gig]
    * [Data_entry_Film_crew_gig Data Entry for Film crew gig] 
 
- * [Film_distributor Film distributor]
+ * [film__film_distributor Film distributor]
    * [Data_entry_Film_distributor Data Entry for Film distributor]
 
- * [Film_Film_company_relationship Film-Film company relationship]
+ * [film__film_film_company_relationship Film-Film company relationship]
    * [Data_entry_Film_Film_company_relationship Data Entry for Film-Film company relationship]
 
- * [Film_Film_distributor_relationship Film-Film distributor relationship]
+ * [film__film_film_distributor_relationship Film-Film distributor relationship]
    * [Data_entry_Film_Film_distributor_relationship Data Entry for Film-Film distributor relationship]
 
- * [Production_company Production company]
+ * [film__production_company Production company]
    * [Data_entry_Production_company Data Entry for Production company]
 
- * [Film_distribution_medium Film distribution medium]
+ * [film__film_distribution_medium Film distribution medium]
    * [Data_entry_Film_distribution_medium Data Entry for Film distribution medium] 
 
- * [Film_company_role_or_service Film company role or service]
+ * [film__film_company_role_or_service Film company role or service]
    * [Data_entry_Film_company_role_or_service Data Entry for Film company role or service] 
 
- * [Film_regional_release_date Film regional release date]
+ * [film__film_regional_release_date Film regional release date]
    * [Data_entry_Film_regional_release_date Data Entry for Film regional release date]
 
- * [Film_screening_venue Film screening venue]
+ * [film__film_screening_venue Film screening venue]
    * [Data_entry_Film_screening_venue Data Entry for Film screening venue]
 
- * [Film_festival_event Film festival event]
+ * [film__film_festival_event Film festival event]
    * [Data_entry_Film_festival_event Data Entry for Film festival event]
 
- * [Film_festival_sponsorship Film festival sponsorship]
+ * [film__film_festival_sponsorship Film festival sponsorship]
    * [Data_entry_Film_festival_sponsorship Data Entry for Film festival sponsorship]
 
- * [Film_festival_sponsor Film festival sponsor]
+ * [film__film_festival_sponsor Film festival sponsor]
    * [Data_entry_Film_festival_sponsor Data Entry for Film festival sponsor]
 
- * [Film_festival_focus Film festival focus]
+ * [film__film_festival_focus Film festival focus]
    * [Data_entry_Film_festival_focus Data Entry for Film festival focus]
 
- * [Film_featured_song Film featured song]
+ * [film__film_featured_song Film featured song]
    * [Data_entry_Film_featured_song Data Entry for Film featured song]
 
- * [Film_casting_director Film casting director]
+ * [film__film_casting_director Film casting director]
    * [Data_entry_Film_casting_director Data Entry for Film casting director]
 
- * [Film_production_designer Film production designer]
+ * [film__film_production_designer Film production designer]
    * [Data_entry_Film_production_designer Data Entry for Film production designer]
 
- * [Film_art_director Film art director]
+ * [film__film_art_director Film art director]
    * [Data_entry_Film_art_director Data Entry for Film art director]
 
- * [Film_set_decorator Film set decorator]
+ * [film__film_set_designer Film set decorator]
    * [Data_entry_Film_set_decorator Data Entry for Film set decorator]
 
- * [Person_or_entity_appearing_in_film Person or entity appearing in film]
+ * [film__person_or_entity_appearing_in_film Person or entity appearing in film]
    * [Data_entry_Person_or_entity_appearing_in_film Data Entry for Person or entity appearing in film]
 
- * [Film_song_relationship Film song relationship]
+ * [film__film_song_relationship Film song relationship]
    * [Data_entry_Film_song_relationship Data Entry for Film song relationship]
 
- * [Film_song_performer Film song performer]
+ * [film__film_song_performer Film song performer]
    * [Data_entry_Film_song_performer Data Entry for Film song performer]
 
- * [Film_song Film song]
+ * [film__film_song Film song]
    * [Data_entry_Film_song Data Entry for Film song]

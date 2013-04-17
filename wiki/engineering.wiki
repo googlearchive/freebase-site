@@ -6,68 +6,51 @@ This is engineering commons
 =Types=
 Here are the following types in Engineering Commons
 
- * [Electric_current_type Electric current type]	
+ * [engineering__electric_current_type Electric current type]	
    
-
- * [Material Material]
+ * [engineering__material Material]
    
- * [Signal_Modulation_Mode Signal Modulation Mode]	
+ * [engineering__signal_modulation_mode Signal Modulation Mode]	
    
-
- * [Channel_access_method Channel access method]
+ * [engineering__channel_access_method Channel access method]
   
-
- * [Valvetrain_configuration Valvetrain configuration]
+ * [engineering__valvetrain_configuration Valvetrain configuration]
    
-
- * [Power_plug_standard_type Power plug standard type]
+ * [engineering__power_plug_standard_type Power plug standard type]
    
+ * [engineering__piston_configuration Piston configuration]
 
- * [Piston_configuration Piston configuration]
+ * [engineering__piston_engine Piston engine]
+   
+ * [engineering__power_plug_standard Power plug standard]
   
-
- * [Piston_engine Piston engine]
+ * [engineering__battery_size_cell_variation Battery size cell variation]
    
-
- * [Power_plug_standard Power plug standard]
+ * [engineering__battery_size Battery size]
    
-
- * [Battery_size_cell_variation Battery size cell variation]
+ * [engineering__battery Battery]
    
+ * [engineering__engine_cooling_method Engine cooling method]
 
- * [Battery_size Battery size]
+ * [engineering__engine Engine]
+
+ * [engineering__engine_designer Engine designer]
+
+ * [engineering__fuel_delivery_method Fuel delivery method]
+
+ * [engineering__engine_category Engine category]
+
+ * [engineering__location_with_mains_power Location with mains power]	
    
-
- * [Battery Battery]
+ * [engineering__battery_cell_type Battery cell type]	
    
-
- * [Engine_cooling_method Engine cooling method]
-
- * [Engine Engine]
-
- * [Engine_designer Engine designer]
-
- * [Fuel_delivery_method Fuel delivery method]
-
- * [Engine_category Engine category]
-
- * [Location_with_mains_power Location with mains power]	
+ * [engineering__reaction_engine Reaction engine]
    
-
- * [Battery_cell_type Battery cell type]	
+ * [engineering__engine_energy_source Engine energy source]
    
-
- * [Reaction_engine Reaction engine]
+ * [engineering__material_composition Material Composition]
    
-
- * [Engine_energy_source Engine energy source]
+ * [engineering__battery_shape_format Battery shape format]
    
-
- * [Material_Composition Material Composition]
-   
-
- * [Battery_shape_format Battery shape format]
-   
-
- * [Mains_power Mains power]
+ * [engineering__mains_power Mains power]
    

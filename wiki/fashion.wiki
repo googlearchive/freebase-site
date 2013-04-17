@@ -7,30 +7,28 @@ This is Fashion, Clothing and Textile commons
 Here are the following types in Fashion, Clothing and Textile Commons
 
  * [Clothing_size Clothing size]
-   * [Data_entry_Clothing_size Data Entry for Clothing size]
+   
 
  * [Garment Garment]
-   * [Data_entry_Garment Data Entry for Garment]
+   
 
  * [Textile Textile]
-   * [Data_entry_Textile Data Entry for Textile]
+   
 
  * [Weave Weave]
-   * [Data_entry_Weave Data Entry for Weave]
+   
 
  * [Fashion_category Fashion category]
-   * [Data_entry_Fashion_category Data Entry for Fashion category]
+   
 
  * [Fashion_week Fashion week]
-   * [Data_entry_Fashion_week Data Entry for Fashion week]
+   
 
  * [Fashion_designer Fashion designer]
-   * [Data_entry_Fashion_designer Data Entry for Fashion designer]
+  
 
  * [Fashion_label Fashion label]
-   * [Data_entry_Fashion_label Data Entry for Fashion label]
+   
 
  * [Designer_label_association Designer-label association]
-   * [Data_entry_Designer_label_association Data Entry for Designer-label association]
-
-
+ 

@@ -6,8 +6,7 @@ This is geology commons
 =Types=
 Here are the following types in Geology Commons
 
- * [Rock_type Rock type]
+ * [geology__rock_type Rock type]
    
-
- * [Geological_formation Geological formation]
+ * [geology__geological_formation Geological formation]
    

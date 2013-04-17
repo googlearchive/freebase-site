@@ -7,8 +7,8 @@ This is influence commons
 Here are the following types in Influence Commons
 
 
- * [Influence_Node Influence Node]
+ * [influence__influence_node Influence Node]
    
 
- * [Peer_Relationship Peer Relationship]
+ * [influence__peer_relationship Peer Relationship]
    

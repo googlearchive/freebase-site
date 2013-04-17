@@ -8,46 +8,46 @@ Here are the following types in Internet Commons
 
 
  * [Website Website]
-   * [Data_entry_Website Data Entry for Website]
+   
 
  * [Blog Blog]
-   * [Data_entry_Blog Data Entry for Blog]
+   
 
  * [Blogger Blogger]
-   * [Data_entry_Blogger Data Entry for Blogger]
+   
 
  * [Website_Category Website Category]
-   * [Data_entry_Website_Category Data Entry for Website Category]
+   
 
  * [API API]
-   * [Data_entry_API Data Entry for API]
+   
 
  * [Protocol Protocol]
-   * [Data_entry_Protocol Data Entry for Protocol]
+   
 
  * [Website_Status Website Status]
-   * [Data_entry_Website_Status Data Entry for Website Status]
+  
 
  * [Top_Level_Domain Top Level Domain]
-   * [Data_entry_Top_Level_Domain Data Entry for Top Level Domain]
+   
 
  * [Top_Level_Domain_Sponsor Top Level Domain Sponsor]
-   * [Data_entry_Top_Level_Domain_Sponsor Data Entry for Top Level Domain Sponsor]
+   
 
  * [Top_Level_Domain_Status Top Level Domain Status]
-   * [Data_entry_Top_Level_Domain_Status Data Entry for Top Level Domain Status]
+   
 
  * [Top_Level_Domain_Registry Top Level Domain Registry]
-   * [Data_entry_Top_Level_Domain_Registry Data Entry for Top Level Domain Registry]
+   
 
  * [Top_Level_Domain_Type_Top Level Domain Type]
-   * [Data_entry_Top_Level_Domain_Type Data Entry for Top Level Domain Type]
+  
 
  * [Website_Owner Website Owner]
-   * [Data_entry_Website_Owner Data Entry for Website Owner]
+  
 
  * [Social_network_user Social network user]	
-   * [Data_entry_Social_network_user Data Entry for Social network user]
+   
 
  * [Website_ownership Website ownership]
-   * [Data_entry_Website_ownership Data Entry for Website ownership]
+   

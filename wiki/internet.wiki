@@ -7,47 +7,32 @@ This is internet commons
 Here are the following types in Internet Commons
 
 
- * [Website Website]
-   
+ * [internet__website Website]   
 
- * [Blog Blog]
-   
+ * [internet__blog Blog]   
 
- * [Blogger Blogger]
-   
+ * [internet__blogger Blogger]   
 
- * [Website_Category Website Category]
+ * [internet__website_category Website Category]
    
-
- * [API API]
+ * [internet__api API]
    
-
- * [Protocol Protocol]
+ * [internet__protocol Protocol]
    
-
- * [Website_Status Website Status]
+ * [internet__website_status Website Status]
   
-
- * [Top_Level_Domain Top Level Domain]
+ * [internet__top_level_domain Top Level Domain]
    
-
- * [Top_Level_Domain_Sponsor Top Level Domain Sponsor]
+ * [internet__top_level_domain_sponsor Top Level Domain Sponsor]
    
-
- * [Top_Level_Domain_Status Top Level Domain Status]
+ * [internet__top_level_domain_status Top Level Domain Status]
    
-
- * [Top_Level_Domain_Registry Top Level Domain Registry]
+ * [internet__top_level_domain_registry Top Level Domain Registry]
    
-
- * [Top_Level_Domain_Type_Top Level Domain Type]
+ * [internet__top_level_domain_type Top Level Domain Type]
   
-
- * [Website_Owner Website Owner]
+ * [internet__website_owner Website Owner]
   
-
- * [Social_network_user Social network user]	
+ * [internet__social_network_user Social network user]	
    
-
- * [Website_ownership Website ownership]
-   
+ * [internet__website_ownership Website ownership]   

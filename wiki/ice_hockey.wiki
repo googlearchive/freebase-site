@@ -7,26 +7,26 @@ This is ice hockey commons
 Here are the following types in Ice Hockey Commons
 
 
- * [Ice_hockey_team Ice hockey team]
+ * [ice_hockey__hockey_team Ice hockey team]
    
 
- * [Ice_hockey_player Ice hockey player]
+ * [ice_hockey__hockey_player Ice hockey player]
    
 
- * [Ice_hockey_division Ice hockey division]
+ * [ice_hockey__hockey_division Ice hockey division]
    
 
- * [Ice_hockey_conference Ice hockey conference]
+ * [ice_hockey__hockey_conference Ice hockey conference]
    
 
- * [Ice_hockey_coach Ice hockey coach]
+ * [ice_hockey__hockey_coach Ice hockey coach]
    
 
- * [Ice_hockey_position Ice hockey position]
+ * [ice_hockey__hockey_position Ice hockey position]
    
 
- * [Ice_hockey_roster_position Ice hockey roster position]
+ * [ice_hockey__hockey_roster_position Ice hockey roster position]
    
 
- * [Ice_hockey_previous_roster_position Ice hockey previous roster position]
+ * [ice_hockey__hockey_previous_roster_position Ice hockey previous roster position]
    

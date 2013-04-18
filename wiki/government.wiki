@@ -1,113 +1,94 @@
-#summary Different types in Commons.
+#summary Different types in Government Commons.
 
-= Commons =
-This is  commons
+= Government Commons =
+This is government commons
 
 =Types=
-Here are the following types in Commons
+Here are the following types in Government Commons
 
- * [Legislative_committee Legislative committee]
+ * [government__legislative_committee Legislative committee]
   
- * [US_President US President]
+ * [government__us_president US President]
   
- * [Political_party Political party]
+ * [government__political_party Political party]
   
- * [US_Vice_President US Vice President]
+ * [government__us_vice_president US Vice President]
   
- * [Government Government]
+ * [government__government Government]
   
- * [Government_Agency Government Agency]
+ * [government__government_agency Government Agency]
   
- * [Form_of_Government Form of Government]
+ * [government__form_of_government Form of Government]
   
- * [Government_Position_Held Government Position Held]
+ * [government__government_position_held Government Position Held]
   
- * [Political_Appointer Political Appointer]
+ * [government__political_appointer Political Appointer]
   
- * [Political_Party_Tenure Political Party Tenure]
+ * [government__political_party_tenure Political Party Tenure]
   
- * [Politician Politician]
+ * [government__politician Politician]
   
- * [Governmental_Jurisdiction Governmental Jurisdiction]
+ * [government__governmental_jurisdiction Governmental Jurisdiction]
   
- * [Governmental_Body Governmental Body]
+ * [government__governmental_body Governmental Body]
   
- * [Government_Office_or_Title Government Office or Title]
+ * [government__government_office_or_title Government Office or Title]
   
- * [Political_District Political District]
+ * [government__political_district Political District]
   
- * [Election_contest Election contest]
+ * [government__election Election contest]
   
- * [Election_campaign Election campaign]
+ * [government__election_campaign Election campaign]
   
- * [Primary_election Primary election]
+ * [government__primary_election Primary election]
   
- * [Legislative_session Legislative session]
+ * [government__legislative_session Legislative session]
   
- * [Legislative_committee_membership Legislative committee membership]
+ * [government__legislative_committee_membership Legislative committee membership]
   
- * [Legislative_committee_title Legislative committee title]
+ * [government__legislative_committee_title Legislative committee title]
   
- * [National_Anthem National Anthem]
+ * [government__national_anthem National Anthem]
   
- * [National_anthem_of_a_country National anthem of a country]
+ * [government__national_anthem_of_a_country National anthem of a country]
   
- * [US_Vice_Presidential_campaign US Vice Presidential campaign]
-   * [Data_entry_US_Vice_Presidential_campaign Data Entry for US Vice Presidential campaign]
+ * [government__us_vice_presidential_campaign US Vice Presidential campaign]
 
- * [US_Presidential_campaign US Presidential campaign]
-   * [Data_entry_US_Presidential_campaign Data Entry for US Presidential campaign]
+ * [government__us_presidential_campaign US Presidential campaign]
 
- * [General_election General election]
-   * [Data_entry_General_election Data Entry for General election]
+ * [government__general_election General election]
 
- * [Legislative_election_results Legislative election results]
-   * [Data_entry_Legislative_election_results Data Entry for Legislative election results]
-
- * [Canadian_Member_of_Parliament Canadian Member of Parliament]
-   * [Data_entry_Canadian_Member_of_Parliament Data Entry for Canadian Member of Parliament]
-
- * [Australian_Member_of_Parliament Australian Member of Parliament]
-   * [Data_entry_Australian_Member_of_Parliament Data Entry for Australian Member of Parliament]
-
- * [Political_ideology Political ideology]
+ * [government__legislative_election_results Legislative election results]
    
-	
- * [US_Congressperson U.S. Congressperson]
-   * [Data_entry_US_Congressperson Data Entry for U.S. Congressperson]
-
- * [Parliamentary_election Parliamentary election]
-   * [Data_entry_Parliamentary_election Data Entry for Parliamentary election]
-
- * [Indirect_election Indirect election]
-   * [Data_entry_Indirect_election Data Entry for Indirect election]
-
- * [Electoral_college Electoral college]
-   * [Data_entry_Electoral_college Data Entry for Electoral college]
-
- * [Electoral_college_elected_office Electoral college elected office]
-   * [Data_entry_Electoral_college_elected_office Data Entry for Electoral college elected office]
-
- * [Government_office_category Government office category]
-   * [Data_entry_Government_office_category Data Entry for Government office category]
-
- * [Election_poll_score Election poll score]
-   * [Data_entry_Election_poll_score Data Entry for Election poll score]
-
- * [Polling_authority Polling authority]
-   * [Data_entry_Polling_authority Data Entry for Polling authority]
-
- * [Poll_respondent_category Poll respondent category]
-   * [Data_entry_Poll_respondent_category Data Entry for Poll respondent category]
-
- * [Polled_entity Polled entity]
-   * [Data_entry_Polled_entity Data Entry for Polled entity]
-
- * [Election_with_polls Election with polls]
-   * [Data_entry_Election_with_polls Data Entry for Election with polls]
-
- * [Election_poll Election poll]
-   * [Data_entry_Election_poll Data Entry for Election poll]
-
- * [Polled_area Polled area]
-   * [Data_entry_Polled_area Data Entry for Polled area]
+ * [government__canadian_mp Canadian Member of Parliament]
+   
+ * [government__australian_mp Australian Member of Parliament]
+   
+ * [government__political_ideology Political ideology]
+   	
+ * [government__u_s_congressperson U.S. Congressperson]
+   
+ * [government__parliamentary_election Parliamentary election]
+   
+ * [government__indirect_election Indirect election]
+   
+ * [government__electoral_college Electoral college]
+   
+ * [government__electoral_college_elected_office Electoral college elected office]
+   
+ * [government__government_office_category Government office category]
+   
+ * [government__election_poll_score Election poll score]
+   
+ * [government__polling_authority Polling authority]
+   
+ * [government__poll_respondent_category Poll respondent category]
+  
+ * [government__polled_entity Polled entity]
+   
+ * [government__election_with_polls Election with polls]
+  
+ * [government__election_poll Election poll]
+   
+ * [government__polled_area Polled area]
+   

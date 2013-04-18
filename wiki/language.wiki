@@ -7,29 +7,29 @@ This is language commons
 Here are the following types in Language Commons
 
 
- * [Human_Language Human Language]	
+ * [language__human_language Human Language]	
    * [Data_entry_Human_Language Data Entry for Human Language]
 
- * [Language_Family Language Family]
+ * [language__language_family Language Family]
    * [Data_entry_Language_Family Data Entry for Language Family]
 
- * [Language_Writing_System Language Writing System]
+ * [language__language_writing_system Language Writing System]
    * [Data_entry_Language_Writing_System Data Entry for Language Writing System]
 
- * [Language_Regulator Language Regulator]
+ * [language__language_regulator Language Regulator]
    * [Data_entry_Language_Regulator Data Entry for Language Regulator]
 
- * [Language_Writing_Type Language Writing Type]
+ * [language__language_writing_type Language Writing Type]
    * [Data_entry_Language_Writing_Type Data Entry for Language Writing Type]
 
- * [Language_Creator Language Creator]
+ * [language__language_creator Language Creator]
    * [Data_entry_Language_Creator Data Entry for Language Creator]
 
- * [Conlang_type Conlang type]
+ * [language__conlang_purpose Conlang type]
    * [Data_entry_Conlang_type Data Entry for Conlang type]
 
- * [Language_Dialect Language Dialect]
+ * [language__language_dialect Language Dialect]
    * [Data_entry_Language_Dialect Data Entry for Language Dialect]
 
- * [Conlang Conlang]
+ * [language__conlang Conlang]
    * [Data_entry_Conlang Data Entry for Conlang]

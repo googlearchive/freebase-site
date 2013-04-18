@@ -8,301 +8,306 @@ Here are the following types in Location Commons
 
 
  * [City_Town_Village City/Town/Village]
-   * [Data_entry_City_Town_Village Data Entry for City/Town/Village]
+   
 
  * [Continent Continent]
-   * [Data_entry_Continent Data Entry for Continent]
+   
 
  * [Country Country]
-   * [Data_entry_Country Data Entry for Country]
+   
 
  * [Geocode Geocode]	
-   * [Data_entry_Geocode Data Entry for Geocode]
+   
 
  * [Location Location]
-   * [Data_entry_Location Data Entry for Location]
+   
 
  * [Neighborhood Neighborhood]
-   * [Data_entry_Neighborhood Data Entry for Neighborhood]
+   
 
  * [Canadian_Province Canadian Province]
-   * [Data_entry_Canadian_Province Data Entry for Canadian Province]
+  
 
  * [Region Region]
-   * [Data_entry_Region Data Entry for Region]
+   
 
  * [US_County US County]	
-   * [Data_entry_US_County Data Entry for US County]
+  
 
  * [US_Census_Designated_Place US Census Designated Place]	
-   * [Data_entry_US_Census_Designated_Place Data Entry for US Census Designated Place]
+   
 
  * [US_State US State]
-   * [Data_entry_US_State Data Entry for US State]
+  
 
  * [Address Address]
-   * [Data_entry_Address Data Entry for Address]
+   
 
  * [Postal_Code Postal Code] 	
-   * [Data_entry_Postal_Code Data Entry for Postal Code]
+  
 
  * [Administrative_Division Administrative Division]
-   * [Data_entry_Administrative_Division Data Entry for Administrative Division]
+   
 
  * [French_Department French Department]
-   * [Data_entry_French_Department Data Entry for French Department]
-
+ 
  * [French_Region French Region]
-   * [Data_entry_French_Region Data Entry for French Region]
+   
 
  * [Adjoining_Relationship Adjoining Relationship]	
-   * [Data_entry_Adjoining_Relationship Data Entry for Adjoining Relationship]
+   
 
  * [US_Federal_District US Federal District]
-   * [Data_entry_US_Federal_District Data Entry for US Federal District]
+  
 
  * [US_Territory US Territory]
-   * [Data_entry_US_Territory Data Entry for US Territory]
+ 
 
  * [Canadian_Territory Canadian Territory]	
-   * [Data_entry_Canadian_Territory Data Entry for Canadian Territory]
+  
 
  * [US_Indian_Reservation US Indian Reservation]	
-   * [Data_entry_US_Indian_Reservation Data Entry for US Indian Reservation]
+   
 
  * [Canadian_Indian_Reserve Canadian Indian Reserve]
-   * [Data_entry_Canadian_Indian_Reserve Data Entry for Canadian Indian Reserve]
+   
 
  * [Canadian_Census_Division Canadian Census Division]
-   * [Data_entry_Canadian_Census_Division Data Entry for Canadian Census Division]
+   
 
  * [Chinese_province Chinese province]
-   * [Data_entry_Chinese_province Data Entry for Chinese province]
+   
+
+
+
+
+
+
+
 
  * [Chinese_autonomous_region Chinese autonomous region]	
-   * [Data_entry_Chinese_autonomous_region Data Entry for Chinese autonomous region]
+   
 
  * [Chinese_municipality Chinese municipality]
-   * [Data_entry_Chinese_municipality Data Entry for Chinese municipality]
+   
 
  * [Chinese_special_administrative_region Chinese special administrative region]	
-   * [Data_entry_Chinese_special_administrative_region Data Entry for Chinese special administrative region]
+   
 
  * [Chinese_prefecture_level_city Chinese prefecture-level city]
-   * [Data_entry_Chinese_prefecture_level_city Data Entry for Chinese prefecture-level city]
+   
 
  * [Chinese_prefecture Chinese prefecture]
-   * [Data_entry_Chinese_prefecture Data Entry for Chinese prefecture]
+   
 
  * [Chinese_autonomous_prefecture Chinese autonomous prefecture]
-   * [Data_entry_Chinese_autonomous_prefecture Data Entry for Chinese autonomous prefecture]
+   
 
  * [Chinese_county Chinese county]
-   * [Data_entry_Chinese_county Data Entry for Chinese county]
+   
 
  * [Chinese_county_level_city Chinese county-level city]
-   * [Data_entry_Chinese_county_level_city Data Entry for Chinese county-level city]
+   
 
  * [Chinese_autonomous_county Chinese autonomous county]
-   * [Data_entry_Chinese_autonomous_county Data Entry for Chinese autonomous county]
+   
 
  * [Chinese_city_district Chinese city district]
-   * [Data_entry_Chinese_city_district Data Entry for Chinese city district]
+   
 
  * [Chinese_township Chinese township]
-   * [Data_entry_Chinese_township Data Entry for Chinese township]
+  
 
  * [Chinese_town Chinese town]
-   * [Data_entry_Chinese_town Data Entry for Chinese town]
+  
 
  * [Chinese_subdistrict Chinese subdistrict]
-   * [Data_entry_Chinese_subdistrict Data Entry for Chinese subdistrict]
+ 
 
  * [Chinese_county_district Chinese county district]
-   * [Data_entry_Chinese_county_district Data Entry for Chinese county district]
+ 
 
  * [Hong_Kong_district Hong Kong district]
-   * [Data_entry_Hong_Kong_district Data Entry for Hong Kong district]
+  
 
  * [Brazilian_state Brazilian state]
-   * [Data_entry_Brazilian_state Data Entry for Brazilian state]
+   
 
  * [Brazilian_federal_district Brazilian federal district]
-   * [Data_entry_Brazilian_federal_district Data Entry for Brazilian federal district]
+   
 
  * [South_Korean_province South Korean province]
-   * [Data_entry_South_Korean_province Data Entry for South Korean province]
+   
 
  * [South_Korean_metropolitan_city South Korean metropolitan city]
-   * [Data_entry_South_Korean_metropolitan_city Data Entry for South Korean metropolitan city]
+   
 
  * [South_Korean_special_city South Korean special city]
-   * [Data_entry_South_Korean_special_city Data Entry for South Korean special city]
+   
 
  * [South_Korean_county South Korean county]
-   * [Data_entry_South_Korean_county Data Entry for South Korean county]
+
 
  * [South_Korean_city South Korean city]
-   * [Data_entry_South_Korean_city Data Entry for South Korean city]
+   
 
  * [Japanese_prefecture Japanese prefecture]
-   * [Data_entry_Japanese_prefecture Data Entry for Japanese prefecture]
+   
 
  * [Japanese_subprefecture Japanese subprefecture]
-   * [Data_entry_Japanese_subprefecture Data Entry for Japanese subprefecture]
+   
 
  * [Japanese_designated_city Japanese designated city]
-   * [Data_entry_Japanese_designated_city Data Entry for Japanese designated city]
+   
 
  * [Japanese_district Japanese district]
-   * [Data_entry_Japanese_district Data Entry for Japanese district]
+   
 
  * [Japanese_special_ward Japanese special ward]
-   * [Data_entry_Japanese_special_ward Data Entry for Japanese special ward]
+   
 
  * [Japanese_ward Japanese ward]
-   * [Data_entry_Japanese_ward Data Entry for Japanese ward]
+  
 
  * [Japanese_city_town Japanese city/town]
-   * [Data_entry_Japanese_city_town Data Entry for Japanese city/town]
+   
 
  * [Indian_state Indian state]
-   * [Data_entry_Indian_state Data Entry for Indian state]
+   
 
  * [Indian_union_territory Indian union territory]
-   * [Data_entry_Indian_union_territory Data Entry for Indian union territory]
+   
 
  * [Indian_division Indian division]
-   * [Data_entry_Indian_division Data Entry for Indian division]
+   
 
  * [Indian_district Indian district]
-   * [Data_entry_Indian_district Data Entry for Indian district]
+   
 
  * [Indian_sub_division Indian sub-division]
-   * [Data_entry_Indian_sub_division Data Entry for Indian sub-division]
+ 
 
  * [Indian_city Indian city]
-   * [Data_entry_Indian_city Data Entry for Indian city]
+   
 
  * [Italian_region Italian region]
-   * [Data_entry_Italian_region Data Entry for Italian region]
+  
 
  * [Italian_province Italian province]
-   * [Data_entry_Italian_province Data Entry for Italian province]
+  
 
  * [Italian_comune Italian comune]
-   * [Data_entry_Italian_comune Data Entry for Italian comune]
+   
 
  * [Italian_frazione Italian frazione]
-   * [Data_entry_Italian_frazione Data Entry for Italian frazione]
+  
 
  * [German_state German state]
-   * [Data_entry_German_state Data Entry for German state]
+  
 
  * [German_regierungsbezirk German regierungsbezirk]
-   * [Data_entry_German_regierungsbezirk Data Entry for German regierungsbezirk]
-
+   
  * [German_rural_district German rural district]
-   * [Data_entry_German_rural_district Data Entry for German rural district]
+   
 
  * [German_urban_district German urban district]
-   * [Data_entry_German_urban_district Data Entry for German urban district]
+  
 
  * [German_borough German borough]
-   * [Data_entry_German_borough Data Entry for German borough]
+  
 
  * [German_city German city]
-   * [Data_entry_German_city Data Entry for German city]
+  
 
  * [UK_constituent_country UK constituent country]
-   * [Data_entry_UK_constituent_country Data Entry for UK constituent country]
+  
 
  * [English_region English region]
-   * [Data_entry_English_region Data Entry for English region]
+   
 
  * [English_metropolitan_county English metropolitan county]
-   * [Data_entry_English_metropolitan_county Data Entry for English metropolitan county]
+   
 
  * [English_non_metropolitan_county English non-metropolitan county]
-   * [Data_entry_English_non_metropolitan_county Data Entry for English non-metropolitan county]
+  
 
  * [English_unitary_authority English unitary authority]
-   * [Data_entry_English_unitary_authority Data Entry for English unitary authority]
+   
 
  * [English_metropolitan_borough English metropolitan borough]
-   * [Data_entry_English_metropolitan_borough Data Entry for English metropolitan borough]
+ 
 
  * [English_non_metropolitan_district English non-metropolitan district]
-   * [Data_entry_English_non_metropolitan_district Data Entry for English non-metropolitan district]
+  
 
  * [London_borough London borough]
-   * [Data_entry_London_borough Data Entry for London borough]
+   
 
  * [English_civil_parish English civil parish]
-   * [Data_entry_English_civil_parish Data Entry for English civil parish]
+  
 
  * [Northern_Irish_district Northern Irish district]
-   * [Data_entry_Northern_Irish_district Data Entry for Northern Irish district]
+ 
 
  * [Scottish_council_area Scottish council area]
-   * [Data_entry_Scottish_council_area Data Entry for Scottish council area]
+   
 
  * [Welsh_principal_area Welsh principal area]
-   * [Data_entry_Welsh_principal_area Data Entry for Welsh principal area]
+  
 
  * [UK_crown_dependency UK crown dependency]
-   * [Data_entry_UK_crown_dependency Data Entry for UK crown dependency]
+   
 
  * [UK_overseas_territory UK overseas territory]
-   * [Data_entry_UK_overseas_territory Data Entry for UK overseas territory]
+   
 
  * [Spanish_autonomous_community Spanish autonomous community]
-   * [Data_entry_Spanish_autonomous_community Data Entry for Spanish autonomous community]
+ 
 
  * [Spanish_autonomous_city Spanish autonomous city]
-   * [Data_entry_Spanish_autonomous_city Data Entry for Spanish autonomous city]
+   
 
  * [Spanish_province Spanish province]
-   * [Data_entry_Spanish_province Data Entry for Spanish province]
+ 
 
  * [Spanish_place_of_sovereignty Spanish place of sovereignty]
-   * [Data_entry_Spanish_place_of_sovereignty Data Entry for Spanish place of sovereignty]
+   
 
  * [Spanish_comarca Spanish comarca]
-   * [Data_entry_Spanish_comarca Data Entry for Spanish comarca]
+  
 
  * [Dutch_province Dutch province]
-   * [Data_entry_Dutch_province Data Entry for Dutch province]
+  
 
  * [Dutch_municipality Dutch municipality]
-   * [Data_entry_Dutch_municipality Data Entry for Dutch municipality]
+   
 
  * [Mexican_state Mexican state]
-   * [Data_entry_Mexican_state Data Entry for Mexican state]
+   
 
  * [Mexican_federal_district Mexican federal district]
-   * [Data_entry_Mexican_federal_district Data Entry for Mexican federal district]
+  
 
  * [Mexican_municipality Mexican municipality]
-   * [Data_entry_Mexican_municipality Data Entry for Mexican municipality]
+  
 
  * [Mexican_federal_district_borough Mexican federal district borough]
-   * [Data_entry_Mexican_federal_district_borough Data Entry for Mexican federal district borough]
+   
 
  * [Turkish_province Turkish province]
-   * [Data_entry_Turkish_province Data Entry for Turkish province]
+   
 
  * [Turkish_district Turkish district]
-   * [Data_entry_Turkish_district Data Entry for Turkish district]
+   
 
  * [Malaysian_state Malaysian state]
-   * [Data_entry_Malaysian_state Data Entry for Malaysian state]
+  
 
  * [Malaysian_federal_territory Malaysian federal territory]
-   * [Data_entry_Malaysian_federal_territory Data Entry for Malaysian federal territory]
+ 
 
  * [Malaysian_division Malaysian division]
-   * [Data_entry_Malaysian_division Data Entry for Malaysian division]
+   
 
  * [Malaysian_district Malaysian district]
-   * [Data_entry_Malaysian_district Data Entry for Malaysian district]
+   

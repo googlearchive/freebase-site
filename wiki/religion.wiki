@@ -1,74 +1,52 @@
-#summary Different types in Commons.
+#summary Different types in Religion Commons.
 
-= Commons =
-This is  commons
+= Religion Commons =
+This is  religion commons
 
 =Types=
-Here are the following types in Commons
+Here are the following types in Religion Commons
 
 
- * [Religion Religion]
-   * [Data_entry_Religion Data Entry for Religion]
+ * [religion__religion Religion]
+   
+ * [religion__founding_figure Founding Figure]
+  
+ * [religion__religious_text Religious Text]
+  
+ * [religion__belief Belief]
 
- * [Founding_Figure Founding Figure]
-   * [Data_entry_Founding_Figure Data Entry for Founding Figure]
+ * [religion__religious_practice Religious Practice]
 
- * [Religious_Text Religious Text]
-   * [Data_entry_Religious_Text Data Entry for Religious Text]
+ * [religion__deity Deity]
 
- * [Belief Belief]
-   * [Data_entry_Belief Data Entry for Belief]
+ * [religion__religious_organization Religious Organization]
 
- * [Religious_Practice Religious Practice]
-   * [Data_entry_Religious_Practice Data Entry for Religious Practice]
+ * [religion__religious_organization_leadership Religious Organization Leadership]
 
- * [Deity Deity]
-   * [Data_entry_Deity Data Entry for Deity]
+ * [religion__religious_leader Religious Leader]
 
- * [Religious_Organization Religious Organization]
-   * [Data_entry_Religious_Organization Data Entry for Religious Organization]
+ * [religion__religious_leadership_role Religious Leadership Role]
 
- * [Religious_Organization_Leadership Religious Organization Leadership]
-   * [Data_entry_Religious_Organization_Leadership Data Entry for Religious Organization Leadership]
+ * [religion__congregation Congregation]
 
- * [Religious_Leader Religious Leader]
-   * [Data_entry_Religious_Leader Data Entry for Religious Leader]
+ * [religion__adherents Adherents]
 
- * [Religious_Leadership_Role Religious Leadership Role]
-   * [Data_entry_Religious_Leadership_Role Data Entry for Religious Leadership Role]
+ * [religion__place_of_worship Place of worship]
 
- * [Congregation Congregation]
-   * [Data_entry_Congregation Data Entry for Congregation]
+ * [religion__type_of_place_of_worship Type of place of worship]
 
- * [Adherents Adherents]
-   * [Data_entry_Adherents Data Entry for Adherents]
+ * [religion__place_of_worship_historical_use Place of worship historical use]
 
- * [Place_of_worship Place of worship]
-   * [Data_entry_Place_of_worship Data Entry for Place of worship]
+ * [religion__prayer Prayer]
+   
+ * [religion__religious_order Religious order]
 
- * [Type_of_place_of_worship Type of place of worship]
-   * [Data_entry_Type_of_place_of_worship Data Entry for Type of place of worship]
+ * [religion__monastery Monastery]
 
- * [Place_of_worship_historical_use Place of worship historical use]
-   * [Data_entry_Place_of_worship_historical_use Data Entry for Place of worship historical use]
+ * [religion__religious_jurisdiction_class Religious Jurisdiction Category]
 
- * [Prayer Prayer]
-   * [Data_entry_Prayer Data Entry for Prayer]
+ * [religion__religious_leadership_jurisdiction_appointment Religious Title Jurisdiction]
 
- * [Religious_order Religious order]
-   * [Data_entry_Religious_order Data Entry for Religious order]
+ * [religion__religious_leadership_jurisdiction Religious Jurisdiction]
 
- * [Monastery Monastery]
-   * [Data_entry_Monastery Data Entry for Monastery]
-
- * [Religious_Jurisdiction_Category Religious Jurisdiction Category]
-   * [Data_entry_Religious_Jurisdiction_Category Data Entry for Religious Jurisdiction Category]
-
- * [Religious_Title_Jurisdiction Religious Title Jurisdiction]
-   * [Data_entry_Religious_Title_Jurisdiction Data Entry for Religious Title Jurisdiction]
-
- * [Religious_Jurisdiction Religious Jurisdiction]
-   * [Data_entry_Religious_Jurisdiction Data Entry for Religious Jurisdiction]
-
- * [Religious_Leadership_Title Religious Leadership Title] 
-   * [Data_entry_Religious_Leadership_Title Data Entry for Religious Leadership Title]
+ * [Religious_Leadership_Title Religious Leadership Title]   

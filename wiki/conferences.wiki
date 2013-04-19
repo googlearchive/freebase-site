@@ -7,23 +7,17 @@ This is conferences commons
 Here are the following types in Conferences Commons
 
 
- * [Conference_event Conference event]
+ * [conferences__conference Conference event]
    
-
- * [Conference_series	 Conference series]
+ * [conferences__conference_series Conference series]
    
-
- * [Conference_sponsor Conference sponsor]
+ * [conferences__conference_sponsor Conference sponsor]
    
-
- * [Conference_proceedings Conference proceedings]
+ * [conferences__conference_proceedings Conference proceedings]
    
-
- * [Conference_subject Conference subject]
+ * [conferences__conference_subject Conference subject]
    
+ * [conferences__type_of_conference Type of conference]
 
- * [Type_of_conference Type of conference]
-   
-
- * [Conference_venue Conference venue]	
+ * [conferences__conference_venue Conference venue]	
    

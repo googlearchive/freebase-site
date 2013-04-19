@@ -6,8 +6,6 @@ This is library commons
 =Types=
 Here are the following types in Library Commons
 
- * [Public_Library Public Library]
-    * [Data_entry_Public_Library Data entry for Public Library]
+ * [library__public_library Public Library]
 
- * [Public_Library_System Public Library System]
-   * [Data_entry_Public_Library_System Data Entry for Public Library System]
+ * [library__public_library_system Public Library System]

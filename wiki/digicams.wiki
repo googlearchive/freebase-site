@@ -7,56 +7,39 @@ This is digicams commons
 Here are the following types in Digicams Commons
 
 
- * [Digital_Camera Digital Camera]
+ * [digicams__digital_camera Digital Camera]
    
-
- * [Camera_Format Camera Format]
+ * [digicams__camera_format Camera Format]
    
-
- * [Camera_Resolution Camera Resolution]
+ * [digicams__camera_resolution Camera Resolution]
    
+ * [digicams__camera_image_ratio Camera Image Ratio]
 
- * [Camera_Image_Ratio Camera Image Ratio]
+ * [digicams__camera_sensor_size Camera Sensor Size]
+
+ * [digicams__camera_sensor_type Camera Sensor Type]
    
-
- * [Camera_Sensor_Size Camera Sensor Size]
+ * [digicams__camera_sensor_manufacturer Camera Sensor Manufacturer]
    
-
- * [Camera_Sensor_Type Camera Sensor Type]
+ * [digicams__camera_iso Camera ISO Capability]
    
-
- * [Camera_Sensor_Manufacturer Camera Sensor Manufacturer]
+ * [digicams__camera_digital_zoom_capability Camera Digital Zoom Capability]
    
-
- * [Camera_ISO_Capability Camera ISO Capability]
+ * [digicams__camera_image_stabilization Camera Image Stabilization]
    
-
- * [Camera_Digital_Zoom_Capability Camera Digital Zoom Capability]
+ * [digicams__camera_storage_type Camera Storage Type]
    
-
- * [Camera_Image_Stabilization Camera Image Stabilization]
+ * [digicams__camera_uncompressed_format Camera Uncompressed Format]
    
-
- * [Camera_Storage_Type Camera Storage Type]
+ * [digicams__camera_compressed_format Camera Compressed Format]
    
-
- * [Camera_Uncompressed_Format Camera Uncompressed Format]
-   
-
- * [Camera_Compressed_Format Camera Compressed Format]
-   
-
- * [Camera_Viewfinder_Type Camera Viewfinder Type]
+ * [digicams__camera_viewfinder_type Camera Viewfinder Type]
     
-
- * [Camera_Dimensions Camera Dimensions]
+ * [digicams__camera_dimensions Camera Dimensions]
    
-
- * [Camera_Image_Stabilization_Type Camera Image Stabilization Type]
+ * [digicams__image_stabilization_type Camera Image Stabilization Type]
    
+ * [digicams__camera_color_filter_array_type Camera Color Filter Array Type]
 
- * [Camera_Color_Filter_Array_Type Camera Color Filter Array Type]
-   
-
- * [Digital_Camera_Brand Digital Camera Brand]
+ * [digicams__digital_camera_manufacturer Digital Camera Brand]
    

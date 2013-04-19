@@ -6,161 +6,110 @@ This is  food and drink commons
 =Types=
 Here are the following types in Food and Drink Commons
 
- * [Cheese Cheese]	
+ * [food__cheese Cheese]	
    
-
- * [Cheese_texture Cheese texture]	
+ * [food__cheese_texture Cheese texture]	
   
+ * [food__cheese_certification Cheese certification]	
 
- * [Cheese_certification Cheese certification]	
+ * [food__brewery_brand_of_beer Brewery / Brand of beer]	
    
-
- * [Brewery_Brand_of_beer Brewery / Brand of beer]	
+ * [food__beer_style Beer style]	
    
-
- * [Beer_style Beer style]	
+ * [food__beer Beer]	
    
-
- * [Beer Beer]	
+ * [food__tea Tea]	
    
+ * [food__tea_type Tea type]
 
- * [Tea Tea]	
+ * [food__bottled_water Bottled water]	
    
-
- * [Tea_type Tea type]	
-   
-
- * [Bottled_water Bottled water]	
-   
-
- * [Beverage_type Beverage type]	
+ * [food__beverage_type Beverage type]	
   
-
- * [Beverage Beverage]	
+ * [food__beverage Beverage]	
    
-
- * [Candy_bar Candy bar]	
+ * [food__candy_bar Candy bar]	
    
-
- * [Candy_bar_manufacturer Candy bar manufacturer]	
+ * [food__candy_bar_manufacturer Candy bar manufacturer]	
    
-
- * [Cheese_milk_source Cheese milk source]	
+ * [food__cheese_milk_source Cheese milk source]	
    
-
- * [Beer_Style_Category Beer Style Category]	
+ * [food__beer_style_category Beer Style Category]	
    
-
- * [Dish Dish]	
+ * [food__dish Dish]	
    
-
- * [Type_of_dish Type of dish]	
+ * [food__type_of_dish Type of dish]	
   
-
- * [Ingredient Ingredient]	
+ * [food__ingredient Ingredient]	
    
-
- * [Beer_country_region Beer country / region]	
+ * [food__beer_country_region Beer country / region]	
    
-
- * [Beer_containment Beer containment]	
+ * [food__beer_containment Beer containment]	
    
-
- * [Beer_container Beer container]	
+ * [food__beer_container Beer container]	
    
-
- * [Restaurant Restaurant]	
+ * [dining__restaurant Restaurant]	
   
-
- * [Restaurant_chef_association Restaurant-chef association]	
+ * [dining__restaurant_chef_association Restaurant-chef association]	
    
-
- * [Chef Chef]	
+ * [dining__chef Chef]	
   
-
- * [Cuisine Cuisine]	
+ * [dining__cuisine Cuisine]	
    
-
- * [Blended_spirit Blended spirit]	
+ * [distilled_spirits__blended_spirit Blended spirit]	
    
-
- * [Infused_spirit_style Infused spirit style]	
+ * [distilled_spirits__infused_spirit_style Infused spirit style]	
    
-
- * [Spirit_bottler Spirit bottler]	
+ * [distilled_spirits__spirit_bottler Spirit bottler]	
    
- * [Spirit_aging Spirit aging]	
+ * [distilled_spirits__spirit_aging Spirit aging]	
   
-
- * [Fermentation_base Fermentation base]	
+ * [distilled_spirits__fermentation_base Fermentation base]	
    
+ * [distilled_spirits__distilled_spirit_type Distilled spirit type]	
 
- * [Distilled_spirit_type Distilled spirit type]	
+ * [distilled_spirits__spirit_blender Spirit product manufacturer]	
    
-
- * [Spirit product manufacturer Spirit product manufacturer]	
+ * [distilled_spirits__spirit_producing_region Spirit-producing region]	
    
-
- * [Spirit-producing region Spirit-producing region]	
+ * [distilled_spirits__distilled_spirit Distilled spirit]	
    
-
- * [Distilled spirit Distilled spirit]	
+ * [distilled_spirits__distillery Distillery]	
    
-
- * [Distillery Distillery]	
+ * [distilled_spirits__infused_spirit Infused spirit]	
    
-
- * [Infused spirit Infused spirit]	
+ * [distilled_spirits__blended_spirit_style Blended spirit style]	
    
-
- * [Blended spirit style Blended spirit style]	
+ * [wine__appellation Appellation]	
    
-
- * [Appellation Appellation]	
+ * [wine__vineyard Vineyard]	
    
-
- * [Vineyard Vineyard]	
+ * [wine_wine_color Wine color]	
+  
+ * [wine__grape_variety Grape Variety]	
    
+ * [wine__fruit_source Fruit Source]	
 
- * [Wine color Wine color]	
+ * [wine__grape_variety_composition Grape Variety Composition]	
+
+ * [wine__wine_producer Wine Producer]	
+
+ * [wine__wine_region Wine Region]	
    
-
- * [Grape Variety Grape Variety]	
+ * [wine__wine_type Wine Type]	
    
-
- * [Fruit Source Fruit Source]	
+ * [wine__wine Wine]	
    
-
- * [Grape Variety Composition Grape Variety Composition]	
- 
-
- * [Wine Producer Wine Producer]	
+ * [wine__wine_sub_region Wine Sub-region ]	
    
+ * [food__licensee_tenure Licensee tenure]	
 
- * [Wine Region Wine Region]	
+ * [food__drinking_establishment_licensee Drinking establishment licensee]	
+
+ * [food__drinking_establishment Drinking establishment]	
    
-
- * [Wine Type Wine Type]	
+ * [food__drinking_establishment_type Drinking establishment type]	
    
-
- * [Wine Wine]	
-   
-
- * [Wine Sub-region Wine Sub-region ]	
-   
-
- * [Licensee tenure Licensee tenure]	
-   
-
- * [Drinking establishment licensee Drinking establishment licensee]	
-   
-
- * [Drinking establishment Drinking establishment]	
-   
-
- * [Drinking establishment type Drinking establishment type]	
-   
-
  * [Recipe author Recipe author]	
    
 

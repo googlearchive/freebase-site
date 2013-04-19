@@ -7,307 +7,197 @@ This is  location commons
 Here are the following types in Location Commons
 
 
- * [City_Town_Village City/Town/Village]
+ * [location__citytown City/Town/Village]
    
-
- * [Continent Continent]
+ * [location__continent Continent]
    
-
- * [Country Country]
+ * [location__country Country]
    
-
- * [Geocode Geocode]	
+ * [location__geocode Geocode]	
    
-
- * [Location Location]
+ * [location__location Location]
    
-
- * [Neighborhood Neighborhood]
+ * [location__neighborhood Neighborhood]
    
-
- * [Canadian_Province Canadian Province]
+ * [location__province Canadian Province]
   
-
- * [Region Region]
+ * [location__region Region]
    
-
- * [US_County US County]	
+ * [location__us_county US County]	
   
-
- * [US_Census_Designated_Place US Census Designated Place]	
+ * [location__census_designated_place US Census Designated Place]	
    
-
- * [US_State US State]
+ * [location__us_state US State]
   
-
- * [Address Address]
+ * [location__mailing_address Address]
    
-
- * [Postal_Code Postal Code] 	
+ * [location__postal_code Postal Code] 	
   
-
- * [Administrative_Division Administrative Division]
+ * [location__administrative_division Administrative Division]
    
-
- * [French_Department French Department]
+ * [location__fr_department French Department]
  
- * [French_Region French Region]
+ * [location__fr_region French Region]
    
-
- * [Adjoining_Relationship Adjoining Relationship]	
+ * [location__adjoining_relationship Adjoining Relationship]	
    
-
- * [US_Federal_District US Federal District]
+ * [location__us_federal_district US Federal District]
   
-
- * [US_Territory US Territory]
+ * [location__us_territory US Territory]
  
-
- * [Canadian_Territory Canadian Territory]	
+ * [location__ca_territory Canadian Territory]	
   
-
- * [US_Indian_Reservation US Indian Reservation]	
+ * [location__us_indian_reservation US Indian Reservation]	
    
-
- * [Canadian_Indian_Reserve Canadian Indian Reserve]
+ * [location__ca_Indian_Reserve Canadian Indian Reserve]
    
-
- * [Canadian_Census_Division Canadian Census Division]
+ * [location__ca_census_division Canadian Census Division]
    
-
- * [Chinese_province Chinese province]
+ * [location__cn_province Chinese province]
    
-
-
-
-
-
-
-
-
- * [Chinese_autonomous_region Chinese autonomous region]	
+ * [location__cn_autonomous_region Chinese autonomous region]	
    
-
- * [Chinese_municipality Chinese municipality]
+ * [location__cn_municipality Chinese municipality]
    
-
- * [Chinese_special_administrative_region Chinese special administrative region]	
+ * [location__cn_special_administrative_region Chinese special administrative region]	
    
+ * [location__cn_prefecture_level_city Chinese prefecture-level city]
 
- * [Chinese_prefecture_level_city Chinese prefecture-level city]
+ * [location__cn_prefecture Chinese prefecture]
    
-
- * [Chinese_prefecture Chinese prefecture]
+ * [location__cn_autonomous_prefecture Chinese autonomous prefecture]
    
-
- * [Chinese_autonomous_prefecture Chinese autonomous prefecture]
+ * [location__cn_county Chinese county]
    
-
- * [Chinese_county Chinese county]
+ * [location__cn_county_level_city Chinese county-level city]
    
-
- * [Chinese_county_level_city Chinese county-level city]
+ * [location__cn_autonomous_county Chinese autonomous county]
    
-
- * [Chinese_autonomous_county Chinese autonomous county]
+ * [location__cn_city_district Chinese city district]
    
-
- * [Chinese_city_district Chinese city district]
-   
-
- * [Chinese_township Chinese township]
+ * [location__cn_township Chinese township]
   
-
- * [Chinese_town Chinese town]
+ * [location__cn_town Chinese town]
   
-
- * [Chinese_subdistrict Chinese subdistrict]
+ * [location__cn_subdistrict Chinese subdistrict]
  
-
- * [Chinese_county_district Chinese county district]
+ * [location__cn_county_district Chinese county district]
  
-
- * [Hong_Kong_district Hong Kong district]
+ * [location__hk_district Hong Kong district]
   
-
- * [Brazilian_state Brazilian state]
+ * [location__br_state Brazilian state]
    
-
- * [Brazilian_federal_district Brazilian federal district]
+ * [location__br_federal_district Brazilian federal district]
    
-
- * [South_Korean_province South Korean province]
+ * [location__kp_province South Korean province]
    
-
- * [South_Korean_metropolitan_city South Korean metropolitan city]
+ * [location__kp_metropolitan_city South Korean metropolitan city]
    
-
- * [South_Korean_special_city South Korean special city]
+ * [location__kp_special_city South Korean special city]
    
+ * [location__kp_county South Korean county]
 
- * [South_Korean_county South Korean county]
-
-
- * [South_Korean_city South Korean city]
+ * [location__kp_city South Korean city]
    
-
- * [Japanese_prefecture Japanese prefecture]
+ * [location__jp_prefecture Japanese prefecture]
    
-
- * [Japanese_subprefecture Japanese subprefecture]
+ * [location__jp_subprefecture Japanese subprefecture]
    
-
- * [Japanese_designated_city Japanese designated city]
+ * [location__jp_designated_city Japanese designated city]
    
-
- * [Japanese_district Japanese district]
+ * [location__jp_district Japanese district]
    
-
- * [Japanese_special_ward Japanese special ward]
+ * [location__jp_special_ward Japanese special ward]
    
-
- * [Japanese_ward Japanese ward]
+ * [location__jp_ward Japanese ward]
   
-
- * [Japanese_city_town Japanese city/town]
+ * [location__jp_city_town Japanese city/town]
    
-
- * [Indian_state Indian state]
+ * [location__in_state Indian state]
    
-
- * [Indian_union_territory Indian union territory]
+ * [location__in_union_territory Indian union territory]
    
-
- * [Indian_division Indian division]
+ * [location__in_division Indian division]
    
-
- * [Indian_district Indian district]
+ * [location__in_district Indian district]
    
-
- * [Indian_sub_division Indian sub-division]
+ * [location__in_subdivision Indian sub-division]
  
-
- * [Indian_city Indian city]
+ * [location__in_city Indian city]
    
-
- * [Italian_region Italian region]
+ * [location__it_region Italian region]
   
-
- * [Italian_province Italian province]
+ * [location__it_province Italian province]
   
-
- * [Italian_comune Italian comune]
+ * [location__it_comune Italian comune]
    
-
- * [Italian_frazione Italian frazione]
+ * [location__it_frazione Italian frazione]
   
-
- * [German_state German state]
+ * [location__de_state German state]
   
-
- * [German_regierungsbezirk German regierungsbezirk]
+ * [location__de_regierungsbezirk German regierungsbezirk]
    
- * [German_rural_district German rural district]
+ * [location__de_rural_district German rural district]
    
-
- * [German_urban_district German urban district]
+ * [location__de_urban_district German urban district]
   
-
- * [German_borough German borough]
+ * [location__de_borough German borough]
   
-
- * [German_city German city]
+ * [location__de_city German city]
   
-
- * [UK_constituent_country UK constituent country]
+ * [location__uk_constituent_country UK constituent country]
   
-
- * [English_region English region]
+ * [location__uk_region English region]
    
-
- * [English_metropolitan_county English metropolitan county]
+ * [location__uk_metropolitan_county English metropolitan county]
    
-
- * [English_non_metropolitan_county English non-metropolitan county]
+ * [location__uk_non_metropolitan_county English non-metropolitan county]
   
-
- * [English_unitary_authority English unitary authority]
+ * [location__uk_unitary_authority English unitary authority]
    
-
- * [English_metropolitan_borough English metropolitan borough]
+ * [location__uk_metropolitan_borough English metropolitan borough]
  
-
- * [English_non_metropolitan_district English non-metropolitan district]
+ * [location__uk_non_metropolitan_district English non-metropolitan district]
   
-
- * [London_borough London borough]
+ * [location__uk_london_borough London borough]
    
-
- * [English_civil_parish English civil parish]
+ * [location__uk_civil_parish English civil parish]
   
-
- * [Northern_Irish_district Northern Irish district]
+ * [location__uk_district Northern Irish district]
  
-
- * [Scottish_council_area Scottish council area]
+ * [location__uk_council_area Scottish council area]
    
-
- * [Welsh_principal_area Welsh principal area]
+ * [location__uk_principal_area Welsh principal area]
   
-
- * [UK_crown_dependency UK crown dependency]
+ * [location__uk_crown_dependency UK crown dependency]
    
-
- * [UK_overseas_territory UK overseas territory]
+ * [location__uk_overseas_territory UK overseas territory]
    
-
- * [Spanish_autonomous_community Spanish autonomous community]
+ * [location__es_autonomous_community Spanish autonomous community]
  
-
- * [Spanish_autonomous_city Spanish autonomous city]
+ * [location__es_autonomous_city Spanish autonomous city]
    
-
- * [Spanish_province Spanish province]
+ * [location__es_province Spanish province]
  
-
- * [Spanish_place_of_sovereignty Spanish place of sovereignty]
+ * [location__es_place_of_sovereignty Spanish place of sovereignty]
    
-
- * [Spanish_comarca Spanish comarca]
+ * [location__es_comarca Spanish comarca]
   
-
- * [Dutch_province Dutch province]
+ * [location__nl_province Dutch province]
   
-
- * [Dutch_municipality Dutch municipality]
+ * [location__nl_municipality Dutch municipality]
    
-
- * [Mexican_state Mexican state]
+ * [location__mx_state Mexican state]
    
-
- * [Mexican_federal_district Mexican federal district]
+ * [location__mx_federal_district Mexican federal district]
   
-
- * [Mexican_municipality Mexican municipality]
+ * [location__mx_municipality Mexican municipality]
   
-
- * [Mexican_federal_district_borough Mexican federal district borough]
+ * [location__mx_federal_district_borough Mexican federal district borough]
    
-
- * [Turkish_province Turkish province]
+ * [location__tr_province Turkish province]
    
-
- * [Turkish_district Turkish district]
+ * [location__tr_district Turkish district]
    
-
- * [Malaysian_state Malaysian state]
+ * [location__my_state Malaysian state] 
   
-
- * [Malaysian_federal_territory Malaysian federal territory]
- 
-
- * [Malaysian_division Malaysian division]
-   
-
- * [Malaysian_district Malaysian district]
-   

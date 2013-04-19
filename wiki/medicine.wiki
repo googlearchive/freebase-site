@@ -8,22 +8,22 @@ Here are the following types in Commons
 
 
  * [Artery Artery]
-   * [Data_entry_Artery Data Entry for Artery]
+   
 
  * [Muscle Muscle]
-   * [Data_entry_Muscle Data Entry for Muscle]
+   
 
  * [Surgeon Surgeon]
-   * [Data_entry_Surgeon Data Entry for Surgeon]
+  
 
  * [Ligament Ligament]
-   * [Data_entry_Ligament Data Entry for Ligament]
+   
 
  * [Disease_or_medical_condition Disease or medical condition]
-   * [Data_entry_Disease_or_medical_condition Data Entry for Disease or medical condition]
+   
 
  * [Brain_Structure Brain Structure]
-   * [Data_entry_Brain_Structure Data Entry for Brain Structure]
+   
 
  * [Hospital Hospital]
    * [Data_entry_Hospital Data Entry for Hospital]
@@ -35,16 +35,16 @@ Here are the following types in Commons
    * [Data_entry_Symptom Data Entry for Symptom]
 
  * [Drug Drug]
-   * [Data_entry_Drug Data Entry for Drug]
+  
 
  * [Anatomical_structure Anatomical structure]
-   * [Data_entry_Anatomical_structure Data Entry for Anatomical structure]
+  
 
  * [Bone Bone]
    * [Data_entry_Bone Data Entry for Bone]
 
  * [Cranial_nerve Cranial nerve]
-   * [Data_entry_Cranial_nerve Data Entry for Cranial nerve]
+  
 
  * [Vein Vein]
    * [Data_entry_Vein Data Entry for Vein]

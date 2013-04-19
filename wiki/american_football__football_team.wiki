@@ -1,0 +1,81 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+Add your content here.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
+
+
+[http://www.freebase.com/type/schema/american_football/football_team American football team type at Freebase.com]
+
+== Type Definition ==
+
+American Football Team refers to teams playing the American sport Football.
+
+==Identity Criterion for American Football Team type==
+The general information on the Identity Criterion for various freebase types is given at <http://wiki.freebase.com/wiki/Identity_criterion_for_types>. If anyone in the community want any changes to be done to the identity criterion for /american_football/football_team, please make edits directly to the features and guidelines below.
+
+===Features for establishing identity relationships===
+**'''''name_match''''': There is a ''name_match'' if the names or aliases of football teams  match on both the sources.
+**'''''current_head_coach_match''''': There is a ''current_head_coach_match'' if the team’s current head coach listed in Freebase property /american_football/football_team/current_head_coach (Current head coach) matches with the head coach on the other source.
+**'''''current_roster_match''''': There is a ''current_roster_match'' if at least one of the team’s current players listed in Freebase property /american_football/football_team/current_roster (Current roster) matches with the current players on the other source.
+**'''''historical_roster_match''''': There is a ''historical_roster_match'' if at least one of the team’s previous players listed in Freebase property /american_football/football_team/historical_roster (Historical roster) matches with the previous players on the other source.
+**'''''historical_coaching_staff_match''''': There is a ''historical_coaching_staff_match'' if at least one of the team’s previous coaches listed in Freebase property /american_football/football_team/historical_coaching_staff (Historical coaching staff) matches with the previous coaches on the other source.
+
+
+===General guidelines for establishing identity between two American Football Teams===
+:Here are some typical patterns for determining identity of american football teams:
+
+<ol style="list-style-type: lower-alpha">
+<li><span id="25.a"></span>''name_match'' and ''current_head_coach_match''.
+([[#25.1|Example 1]] )</li>
+<li><span id="25.b"></span>''name_match'' and ''current_roster_match''.
+([[#25.2|Example 2]] )</li>
+<li><span id="25.c"></span>''name_match'' and ''historical_roster_match''.
+([[#25.3|Example 3]] )</li>
+<li><span id="25.d"></span>''name_match'' and ''historical_coaching_staff_match''.
+([[#25.4|Example 4]] )</li>
+</ol>
+
+
+===Examples===
+
+<br/><br/>
+
+<span id="25.1"></span>[[File:Example211americanfootballteam.jpg|border|720px]]
+
+<br/><br/>
+
+[[#25.a|Pattern a]] Example 1: [http://www.jmusports.com/SportSelect.dbml?&DB_OEM_ID=14400&SPID=8113&SPSID=71030 Permalink] Here the names of the football teams and their head coaches match on both the sources. Hence the football teams are identical.
+
+<br/><br/>
+
+<span id="25.2"></span>[[File:Example224americanfootballteam.jpg|border|720px]]
+
+<br/><br/>
+
+[[#25.b|Pattern b]] Example 2: [http://www.lasvegaslocos.com/team/players/ Permalink] Here the names of the football teams and few of their current players on the roster match on both the sources. Hence the football teams are identical. 
+
+<br/><br/>
+
+<span id="25.3"></span>[[File:Example225americanfootballteam.jpg|border|720px]]
+
+<br/><br/>
+
+[[#25.c|Pattern c]] Example 3: [http://www.worldleagueofamericanfootball.com/id11.html Permalink] Here the names of the football teams and some of their historical players match on both the sources. Hence the football teams are identical.
+
+
+<br/><br/>
+
+<span id="25.4"></span>[[File:Example256americanfootballteam.jpg|border|720px]]
+
+<br/><br/>
+
+[[#25.d|Pattern d]] Example 4: [http://www.chargers.com/team/history/coaches.html Permalink] Here the names of the football teams and some of their historical coaches match on both the sources. Hence the football teams are identical.

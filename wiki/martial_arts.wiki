@@ -6,20 +6,14 @@ This is martial arts commons
 =Types=
 Here are the following types in Martial Arts Commons
 
- * [Martial_Art Martial Art]
-   
+ * [martial_arts__martial_art Martial Art]
 
- * [Martial_Art_Category Martial Art Category]
+ * [martial_arts__martial_art_category Martial Art Category]
    
-
- * [Martial_Artist Martial Artist]
+ * [martial_arts__martial_artist Martial Artist]
    
-
- * [Martial_Arts_Organization Martial Arts Organization]
+ * [martial_arts__martial_arts_organization Martial Arts Organization]
    
-
- * [Martial_Arts_Certification Martial Arts Certification]
+ * [martial_arts__martial_arts_certification Martial Arts Certification]
   
-
- * [Martial_Arts_Qualification Martial Arts Qualification]
-   
+ * [martial_arts__martial_arts_qualification Martial Arts Qualification]

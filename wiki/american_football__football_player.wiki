@@ -14,16 +14,8 @@ An American football player is an individual who participates in games of Americ
   * Use the Football player type for these.
  * Rugby players (e.g. Ignacio Corleto, Mat Rogers, Chris Paterson)
   * Use the Rugby player type for these.
- * Other kinds of footballers we don't currently have types for such as Canadian football players, Australian rules football players and Gaelic football players (e.g. Greg Battle, Jonathan Brown, Sean Purcell)
+ * Other kinds of footballers we don't currently have types for such as Canadian football players, Australian rules football players and Gaelic football players (e.g. Greg Battle, Jonathan Brown, Sean Purcell)0
   * Use the Athlete type for these
 
-== Properties ==
- * Current team : The team that the player plays on
- * Former teams : The teams that the player has played on during his NFL career.
-
 == Identity Criterion==
- * [American_football_player_id_criteria American Football Player Identity Criteria]
-
-
-==Data Entry==
- * [Data_entry_tutorial Data Entry for American Football Player]
+ * [american_football__football_player__id_criteria American Football Player Identity Criteria]

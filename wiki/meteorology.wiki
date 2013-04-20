@@ -1,32 +1,27 @@
-#summary Different types in Commons.
+#summary Different types in Meteorology Commons.
 
-= Commons =
-This is  commons
+= Meteorology Commons =
+This is meteorology commons
 
 =Types=
-Here are the following types in Commons
+Here are the following types in Meteorology Commons
 
 
- * [Tropical_Cyclone Tropical Cyclone]
+ * [meteorology__tropical_cyclone Tropical Cyclone]
 
- * [Tropical_cyclone_season Tropical cyclone season]
+ * [meteorology__tropical_cyclone_season Tropical cyclone season]
 
- * [Tropical_cyclone_category Tropical cyclone category]
+ * [meteorology__tropical_cyclone_category Tropical cyclone category]
    
- * [Cloud Cloud]
+ * [meteorology__cloud Cloud]
   
-
- * [Cloud_classification Cloud classification]
+ * [meteorology__cloud_classification Cloud classification]
   
-
- * [Meteorological_service Meteorological service]
+ * [meteorology__meteorological_service Meteorological service]
   
- 
- * [Beaufort_Wind_Force Beaufort Wind Force]
+ * [meteorology__beaufort_wind_force Beaufort Wind Force]
+  
+ * [meteorology__cyclone_affected_area Cyclone-affected area]
    
-
- * [Cyclone_affected_area Cyclone-affected area]
-   
-
- * [Forecast_Zone Forecast Zone]
+ * [meteorology__forecast_zone Forecast Zone]
    

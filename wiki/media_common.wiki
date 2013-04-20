@@ -1,68 +1,96 @@
-#summary Different types in Meteorology Commons.
+#summary Different types in Media Commons.
 
-= Meteorology Commons =
-This is meteorology commons
+= Media Commons =
+This is media commons
 
 =Types=
-Here are the following types in Meteorology Commons
+Here are the following types in Media Commons
 
 
- * [Armed Force Armed Force]
-   
+ * [media_common__quotation Quotation]
 
- * [Military_Person Military Person]
-   
+ * [media_common__quotation_source Quotation Source]
 
- * [Military_Conflict Military Conflict]
+ * [media_common__quotation_subject Quotation Subject]
 
+ * [media_common__adaptation Adaptation]
 
- * [Casualties Casualties]
-   
+ * [media_common__adapted_work Adapted Work]
 
- * [Military_Combatant Military Combatant]
-   
+ * [media_common__media_genre Media genre]
 
- * [Casualties_Type Casualties Type]
-   
+ * [media_common__creative_work Creative Work]
 
- * [Military_Command Military Command]
-   
+ * [media_common__unfinished_work Unfinished work]
 
- * [Military_Commander Military Commander]
-   
+ * [media_common__lost_work Lost work]
 
- * [Force_Strength Force Strength]
-   
+ * [media_common__cause_of_loss Cause of loss]
 
- * [Military_Resource Military Resource]
-   
+ * [media_common__completion_of_unfinished_work Completion of unfinished work]
 
- * [Military_Theater Military Theater]
-   
+ * [media_common__completer_of_unfinished_work Completer of unfinished work]
 
- * [Military_Service Military Service]
-   
+ * [media_common__finished_work Finished work]
 
- * [Military_rank Military rank]
-   
+ * [media_common__dedicatee Dedicatee]
 
- * [Military_combatant_group Military combatant group]
-  
+ * [media_common__dedication Dedication]
 
- * [Military_posting Military posting]
-   
+ * [media_common__dedicated_work Dedicated Work]
 
- * [Military_post Military post]
-   
+ * [media_common__dedicator Dedicator]
 
- * [Military_post_use Military post use]
-   
+ * [media_common__quotation_addressee Quotation addressee]
 
- * [Military_unit Military unit]
-   
+ * [book__written_work Written Work]
 
- * [Military_unit_size_designation Military unit size designation]
-   
+ * [book__publication Publication]
 
- * [Military_unit_place_of_origin Military unit place of origin]
-   
+ * [book__reviewed_work Reviewed Work]
+
+ * [book__school_or_movement Literary School Or Movement]
+
+ * [book__review Review]
+
+ * [book__author Author]
+
+ * [book__translated_work Translated Work]
+
+ * [book__interview Interview]
+
+ * [book__translation Translation]
+
+ * [book__interviewee Interviewee]
+
+ * [book__scholarly_work Scholarly work]
+
+ * [book__scholarly_financial_support Scholarly financial support]
+
+ * [book__interviewer Interviewer]
+
+ * [media_common__literary_genre Literary Genre]
+
+ * [book__published_work Published Work]
+
+ * [book__excerpted_work Excerpted Work]
+
+ * [book__translator Translator]
+
+ * [book__cited_work Cited work]
+
+ * [book__excerpt Excerpt]
+
+ * [book__illustrator Illustrator]
+
+ * [book__financial_support_provider Financial support provider]
+
+ * [book__contents Contents]
+
+ * [book__literary_series Literary Series]
+
+ * [media_common__netflix_title Netflix Title]
+
+ * [media_common__netflix_genre Netflix Genre]
+
+ * [media_common__cataloged_instance Cataloged instance]

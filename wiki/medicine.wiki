@@ -1,215 +1,147 @@
-#summary Different types in Commons.
+#summary Different types in Medicine Commons.
 
-= Commons =
-This is  commons
+= Medicine Commons =
+This is medicine commons
 
 =Types=
-Here are the following types in Commons
+Here are the following types in Medicine Commons
 
 
- * [Artery Artery]
+ * [medicine__artery Artery]
    
-
- * [Muscle Muscle]
+ * [medicine__muscle Muscle]
    
-
- * [Surgeon Surgeon]
+ * [medicine__surgeon Surgeon]
   
-
- * [Ligament Ligament]
+ * [medicine__ligament Ligament]
    
-
- * [Disease_or_medical_condition Disease or medical condition]
+ * [medicine__disease Disease or medical condition]
+  
+ * [medicine__brain Brain Structure]
    
+ * [medicine__hospital Hospital]
 
- * [Brain_Structure Brain Structure]
+ * [medicine__nerve Nerve]
+
+ * [medicine__symptom Symptom]
+
+ * [medicine__drug Drug]
+  
+ * [medicine__anatomical_structure Anatomical structure]
+  
+ * [medicine__bone Bone]
+
+ * [medicine__cranial_nerve Cranial nerve]
+  
+ * [medicine__vein Vein]
+
+ * [medicine__physician Physician]
+
+ * [medicine__condition_prevention_factors Condition prevention factors]
+
+ * [medicine__medical_treatment Medical Treatment]
+
+ * [medicine__contraindication Contraindication]
    
-
- * [Hospital Hospital]
-   * [Data_entry_Hospital Data Entry for Hospital]
-
- * [Nerve Nerve]
-   * [Data_entry_Nerve Data Entry for Nerve]
-
- * [Symptom Symptom]
-   * [Data_entry_Symptom Data Entry for Symptom]
-
- * [Drug Drug]
+ * [medicine__drug_class Drug class]
   
-
- * [Anatomical_structure Anatomical structure]
+ * [medicine__drug_brand Drug brand]
   
-
- * [Bone Bone]
-   * [Data_entry_Bone Data Entry for Bone]
-
- * [Cranial_nerve Cranial nerve]
+ * [medicine__drug_administration_route Drug administration route]
   
+ * [medicine__drug_pregnancy_category Drug pregnancy category]
+  
+ * [medicine__drug_legal_status Drug legal status]
+  
+ * [medicine__medical_device Medical device]
+  
+ * [medicine__medical_trial Medical trial]
+  
+ * [medicine__medical_trial_sponsor Medical trial sponsor]
+   
+ * [medicine__medical_trial_type Medical trial type]
+   
+ * [medicine__medical_trial_design Medical trial design]
+   
+ * [medicine__medical_trial_phase Medical trial phase]
+  
+ * [medicine__medical_trial_health_authority Medical trial health authority]
+  
+ * [medicine__biofluid Biofluid]
+  
+ * [medicine__medical_specialty Medical specialty]
+  
+ * [medicine__disease_cause Disease cause]
+  
+ * [medicine__hormone Hormone]
+ 
+ * [medicine__hospital_ownership Hospital Ownership]
+ 
+ * [medicine__hospital_ownership_status Hospital Ownership Status]
+ 
+ * [medicine__vaccine Vaccine]
+   
+ * [medicine__vaccine_developer Vaccine Developer]
+   
+ * [medicine__risk_factor Risk Factor]
+   
+ * [medicine__disease_stage Disease Stage]
+  
+ * [medicine__survival_rate Survival Rate]
+  
+ * [medicine__cancer_center Cancer Center]
+   
+ * [medicine__cancer_center_constituent Cancer Center Constituent]
+   
+ * [medicine__cancer_center_type Cancer Center Type]
+  
+ * [medicine__notable_person_with_medical_condition Public figure with medical condition]
+  
+ * [medicine__infectious_disease Infectious Disease]
+  
+ * [medicine__transmission_route Route of infection transmission]
+  
+ * [medicine__vector_of_disease Disease vector]
+  
+ * [medicine__type_of_infectious_agent Type of infectious agent]
+  
+ * [medicine__icd_9_cm_classification ICD-9-CM Classification]
+  
+ * [medicine__diagnostic_sign Diagnostic Sign]
+   
+ * [medicine__diagnostic_test Diagnostic Test]
 
- * [Vein Vein]
-   * [Data_entry_Vein Data Entry for Vein]
+ * [medicine__diagnostic_test_signs Diagnostic Test Sign]
+  
+ * [medicine__drug_formulation Drug formulation]
+   
+ * [medicine__fda_otc_monograph_part FDA OTC drug monograph part]
 
- * [Physician Physician]
-   * [Data_entry_Physician Data Entry for Physician]
-
- * [Condition_prevention_factors Condition prevention factors]
-   * [Data_entry_Condition_prevention_factors Data Entry for Condition prevention factors]
-
- * [Medical_Treatment Medical Treatment]
-   * [Data_entry_Medical_Treatment Data Entry for Medical Treatment]
-
- * [Contraindication Contraindication]
-   * [Data_entry_Contraindication Data Entry for Contraindication]
-
- * [Drug_class Drug class]
-   * [Data_entry_Drug_class Data Entry for Drug class]
-
- * [Drug_brand Drug brand]
-   * [Data_entry_Drug_brand Data Entry for Drug brand]
-
- * [Drug_administration_route Drug administration route]
-   * [Data_entry_Drug_administration_route Data Entry for Drug administration route]
-
- * [Drug_pregnancy_category Drug pregnancy category]
-   * [Data_entry_Drug_pregnancy_category Data Entry for Drug pregnancy category]
-
- * [Drug_legal_status Drug legal status]
-   * [Data_entry_Drug_legal_status Data Entry for Drug legal status]
-
- * [Medical_device Medical device]
-   * [Data_entry_Medical_device Data Entry for Medical device]
-
- * [Medical_trial Medical trial]
-   * [Data_entry_Medical_trial Data Entry for Medical trial]
-
- * [Medical_trial_sponsor Medical trial sponsor]
-   * [Data_entry_Medical_trial_sponsor Data Entry for Medical trial sponsor]
-
- * [Medical_trial_type Medical trial type]
-   * [Data_entry_Medical_trial_type Data Entry for Medical trial type]
-
- * [Medical_trial_design Medical trial design]
-   * [Data_entry_Medical_trial_design Data Entry for Medical trial design]
-
- * [Medical_trial_phase Medical trial phase]
-   * [Data_entry_Medical_trial_phase Data Entry for Medical trial phase]
-
- * [Medical_trial_health_authority Medical trial health authority]
-   * [Data_entry_Medical_trial_health_authority Data Entry for Medical trial health authority]
-
- * [Biofluid Biofluid]
-   * [Data_entry_Biofluid Data Entry for Biofluid]
-
- * [Medical_specialty Medical specialty]
-   * [Data_entry_Medical_specialty Data Entry for Medical specialty]
-
- * [Disease_cause Disease cause]
-   * [Data_entry_Disease_cause Data Entry for Disease cause]
-
- * [Hormone Hormone]
-   * [Data_entry_Hormone Data Entry for Hormone]
-
- * [Hospital_Ownership Hospital Ownership]
-   * [Data_entry_Hospital_Ownership Data Entry for Hospital Ownership]
-
- * [Hospital_Ownership_Status Hospital Ownership Status]
-   * [Data_entry_Hospital_Ownership_Status Data Entry for Hospital Ownership Status]
-
- * [Vaccine Vaccine]
-   * [Data_entry_Vaccine Data Entry for Vaccine]
-
- * [Vaccine_Developer Vaccine Developer]
-   * [Data_entry_Vaccine_Developer Data Entry for Vaccine Developer]
-
- * [Risk_Factor Risk Factor]
-   * [Data_entry_Risk_Factor Data Entry for Risk Factor]
-
- * [Disease_Stage Disease Stage]
-   * [Data_entry_Disease_Stage Data Entry for Disease Stage]
-
- * [Survival_Rate Survival Rate]
-   * [Data_entry_Survival_Rate Data Entry for Survival Rate]
-
- * [Cancer_Center Cancer Center]
-   * [Data_entry_Cancer_Center Data Entry for Cancer Center]
-
- * [Cancer_Center_Constituent Cancer Center Constituent]
-   * [Data_entry_Cancer_Center_Constituent Data Entry for Cancer Center Constituent]
-
- * [Cancer_Center_Type Cancer Center Type]
-   * [Data_entry_Cancer_Center_Type Data Entry for Cancer Center Type]
-
- * [Public_figure_with_medical_condition Public figure with medical condition]
-   * [Data_entry_Public_figure_with_medical_condition Data Entry for Public figure with medical condition]
-
- * [Infectious_Disease Infectious Disease]
-   * [Data_entry_Infectious_Disease Data Entry for Infectious Disease]
-
- * [Route_of_infection_transmission Route of infection transmission]
-   * [Data_entry_Route_of_infection_transmission Data Entry for Route of infection transmission]
-
- * [Disease_vector Disease vector]
-   * [Data_entry_Disease_vector Data Entry for Disease vector]
-
- * [Type_of_infectious_agent Type of infectious agent]
-   * [Data_entry_Type_of_infectious_agent Data Entry for Type of infectious agent]
-
- * [ICD_9_CM_Classification ICD-9-CM Classification]
-   * [Data_entry_ICD_9_CM_Classification Data Entry for ICD-9-CM Classification]
-
- * [Diagnostic_Sign Diagnostic Sign]
-   * [Data_entry_Diagnostic_Sign Data Entry for Diagnostic Sign]
-
- * [Diagnostic_Test Diagnostic Test]
-   * [Data_entry_Diagnostic_Test Data Entry for Diagnostic Test]
-
- * [Diagnostic_Test_Sign Diagnostic Test Sign]
-   * [Data_entry_Diagnostic_Test_Sign Data Entry for Diagnostic Test Sign]
-
- * [Drug_formulation Drug formulation]
-   * [Data_entry_Drug_formulation Data Entry for Drug formulation]
-
- * [FDA_OTC_drug_monograph_part FDA OTC drug monograph part]
-   * [Data_entry_FDA_OTC_drug_monograph_part Data Entry for FDA OTC drug monograph part]
-
- * [Drug_mechanism_of_action Drug mechanism of action]
-   * [Data_entry_Drug_mechanism_of_action Data Entry for Drug mechanism of action]
-
- * [Drug_manufacturer Drug manufacturer]
-   * [Data_entry_Drug_manufacturer Data Entry for Drug manufacturer]
-
- * [Drug_label_section Drug label section]
-   * [Data_entry_Drug_label_section Data Entry for Drug label section]
-
- * [Drug_dosage_flavor Drug dosage flavor]
-   * [Data_entry_Drug_dosage_flavor Data Entry for Drug dosage flavor]
-
- * [Drug_ingredient Drug ingredient]
-   * [Data_entry_Drug_ingredient Data Entry for Drug ingredient]
-
- * [Manufactured_drug_form Manufactured drug form]
-   * [Data_entry_Manufactured_drug_form Data Entry for Manufactured drug form]
-
- * [Drug_physiologic_effect Drug physiologic effect]
-   * [Data_entry_Drug_physiologic_effect Data Entry for Drug physiologic effect]
-
- * [Drug_formulation_category Drug formulation category]
-   * [Data_entry_Drug_formulation_category Data Entry for Drug formulation category]
-
- * [Drug_form_shape Drug form shape]
-   * [Data_entry_Drug_form_shape Data Entry for Drug form shape]
-
- * [Drug_strength Drug strength]
-   * [Data_entry_Drug_strength Data Entry for Drug strength]
-
- * [Drug_therapeutic_equivalence_relationship Drug therapeutic equivalence relationship]
-   * [Data_entry_Drug_therapeutic_equivalence_relationship Data Entry for Drug therapeutic equivalence relationship]
-
- * [Drug_dosage_form Drug dosage form]
-   * [Data_entry_Drug_dosage_form Data Entry for Drug dosage form]
-
- * [Compound_drug Compound drug]
-   * [Data_entry_Compound_drug Data Entry for Compound drug]
-
- * [Drug_regulating_authority Drug regulating authority]
-   * [Data_entry_Drug_regulating_authority Data Entry for Drug regulating authority]
+ * [medicine__drug_mechanism_of_action Drug mechanism of action]
+  
+ * [medicine__drug_manufacturer Drug manufacturer]
+  
+ * [medicine__drug_label_section Drug label section]
+   
+ * [medicine__drug_dosage_flavor Drug dosage flavor]
+  
+ * [medicine__drug_ingredient Drug ingredient]
+  
+ * [medicine__manufactured_drug_form Manufactured drug form]
+   
+ * [medicine__drug_physiologic_effect Drug physiologic effect]
+   
+ * [medicine__drug_formulation_category Drug formulation category]
+  
+ * [medicine__drug_form_shape Drug form shape]
+  
+ * [medicine__drug_strength Drug strength]
+  
+ * [medicine__drug_therapeutic_equivalence_relationship Drug therapeutic equivalence relationship]
+  
+ * [medicine__drug_dosage_form Drug dosage form]
+  
+ * [medicine__compound_drug Compound drug]
+   
+ * [medicine__drug_regulating_authority Drug regulating authority]
+   

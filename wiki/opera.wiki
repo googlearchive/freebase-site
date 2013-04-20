@@ -7,56 +7,56 @@ This is opera commons
 Here are the following types in Opera Commons
 
  
+ * [opera__opera_production Opera Production]
+   
+
+ * [opera__opera_company Opera Company]
+   
+
+ * [opera__opera_producer Opera Producer]
+   
+
+ * [opera__opera_director Opera Director]
+   
+
+ * [opera__opera_designer Opera Designer]
+  
+
  * [Opera_Production Opera Production]
-   * [Data_entry_Opera_Production Data Entry for Opera Production]
+   
 
- * [Opera_Company Opera Company]
-   * [Data_entry_Opera_Company Data Entry for Opera Company]
-
- * [Opera_Producer Opera Producer]
-   * [Data_entry_Opera_Producer Data Entry for Opera Producer]
-
- * [Opera_Director Opera Director]
-   * [Data_entry_Opera_Director Data Entry for Opera Director]
+ * [Opera_Production Opera Production]
+  
 
  * [Opera_Designer Opera Designer]
-   * [Data_entry_Opera_Designer Data Entry for Opera Designer]
+   
 
  * [Opera_Production Opera Production]
-   * [Data_entry_Opera_Production Data Entry for Opera Production]
-
- * [Opera_Production Opera Production]
-   * [Data_entry_Opera_Production Data Entry for Opera Production]
-
- * [Opera_Designer Opera Designer]
-   * [Data_entry_Opera_Designer Data Entry for Opera Designer]
-
- * [Opera_Production Opera Production]
-   * [Data_entry_Opera_Production Data Entry for Opera Production]
+  
 
  * [Opera_Role Opera Role]
-   * [Data_entry_Opera_Role Data Entry for Opera Role]
+   
 
  * [Opera_Character Opera Character]
-   * [Data_entry_Opera_Character Data Entry for Opera Character]
+  
 
  * [Opera_House Opera House]
-   * [Data_entry_Opera_House Data Entry for Opera House]
+  
 
  * [Opera_Genre Opera Genre]
-   * [Data_entry_Opera_Genre Data Entry for Opera Genre]
+   
 
  * [Opera_Recording Opera Recording]
-   * [Data_entry_Opera_Recording Data Entry for Opera Recording]
+   
 
  * [Opera Opera]
-   * [Data_entry_Opera Data Entry for Opera]
+  
 
  * [Opera_character_voice Opera character voice]
-   * [Data_entry_Opera_character_voice Data Entry for Opera character voice]
+   
 
  * [Opera_Libretto Opera Libretto]
-   * [Data_entry_Opera_Libretto Data Entry for Opera Libretto]
+   
 
  * [Librettist Librettist]
-   * [Data_entry_Librettist Data Entry for Librettist]
+   

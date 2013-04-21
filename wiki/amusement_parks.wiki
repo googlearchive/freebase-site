@@ -1,0 +1,24 @@
+#summary Different types in Amusement Parks Commons.
+
+= Amusement Parks Commons =
+This is amusement parks commons
+
+=Types=
+Here are the following types in Amusement Parks Commons
+
+  * [Amusement Park]
+ * [Amusement Ride]
+ * [Roller Coaster]
+ * [Amusement Ride Designer]
+ * [Amusement Ride Manufacturer]
+ * [Amusement Ride Theme	
+ * [Amusement Ride Type]
+
+[Roller Coaster Material]	
+[Roller Coaster Train Configuration]
+[Roller Coaster Propulsion System]	
+[Amusement Ride Accident]
+[Amusement Park Area]	
+[Disney Ride]	
+[Disney Ride Ticket]
+[Disney Ride Ticket Membership]	

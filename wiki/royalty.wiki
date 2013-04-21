@@ -7,89 +7,87 @@ This is  Royalty and nobility commons
 Here are the following types in Royalty and nobility Commons
 
 
- * [Royal line Royal line]
-   * [Data_entry_Royal line Data Entry for Royal line]
+ * [royalty__royal_line Royal line]
+   
 
- * [Monarch Monarch]
-   * [Data_entry_Monarch Data Entry for Monarch]
+ * [royalty__monarch Monarch]
+  
 
- * [Kingdom Kingdom]
-   * [Data_entry_Kingdom Data Entry for Kingdom]
+ * [royalty__kingdom Kingdom]
+   
 
- * [Coronation Coronation]
-   * [Data_entry_Coronation Data Entry for Coronation]
+ * [royalty__coronation Coronation]
+ 
 
- * [Noble title Noble title]
-   * [Data_entry_Noble title Data Entry for Noble title]
+ * [royalty__noble_title Noble title]
+   
 
- * [Noble person Noble person]
-   * [Data_entry_Noble person Data Entry for Noble person]
+ * [royalty__noble_person Noble person]
+   
 
- * [Noble rank Noble rank]
-   * [Data_entry_Noble rank Data Entry for Noble rank]
+ * [royalty__noble_rank Noble rank]
+   
 
- * [Noble rank gender equivalence Noble rank gender equivalence]
-   * [Data_entry_Noble rank gender equivalence Data Entry for Noble rank gender equivalence]
+ * [royalty__noble_rank_gender_equivalence Noble rank gender equivalence]
+   
 
- * [Noble title tenure Noble title tenure]
-   * [Data_entry_Noble title tenure Data Entry for Noble title tenure]
+ * [royalty__noble_title_tenure Noble title tenure]
+   
 
- * [Noble title gender equivalency Noble title gender equivalency]
-   * [Data_entry_Noble title gender equivalency Data Entry for Noble title gender equivalency]
+ * [royalty__noble_title_gender_equivalency Noble title gender equivalency]
+   
 
- * [System of nobility System of nobility]
-   * [Data_entry_System of nobility Data Entry for System of nobility]
+ * [royalty__system_of_nobility System of nobility]
+   
 
- * [Precedence Precedence]
-   * [Data_entry_Precedence Data Entry for Precedence]
+ * [royalty__precedence Precedence]
+  
 
- * [System-Rank relationship System-Rank relationship]
-   * [Data_entry_System-Rank relationship Data Entry for System-Rank relationship]
+ * [royalty__system_rank_relationship System-Rank relationship]
+   
 
- * [System-Title relationship System-Title relationship]
-   * [Data_entry_System-Title relationship Data Entry for System-Title relationship]
+ * [royalty__system_title_relationship System-Title relationship]
+ 
 
- * [Chivalric Order Member Chivalric Order Member]
-   * [Data_entry_Chivalric Order Member Data Entry for Chivalric Order Member]
+ * [royalty__chivalric_order_member Chivalric Order Member]
+   
 
- * [Chivalric Title Chivalric Title]
-   * [Data_entry_Chivalric Title Data Entry for Chivalric Title]
+ * [royalty__chivalric_title Chivalric Title]
+   
 
- * [Chivalric Rank Chivalric Rank]
-   * [Data_entry_Chivalric Rank Data Entry for Chivalric Rank]
+ * [royalty__chivalric_rank Chivalric Rank]
+   
 
- * [Chivalric Order Relationship Chivalric Order Relationship]
-   * [Data_entry_Chivalric Order Relationship Data Entry for Chivalric Order Relationship]
+ * [royalty__chivalric_order_relationship Chivalric Order Relationship]
+   
 
- * [Order of Chivalry Category Order of Chivalry Category]
-   * [Data_entry_Order of Chivalry Category Data Entry for Order of Chivalry Category]
+ * [royalty__Order of Chivalry Category Order of Chivalry Category]
+  
 
- * [Chivalric Office Chivalric Office]
-   * [Data_entry_Chivalric Office Data Entry for Chivalric Office]
+ * [royalty__chivalric_office Chivalric Office]
+   
 
- * [Order of Chivalry Order of Chivalry]
-   * [Data_entry_Order of Chivalry Data Entry for Order of Chivalry]
+ * [royalty__order_of_chivalry Order of Chivalry]
+   
 
- * [Chivalric Order Membership Chivalric Order Membership]
-   * [Data_entry_Chivalric Order Membership Data Entry for Chivalric Order Membership]
+ * [royalty__chivalric_order_membership Chivalric Order Membership]
+  
 
- * [Chivalric Title Gender Equivalence Chivalric Title Gender Equivalence]
-   * [Data_entry_Chivalric Title Gender Equivalence Data Entry for Chivalric Title Gender Equivalence]
+ * [royalty__chivalric_title_gender_equivalence Chivalric Title Gender Equivalence]
+   
 
- * [Chivalric Order Officer Tenure Chivalric Order Officer Tenure]
-   * [Data_entry_Chivalric Order Officer Tenure Data Entry for Chivalric Order Officer Tenure]
+ * [royalty__chivalric_order_position_tenure Chivalric Order Officer Tenure]
+  
 
- * [Chivalric Rank Gender Equivalence Chivalric Rank Gender Equivalence]
-   * [Data_entry_Chivalric Rank Gender Equivalence Data Entry for Chivalric Rank Gender Equivalence]
+ * [royalty__chivalric_rank_gender_equivalence Chivalric Rank Gender Equivalence]
 
- * [Chivalric Order Officer Chivalric Order Officer]
-   * [Data_entry_Chivalric Order Officer Data Entry for Chivalric Order Officer]
+ * [royalty__chivalric_order_officer Chivalric Order Officer]
+   
 
- * [Chivalric Rank Precedence Chivalric Rank Precedence]
-   * [Data_entry_Chivalric Rank Precedence Data Entry for Chivalric Rank Precedence]
+ * [royalty__chivalric_rank_precedence Chivalric Rank Precedence]
+   
+ * [royalty__chivalric_order_founder Chivalric Order Founder]
+   
 
- * [Chivalric Order Founder Chivalric Order Founder]
-   * [Data_entry_Chivalric Order Founder Data Entry for Chivalric Order Founder]
-
- * [System-Order relationship System-Order relationship]
-   * [Data_entry_System-Order relationship Data Entry for System-Order relationship]
+ * [royalty__system_order_relationship System-Order relationship]
+  

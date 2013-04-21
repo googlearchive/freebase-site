@@ -6,44 +6,31 @@ This is transportation commons
 =Types=
 Here are the following types in Transportation Commons
 
-
  * [transportation__road Road]
    
-
  * [transportation__road_junction Road junction]
    
-
  * [transportation__road_orientation Road orientation]
    
-
  * [transportation__highway_system Highway system]
    
-
  * [transportation__road_starting_point Road End]
    
-
  * [transportation__bridge Bridge]
  
-
  * [transportation__bridge_type Bridge Type]
+ 
+ * [metropolitan_transit__transit_agency Mass Transportation System Operator]
+ 
+ * [metropolitan_transit__transit_line Transit Line]
+ 
+ * [metropolitan_transit__mass_transportation_system Mass Transportation System]
+ 
+ * [metropolitan_transit__transit_vehicle_Type Transit Vehicle Type]
+ 
+ * [metropolitan_transit__transit_stop Transit Stop]
    
-
- * [Mass_Transportation_System_Operator Mass Transportation System Operator]
-  
-
- * [Transit_Line Transit Line]
-   
-
- * [Mass_Transportation_System Mass Transportation System]
-   
-
- * [Transit_Vehicle_Type Transit Vehicle Type]
-   
-
- * [Transit_Stop Transit Stop]
-   
- * [Transit_Service_Type Transit Service Type]
-   
+ * [metropolitan_transit__transit_service_type Transit Service Type]
 
  * [transportation__transit_system_length Transit System Length]
    

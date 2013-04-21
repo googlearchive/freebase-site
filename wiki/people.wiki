@@ -4,88 +4,88 @@
 
 Here are the following types in People Commons
 
- * [Cause_of_Death Cause of Death]
+ * [people__cause_of_death Cause of Death]
    * [Data_entry_Cause_of_Death Data Entry for Cause of Death]
 
- * [Gender Gender]
+ * [people__gender Gender]
    * [Data_entry_Gender Data Entry for Gender]
 
- * [Person Person]
+ * [people__person Person]
    * [Data_entry_Person Data Entry for Person]
 
- * [Marriage Marriage]
+ * [people__marriage Marriage]
    * [Data_entry_Marriage Data Entry for Marriage]
 
- * [Sibling_Relationship Sibling Relationship]
+ * [people__sibling_relationship Sibling_Relationship Sibling Relationship]
    * [Data_entry_Sibling_Relationship Data Entry for Sibling Relationship]
 
- * [Deceased_Person Deceased Person]
+ * [people__deceased_person Deceased Person]
    * [Data_entry_Deceased_Person Data Entry for Deceased Person]
 
- * [Profession Profession]
+ * [people__profession Profession]
    * [Data_entry_Profession Data Entry for Profession]
 
- * [Family_name Family name]
+ * [people__family_name Family name]
    * [Data_entry_Family_name Data Entry for Family name]
 
- * [Family Family]
+ * [people__family Family]
    * [Data_entry_Family Data Entry for Family]
 
- * [Marriage_union_type Marriage/union type]
+ * [people__marriage_union_type Marriage/union type]
    * [Data_entry_Marriage_union_type Data Entry for Marriage/union type]
 
- * [Wedding_venue Wedding venue]
+ * [people__wedding_venue Wedding venue]
    * [Data_entry_Wedding_venue Data Entry for Wedding venue]
 
- * [Place_lived Place lived]
+ * [people__place_lived Place lived]
    * [Data_entry_Place_lived Data Entry for Place lived]
 
- * [Ethnicity Ethnicity]
+ * [people__ethnicity Ethnicity]
    * [Data_entry_Ethnicity Data Entry for Ethnicity]
 
- * [American_Indian_group American Indian group]
+ * [people__american_indian_group American Indian group]
    * [Data_entry_American_Indian_group Data Entry for American Indian group]
 	
- * [Canadian_aboriginal_group Canadian aboriginal group]
+ * [people__canadian_aboriginal_group Canadian aboriginal group]
    * [Data_entry_Canadian_aboriginal_group Data Entry for Canadian aboriginal group]
 
- * [Chinese_ethnic_group Chinese ethnic group]
+ * [people__chinese_ethnic_group Chinese ethnic group]
    * [Data_entry_Chinese_ethnic_group Data Entry for Chinese ethnic group]
 
- * [Place_of_interment Place of interment]
+ * [people__place_of_interment Place of interment]
    * [Data_entry_Place_of_interment Data Entry for Place of interment]
 
- * [Family_member Family member]
+ * [people__family_member Family member]
    * [Data_entry_Family_member Data Entry for Family member]
 
- * [Measured_person Measured person]
+ * [people__measured_person Measured person]
    * [Data_entry_Measured_person Data Entry for Measured person]
 
- * [Human_measurement Human measurement]
+ * [people__human_measurement Human measurement]
    * [Data_entry_Human_measurement Data Entry for Human measurement]
 
- * [Measured_body_part Measured body part]
+ * [people__measured_body_part Measured body part]
    * [Data_entry_Measured_body_part Data Entry for Measured body part]
 
- * [Professional_field Professional field]
+ * [people__professional_field Professional field]
    * [Data_entry_Professional_field Data Entry for Professional field]
 
- * [Appointment Appointment]
+ * [people__appointment Appointment]
    * [Data_entry_Appointment Data Entry for Appointment]
 
- * [Appointment_Nominee Appointment Nominee]
+ * [people__appointment_nominee Appointment Nominee]
    * [Data_entry_Appointment_Nominee Data Entry for Appointment Nominee]
 
- * [Appointed_Role Appointed Role]
+ * [people__appointed_role Appointed Role]
    * [Data_entry_Appointed_Role Data Entry for Appointed Role]
 
- * [Appointee Appointee]
+ * [people__appointee Appointee]
    * [Data_entry_Appointee Data Entry for Appointee]
 
- * [Appointment_Nomination Appointment Nomination]
+ * [people__appointment_nomination Appointment Nomination]
    * [Data_entry_Appointment_Nomination Data Entry for Appointment Nomination]
 
- * [Appointer Appointer]
+ * [people__appointer Appointer]
    * [Data_entry_Appointer Data Entry for Appointer]
 
 

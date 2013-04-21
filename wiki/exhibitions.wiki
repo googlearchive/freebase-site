@@ -1,0 +1,26 @@
+#summary Different types in Exhibitions Commons.
+
+= Exhibitions Commons =
+This is exhibitions commons
+
+=Types=
+Here are the following types in Exhibitions Commons
+
+
+ * [exhibitions__exhibition Exhibition]
+ 
+ * [exhibitions__type_of_exhibition Type of Exhibition]
+
+ * [exhibitions__exhibition_subject Exhibition subject]
+
+ * [exhibitions__exhibition_run Exhibition run]
+
+ * [exhibitions__exhibition_venue Exhibition venue]
+
+ * [exhibitions__exhibition_sponsor Exhibition sponsor]
+
+ * [exhibitions__exhibition_producer Exhibition producer]
+
+ * [exhibitions__exhibit Exhibit]
+
+ * [exhibitions__exhibition_curator Exhibition curator]

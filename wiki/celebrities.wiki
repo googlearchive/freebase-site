@@ -7,44 +7,31 @@ This is celebrities commons
 Here are the following types in Celebrities Commons
 
 
- * [Criminal_offense Criminal offense]
+ * [celebrities__reason_for_arrest Criminal offense]
    
-
- * [Supercouple Supercouple]
+ * [celebrities__supercouple Supercouple]
    
-
- * [Abused_substance Abused substance]
+ * [celebrities__abused_substance Abused substance]
    
-
- * [Sexual_orientation Sexual orientation]
+ * [celebrities__sexual_orientation Sexual orientation]
    
-
- * [Friendship Friendship]
+ * [celebrities__friendship Friendship]
    
-
- * [Sexual_orientation_phase Sexual orientation phase]
+ * [celebrities__sexual_orientation_phase Sexual orientation phase]
    
-
- * [Romantic_relationship_type Romantic relationship type]
+ * [celebrities__romantic_relationship_type Romantic relationship type]
    
-
- * [Romantic_relationship Romantic relationship]
+ * [celebrities__romantic_relationship Romantic relationship]
    
-
- * [Rehab Rehab]
+ * [celebrities__rehab Rehab]
    
-
- * [Rivalry Rivalry]
+ * [celebrities__rivalry Rivalry]
    
-
- * [Substance_abuse_problem Substance abuse problem]
+ * [celebrities__substance_abuse_problem Substance abuse problem]
    
-
- * [Celebrity Celebrity]
+ * [celebrities__celebrity Celebrity]
    
-
- * [Rehab_facility Rehab facility]
+ * [celebrities__rehab_facility Rehab facility]
    
-
- * [Legal_entanglement Legal entanglement]
+ * [celebrities__legal_entanglement Legal entanglement]
  

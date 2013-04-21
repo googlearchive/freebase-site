@@ -30,59 +30,59 @@ Here are the following types in Periodicals Commons
  * [book__newspaper_circulation Newspaper circulation]
    * [Data_entry_Newspaper_circulation Data Entry for Newspaper circulation]
 
- * [Newspaper_edition_type Newspaper edition type]
+ * [book__newspaper_edition_type Newspaper edition type]
    * [Data_entry_Newspaper_edition_type Data Entry for Newspaper edition type]
 
- * [Journal_publication Journal publication]
+ * [book__journal_publication Journal publication]
    * [Data_entry_Journal_publication Data Entry for Journal publication]
 
- * [Magazine_Issue Magazine Issue]
+ * [book__magazine_Issue Magazine Issue]
    * [Data_entry_Magazine_Issue Data Entry for Magazine Issue]
 
- * [Newspaper_Issue Newspaper Issue]
+ * [book__newspaper_Issue Newspaper Issue]
    * [Data_entry_Newspaper_Issue Data Entry for Newspaper Issue]
 
- * [Serialized_Work Serialized Work]
+ * [book__serialized_work Serialized Work]
    * [Data_entry_Serialized_Work Data Entry for Serialized Work]
 	
- * [Periodical Periodical]
+ * [book__periodical Periodical]
    * [Data_entry_Periodical Data Entry for Periodical]
 		
- * [Periodical_Publication_Date Periodical Publication Date]
+ * [book__periodical_publication_date Periodical Publication Date]
    * [Data_entry_Periodical_Publication_Date Data Entry for Periodical Publication Date]
 
- * [Editorial_tenure Editorial tenure]
+ * [book__editorial_tenure Editorial tenure]
    * [Data_entry_Editorial_tenure Data Entry for Editorial tenure]
 
- * [Periodical_Publisher Periodical Publisher]
+ * [book__periodical_publisher Periodical Publisher]
    * [Data_entry_Periodical_Publisher Data Entry for Periodical Publisher]
 
- * [Journal_article Journal article]
+ * [book__journal_article Journal article]
    * [Data_entry_Journal_article Data Entry for Journal article]
 
- * [Place_of_Publication_Period Place of Publication Period]
+ * [book__place_of_publication_period Place of Publication Period]
    * [Data_entry_Place_of_Publication_Period Data Entry for Place of Publication Period]
 
- * [Periodical_Frequency Periodical Frequency]
+ * [book__periodical_frequency Periodical Frequency]
    * [Data_entry_Periodical_Frequency Data Entry for Periodical Frequency]
 
- * [Periodical_Format_Period Periodical Format Period]
+ * [book__periodical_format_period Periodical Format Period]
    * [Data_entry_Periodical_Format_Period Data Entry for Periodical Format Period]
 
- * [Periodical_Format Periodical Format]
+ * [book__periodical_format Periodical Format]
    * [Data_entry_Periodical_Format Data Entry for Periodical Format]
 
- * [Magazine_genre Magazine genre]
+ * [book__magazine_genre Magazine genre]
    * [Data_entry_Magazine_genre Data Entry for Magazine genre]
 
- * [Newspaper Newspaper]
+ * [book__newspaper Newspaper]
    * [Data_entry_Newspaper Data Entry for Newspaper]
 
- * [Newspaper_price Newspaper price]
+ * [book__newspaper_price Newspaper price]
    * [Data_entry_Newspaper_price Data Entry for Newspaper price]
 
- * [Periodical_Subject Periodical Subject]
+ * [book__periodical_subject Periodical Subject]
    * [Data_entry_Periodical_Subject Data Entry for Periodical Subject]
 
- * [Newspaper_circulation_area Newspaper circulation area]
+ * [periodicals__newspaper_circulation_area Newspaper circulation area]
    * [Data_entry_Newspaper_circulation_area Data Entry for Newspaper circulation area]	

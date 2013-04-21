@@ -1,0 +1,33 @@
+#summary Different types in Comics Commons.
+
+= Comics Commons =
+This is comics commons
+
+=Types=
+Here are the following types in Comics Commons
+
+
+ * [comic_books__comic_book_character Comic Book Character]
+ * [comic_books__comic_book_colorist Comic Book Colorist]
+ * [comic_books__comic_book_editor Comic Book Editor]
+ * [comic_books__comic_book_fictional_universe Comic Book Fictional Universe]
+ * [comic_books__comic_book_genre Comic Book Genre]
+ * [comic_books__comic_book_inker Comic Book Inker]
+ * [comic_books__comic_book_issue	Comic Book Issue]
+ * [comic_books__comic_book_letterer Comic Book Letterer]
+ * [comic_books__comic_book_penciler Comic Book Penciler]
+ * [comic_books__comic_book_publisher Comic Book Publisher]
+ * [comic_books__comic_book_series Comic Book Series]
+ * [comic_books__comic_book_story Comic Book Story]
+ * [comic_books__comic_book_story_arc Comic Book Story Arc]
+ * [comic_books__comic_book_writer Comic Book Writer]
+ * [comic_books__comic_story_printing Comic Story Printing]
+ * [comic_books__comic_book_creator Comic Book Creator]
+ * [comic_strips__comic_strip Comic Strip]
+ * [comic_strips__comic_strip_syndicate_duration Comic Strip Syndicate Duration]
+ * [comic_strips__comic_strip_syndicate Comic Strip Syndicate]
+ * [comic_strips__comic_strip_creator Comic Strip Creator]
+ * [comic_strips__comic_strip_creator Duration Comic Strip Creator Duration]
+ * [comic_strips__comic_strip_creator_role Comic Strip Creator Role]
+ * [comic_strips__comic_strip_character Comic Strip Character]
+ * [comic_strips__comic_strip_genre Comic Strip Genre]

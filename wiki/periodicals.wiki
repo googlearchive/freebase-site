@@ -6,28 +6,28 @@ This is Periodicals commons
 =Types=
 Here are the following types in Periodicals Commons
 
- * [Newspaper_Owner Newspaper Owner]
+ * [book__newspaper_owner Newspaper Owner]
    * [Data_entry_Newspaper_Owner Data Entry for Newspaper Owner]
 
- * [Serial_Installment Serial Installment]
+ * [book__serial_installment Serial Installment]
    * [Data_entry_Serial_Installment Data Entry for Serial Installment]
 
- * [Magazine Magazine]
+ * [book__magazine Magazine]
    * [Data_entry_Magazine Data Entry for Magazine]
 
- * [Journal Journal]
+ * [book__journal Journal]
    * [Data_entry_Journal Data Entry for Journal]
 
- * [Periodical_Publisher_Period Periodical Publisher Period]
+ * [book__periodical_publisher_period Periodical Publisher Period]
    * [Data_entry_Periodical_Publisher_Period Data Entry for Periodical Publisher Period]
 
- * [Periodical_editor Periodical editor]
+ * [book__periodical_editor Periodical editor]
    * [Data_entry_Periodical_editor Data Entry for Periodical editor]
 
- * [Editor_title Editor title]
+ * [book__editor_title Editor title]
    * [Data_entry_Editor_title Data Entry for Editor title]
 
- * [Newspaper_circulation Newspaper circulation]
+ * [book__newspaper_circulation Newspaper circulation]
    * [Data_entry_Newspaper_circulation Data Entry for Newspaper circulation]
 
  * [Newspaper_edition_type Newspaper edition type]

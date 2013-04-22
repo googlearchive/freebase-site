@@ -8,67 +8,65 @@ Here are the following types in Rail Commons
 
 
  * [rail__rail_gauge Rail gauge]
-   * [Data_entry_Rail_gauge Data Entry for Rail gauge]
+   
 
  * [rail__railway Railway]
-   * [Data_entry_Railway Data Entry for Railway]
+   
 
  * [rail__rail_network Rail network]
-   * [Data_entry_Rail_network Data Entry for Rail network]
+   
 
  * [rail__railway_type Railway type]
-   * [Data_entry_Railway_type Data Entry for Railway type]
+   
 
  * [rail__railway_terminus Railway terminus]
-   * [Data_entry_Railway_terminus Data Entry for Railway terminus]
+   
 
  * [rail__railway_gauge_relationship Railway-gauge relationship]
-   * [Data_entry_Railway_gauge_relationship Data Entry for Railway-gauge relationship]
+   
 
  * [rail__railway_operator_relationship Railway-operator relationship]
-   * [Data_entry_Railway_operator_relationship Data Entry for Railway-operator relationship]
+   
 
  * [rail__railway_operator Railway operator]
-   * [Data_entry_Railway_operator Data Entry for Railway operator]
+   
 
  * [rail__railway_type_relationship Railway-type relationship]
-   * [Data_entry_Railway_type_relationship Data Entry for Railway-type relationship]
+   
 
  * [rail__locomotive Locomotive]
-   * [Data_entry_Locomotive Data Entry for Locomotive]
+   
 
  * [rail__locomotive_class Locomotive class]
-   * [Data_entry_Locomotive_class Data Entry for Locomotive class]
+   
 
  * [rail__locomotive_builder Locomotive builder]
-   * [Data_entry_Locomotive_builder Data Entry for Locomotive builder]
+   
 
  * [rail__locomotive_ownership Locomotive ownership]
-   * [Data_entry_Locomotive_ownership Data Entry for Locomotive ownership]
+  
 
  * [rail__locomotive_owner Locomotive owner]
-   * [Data_entry_Locomotive_owner Data Entry for Locomotive owner]
 
  * [rail__locomotive_class_operator_relationship Locomotive class/operator relationship]
-   * [Data_entry_Locomotive_class_operator_relationship Data Entry for Locomotive class/operator relationship]
+   
 
  * [rail__steam_locomotive_wheel_configuration Steam locomotive wheel configuration]
-   * [Data_entry_Steam_locomotive_wheel_configuration Data Entry for Steam locomotive wheel configuration]
 
  * [rail__rolling_stock_tenure Rolling stock tenure]
-   * [Data_entry_Rolling_stock_tenure Data Entry for Rolling stock tenure]
+   
 
  * [rail__steam_locomotive_class Steam locomotive class]
-   * [Data_entry_Steam_locomotive_class Data Entry for Steam locomotive class]
+   
 
  * [rail__steam_locomotive_fuel_type Steam locomotive fuel type]
-   * [Data_entry_Steam_locomotive_fuel_type Data Entry for Steam locomotive fuel type]
+   
 
  * [rail__diesel_locomotive_class Diesel locomotive class]
-   * [Data_entry_Diesel_locomotive_class Data Entry for Diesel locomotive class]
+   
 
  * [rail__electric_locomotive_class Electric locomotive class]
-   * [Data_entry_Electric_locomotive_class Data Entry for Electric locomotive class]
+   
 
  * [rail__electric_system Electric system]
-   * [Data_entry_Electric_system Data Entry for Electric system]
+   

@@ -8,22 +8,22 @@ Here are the following types in Video Games Commons
 
 
  * [cvg__computer_video_game Video Game]	
-   * [Data_entry_Video_Game Data Entry for Video Game]
+   
 
  * [cvg__cvg_genre Video Game Genre]	
-   * [Data_entry_Video_Game_Genre Data Entry for Video Game Genre]
+   
 
  * [cvg__cvg_platform Video Game Platform]	
-   * [Data_entry_Video_Game_Platform Data Entry for Video Game Platform]
+   
 
  * [cvg__cvg_designer Video Game Designer]	
-   * [Data_entry_Video_Game_Designer Data Entry for Video Game Designer]
+   
 
  * [cvg__cvg_publisher Video Game Publisher]	
-   * [Data_entry_Video_Game_Publisher Data Entry for Video Game Publisher]
+   
 
  * [cvg__cvg_developer Video Game Developer]
-   * [Data_entry_Video_Game_Developer Data Entry for Video Game Developer]
+   
 
  * [cvg__cvg_character Video Game Character]	
    * [Data_entry_Video_Game_Character Data Entry for Video Game Character]

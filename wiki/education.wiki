@@ -85,14 +85,14 @@ Here are the following types in Education Commons
  * [education__honorary_Degree Honorary Degree]
   
 
- * [Honorary_Degree_Recipient Honorary Degree Recipient]
+ * [education__honorary_degree_recipient Honorary Degree Recipient]
    
 
- * [Educational_Institution_Campus Educational Institution Campus]
+ * [education__educational_institution_campus Educational Institution Campus]
    
 
- * [Acceptance_rate Acceptance rate]
+ * [education__acceptance_rate Acceptance rate]
    
 
- * [Athletics_brand Athletics brand]
+ * [education__athletics_brand Athletics brand]
    

@@ -1,16 +1,15 @@
-#summary One-sentence summary of this page.
 
-= Introduction =
+#summary Different types in Commons.
 
-Add your content here.
+= Commons =
+This is  commons
+
+=Types=
+Here are the following types in Commons
+
+ * []
 
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
  *[Basketball Conference Basketball Conference]	
  *[Basketball Division Basketball Division]	
  *[Basketball Player Basketball Player]	

@@ -7,82 +7,56 @@ This is Periodicals commons
 Here are the following types in Periodicals Commons
 
  * [book__newspaper_owner Newspaper Owner]
-   * [Data_entry_Newspaper_Owner Data Entry for Newspaper Owner]
-
+   
  * [book__serial_installment Serial Installment]
-   * [Data_entry_Serial_Installment Data Entry for Serial Installment]
-
+   
  * [book__magazine Magazine]
-   * [Data_entry_Magazine Data Entry for Magazine]
-
+   
  * [book__journal Journal]
-   * [Data_entry_Journal Data Entry for Journal]
-
+   
  * [book__periodical_publisher_period Periodical Publisher Period]
-   * [Data_entry_Periodical_Publisher_Period Data Entry for Periodical Publisher Period]
-
+   
  * [book__periodical_editor Periodical editor]
-   * [Data_entry_Periodical_editor Data Entry for Periodical editor]
-
+  
  * [book__editor_title Editor title]
-   * [Data_entry_Editor_title Data Entry for Editor title]
-
+  
  * [book__newspaper_circulation Newspaper circulation]
-   * [Data_entry_Newspaper_circulation Data Entry for Newspaper circulation]
-
+  
  * [book__newspaper_edition_type Newspaper edition type]
-   * [Data_entry_Newspaper_edition_type Data Entry for Newspaper edition type]
-
+   
  * [book__journal_publication Journal publication]
-   * [Data_entry_Journal_publication Data Entry for Journal publication]
-
+   
  * [book__magazine_Issue Magazine Issue]
-   * [Data_entry_Magazine_Issue Data Entry for Magazine Issue]
-
+   
  * [book__newspaper_Issue Newspaper Issue]
-   * [Data_entry_Newspaper_Issue Data Entry for Newspaper Issue]
-
+   
  * [book__serialized_work Serialized Work]
-   * [Data_entry_Serialized_Work Data Entry for Serialized Work]
-	
+   	
  * [book__periodical Periodical]
-   * [Data_entry_Periodical Data Entry for Periodical]
-		
+   		
  * [book__periodical_publication_date Periodical Publication Date]
-   * [Data_entry_Periodical_Publication_Date Data Entry for Periodical Publication Date]
-
+   
  * [book__editorial_tenure Editorial tenure]
-   * [Data_entry_Editorial_tenure Data Entry for Editorial tenure]
-
+   
  * [book__periodical_publisher Periodical Publisher]
-   * [Data_entry_Periodical_Publisher Data Entry for Periodical Publisher]
-
+   
  * [book__journal_article Journal article]
-   * [Data_entry_Journal_article Data Entry for Journal article]
-
+   
  * [book__place_of_publication_period Place of Publication Period]
-   * [Data_entry_Place_of_Publication_Period Data Entry for Place of Publication Period]
 
  * [book__periodical_frequency Periodical Frequency]
-   * [Data_entry_Periodical_Frequency Data Entry for Periodical Frequency]
-
+   
  * [book__periodical_format_period Periodical Format Period]
-   * [Data_entry_Periodical_Format_Period Data Entry for Periodical Format Period]
-
+   
  * [book__periodical_format Periodical Format]
-   * [Data_entry_Periodical_Format Data Entry for Periodical Format]
-
+   
  * [book__magazine_genre Magazine genre]
-   * [Data_entry_Magazine_genre Data Entry for Magazine genre]
-
+   
  * [book__newspaper Newspaper]
-   * [Data_entry_Newspaper Data Entry for Newspaper]
-
+   
  * [book__newspaper_price Newspaper price]
-   * [Data_entry_Newspaper_price Data Entry for Newspaper price]
-
+   
  * [book__periodical_subject Periodical Subject]
-   * [Data_entry_Periodical_Subject Data Entry for Periodical Subject]
-
+   
  * [periodicals__newspaper_circulation_area Newspaper circulation area]
-   * [Data_entry_Newspaper_circulation_area Data Entry for Newspaper circulation area]	
+   

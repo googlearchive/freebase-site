@@ -22,41 +22,41 @@ Here are the following types in Opera Commons
  * [opera__opera_designer Opera Designer]
   
 
- * [Opera_Production Opera Production]
+ * [opera__opera_production Opera Production]
    
 
- * [Opera_Production Opera Production]
+ * [opera__opera_production Opera Production]
   
 
- * [Opera_Designer Opera Designer]
+ * [opera__opera_designer Opera Designer]
    
 
- * [Opera_Production Opera Production]
+ * [opera__opera_production Opera Production]
   
 
- * [Opera_Role Opera Role]
+ * [opera__opera_role Opera Role]
    
 
- * [Opera_Character Opera Character]
+ * [opera__opera_character Opera Character]
   
 
- * [Opera_House Opera House]
+ * [opera__opera_house Opera House]
   
 
- * [Opera_Genre Opera Genre]
+ * [opera__opera_genre Opera Genre]
    
 
- * [Opera_Recording Opera Recording]
+ * [opera__opera_recording Opera Recording]
    
 
- * [Opera Opera]
+ * [opera__opera Opera]
   
 
- * [Opera_character_voice Opera character voice]
+ * [opera__opera_character_voice Opera character voice]
    
 
- * [Opera_Libretto Opera Libretto]
+ * [opera__opera_libretto Opera Libretto]
    
 
- * [Librettist Librettist]
+ * [opera__librettist Librettist]
    

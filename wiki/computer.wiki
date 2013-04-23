@@ -8,46 +8,47 @@ Here are the following types in Computers Commons
 
 
  * [computer__operating_system Operating System]
-   * [Data_entry_Operating_System Data Entry for Operating System]
+  
 
  * [computer__operating_system_developer Operating System Developer]
-   * [Data_entry_Operating_System_Developer Data Entry for Operating System Developer]
+   
 
  * [computer__computer_processor Computer Processor]
-   * [Data_entry_Computer_Processor Data Entry for Computer Processor ]
+  
 
  * [computer__processor_manufacturer Processor Manufacturer]	
-   * [Data_entry_Processor_Manufacturer Data Entry for Processor Manufacturer]
+   
 
  * [computer__computer_manufacturer_Brand Computer Manufacturer/Brand]
-   * [Data_entry_Computer_Manufacturer_Brand Data Entry for Computer Manufacturer/Brand ]
+   
 
  * [computer__computer_product_Line Computer Product Line]
-   * [Data_entry_Computer_Product_Line Data Entry for Computer Product Line ]
+   
 
  * [computer__computer Computer]
-   * [Data_entry_Computer Data Entry for Computer]
+  
+
 
  * [computer__computer_designer Computer Designer]
-   * [Data_entry_Computer_Designer Data Entry for Computer Designer ]	
+  
 
  * [computer__programming_language Programming Language]
-   * [Data_entry_Programming_Language Data Entry for Programming Language]	
+   
 
  * [computer__programming_language_paradigm Programming Language Paradigm]
-   * [Data_entry_Programming_Language_Paradigm Data Entry for Programming Language Paradigm ]
+  
 
  * [computer__programming_language_designer Programming Language Designer]
-   * [Data_entry_Programming_Language_Designer Data Entry for Programming Language Designer ]	
+   	
 
  * [computer__os_compatibility OS Compatibility]
-   * [Data_entry_OS_Compatibility Data Entry for OS Compatibility ]
+   
 
  * [computer__programming_language_developer Programming Language Developer]
-   * [Data_entry_Programming_Language Developer Data Entry for Programming Language Developer ]
+   
 
  * [computer__software_compatibility Software Compatibility]
-   * [Data_entry_Software_Compatibility Data Entry for Software Compatibility]
+   
 
  * [computer__software Software]	
   * [Data_entry_Software Data Entry for Software]

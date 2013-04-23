@@ -1,0 +1,67 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+Add your content here.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
+Film	
+Film performance	
+Film rating	
+Film director	
+Film producer	
+Film writer	
+Film cinematographer	
+Film editor	
+Film music contributor	
+Film actor	
+Film rating system	
+Film cut	
+Film collection	
+Film theorist	
+Film festival	
+Film company	
+Film job
+Film critic	
+Film series
+Film format	
+Film genre	
+Filming location	
+Film story contributor	
+Film subject	
+Film character	
+Special film performance type	
+Personal film appearance	
+Personal film appearance type	
+Dubbing performance	
+Film cut type	
+Film costumer designer	
+Film crewmember	
+Film crew gig	
+Film distributor	
+Film-Film company relationship	
+Film-Film distributor relationship	
+Production company	
+Film distribution medium	
+Film company role or service	
+Film regional release date	
+Film screening venue	
+Film festival event	
+Film festival sponsorship	
+Film festival sponsor	
+Film festival focus	
+Film featured song	
+Film casting director	
+Film production designer	
+Film art director	
+Film set decorator	
+Person or entity appearing in film	 
+Film song relationship	
+Film song performer	
+Film song	

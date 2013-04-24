@@ -8,64 +8,64 @@ Here are the following types in Travel Commons
 
 
  * [travel__travel_destination Travel destination]
-   * [Data_entry_Travel_destination Data Entry for Travel destination]
+   
 
  * [travel__tourist_attraction Tourist attraction]
-   * [Data_entry_Tourist_attraction Data Entry for Tourist attraction]
+   
 
  * [travel__accommodation Accommodation]
-   * [Data_entry_Accommodation Data Entry for Accommodation]
+   
 
  * [travel__tour_operator Tour operator]
-   * [Data_entry_Tour_operator Data Entry for Tour operator]
+   
 
  * [travel__accommodation_type Accommodation type]
-   * [Data_entry_Accommodation_type Data Entry for Accommodation type]
+   
 
  * [travel__accommodation_feature Accommodation feature]
-   * [Data_entry_Accommodation_feature Data Entry for Accommodation feature]
+   
 
  * [travel__accommodation_price_range Accommodation price range]
-   * [Data_entry_Accommodation_price_range Data Entry for Accommodation price range]
+   
 
  * [travel__guidebook Guidebook]
-   * [Data_entry_Guidebook Data Entry for Guidebook]
+   
 
  * [travel__transportation Transportation]
-   * [Data_entry_Transportation Data Entry for Transportation]
+   
 
  * [travel__transportation_mode Transportation mode]
-   * [Data_entry_Transportation_mode Data Entry for Transportation mode]
+   
 
  * [travel__transport_operator Transport operator]
-   * [Data_entry_Transport_operator Data Entry for Transport operator]
+   
 
  * [travel__transport_terminus Transport terminus]
-   * [Data_entry_Transport_terminus Data Entry for Transport terminus]
+   
 
  * [travel__travel_destination_monthly_climate Travel destination monthly climate]
-   * [Data_entry_Travel_destination_monthly_climate Data Entry for Travel destination monthly climate]
+  
 
  * [travel__guidebook_series Guidebook series]
-   * [Data_entry_Guidebook_series Data Entry for Guidebook series]
+   
 
  * [travel__hotel_guest_visit Hotel Guest Visit]
-   * [Data_entry_Hotel_Guest_Visit Data Entry for Hotel Guest Visit]
+   
 
  * [travel__hotel_grade Hotel Grade]
-   * [Data_entry_Hotel_Grade Data Entry for Hotel Grade]
+   
 
  * [travel__hotel_brand Hotel Brand]
-   * [Data_entry_Hotel_Brand Data Entry for Hotel Brand]
+   
 
  * [travel__hotel Hotel]
-   * [Data_entry_Hotel Data Entry for Hotel]
+   
 
  * [travel__hotel_operator Hotel Operator]
-   * [Data_entry_Hotel_Operator Data Entry for Hotel Operator]
+   
 
  * [travel__hotel_brand_owner Hotel Brand Owner]
-   * [Data_entry_Hotel_Brand_Owner Data Entry for Hotel Brand Owner]
+   
 
  * [travel__hotel_grading_authority Hotel Grading Authority]
-   * [Data_entry_Hotel_Grading_Authority Data Entry for Hotel Grading Authority]
+   

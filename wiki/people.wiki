@@ -5,88 +5,88 @@
 Here are the following types in People Commons
 
  * [people__cause_of_death Cause of Death]
-   * [Data_entry_Cause_of_Death Data Entry for Cause of Death]
+   
 
  * [people__gender Gender]
-   * [Data_entry_Gender Data Entry for Gender]
+   
 
  * [people__person Person]
-   * [Data_entry_Person Data Entry for Person]
+   
 
  * [people__marriage Marriage]
-   * [Data_entry_Marriage Data Entry for Marriage]
+   
 
  * [people__sibling_relationship Sibling_Relationship Sibling Relationship]
-   * [Data_entry_Sibling_Relationship Data Entry for Sibling Relationship]
+   
 
  * [people__deceased_person Deceased Person]
-   * [Data_entry_Deceased_Person Data Entry for Deceased Person]
+   
 
  * [people__profession Profession]
-   * [Data_entry_Profession Data Entry for Profession]
+   
 
  * [people__family_name Family name]
-   * [Data_entry_Family_name Data Entry for Family name]
+   
 
  * [people__family Family]
-   * [Data_entry_Family Data Entry for Family]
+   
 
  * [people__marriage_union_type Marriage/union type]
-   * [Data_entry_Marriage_union_type Data Entry for Marriage/union type]
+   
 
  * [people__wedding_venue Wedding venue]
-   * [Data_entry_Wedding_venue Data Entry for Wedding venue]
+   
 
  * [people__place_lived Place lived]
-   * [Data_entry_Place_lived Data Entry for Place lived]
+   
 
  * [people__ethnicity Ethnicity]
-   * [Data_entry_Ethnicity Data Entry for Ethnicity]
+   
 
  * [people__american_indian_group American Indian group]
-   * [Data_entry_American_Indian_group Data Entry for American Indian group]
+   
 	
  * [people__canadian_aboriginal_group Canadian aboriginal group]
-   * [Data_entry_Canadian_aboriginal_group Data Entry for Canadian aboriginal group]
+   
 
  * [people__chinese_ethnic_group Chinese ethnic group]
-   * [Data_entry_Chinese_ethnic_group Data Entry for Chinese ethnic group]
+   
 
  * [people__place_of_interment Place of interment]
-   * [Data_entry_Place_of_interment Data Entry for Place of interment]
+   
 
  * [people__family_member Family member]
-   * [Data_entry_Family_member Data Entry for Family member]
+   
 
  * [people__measured_person Measured person]
-   * [Data_entry_Measured_person Data Entry for Measured person]
+   
 
  * [people__human_measurement Human measurement]
-   * [Data_entry_Human_measurement Data Entry for Human measurement]
+   
 
  * [people__measured_body_part Measured body part]
-   * [Data_entry_Measured_body_part Data Entry for Measured body part]
+   
 
  * [people__professional_field Professional field]
-   * [Data_entry_Professional_field Data Entry for Professional field]
+   
 
  * [people__appointment Appointment]
-   * [Data_entry_Appointment Data Entry for Appointment]
+   
 
  * [people__appointment_nominee Appointment Nominee]
-   * [Data_entry_Appointment_Nominee Data Entry for Appointment Nominee]
+   
 
  * [people__appointed_role Appointed Role]
-   * [Data_entry_Appointed_Role Data Entry for Appointed Role]
+   
 
  * [people__appointee Appointee]
-   * [Data_entry_Appointee Data Entry for Appointee]
+   
 
  * [people__appointment_nomination Appointment Nomination]
-   * [Data_entry_Appointment_Nomination Data Entry for Appointment Nomination]
+   
 
  * [people__appointer Appointer]
-   * [Data_entry_Appointer Data Entry for Appointer]
+   
 
 
 	

@@ -60,7 +60,7 @@
 </acre:block>
 
 <acre:block def="head()">
-  <link rel="canonical" href="${h.fb_url(true, c.current_tab.path)}">
+  <link rel="canonical" href="${h.canonical_url(c.current_tab.path)}">
   <link href="${h.lib_base_url('googlefonts')}?family=Allerta" rel="stylesheet" type="text/css">
   <link rel="stylesheet" type="text/css" href="template/browse.mf.css" />
   <acre:block if="that_exports.head">

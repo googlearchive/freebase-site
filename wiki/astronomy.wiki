@@ -77,82 +77,82 @@ Content for Architecture Commons
  * [astronomy__near_earth_object_classification Near-Earth Object Classification]
   
  * [astronomy__meteor_shower_observation Meteor Shower Observation]
-   * [Data_entry_Meteor_Shower_Observation  Data Entry for Meteor Shower Observation]
+   
 
  * [astronomy__star_system_body Star system body]
-   * [Data_entry_Star_system_body  Data Entry for Star system body]
+  
 
  * [astronomy__celestial_object_category Celestial object category]
-   * [Data_entry_Celestial_object_category  Data Entry for Celestial object category]
+   
 
  * [astronomy__telescope_type Telescope type]
-   * [Data_entry_Telescope_type  Data Entry for Telescope type]
+   
 
  * [astronomy__telescope_principle_type Telescope principle type]
-   * [Data_entry_Telescope_principle_type  Data Entry for Telescope principle type]
+   
 
  * [astronomy__telescope Telescope]
-   * [Data_entry_Telescope  Data Entry for Telescope]
+   
 
  * [astronomy__telescope_platform Telescope platform]
-   * [Data_entry_Telescope_platform  Data Entry for Telescope platform]
+   
 
  * [astronomy__constellation_bordering_relationship Constellation bordering relationship]
-   * [Data_entry_Constellation_bordering_relationship  Data Entry for Constellation bordering relationship]
+   
 
  * [astronomy__asterism Asterism]
-   * [Data_entry_Asterism  Data Entry for Asterism]
+   
 
  * [astronomy__galactic_group Galactic group]
-   * [Data_entry_Galactic_group  Data Entry for Galactic group]
+   
 
  * [astronomy__galactic_cluster Galactic cluster]
-   * [Data_entry_Galactic_cluster  Data Entry for Galactic cluster]
+  
 
  * [astronomy__galactic_supercluster Galactic supercluster]
-   * [Data_entry_Galactic_supercluster  Data Entry for Galactic supercluster]
+   
 
  * [astronomy__galactic_filament Galactic filament]
-   * [Data_entry_Galactic_filament  Data Entry for Galactic filament]
+   
 
  * [astronomy__celestial_object_age Celestial object age]
-   * [Data_entry_Celestial_object_age  Data Entry for Celestial object age]
+   
 
  * [astronomy__apparent_dimension Apparent dimension]
-   * [Data_entry_Apparent_dimension  Data Entry for Apparent dimension]
+   
 
  * [astronomy__apparent_mass Apparent mass]
-   * [Data_entry_Apparent_mass  Data Entry for Apparent mass]
+   
 
  * [astronomy__galactic_interaction Galactic interaction]
-   * [Data_entry_Galactic_interaction  Data Entry for Galactic interaction]
+   
 
  * [astronomy__galactic_interaction_type Galactic interaction type]
-   * [Data_entry_Galactic_interaction_type  Data Entry for Galactic interaction type]
+   
 
  * [astronomy__galactic_shape Galactic shape]
-   * [Data_entry_Galactic_shape  Data Entry for Galactic shape]
+   
 
  * [astronomy__number_of_stars Number of stars]
-   * [Data_entry_Number_of_stars  Data Entry for Number of stars]
+   
 
  * [astronomy__red_shift Red shift]
-   * [Data_entry_Red_shift  Data Entry for Red shift]
+   
 
  * [astronomy__satellite_galaxy Satellite galaxy]
-   * [Data_entry_Satellite_galaxy  Data Entry for Satellite galaxy]
+  
 
  * [astronomy__galactic_interaction_status Galactic_interaction_status]
-   * [Data_entry_Galactic_interaction_status  Data Entry for Galactic interaction status]
+  
 
  * [astronomy__type_of_planetographic_feature Type of planetographic feature]
-   * [Data_entry_Type_of_planetographic_feature  Data Entry for Type of planetographic feature]
+   
 
  * [astronomy__extraterrestrial_location Extraterrestrial location]
-   * [Data_entry_Extraterrestrial_location  Data Entry for Extraterrestrial location]
+   
 
  * [astronomy__planetographic_coordinate Planetographic Coordinate]
-   * [Data_entry_Planetographic_Coordinate  Data Entry for Planetographic Coordinate]
+   
 
  * [astronomy__celestial_object_with_coordinate_system Celestial object with coordinate system]
-   * [Data_entry_Celestial_object_with_coordinate_system  Data Entry for Celestial object with coordinate system]
+   

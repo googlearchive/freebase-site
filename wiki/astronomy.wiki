@@ -1,4 +1,4 @@
-#summary Different types in Astronomy commons
+\#summary Different types in Astronomy commons
 
 = Astronomy commons =
 
@@ -7,107 +7,75 @@ Content for Architecture Commons
 == Types ==
 
  * [astronomy__star Star]
-  
 
  * [astronomy__constellation Constellation]
   
-
  * [astronomy__planet Planet]
-   
-
+  
  * [astronomy__asteroid_spectral_type Asteroid Spectral Type]
-   
-
+  
  * [astronomy__spectral_type Spectral Type]
    
  * [astronomy__asteroid Asteroid]
    
  * [astronomy__astronomer Astronomer]
-   
-
+  
  * [astronomy__celestial_object Celestial Object]
-   
-
+  
  * [astronomy__star_system Star System]
-   
-
+  
  * [astronomy__meteor_shower Meteor Shower]
-   
-
+  
  * [astronomy__nebula Nebula]
   
-
  * [astronomy__galaxy Galaxy]
-   
-
+  
  * [astronomy__dwarf_planet Dwarf Planet]
-   
-
+  
  * [astronomy__comet Comet]
-   
-
+  
  * [astronomy__comet_group Comet group]
-   
-
+  
  * [astronomy__meteorite Meteorite]
-   
-
+  
  * [astronomy__meteorite_classfication Meteorite classfication]
    
  * [astronomy__trans_neptunian_object Trans Neptunian Object]
   
-
  * [astronomy__trans_neptunian_region Trans Neptunian region]
-   
-
+  
  * [astronomy__moon Moon]
   
-
  * [astronomy__orbital_relationship Orbital Relationship]
   
-
  * [astronomy__orbit_type Orbit Type]
-   
-
+  
  * [astronomy__astronomical_discovery_status Astronomical Discovery Status]
-    
-
+  
  * [astronomy__astronomical_discovery_technique Astronomical Discovery Technique]
-    
-
+  
  * [astronomy__astronomical_observatory Astronomical Observatory]
-   
-
+  
  * [astronomy__astronomical_survey_project_Organization Astronomical Survey Project Organization]
-   
-
+  
  * [astronomy__astronomical_discovery Astronomical Discovery]
-   
-
+  
  * [astronomy__meteorite_source Meteorite Source]
   
-
  * [astronomy__plutoid Plutoid]
    
-
  * [astronomy__asteroid_group Asteroid Group]
    
-
  * [astronomy__asteroid_family Asteroid Family]
   
-
  * [astronomy__supernova Supernova]
-   
-
+  
  * [astronomy__scattered_disc_object Scattered Disc Object]
-   
-
+  
  * [astronomy__near_earth_object Near-Earth Object]
-   
-
+  
  * [astronomy__near_earth_object_classification Near-Earth Object Classification]
-   
-
+  
  * [astronomy__meteor_shower_observation Meteor Shower Observation]
    * [Data_entry_Meteor_Shower_Observation  Data Entry for Meteor Shower Observation]
 

@@ -7,49 +7,49 @@ This is baseball commons content
 Here are the following types in baseball commons
 
  * [baseball__baseball_manager Baseball Manager]
-   * [Data_entry_Baseball_Manager Data Entry for Baseball Manager]
+   
 
  * [baseball__baseball_team Baseball Team]
-   * [Data_entry_Baseball_Team Data Entry for Baseball Team]
+  
 
  * [baseball__baseball_player Baseball Player]
-   * [Data_entry_Baseball_Player Data Entry for Baseball Player]
+   
 
  * [baseball__baseball_division Baseball Division]
-   * [Data_entry_Baseball_Division Data Entry for Baseball Division]
+  
 
  * [baseball__baseball_league Baseball League]
-   * [Data_entry_Baseball_League Data Entry for Baseball League]
+  
 
  * [baseball__baseball_position Baseball Position]
-   * [Data_entry_Baseball_Position Data Entry for Baseball Position]
+  
 
  * [baseball__baseball_roster_position Baseball Roster Position]
-   * [Data_entry_Baseball_Roster_Position Data Entry for Baseball Roster Position]
+  
 
  * [baseball__baseball_historical_roster_position Baseball Historical Roster Position]
-   * [Data_entry_Baseball_Historical_Roster_Position Data Entry for Baseball Historical Roster Position]
+   
 
  * [baseball__baseball_historical_managerial_position Baseball Historical Managerial Position]
-   * [Data_entry_Baseball_Historical_Managerial_Position Data Entry for Baseball Historical Managerial Position]
+   
 
  * [baseball__current_coaching_tenure Current Coaching Tenure]
-   * [Data_entry_Current_Coaching_Tenure Data Entry for Current Coaching Tenure]
+   
 
  * [baseball__historical_coaching_tenure Historical Coaching Tenure]
-   * [Data_entry_Historical_Coaching_Tenure Data Entry for Historical Coaching Tenure]
+   
 
  * [baseball__baseball_coach Baseball Coach]
-   * [Data_entry_Baseball_Coach Data Entry for Baseball Coach]
+   
 
  * [baseball__baseball_coaching_position Baseball Coaching Position]
-   * [Data_entry_Baseball_Coaching_Position Data Entry for Baseball Coaching Position]
+   
 
  * [baseball__baseball_team_stats Baseball Team Stats]
-   * [Data_entry_Baseball_Team_Stats Data Entry for Baseball Team Stats]
+   
 
  * [baseball__batting_statistics Batting Statistics]
-   * [Data_entry_Batting_Statistics Data Entry for Batting Statistics]
+ 
 
  * [baseball__lifetime_batting_statistics Lifetime Batting Statistics]
-   * [Data_entry_Lifetime_Batting_Statistics Data Entry for Lifetime Batting Statistics]
+   

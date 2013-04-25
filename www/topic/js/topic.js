@@ -39,12 +39,15 @@
       topic.facet = new TopicFacet();
 
       $('#page-content')
+        .on("mouseenter", "span.property-header, a.schema-name", fb.hover.show)
+        .on("mouseleave", "span.property-header, a.schema-name", fb.hover.hide)
         .on('click', 'a.schema-name', function(e) {
           // Clicking on a schema (domain|type|property) name applies a filter.
           var name = $(this).attr('name');
           topic.add_filter(name);
           return false;
         });
+
 
       // Focus input when the filter box gets focus
       $('#pill-filter-box').click(function() {

@@ -112,8 +112,8 @@
         <span class="mark"></span>
         <span class="section-title">
           <a title="${domain_structure.id}" href="javascript:void(0);"
-             class="schema-name section-name"
-             name="${domain_structure.id}">${domain_structure.text}</a>
+              data-id="${domain_structure.id}" class="schema-name section-name"
+              name="${domain_structure.id}">${domain_structure.text}</a>
           <a class="schema-id domain-id"
              href="${h.fb_url(domain_structure.id, [['schema']])}">
             ${domain_structure.id}</a>
@@ -146,7 +146,9 @@
             <span class="mark"></span>
             <span class="type-label">
               <a name="${type_structure.id}" href="javascript:void(0);"
-                 class="schema-name type-name">${type_structure.text}</a>
+                  data-id="${type_structure.id}" class="schema-name type-name">
+                ${type_structure.text}
+              </a>
               <a class="schema-id type-id"
                  href="${h.fb_url(type_structure.id, [['schema']])}">
                 ${type_structure.id}</a>
@@ -237,7 +239,7 @@
     <thead>
       <tr>
         <th acre:for="i,subprop_structure in prop_structure.properties" scope="col" acre:attrs="i === 0 ? {'class':'first'} : {}">
-          <span class="property-header">
+          <span class="property-header" data-id="${subprop_structure.id}">
             ${subprop_structure.text}
           </span>
         </th>
@@ -547,7 +549,9 @@
     <span class="mark"></span>
     <span class="property-label">
       <a name="${prop_structure.id}" href="javascript:void(0);"
-         class="schema-name prop-name">${prop_structure.text}</a>
+          class="schema-name prop-name" data-id="${prop_structure.id}">
+        ${prop_structure.text}
+      </a>
     </span>
     <acre:block if="lock">
       <span class="lock" title="${PROPERTY_LOCKED}"></span>

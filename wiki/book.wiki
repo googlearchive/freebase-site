@@ -8,64 +8,64 @@ This is bookscommons
 Here are the following types in Education Commons
 
  * [book__book Book]
-   * [Data_entry_Book Data Entry for Book]
+   
 
  * [book__book_edition Book Edition]
-   * [Data_entry_Book_Edition Data Entry for Book Edition]
+   
 
  * [book__pagination Pagination]
-   * [Data_entry_Pagination Data Entry for Pagination]
+ 
 
  * [book__book_binding Book Binding]
-   * [Data_entry_Book_Binding Data Entry for Book Binding]
+   
 
  * [book__audio_book_reader Audio book reader]
-   * [Data_entry_Audio_book_reader Data Entry for Audio book reader]
+   
 
  * [book__literature_subject Literature Subject]
-   * [Data_entry_Literature_Subject Data Entry for Literature Subject]
+   
 
  * [book__publisher Publisher]
-   * [Data_entry_Publisher Data Entry for Publisher]
+  
 
  * [book__short_story Short Story]
-   * [Data_entry_Short_Story Data Entry for Short Story]
+   
 
  * [book__poem Poem]
-   * [Data_entry_Poem Data Entry for Poem]
+   
 
  * [book__poetic_meter Poetic Meter]
-   * [Data_entry_Poetic_Meter Data Entry for Poetic Meter]
+   
 
  * [book__poetic_verse_form Poetic Verse Form]
-   * [Data_entry_Poetic_Verse_Form Data Entry for Poetic Verse Form]
+   
  
  * [book__book_character Book Character]
-   * [Data_entry_Book_Character Data Entry for Book Character]
+   
 
  * [book__short_non_fiction Short Non-fiction]
-   * [Data_entry_Short_Non_fiction Data Entry for Short Non-fiction]
+  
 
  * [book__short_non_fiction_Variety Short Non-fiction Variety]
-   * [Data_entry_Short_Non_fiction_Variety Data Entry for Short Non-fiction Variety]
+   
 
  * [book__technical_report Technical report]
-   * [Data_entry_Technical_report Data Entry for Technical report]
+   
 
  * [book__report_issuing_institution Report issuing institution]
-   * [Data_entry_Report_issuing_institution Data Entry for Report issuing institution]
+  
 
  * [book__poem_character Poem character]
-   * [Data_entry_Poem_character Data Entry for Poem character]
+   
 
  * [book__isbn ISBN]
-   * [Data_entry_ISBN Data Entry for ISBN]
+   
 
  * [book__book_edition_series Book edition series]
-   * [Data_entry_Book_edition_series Data Entry for Book edition series]
+   
 
  * [book__series_editor Series editor]
-   * [Data_entry_Series_editor Data Entry for Series editor]
+   
 
  * [book__publisher_imprint_tenure Publisher/imprint tenure]
    

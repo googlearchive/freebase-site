@@ -7,166 +7,165 @@ This is business commons
 Here are the following types in Business Commons
 
  * [business__industry Industry]
-   * [Data_entry_Industry Data Entry for Industry]
+   
 
  * [business__stock_listing Stock listing]
-   * [Data_entry_Stock_listing Data Entry for Stock listing]
+   
 
  * [business__employment_tenure Employment tenure]
-   * [Data_entry_Employment_tenure Data Entry for Employment tenure]
+   
 
  * [business__job_title Job title]
-   * [Data_entry_Job_title Data Entry for Job title]
-
+   
  * [business__open_times Open Times]
-   * [Data_entry_Open_Times Data Entry for Open Times]
+  
 
  * [business__employer Employer]
-   * [Data_entry_Employer Data Entry for Employer]
+   
 
  * [business__board_member_title Board Member Title]
-   * [Data_entry_Board_Member_Title Data Entry for Board Member Title]
+   
 
  * [business__asset Asset]
-   * [Data_entry_Asset Data Entry for Asset]
+  
 
  * [business__asset_owner Asset Owner] 
-   * [Data_entry_Asset_Owner Data Entry for Asset Owner]
+   
 
  * [business__asset_ownership Asset Ownership]
-   * [Data_entry_Asset_Ownership Data Entry for Asset Ownership]
+   
 
  * [business__oil_field Oil Field]
-   * [Data_entry_Oil_Field Data Entry for Oil Field]
+   
 
  * [business__consumer_product Consumer product]
-   * [Data_entry_Consumer_product Data Entry for Consumer product]
+   
 
  * [business__shopping_center Shopping center]
-   * [Data_entry_Shopping_center Data Entry for Shopping center]
+   
 
  * [business__shopping_center_owner Shopping center owner]
-   * [Data_entry_Shopping_center_owner Data Entry for Shopping center owner]
+   
 
  * [business__exchange_rate Exchange rate]
-   * [Data_entry_Exchange_rate Data Entry for Exchange rate]
+   
 
  * [business__market_index Market Index]
-   * [Data_entry_Market_Index Data Entry for Market Index]
+   
 
  * [business__currency Currency]
-   * [Data_entry_Currency Data Entry for Currency]
+   
 
  * [business__stock_exchange Stock exchange]
-   * [Data_entry_Stock_exchange Data Entry for Stock exchange]
+  
 
  * [business__venture_investment Venture Investment]
-   * [Data_entry_Venture Investment Data Entry for Venture Investment]
+   
 
  * [business__venture_investor Venture Investor]
-   * [Data_entry_Venture Investor Data Entry for Venture Investor]
+   
 
  * [Investment Round Investment Round]
-   * [Data_entry_Investment Round Data Entry for Investment Round]
+   
 
  * [Venture Funded Company Venture Funded Company]
-   * [Data_entry_Venture Funded Company Data Entry for Venture Funded Company]
+   
 
  * [Brand Brand]
-   * [Data_entry_Brand Data Entry for Brand]
+   
 
  * [Company_brand_relationship Company_brand_relationship]
-   * [Data_entry_Company_brand_relationship Data Entry for Company_brand_relationship]
+   
 
  * [Company-product-line relationship Company-product-line relationship]
-   * [Data_entry_Company-product-line relationship Data Entry for Company-product-line relationship]
+   
 
  * [Product line Product line]
-   * [Data_entry_Product line Data Entry for Product line]
+   
 
  * [Brand colors Brand colors]
-   * [Data_entry_Brand colors Data Entry for Brand colors]
+  
 
  * [Brand slogan Brand slogan]
-   * [Data_entry_Brand slogan Data Entry for Brand slogan]
+   
 
  * [Advertising slogan Advertising slogan]
-   * [Data_entry_Advertising slogan Data Entry for Advertising slogan]
+   
 
  * [Company-product relationship Company-product relationship]
-   * [Data_entry_Company-product relationship Data Entry for Company-product relationship]
+  
 
  * [Sponsorship Sponsorship]
-   * [Data_entry_Sponsorship Data Entry for Sponsorship]
+   
 
  * [Sponsor Sponsor]
-   * [Data_entry_Sponsor Data Entry for Sponsor]
+   
 
  * [Sponsored Recipient Sponsored Recipient]
-   * [Data_entry_Sponsored Recipient Data Entry for Sponsored Recipient]
+   
 
  * [Product theme Product theme]
-   * [Data_entry_Product theme Data Entry for Product theme]
+   
 
  * [Product Endorsee Product Endorsee]
-   * [Data_entry_Product Endorsee Data Entry for Product Endorsee]
+   
 
  * [Product Endorser Product Endorser]
-   * [Data_entry_Product Endorser Data Entry for Product Endorser]
+   
 
  * [Product Endorsement Product Endorsement]
-   * [Data_entry_Product Endorsement Data Entry for Product Endorsement]
+   
 
  * [Endorsed Product Endorsed Product]
-   * [Data_entry_Endorsed Product Data Entry for Endorsed Product]
+   
 
  * [Product with ingredients Product with ingredients]
-   * [Data_entry_Product with ingredients Data Entry for Product with ingredients]
+   
 
  * [Product ingredient Product ingredient]
-   * [Data_entry_Product ingredient Data Entry for Product ingredient]
+   
 
  * [Trade union Trade union]
-   * [Data_entry_Trade union Data Entry for Trade union]
+   
 
  * [Customer Customer]
-   * [Data_entry_Customer Data Entry for Customer]
+   
 
  * [Market size Market size]	
-   * [Data_entry_Market size Data Entry for Market size]
+   
 
  * [Competitive Space Competitive Space]	
-   * [Data_entry_Competitive Space Data Entry for Competitive Space]
+  
 
  * [Market share Market share]
-   * [Data_entry_Market share Data Entry for Market share]
+   
 
  * [Competitive space mediator Competitive space mediator]	
-   * [Data_entry_Competitive space mediator Data Entry for Competitive space mediator]
+   
 
  * [Business Operation Business Operation]
-   * [Data_entry_Business Operation Data Entry for Business Operation]
+   
 
  * [Consumer company Consumer company]
-   * [Data_entry_Consumer company Data Entry for Consumer company]
+   
 
  * [Issue Issue]
-   * [Data_entry_Issue Data Entry for Issue]
+   
 
  * [Shareholder Shareholder]
-   * [Data_entry_Shareholder Data Entry for Shareholder]
+  
 
  * [Issue Type]
-   * [Data_entry_ Data Entry for ]
+   
 
  * [Issuer Issuer]
-   * [Data_entry_Issuer Data Entry for Issuer]
+   
 
  * [Holding Holding]	
-   * [Data_entry_Holding Data Entry for Holding]
+   
 
  * [Product category Product category]
-   * [Data_entry_Product category Data Entry for Product category]
+  
 
  * [Currency sub-unit Currency sub-unit]
-   * [Data_entry_Currency sub-unit Data Entry for Currency sub-unit]
+   

@@ -96,7 +96,7 @@
 
 <acre:block def="head()">
   <!-- canonical url -->
-  <link rel="canonical" href="${h.fb_url(true, c.object.id)}" />
+  <link rel="canonical" href="${h.canonical_url(c.object.id)}" />
   <!-- rdf -->
   <link rel="alternate" type="application/turtle"
         href="${h.rdf_url(c.object.id)}">

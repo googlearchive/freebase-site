@@ -113,6 +113,7 @@ var exports = {
   "parse_uri": parse_uri,
   "resolve_article_uri": resolve_article_uri,
   "proxy_image_url": proxy_image_url,
+  "canonical_url": canonical_url,
 
   // ROUTING
   "split_path" : split_path,
@@ -1568,6 +1569,17 @@ function lib_base_url(key) {
   var md = acre.get_metadata();
   var lib = md.libs[key];
   return lib.base_url + lib.version;
+}
+
+/**
+ * Canonical url
+ * Use for rel="canonical" link
+ * Note it always returns http even when site_host is https
+ */
+function canonical_url() {
+  var args = Array.prototype.slice.call(arguments);
+  args.unshift(acre.freebase.site_host);
+  return build_url.apply(null, args).replace(/^https:\/\//i, 'http://');
 }
 
 /*

@@ -189,18 +189,27 @@ test("wiki_url", function() {
 });
 
 test("account_url", function() {
-  var host = acre.freebase.site_host;
+  var http_host = acre.freebase.site_host.replace(/^https:/, "http:");
   var ssl_host = acre.freebase.site_host.replace(/^http:/,"https:");
   var url_arg = acre.request.url.replace(/^http:/,"https:").replace(/\?/g,"%3F").replace(/\=/g,"%3D").replace(/\&/g,"%26");
-  equal(h.account_url("signin", {onsignin: host}), ssl_host + "/account/signin?onsignin=" + ssl_host);
+  equal(h.account_url("signin", {onsignin: http_host}), ssl_host + "/account/signin?onsignin=" + ssl_host);
   equal(h.account_url("signin"), ssl_host + "/account/signin?onsignin=" + url_arg);
-  equal(h.account_url("signout", {onsignout: ssl_host}), ssl_host + "/account/signout?onsignout=" + host);
+  equal(h.account_url("signout", {onsignout: ssl_host}), ssl_host + "/account/signout?onsignout=" + http_host);
   try {
     h.account_url("foo");
-    ok(false, "must be a known kind of account url")
+    ok(false, "must be a known kind of account url");
   } catch(e) {
     ok(true, e);
   }
+});
+
+test("canonical_url", function() {
+  var http_host = acre.freebase.site_host.replace(/^https:/, "http:");
+  var ssl_host = acre.freebase.site_host.replace(/^http:/, "https:");
+  equal(h.canonical_url(), http_host);
+  equal(h.canonical_url(null), http_host);
+  equal(h.canonical_url(""), http_host);
+  equal(h.canonical_url("/m/000"), http_host + "/m/000");
 });
 
 test("ensure_protocol", function() {

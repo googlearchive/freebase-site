@@ -68,4 +68,4 @@ Here are the following types in Education Commons
    * [Data_entry_Series_editor Data Entry for Series editor]
 
  * [book__publisher_imprint_tenure Publisher/imprint tenure]
-   * [Data_entry_Publisher_imprint_tenure Data Entry for Publisher/imprint tenure]
+   

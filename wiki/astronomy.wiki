@@ -13,103 +13,100 @@ Content for Architecture Commons
   
 
  * [astronomy__planet Planet]
-   * [Data_entry_Planet  Data Entry for Planet]
+   
 
  * [astronomy__asteroid_spectral_type Asteroid Spectral Type]
-   * [Data_entry_Asteroid_Spectral_Type  Data Entry for Asteroid Spectral Type]
+   
 
  * [astronomy__spectral_type Spectral Type]
-   * [Data_entry_Spectral_Type  Data Entry for Spectral Type]
-
+   
  * [astronomy__asteroid Asteroid]
-   * [Data_entry_Asteroid  Data Entry for Asteroid ]
-
+   
  * [astronomy__astronomer Astronomer]
-   * [Data_entry_Astronomer  Data Entry for Astronomer]
+   
 
  * [astronomy__celestial_object Celestial Object]
-   * [Data_entry_Celestial_Object  Data Entry for Celestial Object]
+   
 
  * [astronomy__star_system Star System]
-   * [Data_entry_Star_System  Data Entry for Star System]
+   
 
  * [astronomy__meteor_shower Meteor Shower]
-   * [Data_entry_Meteor_Shower  Data Entry for Meteor Shower]
+   
 
  * [astronomy__nebula Nebula]
-   * [Data_entry_Nebula  Data Entry for Nebula]
+  
 
  * [astronomy__galaxy Galaxy]
-   * [Data_entry_Galaxy  Data Entry for Galaxy]
+   
 
  * [astronomy__dwarf_planet Dwarf Planet]
-   * [Data_entry_Dwarf_Planet  Data Entry for Dwarf Planet]
+   
 
  * [astronomy__comet Comet]
-   * [Data_entry_Comet  Data Entry for Comet]
+   
 
  * [astronomy__comet_group Comet group]
-   * [Data_entry_Comet_group  Data Entry for Comet group]
+   
 
  * [astronomy__meteorite Meteorite]
-   * [Data_entry_Meteorite Data Entry for Meteorite]
+   
 
  * [astronomy__meteorite_classfication Meteorite classfication]
-   * [Data_entry_Meteorite_classfication  Data Entry for Meteorite classfication]
-
+   
  * [astronomy__trans_neptunian_object Trans Neptunian Object]
-   * [Data_entry_Trans_Neptunian_Object  Data Entry for Trans-Neptunian Object]
+  
 
  * [astronomy__trans_neptunian_region Trans Neptunian region]
-   * [Data_entry_Trans_Neptunian_region  Data Entry for Trans-Neptunian region]
+   
 
  * [astronomy__moon Moon]
-   * [Data_entry_Moon  Data Entry for Moon]
+  
 
  * [astronomy__orbital_relationship Orbital Relationship]
-   * [Data_entry_Orbital_Relationship  Data Entry for Orbital Relationship]
+  
 
  * [astronomy__orbit_type Orbit Type]
-   * [Data_entry_Orbit_Type  Data Entry for Orbit Type ]
+   
 
  * [astronomy__astronomical_discovery_status Astronomical Discovery Status]
-    * [Data_entry_Astronomical_Discovery_Status  Data Entry for Astronomical Discovery Status]
+    
 
  * [astronomy__astronomical_discovery_technique Astronomical Discovery Technique]
-    * [Data_entry_Astronomical_Discovery_Technique  Data Entry for Astronomical Discovery Technique]
+    
 
  * [astronomy__astronomical_observatory Astronomical Observatory]
-   * [Data_entry_Astronomical_Observatory  Data Entry for Astronomical Observatory]
+   
 
  * [astronomy__astronomical_survey_project_Organization Astronomical Survey Project Organization]
-   * [Data_entry_Astronomical_Survey_Project_Organization  Data Entry for Astronomical Survey_Project Organization]
+   
 
  * [astronomy__astronomical_discovery Astronomical Discovery]
-   * [Data_entry_Astronomical_Discovery  Data Entry for Astronomical Discovery]
+   
 
  * [astronomy__meteorite_source Meteorite Source]
-   * [Data_entry_Meteorite_Source  Data Entry for Meteorite Source]
+  
 
  * [astronomy__plutoid Plutoid]
-   * [Data_entry_Plutoid  Data Entry for Plutoid]
+   
 
  * [astronomy__asteroid_group Asteroid Group]
-   * [Data_entry_Asteroid_Group  Data Entry for Asteroid Group]
+   
 
  * [astronomy__asteroid_family Asteroid Family]
-   * [Data_entry_Asteroid_Family  Data Entry for Asteroid Family]
+  
 
  * [astronomy__supernova Supernova]
-   * [Data_entry_Supernova  Data Entry for Supernova]
+   
 
  * [astronomy__scattered_disc_object Scattered Disc Object]
-   * [Data_entry_Scattered_Disc_Object  Data Entry for Scattered Disc Object]
+   
 
  * [astronomy__near_earth_object Near-Earth Object]
-   * [Data_entry_Near_Earth_Object  Data Entry for Near-Earth Object]
+   
 
  * [astronomy__near_earth_object_classification Near-Earth Object Classification]
-   * [Data_entry_Near_Earth_Object_Classification  Data Entry for Near-Earth Object Classification]
+   
 
  * [astronomy__meteor_shower_observation Meteor Shower Observation]
    * [Data_entry_Meteor_Shower_Observation  Data Entry for Meteor Shower Observation]

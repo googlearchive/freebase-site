@@ -75,28 +75,28 @@ Here are the following types in Computers Commons
    * [Data_entry_Internet_Protocol Data Entry for Internet Protocol]
 
  * [computer__file_format File Format]
-   * [Data_entry_File_Format Data Entry for File Format]
+   
 
  * [computer__file_format_genre File Format Genre ]
-   * [Data_entry_File_Format_Genre Data Entry for File Format Genre]
+   
 
  * [computer__computing_platform Computing Platform]
-   * [Data_entry_Computing_Platform Data Entry for Computing Platform]
+   
 
  * [computer__web_browser Web browser]
-   * [Data_entry_Web_browser Data Entry for Web browser]
+   
 
  * [computer__web_browser_extension Web browser extension]	
-   * [Data_entry_Web_browser_extension Data Entry for Web browser extension]
+   
 
  * [computer__html_layout_engine HTML Layout Engine]
-   * [Data_entry_HTML_Layout_Engine Data Entry for HTML Layout Engine]
+   
 
  * [computer__computer_emulator Computer Emulator]
-   * [Data_entry_Computer_Emulator Data Entry for Computer Emulator]
+   
 
  * [computer__computer_peripheral Computer Peripheral]
-   * [Data_entry_Computer_Peripheral Data Entry for Computer Peripheral]
+   
 
  * [computer__computer_peripheral_class Computer Peripheral Class]
-   * [Data_entry_Computer_Peripheral_Class Data Entry for Computer Peripheral Class]
+   

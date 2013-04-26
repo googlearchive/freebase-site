@@ -7,73 +7,73 @@ This is comics commons
 Here are the following types in Comics Commons
 
  * [Comic_Book_Character Comic Book Character]
-   * [Data_entry_Comic_Book_Character Data Entry for Comic Book Character]
+   
 
  * [Comic_Book_Colorist Comic Book Colorist]
-   * [Data_entry_Comic_Book_Colorist Data Entry for Comic Book Colorist]
+   
 
  * [Comic_Book_Editor Comic Book Editor]
-   * [Data_entry_Comic_Book_Editor Data Entry for Comic Book Editor]
+  
 
  * [Comic_Book_Fictional_Universe Comic Book Fictional Universe]
-   * [Data_entry_Comic_Book_Fictional_Universe Data Entry for Comic Book Fictional Universe]
+   
 
  * [Comic_Book_Genre Comic Book Genre]
-   * [Data_entry_Comic_Book_Genre Data Entry for Comic Book Genre]
+   
 
  * [Comic_Book_Inker Comic Book Inker]
-   * [Data_entry_Comic_Book_Inker Data Entry for Comic Book Inker]
+   
 
  * [Comic_Book_Issue Comic Book Issue]
-   * [Data_entry_Comic_Book_Issue Data Entry for Comic Book Issue]
+  
 
  * [Comic_Book_Letterer Comic Book Letterer]
-   * [Data_entry_Comic_Book_Letterer Data Entry for Comic Book Letterer]
+
 
  * [Comic_Book_Penciler Comic Book Penciler]
-   * [Data_entry_Comic_Book_Penciler Data Entry for Comic Book Penciler]
+   
 
  * [Comic_Book_Publisher Comic Book Publisher]
-   * [Data_entry_Comic_Book_Publisher Data Entry for Comic Book Publisher]
+   
 
  * [Comic_Book_Series Comic Book Series]
-   * [Data_entry_Comic_Book_Series Data Entry for Comic Book Series]
+   
 
  * [Comic_Book_Story Comic Book Story]
-   * [Data_entry_Comic_Book_Story Data Entry for Comic Book Story]
+   
 
  * [Comic_Book_Story_Arc Comic Book Story Arc]
-   * [Data_entry_Comic_Book_Story_Arc Data Entry for Comic Book Story Arc]
+   
 
  * [Comic_Book_Writer Comic Book Writer]
-   * [Data_entry_Comic_Book_Writer Data Entry for Comic Book Writer]
+   
 
  * [Comic_Story_Printing Comic Story Printing]
-   * [Data_entry_Comic_Story_Printing Data Entry for Comic Story Printing]
+  
 
  * [Comic_Book_Creator Comic Book Creator]
-   * [Data_entry_Comic_Book_Creator Data Entry for Comic Book Creator]
+
 
  * [Comic_Strip Comic Strip]
-   * [Data_entry_Comic_Strip Data Entry for Comic Strip]
+   
 
  * [Comic_Strip_Syndicate_Duration Comic Strip Syndicate Duration]
-   * [Data_entry_Comic_Strip_Syndicate_Duration Data Entry for Comic Strip Syndicate Duration]
+   
 			
  * [Comic_Strip_Syndicate Comic Strip Syndicate]
-   * [Data_entry_Comic_Strip_Syndicate Data Entry for Comic Strip Syndicate]
+   
 
  * [Comic_Strip_Creator Comic Strip Creator]
-   * [Data_entry_Comic_Strip_Creator Data Entry for Comic Strip Creator]
+   
 
  * [Comic_Strip_Creator_Duration Comic Strip Creator Duration]
-   * [Data_entry_Comic_Strip_Creator_Duration Data Entry for Comic Strip Creator Duration]
+   
 
  * [Comic_Strip_Creator_Role Comic Strip Creator Role]
-   * [Data_entry_Comic_Strip_Creator_Role Data Entry for Comic Strip Creator Role]
+  
 
  * [Comic_Strip_Character Comic Strip Character]
-   * [Data_entry_Comic_Strip_Character Data Entry for Comic Strip Character]
+  
 
  * [Comic_Strip_Genre Comic Strip Genre]
-   * [Data_entry_Comic_Strip_Genre Data Entry for Comic Strip Genre]
+   

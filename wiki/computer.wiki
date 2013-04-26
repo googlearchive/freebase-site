@@ -51,28 +51,28 @@ Here are the following types in Computers Commons
    
 
  * [computer__software Software]	
-  * [Data_entry_Software Data Entry for Software]
+ 
 
  * [computer__software_developer Software Developer]
-   * [Data_entry_Software_Developer Data Entry for Software Developer]
+   
 
  * [computer__software_license Software License]
-   * [Data_entry_Software_License Data Entry for Software License]
+  
 
  * [computer__software_genre Software Genre]
-   * [Data_entry_Software_Genre Data Entry for Software Genre]
+   
 
  * [computer__content_license Content License]	
-   * [Data_entry_Content_License Data Entry for Content License]
+  
 
  * [computer__computer_scientist Computer Scientist]
-   * [Data_entry_Computer_Scientist Data Entry for Computer Scientist]
+ 
 
  * [computer__protocol_provider Protocol Provider]
-   * [Data_entry_Protocol_Provider Data Entry for Protocol Provider]
+   
 
  * [computer__internet_protocol Internet Protocol]
-   * [Data_entry_Internet_Protocol Data Entry for Internet Protocol]
+   
 
  * [computer__file_format File Format]
    

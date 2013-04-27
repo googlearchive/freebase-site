@@ -15,49 +15,49 @@ Here are the following types in Military Commons
  * [military__casualties Casualties]
    
  * [military__military_combatant Military Combatant]
-   * [Data_entry_ Data Entry for ]
+   
 
  * [military__Casualties Type Casualties Type]
-   * [Data_entry_Casualties Type Data Entry for Casualties Type]
+  
 
  * [military__military_command Military Command]
-   * [Data_entry_Military Command Data Entry for Military Command]
+   
 
  * [military__military_commander Military Commander]
-   * [Data_entry_Military Commander Data Entry for Military Commander]
+  
 
  * [military__force_strength Force Strength]
-   * [Data_entry_Force_Strength Data Entry for Force Strength]
+   
 
  * [military__military_resource Military Resource]
-   * [Data_entry_Military_Resource Data Entry for Military Resource]
+   
 
  * [military__military_theater Military Theater]
-   * [Data_entry_Military_Theater Data Entry for Military Theater]
+   
 
  * [military__military_service Military Service]
-   * [Data_entry_Military_Service Data Entry for Military Service]
+   
 
  * [military__rank Military rank]
-   * [Data_entry_Military_rank Data Entry for Military rank]
+  
 
  * [military__military_combatant_group Military combatant group]
-   * [Data_entry_Military_combatant_group Data Entry for Military combatant group]
+   
 
  * [military__military_posting Military posting]
-   * [Data_entry_Military_posting Data Entry for Military posting]
+   
 
  * [military__military_post Military post]
-   * [Data_entry_Military_post Data Entry for Military post]
+   
 
  * [military__military_post_use Military post use]
-   * [Data_entry_Military_post_use Data Entry for Military post use]
+   
 
  * [military__military_unit Military unit]
-   * [Data_entry_Military_unit Data Entry for Military unit]
+   
 
  * [military__military_unit_size Military unit size designation]
-   * [Data_entry_Military_unit_size_designation Data Entry for Military unit size designation]
+   
 
  * [military__military_unit_place_of_origin Military unit place of origin]
-   * [Data_entry_Military_unit_place_of origin Data Entry for Military unit place of origin]
+   

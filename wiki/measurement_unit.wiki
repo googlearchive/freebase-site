@@ -52,28 +52,27 @@ Here are the following types in Measurement Unit Commons
  * [Unit_of_Force Unit of Force]
 
  * [Unit_of_Density Unit of Density]
-   * [Data_entry_Unit of Density Data Entry for Unit of Density]
+   
 
  * [Unit_of_frequency Unit of frequency]
-   * [Data_entry_Unit of frequency Data Entry for Unit of frequency]
+   
 
  * [Common_Dimension Common Dimension]
-   * [Data_entry_Common Dimension Data Entry for Common Dimension]
+   
 
  * [Dimension Dimension]
-   * [Data_entry_Dimension Data Entry for Dimension]
+   
 
  * [Unit of Electric Current Unit of Electric Current]
-   * [Data_entry_Unit of Electric Current Data Entry for Unit of Electric Current]
+   
 
  * [Unit of Amount of Substance Unit of Amount of Substance]
-   * [Data_entry_Unit of Amount of Substance Data Entry for Unit of Amount of Substance]
+   
 
  * [Unit of Luminous Intensity Unit of Luminous Intensity]
-   * [Data_entry_Unit of Luminous Intensity Data Entry for Unit of Luminous Intensity]
+  
 
  * [Unit of Acceleration Unit of Acceleration]
-   * [Data_entry_Unit of Acceleration Data Entry for Unit of Acceleration]
 
  * [Unit of Wavenumber Unit of Wavenumber]
    

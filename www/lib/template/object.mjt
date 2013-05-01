@@ -127,21 +127,6 @@
   </acre:block>
 </acre:block>
 
-<acre:block def="body(exports)">
-  <!!-- over-ride default body to add "embed" class !!-->
-  <acre:script>
-    var embed = validators.StringBool(
-      acre.request.params.embed, {if_empty:false});
-    embed = embed ? " embed" : "";
-  </acre:script>
-  <!--[if IE 8 ]><body class="ie8${embed}"><![endif]-->
-  <!--[if IE 7 ]><body class="ie7${embed}"><![endif]-->
-  <!--[if IE 6 ]><body class="ie6${embed}"><![endif]-->
-  <!--[if !IE]>--><body class="${h.trim(embed)}"><!--<![endif]-->
-    ${base.inner_body(exports)}
-  </body>
-</acre:block>
-
 <acre:block def="content(exports)">
   <div id="content" class="clear" data-id="${c.object.id}">
     ${content_body()}

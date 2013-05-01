@@ -8,64 +8,64 @@ This is olympic commons
 Here are the following types in Olympic Commons
 
  * [olympics__olympic_athlete Olympic athlete]
-   * [Data_entry_Olympic_athlete  Data Entry for Olympic athlete]
+   
 
  * [olympics__olympic_athlete_affiliation Olympic athlete affiliation]
-   * [Data_entry_Olympic_athlete_affiliation  Data Entry for Olympic athlete affiliation]
+   
 
  * [olympics__olympic_event_competition Olympic event competition]
-   * [Data_entry_Olympic_event_competition  Data Entry for Olympic event competition]
+ 
 
  * [olympics__olympic_event Olympic event]
-   * [Data_entry_Olympic_event  Data Entry for Olympic event]
+   
 
  * [olympics__olympic_games Olympic games]
-   * [Data_entry_Olympic_games  Data Entry for Olympic games]
+  
 
  * [olympics__olympic_host_city Olympic host city]
-   * [Data_entry_Olympic_host_city  Data Entry for Olympic host city]
+   
 
  * [olympics__olympic_mascot Olympic mascot]
-   * [Data_entry_Olympic_mascot  Data Entry for Olympic mascot]
+  
 
  * [olympics__olympic_medal Olympic medal]
-   * [Data_entry_Olympic_medal  Data Entry for Olympic medal]
+   
 
  * [olympics__olympic_medal_honor Olympic athlete/competition relationship]
-   * [Data_entry_Olympic_athlete_competition_relationship  Data Entry for Olympic athlete/competition relationship]
+   
 
  * [olympics__olympic_participating_country Olympic participating country]
-   * [Data_entry_Olympic_participating_country  Data Entry for Olympic participating country]
+   
 
  * [olympics__olympic_sport Olympic discipline]
-   * [Data_entry_Olympic_discipline  Data Entry for Olympic discipline]
+   
 
  * [olympics__olympic_venue Olympic venue]
-   * [Data_entry_Olympic_venue  Data Entry for Olympic venue]
+   
 
  * [olympics__olympic_demonstration_competition Olympic demonstration competition]
-   * [Data_entry_Olympic_demonstration_competition  Data Entry for Olympic demonstration competition]
+
 
  * [olympics__demonstration_event_athlete_relationship Demonstration event/athlete relationship]
-   * [Data_entry_Demonstration_event_athlete_relationship  Data Entry for Demonstration event/athlete relationship]
+   
 
  * [olympics__olympic_demonstration_medal_honor Olympic athlete/demonstration competition relationship]
-   * [Data_entry_Olympic_athlete_demonstration_competition_relationship  Data Entry for Olympic athlete/demonstration competition relationship]
+  
 
  * [olympics__olympic_medal_demonstration Olympic medal (demonstration)]
-   * [Data_entry_Olympic_medal_demonstration  Data Entry for Olympic medal (demonstration)]
+  
 
  * [olympics__olympic_bidding_city Olympic bidding city]
-   * [Data_entry_Olympic_bidding_city  Data Entry for Olympic bidding city]
+   
 
  * [olympics__olympic_city_bid Olympic city bid]
-   * [Data_entry_Olympic_city_bid  Data Entry for Olympic city bid]
+   
 
  * [olympics__olympic_torchbearer Olympic Torchbearer]
-   * [Data_entry_Olympic_Torchbearer  Data Entry for Olympic Torchbearer]
+   
 
  * [olympics__olympic_torch_relay_location Olympic torch relay location]
-   * [Data_entry_Olympic_torch_relay_location  Data Entry for Olympic torch relay location]
+   
 
  * [olympics__olympic_torch_relay Olympic Torch Relay]
-   * [Data_entry_Olympic_Torch_Relay  Data Entry for Olympic Torch Relay]
+   

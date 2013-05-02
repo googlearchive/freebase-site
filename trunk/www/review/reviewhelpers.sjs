@@ -43,8 +43,9 @@ var offensiveId = '/m/092s601';
 var agreeVote = '/m/092s60c';
 var disagreeVote = '/m/092s60j';
 var skipVote = '/m/092s60p';
-var freebaseExperts = '/m/0432s8d';
-var pipelineAdmins = '/m/03p3rjs';
+var freebaseExperts = '/m/0432s8d'; // /freebase/badges/freebaseexpert
+var pipelineAdmins = '/m/03p3rjs'; // /pipeline/admin
+var staffCL = '/m/0rz7plz'; // /en/staff_cl
 
 var INVALID_USER = 'Invalid user parameter.';
 var INVALID_FLAG = 'MID did not match a flag.';
@@ -196,7 +197,9 @@ function userCanVoteForFlag(flagInfo, userInfo) {
         if (h.has_value(userInfo, '/type/user/usergroup')) {
             var groups = h.get_values(userInfo, '/type/user/usergroup');
             for (var i = 0, l = groups.length; i < l; i++) {
-                if (groups[i].id === freebaseExperts || groups[i].id === pipelineAdmins) {
+                if (groups[i].id === freebaseExperts ||
+                    groups[i].id === pipelineAdmins ||
+                    groups[i].id === staffCL) {
                     return true;
                 }
             }

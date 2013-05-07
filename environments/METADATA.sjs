@@ -19,6 +19,7 @@ var METADATA = {
       "redirect_URL": "https://" + acre.request.server_name + "/account/signedin"
     },
     "freebase_writeuser" : {
+      "writeuser": "fb_writeuser",
       "redirect_URL": "https://" + acre.request.server_name + "/account/signedin"
     }
   }

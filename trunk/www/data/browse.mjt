@@ -137,16 +137,10 @@
           <h4>${_("Join the Community")}</h4>
           <ul>
             <li>${h.template_sprintf(_("Follow %s"), gplus_text())}</li>
-            <li>${_("Subscribe to the mailing list for community discussion:")}</li>
+            <li>${h.template_sprintf(
+              _("Subscribe to the %s for community discussion"),
+               mailinglist_text())}</li>
           </ul>
-          <form method="POST" action="http://lists.freebase.com/mailman/subscribe/freebase-discuss" >
-            <input name="email" type="email"
-                   placeholder="${_('Your email address...')}"
-                   class="text-input"/>
-
-            <button class="button primary">${_("Subscribe")}</button>
-          </form>
-          <a href="http://freebase.markmail.org/" class="more">${_("Read the List Archive")}</a>
         </div>
       </div>
     </aside>
@@ -175,5 +169,11 @@
 
 <acre:block def="gplus_text()">
   <a href="http://plus.google.com/109936836907132434202">${_("Freebase on G+")}</a>
+</acre:block>
+
+<acre:block def="mailinglist_text()">
+  <a href="https://groups.google.com/forum/?fromgroups#!forum/freebase-discuss">
+    ${_("mailing list")}
+  </a>
 </acre:block>
 

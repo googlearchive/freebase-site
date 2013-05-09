@@ -53,30 +53,31 @@ var SPEC = {
     },
 
     run: function(id, is_user, timestamp, lang, auth_user) {
-        return queries.is_expert_user(auth_user.id).then(function(has_right){
-            if (has_right) {
-                h.enable_writeuser();
-                var promise = null;
-                if (is_user) {
-                    promise = freeq.revert_user(null, id, timestamp, true);
+        return queries.has_right_to_revert(auth_user.id, id)
+            .then(function(has_right){
+                if (has_right) {
+                    h.enable_writeuser();
+                    var promise = null;
+                    if (is_user) {
+                        promise = freeq.revert_user(null, id, timestamp, true);
+                    } else {
+                        promise = freeq.revert_topic(null, id, timestamp, true);
+                    }
+                    return promise.then(function(result){
+                        return {
+                            info: "Request was sent to FreeQ"
+                        };
+                    });
                 } else {
-                    promise = freeq.revert_topic(null, id, timestamp, true);
-                }
-                return promise.then(function(result){
                     return {
-                        info: "Request was sent to FreeQ"
+                        error: "You don't have right to revert"
                     };
-                });
-            } else {
+                }
+            }, function(err) {
                 return {
-                    error: "You don't have right to revert"
+                    error: err
                 };
-            }
-        }, function(err) {
-            return {
-                error: err
-            };
-        });
+            });
     }
 };
 

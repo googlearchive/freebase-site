@@ -616,9 +616,13 @@ function get_key_link(namespace_id, object_id, value, lang) {
  * @param  {mid} user_id user mid
  * @return {Promise}
  */
-function is_expert_user(user_id) {
+function has_right_to_revert(user_id, topic_id) {
+  if (user_id === topic_id) {
+    // You can revert your own user writes
+    return deferred.resolved(true);
+  }
   var q = {
-    "id": "/freebase/badges/freebaseexpert",
+    "id": "/en/current_metaweb_staff",
     "/type/usergroup/member": {
       "id": user_id
     }

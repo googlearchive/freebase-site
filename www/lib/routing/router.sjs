@@ -1014,6 +1014,7 @@ function init_rules(lib) {
 
     {prefix:"/edit/topic/",             url:"/", redirect:301},
 
+    {prefix:"/view/guid",               url:"/guid", redirect:301},
     {prefix:"/view/filter/",            url:"/", redirect:301},
     {prefix:"/view/domain/",            url:"/", redirect:301},
     {prefix:"/view/image/",             url:"/", redirect:301},
@@ -1605,6 +1606,7 @@ function ObjectRouter(rules) {
 
       // Error
       if (error) {
+        if (error.code === 404) return false;
         var TopicAPIError = acre.require("queries/topic.sjs").TopicAPIError;
         throw new TopicAPIError(error);
       }

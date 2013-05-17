@@ -35,12 +35,12 @@ CueCard.QueryEditor = function(elmt, options) {
     this._outputPane = null;
     this._controlPane = null;
     this._warnWrites = false;
-    
+
     this._assistKeyComboDetected = false;
     this._popup = null;
-    
+
     var self = this;
-            
+
     var content = "[{\n  \n}]";
     var selectLine = 1;
     var selectCol = 2;
@@ -49,7 +49,7 @@ CueCard.QueryEditor = function(elmt, options) {
         selectLine = 0;
         selectCol = 0;
     }
-    
+
     var codeMirrorOptions = {
         basefiles           : [],
         parserConfig:       {json: true},
@@ -65,12 +65,12 @@ CueCard.QueryEditor = function(elmt, options) {
         initCallback: function(codeMirror) {
             self._editor.setParser("JSParser");
             self._onReady();
-            
+
             try {
                 var handle = self._editor.nthLine(selectLine + 1);
                 self._editor.selectLines(handle, selectCol, handle, selectCol);
             } catch (e) {}
-            
+
             if ("onReady" in options) {
                 options["onReady"]();
             }
@@ -79,20 +79,20 @@ CueCard.QueryEditor = function(elmt, options) {
             }
         }
     };
-    
+
     if ("onChange" in options) {
         codeMirrorOptions.onChange = options.onChange;
     }
     if (options.codeMirror) {
         $.extend(codeMirrorOptions, options.codeMirror);
     }
-    
+
     this._overflowInput = $('<input></input>')
         .css("position", "absolute")
         .css("left", "-500px")
         .css("top", "0px")
         .appendTo(document.body);
-    
+
     $(this._container).acre(fb.acre.current_script.app.path + "/cuecard/mjt/query-editor.mjt", "query_editor", [this, codeMirrorOptions]);
 };
 
@@ -112,14 +112,14 @@ CueCard.QueryEditor.nativeTypes = {
 
 CueCard.QueryEditor.prototype.dispose = function() {
     this._cancelPopup();
-    
+
     $(this._editor._top_element).remove();
-    
+
     this._overflowInput.remove();
     this._controlTopContainer.remove();
     this._controlBottomContainer.remove();
     this._iframeContainer.remove();
-    
+
     this._editor = null;
     this._overflowInput = null;
     this._controlTopContainer = null;
@@ -180,8 +180,8 @@ CueCard.QueryEditor.prototype.content = function(content) {
         if (oldContent != content) {
             var editor = this._editor.editor;
             editor.history.push(
-                null, 
-                null, 
+                null,
+                null,
                 this._editor.win.fixSpaces(content.replace(/\t/g, "  ").replace(/\u00a0/g, " ")).replace(/\r\n?/g, "\n").split("\n")
             );
             editor.addDirtyNode();
@@ -190,7 +190,7 @@ CueCard.QueryEditor.prototype.content = function(content) {
                 editor.history.onChange();
             }
         }
-        
+
         // We don't use this._editor.setCode() here because it resets the undo/redo history.
         return this;
     }
@@ -199,12 +199,12 @@ CueCard.QueryEditor.prototype.content = function(content) {
 CueCard.QueryEditor.prototype.getUnresolvedQuery = function() {
     var m = this.getQueryModelAndContext();
     var q = m.model.toQueryJson();
-    
-    return CueCard.jsonize(q, this.getJsonizingSettings({ 
-        breakLines: false, 
-        omitWhitespace: true, 
-        variables: this._getVariables(), 
-        resolveVariables: false 
+
+    return CueCard.jsonize(q, this.getJsonizingSettings({
+        breakLines: false,
+        omitWhitespace: true,
+        variables: this._getVariables(),
+        resolveVariables: false
     }));
 };
 
@@ -242,16 +242,16 @@ CueCard.QueryEditor.prototype._getQueryEnvelope = function() {
 
 CueCard.QueryEditor.prototype._getResolvedQueryEnvelope = function(cleanUp, options) {
     options = options || {};
-    
+
     var m = this.getQueryModelAndContext();
     var q = m.model.toQueryJson();
     options.isWriteQuery = this._isWriteQuery(q);
-    
+
     var envelope = this._getQueryEnvelope();
-    
+
     if (cleanUp) {
         this.content(CueCard.jsonize(q, this.getJsonizingSettings({ variables: this._getVariables(), resolveVariables: false })));
-        
+
         try {
             // Parse it again and try to put the cursor where it logically was
             var m2 = this.getQueryModelAndContext();
@@ -261,9 +261,9 @@ CueCard.QueryEditor.prototype._getResolvedQueryEnvelope = function(cleanUp, opti
         } catch (e) {
         }
     }
-    
+
     envelope.query = q;
-    
+
     return envelope;
 };
 
@@ -303,12 +303,12 @@ CueCard.QueryEditor.prototype._confirmWriteQuery = function(options) {
 CueCard.QueryEditor.prototype.getMqlReadURL = function() {
     var options = {};
     var q = this.getResolvedQueryEnvelope(options);
-    
+
     var serviceUrl = CueCard.freebaseServiceUrl + (options.isWriteQuery ? 'mqlwrite' : 'mqlread');
     if ("service" in this._options && this._options.service != null) {
         serviceUrl = this._options.service;
     }
-    
+
     q.query = CueCard.jsonize(q.query, this.getJsonizingSettings({ breakLines: false, variables: this._getVariables(), resolveVariables: true }));
     return fb.h.build_url(serviceUrl, "/", q);
 };
@@ -318,7 +318,7 @@ CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
         var options = {};
         var envelope = this._getResolvedQueryEnvelope(forceCleanUp || (this._controlPane && this._controlPane.getSetting("cleanup")), options);
         var q = CueCard.jsonize(envelope, this.getJsonizingSettings({ breakLines: false, variables: this._getVariables(), resolveVariables: true }));
-        
+
         if (this._confirmWriteQuery(options)) {
             if (!fb.user) {
                 if (window.confirm("You need to be signed in to write.\nDo you want to signin now?")) {
@@ -332,9 +332,9 @@ CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
                 return;
             }
         }
-        
+
         var url = CueCard.apiProxy.base + CueCard.apiProxy[options.isWriteQuery ? 'write' : 'read'];
-        
+
         var self = this;
         var onDone = function(o) {
             var options = {};
@@ -343,14 +343,16 @@ CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
             }
             var result = o.error || o.result || o;
             self._outputPane.setJSONContent(result, self.getJsonizingSettings(options), q);
+
             if ("onRun" in self._options) {
                 self._options["onRun"](result);
             }
         };
         var onError = function(msg) {
+            console.log(msg);
             alert(msg);
-        }
-        
+        };
+
         this._outputPane.setStatus("Querying...", true);
         if (options.isWriteQuery) {
           // need to get a form with a CSRF token in it;
@@ -366,13 +368,37 @@ CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
           });
         } else {
             q = this._outputPane.prepareQuery(q);
-            $.ajax(url, {
-                type: (q.length > 1024 ? "POST" : "GET"),
-                data: { "query" : q },
-                success: onDone, 
-                error: onError,
-                dataType: "json"
-            });
+
+            if (CueCard.QueryEditor.BNS) {
+                var bns = CueCard.QueryEditor.BNS;
+                // Validate bns
+                if (bns.indexOf("/bns/") !== 0) {
+                    return onError("Invalid BNS address: " + bns);
+                }
+                // Always enforce HTTP, because /bns/ doesn't serve HTTPS
+                url = encodeURI("http:/"+bns+"/mqlread");
+                // TODO(pmikota): Either do CORS POST or send request from
+                // parent of current iframe so it can send queries longer
+                // than 2048 chars
+                var mqlread_options = {
+                    url: url,
+                    data: {"query": q},
+                    dataType: "jsonp",
+                    success: function(data) {
+                        onDone(data);
+                    },
+                    error: onError
+                };
+                return $.ajax(mqlread_options);
+            } else {
+                $.ajax(url, {
+                    type: (q.length > 1024 ? "POST" : "GET"),
+                    data: { "query" : q },
+                    success: onDone,
+                    error: onError,
+                    dataType: "json"
+                });
+            }
         }
     }
 };
@@ -381,7 +407,7 @@ CueCard.QueryEditor.prototype.getQueryModelAndContext = function() {
     var pos = this._editor.cursorPosition(false);
     var lineNo = this._editor.lineNumber(pos.line) - 1;
     var colNo = pos.character;
-    
+
     return CueCard.QueryParser.parseForContext(this._editor.getCode(), 0, lineNo, colNo);
 };
 
@@ -398,7 +424,7 @@ CueCard.QueryEditor.prototype._onReady = function() {
     } catch (e) {
         alert("Unable to install keyup handler on codemirror window");
     }
-    
+
     if ("cleanUp" in this._options && this._options.cleanUp) {
         this._editor.getCode();     // XXX fulhack... seem to run into timing issues on startup without this
         this._onCleanUp();
@@ -417,7 +443,7 @@ CueCard.QueryEditor.prototype._onCleanUp = function() {
 };
 
 CueCard.QueryEditor.prototype._onEditorMouseDown = function(evt) {
-    
+
 };
 
 CueCard.QueryEditor.prototype._onEditorKeyDown = function(evt) {
@@ -429,7 +455,7 @@ CueCard.QueryEditor.prototype._onEditorKeyDown = function(evt) {
         return false;
     } else {
         this._assistKeyComboDetected = false;
-        
+
         if ((evt.metaKey || evt.ctrlKey) && evt.keyCode == 13) { // meta or ctrl-enter
             this._onRun(evt.shiftKey);
         }
@@ -455,23 +481,23 @@ CueCard.QueryEditor.prototype.startAssistAtCursor = function() {
     var l = this._editor.lineNumber(p.line) - 1;
     var col = p.character;
     var s = this._editor.lineContent(p.line);
-    
+
     var veryFirstContentNode = this._editor.win.document.body.firstChild;
     var previousNode = p.line || veryFirstContentNode;
     var node = previousNode.nextSibling;
     var c = col;
-    while (c > 0 && 
-        node != null && 
-        node.tagName.toLowerCase() != "br" && 
-        node.firstChild != null && 
+    while (c > 0 &&
+        node != null &&
+        node.tagName.toLowerCase() != "br" &&
+        node.firstChild != null &&
         node.firstChild.nodeValue.length >= c
     ) {
         c -= node.firstChild.nodeValue.length;
-        
+
         previousNode = node;
         node = node.nextSibling;
     }
-    
+
     var offset = $(node).offset();
     if (node == null || node.tagName.toLowerCase() == "br") {
         // Case: end of content or end of line
@@ -489,7 +515,7 @@ CueCard.QueryEditor.prototype.startAssistAtCursor = function() {
             var left = offset.left + (charCount == 0 ? 0 : (c * previousNode.offsetWidth / charCount));
             var height = previousNode.offsetHeight;
         }
-        
+
         this._startAssist(l, col, {
             left:   left,
             top:    offset.top,
@@ -498,7 +524,7 @@ CueCard.QueryEditor.prototype.startAssistAtCursor = function() {
     } else {
         var charCount = node.firstChild ? node.firstChild.nodeValue.length : 0;
         this._startAssist(l, col, {
-            left:   offset.left + (charCount == 0 ? 0 : (c * node.offsetWidth / charCount)), 
+            left:   offset.left + (charCount == 0 ? 0 : (c * node.offsetWidth / charCount)),
             top:    offset.top,
             height: node.offsetHeight
         });
@@ -507,12 +533,12 @@ CueCard.QueryEditor.prototype.startAssistAtCursor = function() {
 
 CueCard.QueryEditor.prototype._startAssist = function(lineNo, columnNo, positioning) {
     this._cancelPopup();
-    
+
     if (positioning != null) {
         var offset = $(this._iframeContainer).offset();
         offset.left -= this._editor.win.document.body.scrollLeft + document.body.scrollLeft;
         offset.top -= this._editor.win.document.body.scrollTop + document.body.scrollTop;
-        
+
         var self = this;
         this._popup = new CueCard.Popup(
             Math.round(offset.left + positioning.left),
@@ -528,25 +554,25 @@ CueCard.QueryEditor.prototype._startAssist = function(lineNo, columnNo, position
             }
         );
         this._popup.elmt.html('<div class="cuecard-popup-message">Please wait...</div>');
-        
+
         var mc = this.getQueryModelAndContext();
         if (mc.context.length > 0) {
             var contextNode = mc.context[mc.context.length - 1];
             if ("relative" in contextNode) {
                 if (contextNode.node.type == CueCard.QueryNode.TYPE_NONTERMINAL) {
-                    if (contextNode.relative == "path" || 
+                    if (contextNode.relative == "path" ||
                         contextNode.relative == "before") {
-                        
+
                         this._startSuggestProperties(lineNo, columnNo, mc, contextNode);
                         return;
-                        
+
                     } else if (contextNode.relative == "space") {
                         /*
                          *  The cursor is where a value node should be. We need the
                          *  corresponding link to know what to suggest.
                          */
                         var link = contextNode.node.links[contextNode.child];
-                        
+
                         this._startSuggestValues(lineNo, columnNo, mc, contextNode, link);
                         return;
                     }
@@ -565,7 +591,7 @@ CueCard.QueryEditor.prototype._startAssist = function(lineNo, columnNo, position
                 }
             } else {
                 // This is the case of the bare token.
-                
+
                 /*
                  *  Go up the context chain to find the link, which gives us hints
                  *  at what the values can be (topic types, number, boolean, etc.).
@@ -580,15 +606,15 @@ CueCard.QueryEditor.prototype._startAssist = function(lineNo, columnNo, position
                         link = outerContextNode.node.links[outerContextNode.child];
                     }
                 }
-                
+
                 this._startSuggestValues(lineNo, columnNo, mc, contextNode, link);
                 return;
             }
         }
     }
     this._popup.elmt.html(
-        '<div class="cuecard-popup-message">' + 
-            'Sorry, we don\'t know how to assist you here. ' + 
+        '<div class="cuecard-popup-message">' +
+            'Sorry, we don\'t know how to assist you here. ' +
             'Send us a link to this exact query using the links at the upper right corner and we will investigate. ' +
             'Thank you!' +
         '</div>'
@@ -604,20 +630,20 @@ CueCard.QueryEditor.prototype._cancelPopup = function() {
 
 CueCard.QueryEditor.prototype._startSuggestProperties = function(lineNo, columnNo, mc, contextNode) {
     var self = this;
-    
+
     var token = (contextNode.relative == "path") ? contextNode.node.links[contextNode.child].token : null;
-    
+
     this._startBufferInput();
     this._prepareQueryForSuggestions(mc, lineNo, columnNo, token, function(cont, prefix, placeResult, globalPropertyMap) {
         var onLocatedInnerMostNonTerminal = function(cont2, result) {
             var types = [];
             var ids = [];
             var guids = [];
-            
+
             result.node.getDeclaredTypes(types);
             result.node.getDeclaredIDs(ids);
             result.node.getDeclaredGUIDs(guids);
-            
+
             var params = [];
             if (types.length > 0) {
                 params.push("t=" + encodeURIComponent(types.join(",")));
@@ -632,22 +658,22 @@ CueCard.QueryEditor.prototype._startSuggestProperties = function(lineNo, columnN
                 params.push("p=" + encodeURIComponent(result.property));
                 params.push("r=" + result.reverse);
             }
-            
+
             var url = CueCard.helper + "suggest-properties.ajax?" + params.join("&");
             $.ajax(url,{
               dataType: "json",
               success: cont2.extend(onGotSuggestedProperties).onDone,
               error: cont.onError
             });
-            
+
             return true; // don't clean up
         };
         var onGotSuggestedProperties = function(cont2, o) {
             self._suggestProperties(mc, o.result, prefix + self._stopBufferInput(), placeResult);
         };
-        
+
         mc.model.locateInnerMostNonTerminal(
-            mc.context, 
+            mc.context,
             cont.extend(onLocatedInnerMostNonTerminal)
         );
         return true;
@@ -666,7 +692,7 @@ CueCard.QueryEditor.prototype._stopBufferInput = function() {
 CueCard.QueryEditor.prototype._suggestProperties = function(mc, suggestion, prefix, placeResult) {
     this._popup.elmt.empty();
     this._popup.elmt.html("<div></div>");
-    
+
     var entries = [];
     for (var n in suggestion.properties) {
         var entry = suggestion.properties[n];
@@ -674,12 +700,12 @@ CueCard.QueryEditor.prototype._suggestProperties = function(mc, suggestion, pref
         var shortName = n.substr(slash + 1);
         var type = n.substr(0, slash);
         var explicit = entry.explicit;
-        
+
         if ("parentProperty" in entry) {
             var resultPrefix = '"' + entry.parentProperty + '" : [{ "' + shortName + '" : ';
             var resultInfix = (entry.unique ? 'null' : '[]');
             var resultSuffix = ' }]';
-            
+
             entries.push({
                 label: shortName,
                 hint: "of type " + type + " (through " + entry.parentProperty + ")",
@@ -698,17 +724,17 @@ CueCard.QueryEditor.prototype._suggestProperties = function(mc, suggestion, pref
                 qualifiedProperty: n,
                 expectedTypes: entry.expectedTypes
             };
-            
+
             CueCard.QueryEditor.setPropertySuggestionSuffix(expectedType, entry2, entry.unique, resultPrefix);
             entries.push(entry2);
         }
     }
-    
+
     var self = this;
     var suggestor = new CueCard.PropertySuggestor(
         this._popup,
-        CueCard.MqlSyntax.KeywordSuggestions, 
-        entries, 
+        CueCard.MqlSyntax.KeywordSuggestions,
+        entries,
         placeResult
     );
     var controller = new CueCard.SuggestionController(this._popup, this._popup.elmt[0].firstChild, suggestor, prefix);
@@ -743,13 +769,13 @@ CueCard.QueryEditor.setPropertySuggestionSuffix = function(expectedType, entry, 
 
 CueCard.QueryEditor.prototype._startSuggestValues = function(lineNo, columnNo, mc, contextNode, link) {
     var self = this;
-    
+
     var token = ("token" in contextNode) ? contextNode.token : null;
-    
+
     this._startBufferInput();
     this._prepareQueryForSuggestions(mc, lineNo, columnNo, token, function(cont, prefix, placeResult, globalPropertyMap) {
         prefix += self._stopBufferInput();
-        
+
         if (link != null && !link.reverse && CueCard.QueryNode.isMqlKeyword(link.path)) {
             self._suggestValuesForKeyword(lineNo, columnNo, mc, contextNode, link.path, prefix, placeResult);
         } else {
@@ -757,24 +783,24 @@ CueCard.QueryEditor.prototype._startSuggestValues = function(lineNo, columnNo, m
                 self._popup.elmt.empty();
                 self._popup.elmt.html('<div></div><div class="cuecard-suggestion-hint-message">Keep typing to search for topics of types fitting this point in the query.</div>');
             };
-            
+
             var property = link.qualifiedProperty;
             var reverse = link.reverse;
-            
+
             if (!reverse && (property == "/type/object/id" || property == "/type/object/guid" || property == "/type/object/name")) {
                 /*
                  *  We need to know the possible types in order to suggest id and guid intelligently.
                  */
                 var onLocatedInnerMostNonTerminal = function(cont2, result) {
                     preparePopup();
-                    
+
                     var expectedTypes = [];
                     result.node.getDeclaredTypes(expectedTypes);
-                    
+
                     if ("property" in result && result.property != null) {
                         var leadinProperty = result.property;
                         var leadinReverse = result.reverse;
-                        
+
                         if (reverse) {
                             expectedTypes.push(leadinProperty.substr(0, leadinProperty.lastIndexOf("/")));
                         } else if (leadinProperty in globalPropertyMap) {
@@ -784,10 +810,10 @@ CueCard.QueryEditor.prototype._startSuggestValues = function(lineNo, columnNo, m
                             }
                         }
                     }
-                    
+
                     var suggestor = new CueCard.TypeBasedTopicSuggestor(
                         self._popup,
-                        CueCard.MqlSyntax.SingleValueSuggestions, 
+                        CueCard.MqlSyntax.SingleValueSuggestions,
                         expectedTypes,
                         link.property,
                         placeResult
@@ -795,23 +821,23 @@ CueCard.QueryEditor.prototype._startSuggestValues = function(lineNo, columnNo, m
                     var controller = new CueCard.SuggestionController(self._popup, self._popup.elmt[0].firstChild, suggestor, prefix);
                 };
                 mc.model.locateInnerMostNonTerminal(
-                    mc.context, 
+                    mc.context,
                     cont.extend(onLocatedInnerMostNonTerminal)
                 );
                 return true;
             } else {
                 preparePopup();
-                
+
                 var expectedTypes;
                 var unique = false;
-                
+
                 if (reverse) {
                     expectedTypes = [ property.substr(0, property.lastIndexOf("/")) ];
                 } else if (property == "/type/object/type") {
                     expectedTypes = [ "/type/type" ];
                 } else if (property in globalPropertyMap) {
                     unique = globalPropertyMap[property].unique;
-                    
+
                     expectedTypes = [];
                     var expectedTypes2 = globalPropertyMap[property].expectedTypes;
                     for (var t = 0; t < expectedTypes2.length; t++) {
@@ -822,22 +848,22 @@ CueCard.QueryEditor.prototype._startSuggestValues = function(lineNo, columnNo, m
                 } else {
                     expectedTypes = [];
                 }
-                
+
                 var singleExpectedType = (expectedTypes.length == 1) ? expectedTypes[0] : null;
-                
+
                 if (singleExpectedType !== null && singleExpectedType in CueCard.QueryEditor.nativeTypes) {
                     var suggestor = new CueCard.StaticChoicesSuggestor(
                         CueCard.MqlSyntax[
                             singleExpectedType == "/type/text" ?
                                 (unique ? "UniqueStringLiteralValueSuggestions" : "StringLiteralValueSuggestions") :
                                 (unique ? "UniqueLiteralValueSuggestions" : "LiteralValueSuggestions")
-                        ], 
+                        ],
                         placeResult
                     );
                 } else {
                     var suggestor = new CueCard.TypeBasedTopicSuggestor(
                         self._popup,
-                        CueCard.MqlSyntax[ unique ? "UniqueTopicValueSuggestions" : "TopicValueSuggestions" ], 
+                        CueCard.MqlSyntax[ unique ? "UniqueTopicValueSuggestions" : "TopicValueSuggestions" ],
                         expectedTypes,
                         "id",
                         placeResult
@@ -858,10 +884,10 @@ CueCard.QueryEditor.prototype._suggestValuesForKeyword = function(lineNo, column
         this.focus();
     } else {
         this._popup.elmt.html("<div></div>");
-    
+
         var self = this;
         var suggestor = new CueCard.StaticChoicesSuggestor(
-            hint.choices, 
+            hint.choices,
             placeResult
         );
         var controller = new CueCard.SuggestionController(this._popup, this._popup.elmt[0].firstChild, suggestor, prefix);
@@ -872,16 +898,16 @@ CueCard.QueryEditor.prototype._prepareQueryForSuggestions = function(mc, lineNo,
     var self = this;
     var prefix = "";
     var replaceToken;
-    
+
     var insertAndSelect = function(l, c, o, offset, extent) {
         var text = (offset === undefined || typeof o !== "string") ? CueCard.jsonize(o, { breakLines: false }) : o;
         var start = c + (typeof offset == "number" ? offset : text.length);
         var end = start + (typeof extent == "number" ? extent : 0);
-        
-        self._editor.editor.replaceSelection(text); 
+
+        self._editor.editor.replaceSelection(text);
         // for IE, we need to call the codemirror's internal editor field's method.
         // otherwise, codemirror's own replaceSelection method will call focus(), which messes up the selection in IE.
-        
+
         var line = self._editor.nthLine(l + 1);
         self._editor.selectLines(line, start, line, end);
     };
@@ -892,10 +918,10 @@ CueCard.QueryEditor.prototype._prepareQueryForSuggestions = function(mc, lineNo,
             startContentIndex = 1;
         }
         prefix = token.content.substring(startContentIndex, columnNo - startCol).replace(/['"]$/, '');
-        
+
         replaceToken = function(o, offset, extent) {
             var line = self._editor.nthLine(token.start.line + 1);
-            
+
             self._editor.selectLines(line, token.start.col, line, token.end.col);
             insertAndSelect(token.start.line, token.start.col, o, offset, extent);
         };
@@ -903,15 +929,15 @@ CueCard.QueryEditor.prototype._prepareQueryForSuggestions = function(mc, lineNo,
         var pos = this._editor.cursorPosition(true);
         var l = this._editor.lineNumber(pos.line) - 1;
         var c = pos.character;
-        
+
         replaceToken = function(o, offset, extent) {
             var line = self._editor.nthLine(l + 1);
-            
+
             self._editor.selectLines(line, c, line, c);
             insertAndSelect(l, c, o, offset, extent);
         };
     }
-    
+
     var placeResult = function(entry) {
         self._popup.close();
         if (typeof entry == "string") {
@@ -920,11 +946,11 @@ CueCard.QueryEditor.prototype._prepareQueryForSuggestions = function(mc, lineNo,
             replaceToken(entry.result, entry["offset"], entry["extent"]);
         }
     };
-    
+
     var continuation = CueCard.UI.createBlockingContinuations(function(cont, globalPropertyMap) {
         return f(cont, prefix, placeResult, globalPropertyMap || {});
     });
     this._popup.addPendingContinuation(continuation);
-    
+
     mc.model.qualifyAllProperties(continuation);
 };

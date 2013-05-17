@@ -99,5 +99,8 @@
 <acre:block def="footer_script()">
   <script src="lib/editor-bundle.mf.js"></script>
   <script src="editor.mf.js"></script>
+  <script acre:if="acre.request.params.bns">
+    CueCard.QueryEditor.BNS = "${acre.request.params.bns}";
+  </script>
 </acre:block>
 

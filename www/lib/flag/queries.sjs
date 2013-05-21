@@ -79,15 +79,25 @@ function create(user, kind, id1/**, id2, ..., id_N **/) {
         (ids.length < 3)) {
 
       var promise = null;
+      var key, execute;
       var losingItem = ids[0];
       var winningItem = ids[1];
 
       // Enable writeuser for accessing FreeQ
       h.enable_writeuser();
       if (kind === "merge") {
-        promise = freeq.merge_topics(null, winningItem, losingItem, true);
+        // Get the immortal job id from keystore
+        key = acre.keystore.get('review_queue_merge_job');
+        var review_merge_id = key && key[0];
+        execute = !review_merge_id;
+        promise = freeq.merge_topics(review_merge_id, winningItem,
+            losingItem, execute);
       } else if (kind === "delete") {
-        promise = freeq.delete_topic(null, losingItem, true);
+        // Get the immortal job id from keystore
+        key = acre.keystore.get('review_queue_delete_job');
+        var review_delete_id = key && key[0];
+        execute = !review_delete_id;
+        promise = freeq.delete_topic(review_delete_id, losingItem, execute);
       } else {
         return {
           error: "Auto merge/delete failed, please try again."

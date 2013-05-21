@@ -193,7 +193,7 @@
       <div class="page-title ${img_class}">
 
         <!!-- Object Attribution !!-->
-        <span class="creation-timestamp">
+        <span class="creation-timestamp" acre:if="c.object.attribution">
           <acre:block def="attribution()">
             ${image.user_image_tiny(c.object.attribution.creator)}
             ${_("Created by")}

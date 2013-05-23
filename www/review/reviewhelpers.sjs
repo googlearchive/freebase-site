@@ -63,7 +63,8 @@ var FLAG_OPTIONS = {
 var USER_OPTIONS = {
     'filter': [
         '/type/user/usergroup'
-    ]
+    ],
+    'limit': 300
 };
 
 // Make sure to change in user/edit_group_submit.ajax also

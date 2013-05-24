@@ -111,7 +111,11 @@ function init_rules(lib) {
     {host:"acre.freebase.com", url:"http://www.freebase.com/appeditor"},
     {host:"acre.sandbox-freebase.com", url:"http://www.sandbox-freebase.com/appeditor"},
     {host:"metaweb.com", url:"http://www.freebase.com"},
-    {host:"www.metaweb.com", url:"http://www.freebase.com"}
+    {host:"www.metaweb.com", url:"http://www.freebase.com"},
+    {host:"dev.freebase.com", url:"http://www.freebase.com"},
+    {host:"www.freebaseapps.com", url:"http://www.freebase.com/apps"},
+    {host:"www.sandbox-freebaseapps.com",
+        url:"http://www.sandbox-freebase.com/apps"}
   ];
 
 

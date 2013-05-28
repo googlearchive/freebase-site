@@ -898,22 +898,30 @@
          fb.devbar.txn_ids.push(fb.tid);
        }
        $("#devbar-txn > a").click(fb.devbar.txn);
-       $.ajaxSetup({
-         complete: function() {
-           fb.devbar.ajaxComplete.apply(null, arguments);
-         },
-         error: function(xhr) {
-           var ajax_options = this;
-           var data = {};
-           $.each(["url", "data", "dataType", "type"], function(i,k) {
-             data[k] = ajax_options[k];
-           });
-           $.each(["status", "statusText", "responseText"], function(i,k) {
-             data[k] = xhr[k];
-           });
-           data.responseHeaders = xhr.getAllResponseHeaders();
-           //$(window).trigger("fb.user.feedback", data);
-         }
+
+       $(document).ajaxComplete(function() {
+         fb.devbar.ajaxComplete.apply(null, arguments);
+       });
+       $(document).ajaxError(function(event, xhr, ajax_options) {
+         var data = {};
+         $.each(["url", "data", "dataType", "type"], function(i,k) {
+           data[k] = ajax_options[k];
+         });
+         $.each(["status", "statusText", "responseText"], function(i,k) {
+           data[k] = xhr[k];
+         });
+         data.responseHeaders = xhr.getAllResponseHeaders();
+
+         // get name of .ajax controller and track error using GA
+         var controller = data.url.match(/^.*[^\/]\/([a-z_]*)\.ajax.*$/)[1];
+         controller = controller || "";
+         var _gaq = window['_gaq'] || [];
+         _gaq.push(['_trackEvent', 'Error', 'AJAX Error ' + controller,
+             "path:" + data.url +
+             ";status:" + data.status +
+             ";status-text:" + data.statusText, 1]);
+
+         //$(window).trigger("fb.user.feedback", data);
        });
      }
    };

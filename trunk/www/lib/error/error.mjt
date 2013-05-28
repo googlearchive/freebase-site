@@ -36,6 +36,11 @@
 
 <acre:block def="head()">
   <link rel="stylesheet" type="text/css" href="error/error.mf.css" />
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_trackEvent', 'Error', 'Acre JS Exception',
+        'path:${acre.request.path_info}', 1, true]);
+  </script>
 </acre:block>
 
 <acre:block def="content_body()">
@@ -52,7 +57,7 @@
   </div>
 </acre:block>
 
-<acre:block def="page_content()"
+<acre:block def="page_content()">
     <div class="module">
       <acre:block if="!c.einfo">
         <h3>This page is only intended to render an error caused by processing another script</h3>

@@ -8,6 +8,11 @@
 
 <acre:block def="head()">
   <link rel="stylesheet" type="text/css" href="error/error.mf.css" />
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_trackEvent', 'Error', 'Deprecated Path',
+        'path:${acre.request.path_info}', 1, true]);
+  </script>
 </acre:block>
 
 <acre:block def="content_body()">

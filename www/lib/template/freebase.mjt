@@ -88,10 +88,19 @@
         }
       </style>
 
-      <script type="text/javascript">
-        if (SERVER.ga_id) {
+      <acre:script>
+        // Google Analytics ID
+        var ga_id = null;
+        if(h.is_production()) {
+          ga_id = "UA-3096233-10";
+        } else if (h.is_sandbox()) {
+          ga_id = "UA-3096233-11";
+        }
+      </acre:script>
+      <acre:block if="ga_id">
+        <script type="text/javascript">
           var _gaq = _gaq || [];
-          _gaq.push(['_setAccount', SERVER.ga_id]);
+          _gaq.push(['_setAccount', '${ga_id}']);
           _gaq.push(['_trackPageview']);
 
           (function() {
@@ -99,8 +108,8 @@
             ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
           })();
-        }
-      </script>
+        </script>
+      </acre:block>
 
       <!-- any additional head content (i.e., css, js, etc.)-->
       <acre:block if="exports.head">
@@ -419,12 +428,6 @@
     }
     if (acre.request.headers['x-metaweb-tid']) {
       SERVER.tid = acre.request.headers['x-metaweb-tid'];
-    }
-    // Google Analytics ID
-    if(h.is_production()) {
-      SERVER.ga_id = "UA-3096233-10";
-    } else if (h.is_sandbox()) {
-      SERVER.ga_id = "UA-3096233-11";
     }
   </acre:script>
   <script>

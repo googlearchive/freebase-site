@@ -1,0 +1,3 @@
+[
+    "discuss/js/discuss.js"
+]

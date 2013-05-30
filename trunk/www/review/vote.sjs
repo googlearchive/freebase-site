@@ -385,11 +385,13 @@ function processFlag(mid) {
 
                     // No direct voting on schema objects
                     var types = h.get_values(item, '/type/object/type');
-                    for (var i = 0, l = types.length; i < l; i++) {
-                        if (h.is_metaweb_system_type(types[0].id)) {
-                            return reviewHelpers.escalateFlagTo(flagInfo.id, 'system').then(function(env) {
-                                return deferred.rejected(SCHEMA_IN_REVIEW);
-                            });
+                    if (types) {
+                        for (var i = 0, l = types.length; i < l; i++) {
+                            if (h.is_metaweb_system_type(types[0].id)) {
+                                return reviewHelpers.escalateFlagTo(flagInfo.id, 'system').then(function(env) {
+                                    return deferred.rejected(SCHEMA_IN_REVIEW);
+                                });
+                            }
                         }
                     }
                 }

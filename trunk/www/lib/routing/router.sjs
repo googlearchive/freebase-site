@@ -1524,6 +1524,10 @@ function CustomRouter(rules) {
         var id = acre.request.path_info.replace(/^\/(ns|rdf)/, "").replace(".", "/");
         h.redirect(scope, acre.freebase.googleapis_url + "/rdf" + id);
       }
+      // special-case for redirecting robots.txt
+      else if (acre.request.path_info === "/robots.txt") {
+        h.redirect(scope, "//" + site_host + "/robots.txt");
+      }
       // otherwise, assume it's a custom base hostname
       else if (req_parts[0].length >= 5) {
         h.redirect(scope, "//" + site_host + "/base/" + req_parts[0]);

@@ -1,4 +1,54 @@
-[
-  "js/jquery.form.js",
-  "js/claim.js"
-]
+
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Additional Licenses for Third Party components can be found here:
+ * http://wiki.freebase.com/wiki/Freebase_Site_License
+ *
+ */
+(function(c){function m(){if(c.fn.ajaxSubmit.debug){var a="[jquery.form] "+Array.prototype.join.call(arguments,"");window.console&&window.console.log?window.console.log(a):window.opera&&window.opera.postError&&window.opera.postError(a)}}c.fn.ajaxSubmit=function(a){function b(){function d(){var a=j.attr("target"),h=j.attr("action");b.setAttribute("target",g);"POST"!=b.getAttribute("method")&&b.setAttribute("method","POST");b.getAttribute("action")!=f.url&&b.setAttribute("action",f.url);f.skipEncodingOverride||
+j.attr({encoding:"multipart/form-data",enctype:"multipart/form-data"});f.timeout&&setTimeout(function(){s=!0;e()},f.timeout);var k=[];try{if(f.extraData)for(var l in f.extraData)k.push(c('<input type="hidden" name="'+l+'" value="'+f.extraData[l]+'" />').appendTo(b)[0]);i.appendTo("body");i.data("form-plugin-onload",e);b.submit()}finally{b.setAttribute("action",h),a?b.setAttribute("target",a):j.removeAttr("target"),c(k).remove()}}function e(){if(!t){i.removeData("form-plugin-onload");var a=!0;try{if(s)throw"timeout";
+n=l.contentWindow?l.contentWindow.document:l.contentDocument?l.contentDocument:l.document;var d="xml"==f.dataType||n.XMLDocument||c.isXMLDoc(n);m("isXml="+d);if(!d&&(window.opera&&(null==n.body||""==n.body.innerHTML))&&--r){m("requeing onLoad callback, DOM not available");setTimeout(e,250);return}t=!0;k.responseText=n.documentElement?n.documentElement.innerHTML:null;k.responseXML=n.XMLDocument?n.XMLDocument:n;k.getResponseHeader=function(a){return{"content-type":f.dataType}[a]};var b=/(json|script)/.test(f.dataType);
+if(b||f.textarea){var g=n.getElementsByTagName("textarea")[0];if(g)k.responseText=g.value;else if(b){var h=n.getElementsByTagName("pre")[0];h&&(k.responseText=h.innerHTML)}}else if("xml"==f.dataType&&!k.responseXML&&null!=k.responseText){var d=k,j=k.responseText,b=void 0;window.ActiveXObject?(b=new ActiveXObject("Microsoft.XMLDOM"),b.async="false",b.loadXML(j)):b=(new DOMParser).parseFromString(j,"text/xml");d.responseXML=b&&b.documentElement&&"parsererror"!=b.documentElement.tagName?b:null}u=c.httpData(k,
+f.dataType)}catch(o){m("error caught:",o),a=!1,k.error=o,c.handleError(f,k,"error",o)}a&&(f.success.call(f.context,u,"success",k),p&&c.event.trigger("ajaxSuccess",[k,f]));p&&c.event.trigger("ajaxComplete",[k,f]);p&&!--c.active&&c.event.trigger("ajaxStop");f.complete&&f.complete.call(f.context,k,a?"success":"error");setTimeout(function(){i.removeData("form-plugin-onload");i.remove();k.responseXML=null},100)}}var b=j[0];if(c(":input[name=submit],:input[id=submit]",b).length)alert('Error: Form elements must not have name or id of "submit".');
+else{var f=c.extend(!0,{},c.ajaxSettings,a);f.context=f.context||f;var g="jqFormIO"+(new Date).getTime(),h="_"+g;window[h]=function(){var a=i.data("form-plugin-onload");if(a){a();window[h]=void 0;try{delete window[h]}catch(b){}}};var i=c('<iframe id="'+g+'" name="'+g+'" src="'+f.iframeSrc+'" onload="window[\'_\'+this.id]()" />'),l=i[0];i.css({position:"absolute",top:"-1000px",left:"-1000px"});var k={aborted:0,responseText:null,responseXML:null,status:0,statusText:"n/a",getAllResponseHeaders:function(){},
+getResponseHeader:function(){},setRequestHeader:function(){},abort:function(){this.aborted=1;i.attr("src",f.iframeSrc)}},p=f.global;p&&!c.active++&&c.event.trigger("ajaxStart");p&&c.event.trigger("ajaxSend",[k,f]);if(f.beforeSend&&!1===f.beforeSend.call(f.context,k,f))f.global&&c.active--;else if(!k.aborted){var t=!1,s=0,o=b.clk;if(o){var q=o.name;q&&!o.disabled&&(f.extraData=f.extraData||{},f.extraData[q]=o.value,"image"==o.type&&(f.extraData[q+".x"]=b.clk_x,f.extraData[q+".y"]=b.clk_y))}f.forceSync?
+d():setTimeout(d,10);var u,n,r=50}}}if(!this.length)return m("ajaxSubmit: skipping submit process - no element selected"),this;"function"==typeof a&&(a={success:a});var e=c.trim(this.attr("action"));e&&(e=(e.match(/^([^#]+)/)||[])[1]);e=e||window.location.href||"";a=c.extend(!0,{url:e,type:this.attr("method")||"GET",iframeSrc:/^https/i.test(window.location.href||"")?"javascript:false":"about:blank"},a);e={};this.trigger("form-pre-serialize",[this,a,e]);if(e.veto)return m("ajaxSubmit: submit vetoed via form-pre-serialize trigger"),
+this;if(a.beforeSerialize&&!1===a.beforeSerialize(this,a))return m("ajaxSubmit: submit aborted via beforeSerialize callback"),this;var d,g,h=this.formToArray(a.semantic);if(a.data)for(d in a.extraData=a.data,a.data)if(a.data[d]instanceof Array)for(var i in a.data[d])h.push({name:d,value:a.data[d][i]});else g=a.data[d],g=c.isFunction(g)?g():g,h.push({name:d,value:g});if(a.beforeSubmit&&!1===a.beforeSubmit(h,this,a))return m("ajaxSubmit: submit aborted via beforeSubmit callback"),this;this.trigger("form-submit-validate",
+[h,this,a,e]);if(e.veto)return m("ajaxSubmit: submit vetoed via form-submit-validate trigger"),this;d=c.param(h);"GET"==a.type.toUpperCase()?(a.url+=(0<=a.url.indexOf("?")?"&":"?")+d,a.data=null):a.data=d;var j=this,l=[];a.resetForm&&l.push(function(){j.resetForm()});a.clearForm&&l.push(function(){j.clearForm()});if(!a.dataType&&a.target){var r=a.success||function(){};l.push(function(b){var d=a.replaceTarget?"replaceWith":"html";c(a.target)[d](b).each(r,arguments)})}else a.success&&l.push(a.success);
+a.success=function(b,d,c){for(var g=a.context||a,e=0,h=l.length;e<h;e++)l[e].apply(g,[b,d,c||j,j])};d=0<c("input:file",this).length;i="multipart/form-data"==j.attr("enctype")||"multipart/form-data"==j.attr("encoding");!1!==a.iframe&&(d||a.iframe||i)?a.closeKeepAlive?c.get(a.closeKeepAlive,b):b():c.ajax(a);this.trigger("form-submit-notify",[this,a]);return this};c.fn.ajaxForm=function(a){if(0===this.length){var b=this.selector,e=this.context;if(!c.isReady&&b)return m("DOM not ready, queuing ajaxForm"),
+c(function(){c(b,e).ajaxForm(a)}),this;m("terminating; zero elements found by selector"+(c.isReady?"":" (DOM not ready)"));return this}return this.ajaxFormUnbind().bind("submit.form-plugin",function(b){b.isDefaultPrevented()||(b.preventDefault(),c(this).ajaxSubmit(a))}).bind("click.form-plugin",function(a){var b=a.target,e=c(b);if(!e.is(":submit,input:image")){b=e.closest(":submit");if(0==b.length)return;b=b[0]}var i=this;i.clk=b;"image"==b.type&&(void 0!=a.offsetX?(i.clk_x=a.offsetX,i.clk_y=a.offsetY):
+"function"==typeof c.fn.offset?(e=e.offset(),i.clk_x=a.pageX-e.left,i.clk_y=a.pageY-e.top):(i.clk_x=a.pageX-b.offsetLeft,i.clk_y=a.pageY-b.offsetTop));setTimeout(function(){i.clk=i.clk_x=i.clk_y=null},100)})};c.fn.ajaxFormUnbind=function(){return this.unbind("submit.form-plugin click.form-plugin")};c.fn.formToArray=function(a){var b=[];if(0===this.length)return b;var e=this[0],d=a?e.getElementsByTagName("*"):e.elements;if(!d)return b;var g,h,i,j;g=0;for(max=d.length;g<max;g++)if(h=d[g],i=h.name)if(a&&
+e.clk&&"image"==h.type)!h.disabled&&e.clk==h&&(b.push({name:i,value:c(h).val()}),b.push({name:i+".x",value:e.clk_x},{name:i+".y",value:e.clk_y}));else if((j=c.fieldValue(h,!0))&&j.constructor==Array){h=0;for(jmax=j.length;h<jmax;h++)b.push({name:i,value:j[h]})}else null!==j&&"undefined"!=typeof j&&b.push({name:i,value:j});if(!a&&e.clk&&(a=c(e.clk),d=a[0],(i=d.name)&&!d.disabled&&"image"==d.type))b.push({name:i,value:a.val()}),b.push({name:i+".x",value:e.clk_x},{name:i+".y",value:e.clk_y});return b};
+c.fn.formSerialize=function(a){return c.param(this.formToArray(a))};c.fn.fieldSerialize=function(a){var b=[];this.each(function(){var e=this.name;if(e){var d=c.fieldValue(this,a);if(d&&d.constructor==Array)for(var g=0,h=d.length;g<h;g++)b.push({name:e,value:d[g]});else null!==d&&"undefined"!=typeof d&&b.push({name:this.name,value:d})}});return c.param(b)};c.fn.fieldValue=function(a){for(var b=[],e=0,d=this.length;e<d;e++){var g=c.fieldValue(this[e],a);null===g||("undefined"==typeof g||g.constructor==
+Array&&!g.length)||(g.constructor==Array?c.merge(b,g):b.push(g))}return b};c.fieldValue=function(a,b){var e=a.name,d=a.type,g=a.tagName.toLowerCase();void 0===b&&(b=!0);if(b&&(!e||a.disabled||"reset"==d||"button"==d||("checkbox"==d||"radio"==d)&&!a.checked||("submit"==d||"image"==d)&&a.form&&a.form.clk!=a||"select"==g&&-1==a.selectedIndex))return null;if("select"==g){var h=a.selectedIndex;if(0>h)return null;for(var e=[],g=a.options,i=(d="select-one"==d)?h+1:g.length,h=d?h:0;h<i;h++){var j=g[h];if(j.selected){var l=
+j.value;l||(l=j.attributes&&j.attributes.value&&!j.attributes.value.specified?j.text:j.value);if(d)return l;e.push(l)}}return e}return c(a).val()};c.fn.clearForm=function(){return this.each(function(){c("input,select,textarea",this).clearFields()})};c.fn.clearFields=c.fn.clearInputs=function(){return this.each(function(){var a=this.type,b=this.tagName.toLowerCase();"text"==a||"password"==a||"textarea"==b?this.value="":"checkbox"==a||"radio"==a?this.checked=!1:"select"==b&&(this.selectedIndex=-1)})};
+c.fn.resetForm=function(){return this.each(function(){("function"==typeof this.reset||"object"==typeof this.reset&&!this.reset.nodeType)&&this.reset()})};c.fn.enable=function(a){void 0===a&&(a=!0);return this.each(function(){this.disabled=!a})};c.fn.selected=function(a){void 0===a&&(a=!0);return this.each(function(){var b=this.type;"checkbox"==b||"radio"==b?this.checked=a:"option"==this.tagName.toLowerCase()&&(b=c(this).parent("select"),a&&(b[0]&&"select-one"==b[0].type)&&b.find("option").selected(!1),
+this.selected=a)})}})(jQuery);(function(c,m){m.claim={};m.claim.init=function(){c("form").each(function(a,b){c(b).ajaxForm({dataType:"json",success:function(a){c("#claim-content").html(a.result.html);a.result.linked&&(window.location.href="/")},error:function(a){JSON.parse(a.responseText)}})})};setTimeout(m.claim.init,0)})(jQuery,window.freebase);

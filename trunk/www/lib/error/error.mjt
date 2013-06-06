@@ -36,10 +36,22 @@
 
 <acre:block def="head()">
   <link rel="stylesheet" type="text/css" href="error/error.mf.css" />
+  <acre:script>
+    var message = "", filename = "";
+    if (c && c.einfo) {
+      message = c.einfo.message.replace(/(\r\n|\n|\r)/gm, "");
+      filename = c.einfo.fileName || c.einfo.filename;
+      if (typeof filename === "string") {
+        filename = filename.split("$")[0]
+      }
+      filename = filename.match(/^.*\/([a-z_.].*)$/)[1];
+    }
+  </acre:script>
   <script type="text/javascript">
     var _gaq = _gaq || [];
+    var path = window.location.pathname + window.location.search;
     _gaq.push(['_trackEvent', 'Error', 'Acre JS Exception',
-        'path:${acre.request.path_info}', 1, true]);
+        'path:'+path+';filename:${filename};message:${message}', 1, true]);
   </script>
 </acre:block>
 

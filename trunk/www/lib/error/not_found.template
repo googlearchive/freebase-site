@@ -10,8 +10,8 @@
   <link rel="stylesheet" type="text/css" href="error/error.mf.css" />
   <script type="text/javascript">
     var _gaq = _gaq || [];
-    _gaq.push(['_trackEvent', 'Error', 'Not Found',
-        'path:${acre.request.path_info}'], 1, true);
+    var path = window.location.pathname + window.location.search;
+    _gaq.push(['_trackEvent', 'Error', 'Not Found', 'path:'+path], 1, true);
   </script>
 </acre:block>
 

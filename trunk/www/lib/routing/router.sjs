@@ -467,10 +467,10 @@ function init_rules(lib) {
       ],
       "show_image": true,
       "promises":  [{
-        "key": "user_badge",
+        "key": "user_badges",
         "app": "lib",
         "script": "queries/object.sjs",
-        "promise": "get_user_badge"
+        "promise": "get_user_badges"
       }],
       "tabs": [
         {

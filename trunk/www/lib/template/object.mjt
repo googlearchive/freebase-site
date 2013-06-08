@@ -494,14 +494,20 @@
 
 <acre:block def="object_label()">
   <acre:script>
-    var label = c.object_type.name;
-    if (c.object_type.id === '/type/user' && c.user_badge) {
-      label = c.user_badge;
+    var labels = [];
+    if (c.object_type.id == '/type/user' &&
+        c.user_badges && c.user_badges.length) {
+      labels = c.user_badges;
+    } else {
+      labels.push(c.object_type.name || c.object_type.id);
     }
   </acre:script>
-  <div class="label">
-    <a class="label-trigger ${c.object_type.name.toLowerCase()}" href="javascript:void(0)">${label}</a>
-  </div>
+  <acre:block for="i,label in labels">
+    <div class="label">
+      <a class="label-trigger ${c.object_type.name.toLowerCase()} ${h.get_css_name(label)}"
+         href="javascript:void(0)">${label}</a>
+    </div>
+  </acre:block>
 </acre:block>
 
 <acre:block def="acre_javascript_vars()">

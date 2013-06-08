@@ -49,6 +49,7 @@ var exports = {
   "intersect": intersect,
   "splice_with_key": splice_with_key,
   "ellipsify": ellipsify,
+  "get_css_name": get_css_name,
 
   // MQL
   "is_literal_type": is_literal_type,
@@ -1933,3 +1934,18 @@ function get_citation(obj) {
   }
   return null;
 }
+
+/**
+ * Make a string safe to use as a class attribute by
+ * replacing all non-alphanumeric characters with '-'
+ * and lowercase them.
+ */
+function get_css_name(str) {
+  if (str) {
+    str = str.replace(/[^\w]/g, '-').toLowerCase();
+    str = str.replace(/\-{2,}/g, '-');
+    str = str.replace(/^[^a-z]+/, '');
+    return str;
+  }
+  return '';
+};

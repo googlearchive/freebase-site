@@ -322,3 +322,12 @@ test("ellipsify", function() {
   same(h.ellipsify(' foo bar ', 8), ' foo bar...');
   same(h.ellipsify(' foo bar ', 4), ' foo...');
 });
+
+
+test('get_css_name', function() {
+  same(h.get_css_name(), '');
+  same(h.get_css_name(null), '');
+  same(h.get_css_name('Staff Bot'), 'staff-bot');
+  same(h.get_css_name('/staff/bot'), 'staff-bot');
+  same(h.get_css_name('2//staff//bot'), 'staff-bot');
+});

@@ -209,38 +209,55 @@ function get_query(topic) {
 };
 
 /**
- * User badge selection
- *
- * @param o:Object - The object query result
+ * All recognized usergroups that are displayed as badges
+ * for users that belong to one or more groups.
  */
-function get_user_badge(topic) {
-  var usergroups = get_values(topic, "/type/user/usergroup");
-  var label = null;
+var BADGES = {
+  BOT:              '/m/02h53f9',
+  FREEBASE_EXPERTS: '/m/0432s8d',
+  STAFF_GOOGLE:     '/m/02h53fj',
+  STAFF_BOT:        '/m/0rz7ps8',
+  STAFF_CL:         '/m/0rz7plz',
+  STAFF_DE:         '/m/0rz7nkd',
+  STAFF_IC:         '/m/0rz7p0t',
+  STAFF_ICO:        '/m/0rz7qgp',
+  STAFF_JS:         '/m/0rz7p9x',
+  STAFF_OD:         '/m/0rz7pvw',
+  TOP_CONTRIBUTOR:  '/m/02h53fx'
+};
 
-  if (usergroups) {
-    var group_ids = h.map_array(usergroups, "id");
-
-    /* TODO: Topic Tables should retain IDs for /type/usergroups */
-    /* /en/current_metaweb_staff */
-    if (group_ids["/m/02h53fj"]) {
-      label = "Staff";
-    }
-    /* /freebase/badges/freebaseexpert */
-    else if (group_ids["/m/0432s8d"]) {
-      label = "Expert";
-    }
-    /* /freebase/badges/topcontributor */
-    else if (group_ids["/m/02h53fx"]) {
-      label = "Top User";
-    }
-    /* /freebase/bots */
-    else if (group_ids["/m/02h53f9"]) {
-      label = "Bot";
-    }
+/**
+ * For a given user, get all "badges" or usergroups the user belongs
+ * to in BADGES.
+ * @return {!Array.<string>} List of usergroup or badge names.
+ */
+function get_user_badges(topic) {
+  var badge_ids = [];
+  for (var k in BADGES) {
+    badge_ids.push(BADGES[k]);
   }
+  return freebase.mqlread({
+    id: topic.id,
+    '/type/user/usergroup': [{
+      mid: null,
+      'id|=': badge_ids,
+      name: null,
+      optional: true
+    }]
+  }).then(function(env) {
+    var badges = [];
+    if (env.result && env.result['/type/user/usergroup'].length) {
+      env.result['/type/user/usergroup'].forEach(function(usergroup) {
+        badges.push(usergroup.name);
+      });
+    }
+    return badges;
+  }, function(err) {
+    return [];
+  });
+};
 
-  return deferred.resolved(label);
-}
+
 
 /**
  * Get the relevant object banner info.

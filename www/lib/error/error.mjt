@@ -39,12 +39,18 @@
   <acre:script>
     var message = "", filename = "";
     if (c && c.einfo) {
-      message = c.einfo.message.replace(/(\r\n|\n|\r)/gm, "");
-      filename = c.einfo.fileName || c.einfo.filename;
-      if (typeof filename === "string") {
-        filename = filename.split("$")[0]
+      // Escape " and ' in message
+      message = c.einfo.message.replace(/(\r\n|\n|\r)/gm, "")
+          .replace(/[\\"']/g, '\\$&')
+          .replace(/\u0000/g, '\\0');
+
+      // Find filename from fullpath string
+      var full_filename = c.einfo.fileName || c.einfo.filename;
+      if (typeof full_filename === "string") {
+        filename = full_filename.split("$")[0]
+        filename = /^.*\/([a-z_.].*)$/.exec(filename);
+        filename = filename && filename[1];
       }
-      filename = filename.match(/^.*\/([a-z_.].*)$/)[1];
     }
   </acre:script>
   <script type="text/javascript">

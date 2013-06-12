@@ -1,0 +1,197 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+var validators = acre.require("lib/validator/validators.sjs");
+var i18n = acre.require("lib/i18n/i18n.sjs");
+var propbox_queries = acre.require("lib/propbox/queries.sjs");
+var ph = acre.require("lib/propbox/helpers.sjs");
+var stats = acre.require("lib/queries/stats.sjs");
+var schema = acre.require("lib/schema/typeloader.sjs");
+var collection = acre.require("lib/collection/queries.sjs");
+var apis = acre.require("lib/promise/apis.sjs");
+var freebase = apis.freebase;
+var urlfetch = apis.urlfetch;
+var deferred = apis.deferred;
+
+var SPEC = {
+
+  template: "type.mjt",
+
+  validate: function(params) {
+    return [
+      params.object,
+      validators.Json(params, "q", {if_missing: null})
+    ];
+  },
+
+  run: function(object, query) {
+    return type(object.id, query)
+      .then(function(c) {
+        c.id = object.id;
+        c.object = object;
+        return c;
+      });
+  }
+};
+
+/**
+ * Type query
+ * Get a type and a subset of instances
+ */
+function type(type_id, query) {
+
+  var promises = {};
+
+  // Get Stats for given type
+  promises.activity = stats.get_type_stats(type_id)
+    .then(function(result) {
+      if (result) {
+        var summary = {};
+        summary.topic_count = result.nodes;
+        summary.facts = result.triples;
+        summary.has_article = result.has_article || 0;
+        summary.has_image = result.has_image || 0;
+        return summary;
+      } else {
+        return {};
+      }
+    }, function(err) {
+      return {};
+    });
+
+
+  // Load Type
+  promises.load_result = schema.load(type_id)
+    .then(function(r) {
+      var this_type = r;
+
+      // our basic collection query shape
+      var q = {
+        id: null,
+        mid: null,
+        limit: 30,
+        name: i18n.mql.query.name(),
+        type: type_id,
+        "/common/topic/article": {
+          id: null,
+          limit: 1,
+          optional: true
+        },
+        optional: true
+      };
+
+      if (query) {
+        if (h.isArray(query)) {
+          query = query[0];
+        }
+        q = h.extend(q, query);
+      } else {
+        extend_type_query(q, this_type);
+      }
+
+      return {
+        collection: collection.query([q]),
+        this_type: this_type
+      };
+    });
+
+
+  return deferred.all(promises)
+    .then(function(result) {
+      return {
+        activity: result.activity,
+        table: result.load_result.collection,
+        root_type_is_mediator:
+          result.load_result.this_type["/freebase/type_hints/mediator"] === true,
+        domain: result.load_result.this_type.domain,
+        query: query
+      };
+    });
+}
+
+function extend_type_query(q, type) {
+  // define our current language
+  var lang = i18n.lang;
+
+  // build two separate arrays
+  // one holds disambiguating properties
+  // the other olds non-disambiguating properties
+  var disambiguators = [];
+  var properties = [];
+  type.properties.forEach(function(prop) {
+    if (prop["/freebase/property_hints/disambiguator"]) {
+      disambiguators.push(prop);
+    }
+    else {
+      properties.push(prop);
+    }
+  });
+
+  // join the two arrays together, keeping disambiguators first
+  properties = disambiguators.concat(properties);
+
+  // We need to check whether we have any mediated properties.
+  // If so, we want to limit the number of properties returned
+  // to just 1 so as not to overwhelm the page layout.
+  // Otherwise, return up to 3 properties.
+
+  var mediated_properties = false;
+  var PROP_COUNT = 3;
+
+  if (properties.length < PROP_COUNT) {
+    prop_length = properties.length;
+  }
+  else {
+    prop_length = PROP_COUNT;
+  }
+
+  for (i=0; i < prop_length; i++) {
+    if(properties[i]['expected_type']['/freebase/type_hints/mediator']) {
+      mediated_properties = true;
+      break;
+    }
+  }
+
+  if(mediated_properties === true) {
+    properties = properties.slice(0,1);
+  }
+  else {
+    properties = properties.slice(0,3);
+  }
+
+  // push each of the properties onto
+  // our instance query
+  properties.forEach(function(prop_structure) {
+    var prop_clause = ph.mqlread_query(null, prop_structure, null, lang)[prop_structure.id];
+    prop_clause[0].limit = 5;
+    q[prop_structure.id] = prop_clause;
+  });
+};

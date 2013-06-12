@@ -8,26 +8,26 @@ var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
 var environment_rules = {
 
     "labels" : {
-        "lib": "//134a.lib.www.tags.svn.freebase-site.googlecode.dev",
+        "lib": "//135a.lib.www.tags.svn.freebase-site.googlecode.dev",
         "default" : "//default.dev",
 
-        "account": "//107b.account" + tags_codebase,
-        "appeditor": "//108a.appeditor" + tags_codebase,
-        "apps": "//109a.apps" + tags_codebase,
-        "create": "//104a.create" + tags_codebase,
-        "data": "//105a.data" + tags_codebase,
-        "formbuilder": "//50a.formbuilder" + tags_codebase,
-        "i18n": "//51a.i18n" + tags_codebase,
-        "mdo": "//85a.mdo" + tags_codebase,
-        "policies": "//107a.policies" + tags_codebase,
-        "query": "//104a.query" + tags_codebase,
-        "review": "//86a.review" + tags_codebase,
-        "sample": "//106a.sample" + tags_codebase,
-        "schema": "//112a.schema" + tags_codebase,
-        "search": "//35a.search" + tags_codebase,
-        "topic": "//110a.topic" + tags_codebase,
-        "triples": "//106a.triples" + tags_codebase,
-        "users": "//84a.users" + tags_codebase
+        "account": "//108a.account" + tags_codebase,
+        "appeditor": "//109a.appeditor" + tags_codebase,
+        "apps": "//110a.apps" + tags_codebase,
+        "create": "//105a.create" + tags_codebase,
+        "data": "//106a.data" + tags_codebase,
+        "formbuilder": "//51a.formbuilder" + tags_codebase,
+        "i18n": "//52a.i18n" + tags_codebase,
+        "mdo": "//mdo" + codebase,
+        "policies": "//108a.policies" + tags_codebase,
+        "query": "//105a.query" + tags_codebase,
+        "review": "//87a.review" + tags_codebase,
+        "sample": "//107a.sample" + tags_codebase,
+        "schema": "//113a.schema" + tags_codebase,
+        "search": "//36a.search" + tags_codebase,
+        "topic": "//111a.topic" + tags_codebase,
+        "triples": "//107a.triples" + tags_codebase,
+        "users": "//85a.users" + tags_codebase
 
     },
 

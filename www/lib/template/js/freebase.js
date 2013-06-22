@@ -912,6 +912,11 @@
          });
          data.responseHeaders = xhr.getAllResponseHeaders();
 
+         // Don't report to GA if the result is 200 OK (e.g. signout.ajax)
+         if (data.status === 200) {
+           return;
+         }
+
          // get name of .ajax controller and track error using GA
          var controller = data.url.match(/^.*[^\/]\/([a-z_]*)\.ajax.*$/)[1];
          controller = controller || "";

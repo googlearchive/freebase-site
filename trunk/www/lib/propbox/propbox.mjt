@@ -75,6 +75,10 @@
   var FLAGGED_HAS_VALUE = _("This property has been flagged " +
     "as having values, but those values are unknown.");
   var REMOVE_HAS_VALUE = _("Remove this flag to add specific values.");
+  var FLAGGED_NO_VALUES_SHORT = _("No values flag.");
+  var REMOVE_NO_VALUES_SHORT = _("Remove.");
+  var FLAGGED_HAS_VALUE_SHORT = _("Some values flag.");
+  var REMOVE_HAS_VALUE_SHORT = _("Remove.");
  </acre:script>
 
 <acre:block def="topicbox(topic, lang)">
@@ -612,6 +616,8 @@
 <acre:block def="empty_row_li(menu, topic, prop_structure, prop_value, lang, parent_prop_structure)">
   <acre:script>
     var ps = ph.get_property_status(topic, prop_structure);
+    var is_cvt = topic && parent_prop_structure &&
+        parent_prop_structure.expected_type.mediator;
   </acre:script>
   <li class="empty-row">
     <acre:block if="!ps.has_status">
@@ -623,20 +629,40 @@
       </span>
     </acre:block>
     <acre:block elif="ps.has_no_value">
-      <span class="property-value inline-message">
-        ${FLAGGED_NO_VALUES}
-        <a href="#" onclick="return propbox.remove_has_no_value(this);">
-          ${REMOVE_NO_VALUES}
-        </a>
-      </span>
+      <acre:block if="is_cvt">
+        <span class="property-value inline-message">
+          ${FLAGGED_NO_VALUES_SHORT}
+          <a href="#" onclick="return propbox.remove_has_no_value(this);">
+            ${REMOVE_NO_VALUES_SHORT}
+          </a>
+        </span>
+      </acre:block>
+      <acre:block else="">
+        <span class="property-value inline-message">
+          ${FLAGGED_NO_VALUES}
+          <a href="#" onclick="return propbox.remove_has_no_value(this);">
+            ${REMOVE_NO_VALUES}
+          </a>
+        </span>
+      </acre:block>
     </acre:block>
     <acre:block elif="ps.has_value">
-      <span class="property-value inline-message">
-        ${FLAGGED_HAS_VALUE}
-        <a href="#" onclick="return propbox.remove_has_value(this);">
-          ${REMOVE_HAS_VALUE}
-        </a>
-      </span>
+      <acre:block if="is_cvt">
+        <span class="property-value inline-message">
+          ${FLAGGED_HAS_VALUE_SHORT}
+          <a href="#" onclick="return propbox.remove_has_value(this);">
+            ${REMOVE_HAS_VALUE_SHORT}
+          </a>
+        </span>
+      </acre:block>
+      <acre:block else="">
+        <span class="property-value inline-message">
+          ${FLAGGED_HAS_VALUE}
+          <a href="#" onclick="return propbox.remove_has_value(this);">
+            ${REMOVE_HAS_VALUE}
+          </a>
+        </span>
+      </acre:block>
     </acre:block>
   </li>
 </acre:block>

@@ -101,6 +101,10 @@ function get_clause_type(q) {
   for (var key in q) {
     if (qualify_prop(key).id === "/type/object/type") {
       type = q[key];
+      // If type is defined by object (e.g. {id: "/m/0jsg2m"}), use it's id
+      if (h.isPlainObject(type) && type.id) {
+        type = type.id;
+      }
       break;
     }
   }

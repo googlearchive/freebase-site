@@ -99,7 +99,9 @@ function type(type_id, query) {
         mid: null,
         limit: 30,
         name: i18n.mql.query.name(),
-        type: type_id,
+        // We have to do following for mids, because mqlread fails to fetch
+        // type: mid (e.g. type: "/m/04njprm")
+        type: {id: type_id},
         "/common/topic/article": {
           id: null,
           limit: 1,

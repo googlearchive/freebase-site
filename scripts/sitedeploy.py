@@ -245,6 +245,8 @@ class ActionDeployAcre:
       if not acre.deploy(config):
         return c.error('Failover deployment failed.')
 
+    acre.bundle_static_files()
+
     return True
 
 class ActionSetup:

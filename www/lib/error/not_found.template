@@ -11,7 +11,7 @@
   <script type="text/javascript">
     var _gaq = _gaq || [];
     var path = window.location.pathname + window.location.search;
-    _gaq.push(['_trackEvent', 'Error', 'Not Found', 'path:'+path], 1, true);
+    _gaq.push(['_trackEvent', 'User Error', 'Not Found', 'path:'+path], 1, true);
   </script>
 </acre:block>
 

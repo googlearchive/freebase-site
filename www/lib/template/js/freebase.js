@@ -919,9 +919,10 @@
 
          // get name of .ajax controller and track error using GA
          var controller = data.url.match(/^.*[^\/]\/([a-z_]*)\.ajax.*$/)[1];
+         var errorLevel = data.status === 401 ? "User Error" : "Site Error";
          controller = controller || "";
          var _gaq = window['_gaq'] || [];
-         _gaq.push(['_trackEvent', 'Error', 'AJAX Error ' + controller,
+         _gaq.push(['_trackEvent', errorLevel, 'AJAX Error ' + controller,
              "path:" + data.url +
              ";status:" + data.status +
              ";status-text:" + data.statusText, 1]);

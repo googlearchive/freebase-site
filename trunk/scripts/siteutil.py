@@ -338,7 +338,7 @@ class App:
       d_app.copy_to_acre_dir()
       d_app = d_app.dependency()
 
-    #routing still happens with the trunk version of lib 
+    #routing still happens with the trunk version of lib
     #since we are using the devel environment to run acre locally
 
     App.Get(c, "lib", version=None).copy_to_acre_dir()
@@ -1716,6 +1716,43 @@ class Acre:
 
     return True
 
+  def bundle_static_files(self):
+    '''
+    Takes static files from /trunk/static folder and copy them to correct place
+    '''
+    c = self.context
+
+    site = Site.Get(c)
+    if not site:
+        return c.error("Could not resolve site.")
+
+    target_dir = self.acre_dir(war=True)
+
+    static_files_url = site.conf("svn_url") + "/trunk/static"
+
+    r = SVNLocation(c, static_files_url).checkout(target_dir)
+
+    if not r:
+        return c.error('Failed to svn checkout %s into %s' % (static_files_url, target_dir))
+
+    # recursively remove .svn and other 'hidden' folders
+    def remove_unwanted_directories(directory=''):
+      """
+      Removes any directories under static directory tree that start with a .
+      """
+      for f in os.listdir(os.path.join(target_dir, directory)):
+        if f.startswith('.'):
+          shutil.rmtree(os.path.join(target_dir, directory, f))
+          continue
+
+        if os.path.isdir(os.path.join(target_dir, directory, f)):
+          remove_unwanted_directories(os.path.join(directory, f))
+
+    remove_unwanted_directories()
+
+    c.log('Copied static files into acre: %s' % target_dir)
+
+    return True
 
   def read_config(self, war=False):
     '''
@@ -2002,7 +2039,7 @@ class Site:
     apps = SVNLocation(self.context, self.conf("svn_url") + "/trunk/www").ls()
 
     # Put lib in the front, so that a tag or branch for lib will be generated
-    # before any other app. Since all apps depend on lib, that's necessary. 
+    # before any other app. Since all apps depend on lib, that's necessary.
     if "lib" in apps:
       apps.remove("lib")
 

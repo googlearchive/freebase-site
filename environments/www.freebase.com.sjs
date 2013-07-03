@@ -8,26 +8,26 @@ var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
 var environment_rules = {
 
     "labels" : {
-        "lib": "//137b.lib.www.tags.svn.freebase-site.googlecode.dev",
+        "lib": "//138a.lib.www.tags.svn.freebase-site.googlecode.dev",
         "default" : "//default.dev",
 
-        "account": "//110b.account" + tags_codebase,
-        "appeditor": "//111b.appeditor" + tags_codebase,
-        "apps": "//112b.apps" + tags_codebase,
-        "create": "//107b.create" + tags_codebase,
-        "data": "//108b.data" + tags_codebase,
-        "formbuilder": "//53b.formbuilder" + tags_codebase,
-        "i18n": "//54b.i18n" + tags_codebase,
-        "mdo": "//88b.mdo" + tags_codebase,
-        "policies": "//110b.policies" + tags_codebase,
-        "query": "//107b.query" + tags_codebase,
-        "review": "//89b.review" + tags_codebase,
-        "sample": "//109b.sample" + tags_codebase,
-        "schema": "//115b.schema" + tags_codebase,
-        "search": "//38b.search" + tags_codebase,
-        "topic": "//113b.topic" + tags_codebase,
-        "triples": "//109b.triples" + tags_codebase,
-        "users": "//87b.users" + tags_codebase
+        "account": "//111a.account" + tags_codebase,
+        "appeditor": "//112a.appeditor" + tags_codebase,
+        "apps": "//113a.apps" + tags_codebase,
+        "create": "//108a.create" + tags_codebase,
+        "data": "//109a.data" + tags_codebase,
+        "formbuilder": "//54a.formbuilder" + tags_codebase,
+        "i18n": "//55a.i18n" + tags_codebase,
+        "mdo": "//89a.mdo" + tags_codebase,
+        "policies": "//111a.policies" + tags_codebase,
+        "query": "//108a.query" + tags_codebase,
+        "review": "//90a.review" + tags_codebase,
+        "sample": "//110a.sample" + tags_codebase,
+        "schema": "//116a.schema" + tags_codebase,
+        "search": "//39a.search" + tags_codebase,
+        "topic": "//114a.topic" + tags_codebase,
+        "triples": "//110a.triples" + tags_codebase,
+        "users": "//88a.users" + tags_codebase
 
     },
 

@@ -1,0 +1,196 @@
+
+#page-content {
+  position: relative;
+}
+
+#tabbar {
+  padding-bottom: 3em;
+}
+
+#search-box {
+    padding-left: 15px;
+    padding-bottom: 1em;
+}
+#search-box label {
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+#query {
+    font-size: 2em;
+    padding: 4px;
+    width: 400px;
+    border: 1px solid rgb(206,206,206);
+    box-shadow: 0 0 0 5px #e0e3e6;
+    margin-left: 6px;
+}
+#query:focus {
+    border-color: rgb(97, 215, 247);
+}
+
+#search-options {
+    background: #cecece;
+    padding: 15px;
+}
+
+.operator-filter{
+    width: 100%;
+    float:left;
+    overflow:hidden; /* instead of clearfix div */
+    clear: both;
+}
+.operator-controls{
+    float:right;
+}
+.operator-select{
+    float:left;
+}
+.pill-box{
+    overflow: hidden;
+}
+
+.operator-select {
+    margin: 8px 6px 0 0;
+}
+.operator-controls {
+    margin: 6px 0 0 6px;
+}
+
+
+.remove-operator {
+    visibility: hidden;
+}
+
+#search-options .pill-box {
+    box-shadow: none;
+
+    .pill-suggest {
+        width: 325px;
+    }
+}
+
+#tabbar-controls {
+    clear: both;
+    font-size: 1.3em;
+    padding-top: .5em;
+}
+#tabbar-controls label {
+/*    display: block;*/
+}
+
+
+/*
+ ### Domain Box Styling
+*/
+.search-section {
+  clear: both;
+  font-size: 1.2em;
+  position: relative;
+  margin-bottom: 40px;
+
+  &:after {
+    z-index: -1;
+    content: "";
+    display: block;
+    position: absolute; top: 15px;
+    width: 100%; height: 10px;
+    border-top: 1px solid #D4DDE3;
+    border-left: 1px solid #D4DDE3;
+    box-shadow: inset 1px 1px 1px 0 white;
+  }
+
+  .header {
+    font-size: 1.8em;
+    font-weight: normal;
+    margin-bottom: 10px;
+
+    .search-title {
+      display: inline-block;
+      background-color: #e8ebee;
+      padding: 0 6px;
+      margin-left: -6px;
+    }
+
+    .results-name {
+      color: rgb(128, 160, 178) !important;
+    }
+  }
+}
+
+.body {
+  margin: 0 0 20px;
+  background: #fff;
+  box-shadow: 0 0 0 4px #e1e4e6;
+  padding: 0 15px 20px;
+}
+
+.correction-row > td {
+    padding: 1em !important;
+    font-size: 1.3em;
+}
+
+tr.search-row > td {
+    padding-bottom: 1em;
+}
+
+.result-thumb {
+    width: 100px;
+}
+.result-thumb img {
+    margin-top: 1em;
+    border: 1px solid #ccc;
+}
+
+.result-item {
+    margin: 1em 0 0;
+}
+
+.result-item-title {
+    font-size: 1.2em;
+}
+
+.result-item-id {
+    font-size: .8em;
+    color: #888;
+}
+
+.result-item-types {
+    color: #888;
+    margin-bottom: 0.3em;
+    font-size: 1em;
+    font-style: italic;
+}
+
+.result-notable-properties {
+    padding-bottom: .3em;
+}
+
+.result-notable-properties dt {
+    display: inline;
+    font-weight: bold;
+    color: #444;
+    font-size: 1.1em;
+}
+
+.result-notable-properties dd {
+    display: inline;
+    color: #333;
+}
+
+.body tbody.empty-result > tr,
+.body tbody.empty-result > tr:hover {
+    border: 0;
+    outline: none;
+}
+
+.body tbody.empty-result p,
+.body tbody.empty-result ul {
+    padding: .5em 0 0 1em;
+    font-size: 1.3em;
+}
+.body tbody.empty-result ul,
+.body tbody.empty-result li {
+    margin-left: 1.3em;
+}
+
+

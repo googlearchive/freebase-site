@@ -1,0 +1,141 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+var h = acre.require("helper/helpers.sjs");
+var validators = acre.require("validator/validators.sjs");
+var apis = acre.require("promise/apis.sjs");
+var freebase = apis.freebase;
+var deferred = apis.deferred;
+var typeloader = acre.require("schema/typeloader.sjs");
+
+var SPEC = {
+
+    template: "schema/warmer.mjt",
+    template_base: "template/freebase.mjt",
+
+    validate: function(params) {        
+        if (params.id) {
+            // jsonp
+            return [
+                validators.MqlId(params, "id", {required:true}),
+                validators.LangId(params, "lang", {if_empty:"/lang/en"})
+            ];
+        }
+        else {
+            // render page to warm all domains in "/"
+            return [
+                null,
+                validators.LangId(params, "lang", {if_empty:"/lang/en"}),
+                null
+            ];
+        }
+    },
+
+    run: function(id, lang) {
+        if (id) {
+            return run_domain(id, lang);
+        }
+        else {
+            return run_all(lang);
+        }
+    }
+};
+
+function run_domain(id, lang) {
+    var q = {
+        id: id,
+        type: "/type/domain",
+        types: [{
+            id: null,
+            type: "/type/type",
+            optional: true
+        }]
+    };
+    return freebase.mqlread(q)
+        .then(function(env) {
+            var p = null;
+            if (env.result && env.result.types.length) {
+                var types = env.result.types.map(function(t) {
+                    return t.id;
+                });
+                p = typeloader.loads(types, lang)
+                    .then(function(loaded) {
+                        var result = [];
+                        types.forEach(function(t) {
+                            if (loaded[t]) {
+                                result.push(t);
+                            }
+                        });
+                        return result;
+                    });
+            }
+            else {
+                p = deferred.resolved([]);
+            }
+            return p;
+        })
+        .then(function(types) {
+            return {
+              template: "template/json_p.mjt",
+              def: "json_p",
+              def_args: [{
+                  id: id,
+                  types: types.sort()
+              }]
+            };
+        });
+};
+
+function run_all(lang) {
+    var q = [{
+        id: null,
+        type: "/type/domain",
+        key: [{
+            namespace: {
+                id: "/"
+            },
+            value: null
+        }]
+    }];
+    return freebase.mqlread(q)
+        .then(function(env) {
+            return env.result || [];
+        })
+        .then(function(domains) {
+            domains.sort(function(a,b) {
+                return b.id < a.id;
+            });
+            return {
+                domains: domains
+            };
+        });
+};
+
+

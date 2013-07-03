@@ -228,6 +228,7 @@ class ActionDeployAcre:
       for app in sorted(apps):
         c.log('\t%s' % app)
 
+    acre.bundle_static_files()
 
     c.log('\nStarting deployment...', color=c.BLUE)
     if not acre.deploy(target=config):
@@ -244,8 +245,6 @@ class ActionDeployAcre:
 
       if not acre.deploy(config):
         return c.error('Failover deployment failed.')
-
-    acre.bundle_static_files()
 
     return True
 

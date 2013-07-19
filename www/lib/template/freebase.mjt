@@ -444,6 +444,13 @@
      // inline JS that needs to run before page-render
      ${acre.include("template/freebase-inline.mf.js")}
   </script>
+  <script acre:if="exports.c && exports.c.__SEARCH_LANGS__">
+    window.SERVER.SEARCH_LANGS = ${JSON.stringify(exports.c.__SEARCH_LANGS__)};
+  </script>
+  <script acre:else="">
+    window.SERVER.SEARCH_LANGS =
+        "en,es,fr,de,it,pt,zh,ja,ko,ru,sv,fi,da,nl,el,ro,tr,hu,th";
+  </script>
   <acre:block if="exports.acre_javascript_vars">
     ${exports.acre_javascript_vars()}
   </acre:block>

@@ -119,6 +119,15 @@ function init_rules(lib) {
   ];
 
 
+  // ********* DEFAULT PROMISES ********
+  var DEFAULT_PROMISES = [{
+    'key': '__SEARCH_LANGS__',
+    'app': 'lib',
+    'script': 'queries/search.sjs',
+    'promise': 'get_search_langs'
+  }];
+
+
   // ********* CUSTOM (browse) *********
   rules["custom"] = {
     promises: [{
@@ -126,7 +135,7 @@ function init_rules(lib) {
       "app": "lib",
       "script": "queries/stats.sjs",
       "promise": "get_total_stats"
-    }],
+    }].concat(h.extend(true, [], DEFAULT_PROMISES)),
     tabs: [
       {
         "name": _("Data"),
@@ -243,6 +252,7 @@ function init_rules(lib) {
     {
       "name": _("App"),
       "type": "/freebase/apps/acre_app",
+      "promises": h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Versions"),
@@ -262,6 +272,7 @@ function init_rules(lib) {
     {
       "name": _("App"),
       "type": "/dataworld/software_tool",
+      "promises": h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Writes"),
@@ -278,7 +289,7 @@ function init_rules(lib) {
       "properties": [
         "/freebase/domain_profile/category"
       ],
-      "promises": h.extend(true, [], DEFAULT_BANNERS),
+      "promises": h.extend(true, [], DEFAULT_BANNERS, DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Data"),
@@ -330,7 +341,7 @@ function init_rules(lib) {
         "/freebase/type_hints/enumeration",
         "/freebase/type_hints/never_assert"
       ],
-      "promises": h.extend(true, [], DEFAULT_BANNERS),
+      "promises": h.extend(true, [], DEFAULT_BANNERS, DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Schema"),
@@ -407,7 +418,7 @@ function init_rules(lib) {
         "/freebase/property_hints/display_none",
         "/type/property/delegated"
       ],
-      "promises": h.extend(true, [], DEFAULT_BANNERS),
+      "promises": h.extend(true, [], DEFAULT_BANNERS, DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Schema"),
@@ -471,7 +482,7 @@ function init_rules(lib) {
         "app": "lib",
         "script": "queries/object.sjs",
         "promise": "get_user_badges"
-      }],
+      }].concat(h.extend(true, [], DEFAULT_PROMISES)),
       "tabs": [
         {
           "name": _("Schema"),
@@ -503,6 +514,7 @@ function init_rules(lib) {
     {
       "name": _("Usergroup"),
       "type": "/type/usergroup",
+      "promises": h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Members"),
@@ -516,6 +528,7 @@ function init_rules(lib) {
     {
       "name": _("Permission"),
       "type": "/type/permission",
+      "promises": h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Members"),
@@ -555,7 +568,7 @@ function init_rules(lib) {
         "app": "lib",
         "script": "queries/object.sjs",
         "promise": "get_query"
-      }],
+      }].concat(h.extend(true, [], DEFAULT_PROMISES)),
       "tabs": [
         {
           "name": _("Data"),
@@ -575,6 +588,7 @@ function init_rules(lib) {
     {
       "name": _("Load"),
       "type": "/dataworld/mass_data_operation",
+      "promises": h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Writes"),
@@ -588,6 +602,7 @@ function init_rules(lib) {
     {
       "name": _("Attribution"),
       "type": "/type/attribution",
+      "promises": h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Writes"),
@@ -601,6 +616,7 @@ function init_rules(lib) {
     {
       "name": _("Namespace"),
       "type": "/type/namespace",
+      "promises": h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Namespace"),
@@ -614,6 +630,7 @@ function init_rules(lib) {
     {
       "name": _("Topic"),
       "type": "/common/topic",
+      "promises": h.extend(true, [], DEFAULT_PROMISES),
       "use_mid": true,
       "show_image": true,
       "tabs": [
@@ -707,6 +724,7 @@ function init_rules(lib) {
     {
       "name": _("Dataset"),
       "type": "/dataworld/information_source",
+      "promises": h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Writes"),
@@ -720,6 +738,7 @@ function init_rules(lib) {
     {
       "name": _("Image"),
       "type": "/common/image",
+      "promises": h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Content"),
@@ -751,6 +770,7 @@ function init_rules(lib) {
     {
       "name": _("Article"),
       "type": "/common/document",
+      "promises": h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Content"),
@@ -782,6 +802,7 @@ function init_rules(lib) {
     {
       "name": _("Content"),
       "type": "/type/content",
+      "promises": h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Content"),
@@ -813,6 +834,7 @@ function init_rules(lib) {
     {
       "name": _("Object"),
       "type": "/type/object",
+      "promises": h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Properties"),
@@ -849,6 +871,7 @@ function init_rules(lib) {
     {
       "name": _("Object"),
       "type": "/type/object",
+      "promises": h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Properties"),

@@ -291,8 +291,10 @@ function do_mql(type_ids, lang) {
               permits: [{
                 id: null,
                 member: [{
-                  id: null
-                }]
+                  id: null,
+                  limit: 1000
+                }],
+                limit: 1000
               }]
             },
             "/freebase/property_hints/disambiguator": null,

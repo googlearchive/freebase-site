@@ -1,0 +1,85 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+var queries = acre.require("queries.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
+var freeq = acre.require("lib/freeq/queries.sjs");
+
+/**
+ * Submit revert to FreeQ
+ */
+var SPEC = {
+
+    method: "POST",
+
+    auth: true,
+
+    validate: function(params) {
+        return [
+            validators.MqlId(params, "id", {required:true}),
+            validators.StringBool(params, "is_user", {required:true}),
+            validators.String(params, "timestamp", {required:true}),
+            validators.LangId(params, "lang", {if_empty:"/lang/en"}),
+            params.auth_user
+        ];
+    },
+
+    run: function(id, is_user, timestamp, lang, auth_user) {
+        return queries.has_right_to_revert(auth_user.id, id)
+            .then(function(has_right){
+                if (has_right) {
+                    h.enable_writeuser();
+                    var promise = null;
+                    if (is_user) {
+                        promise = freeq.revert_user(null, id, timestamp, true);
+                    } else {
+                        promise = freeq.revert_topic(null, id, timestamp, true);
+                    }
+                    return promise.then(function(result){
+                        return {
+                            info: "Request was sent to FreeQ"
+                        };
+                    });
+                } else {
+                    return {
+                        error: "You don't have right to revert"
+                    };
+                }
+            }, function(err) {
+                return {
+                    error: err
+                };
+            });
+    }
+};
+
+
+

@@ -254,13 +254,14 @@
             <dt>${notable_prop['name']}:</dt>
             <dd>
               <acre:script>
-                var values = sh.flatten_search_values(notable_prop['values']);
+                var values =
+                  sh.flatten_search_values(notable_prop['values'].slice(0, 3));
               </acre:script>
               <acre:block for="i,v in values" trim="1">
                 <acre:block if="i > 0">, </acre:block>
                 <acre:block if="v['id']" trim="1">
                   <a class="property-value" data-id="${v['id']}"
-                     href="${h.fb_url(v['id'])}">${v['text']}</a>
+                     href="${h.fb_url(v['id'])}">${v['text'] || v['id']}</a>
                 </acre:block>
                 <acre:block else="" trim="1">
                   ${v['text']}
@@ -272,7 +273,21 @@
       </div>
     </acre:block>
     <p class="description">
-      ${item.description || ''}
+      ${h.ellipsify(item.description.text, 250, '')}
+      <acre:block if="item.description.provider">
+        <acre:block if="item.description.source">
+          [<a href="${item.description.source}"
+            title="${item.description.statement || item.description.provider}"
+            acre:trim="1">
+            ${item.description.provider}</a>]
+        </acre:block>
+        <acre:block else="">
+          [<span
+            title="${item.description.statement || item.description.provider}"
+            acre:trim="1">
+            ${item.description.provider}</span>]
+        </acre:block>
+      </acre:block>
     </p>
   </div>
 </acre:block>

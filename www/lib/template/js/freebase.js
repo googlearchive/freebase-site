@@ -1009,8 +1009,9 @@
 
       search_url: fb.h.fb_googleapis_url() +
           "/search?filter=(all mid:${id})&" +
-          "output=(notable:/client/summary description type)&key=" +
-          fb.acre.freebase.api_key +
+          "output=(notable:/client/summary " +
+              "(description citation provenance) type)" +
+          "&key=" + fb.acre.freebase.api_key +
           "&lang=" + fb.suggest_lang.lang(),
 
       image_url: fb.h.fb_googleapis_url() +

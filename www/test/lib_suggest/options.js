@@ -288,7 +288,7 @@ $(function() {
 
     test("lang=es,ko", function() {
       test_suggest_result({lang:"es,ko"}, "청와대", function(first) {
-        return first.name === "청와대";
+        return first.name === "Casa Azul";
       });
     });
 

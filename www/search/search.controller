@@ -100,7 +100,8 @@ function validate_search_params(params) {
 function search(query, any, all, should, not, options) {
   var params = h.extend(options, {
     filter: ['(not type:/common/document)'],
-    output: '(description type notable:/client/summary name)',
+    output:
+        '((description citation provenance) type notable:/client/summary name)',
     spell: 'always'
   });
   // Does the query look like an id?

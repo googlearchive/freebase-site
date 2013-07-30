@@ -153,16 +153,54 @@ function get_notable_properties(search_item) {
  * giving precedence to wikpedia then freebase descriptions.
  */
 function get_result_description(search_item) {
-  var o = get_result_output(search_item, 'description');
-  if (o) {
-    if (o.wikipedia) {
-      return first_value(o.wikipedia);
+  var text = null;
+  var source = null;
+  var provider = null;
+  var statement = null;
+
+  var descs = h.getValueByKeys(search_item,
+      'output', 'description', '/common/topic/description') || [];
+  if (descs.length) {
+    // New output=((description citation provenance)) format.
+    var best = descs[0];
+
+    descs.every(function(desc) {
+      if (h.getValueByKeys(desc, 'citation', 0, 'mid') == '/m/0d07ph') {
+        best = desc;
+        return false;
+      }
+      return true;
+    });
+    text = first_value(best.value) || best.value;
+    if (h.getValueByKeys(best, 'provenance', 0, 'restrictions', 0) ==
+        'REQUIRES_CITATION') {
+      source = h.getValueByKeys(best, 'provenance', 0, 'source', 0);
+      provider = h.getValueByKeys(best, 'citation', 'provider', 0, 'name');
+      if (provider) {
+        provider = first_value(provider) || provider;
+      }
+      statement = h.getValueByKeys(best, 'citation', 'statement');
+      if (statement) {
+        statement = first_value(statement);
+      }
     }
-    else if (o.freebase) {
-      return first_value(o.freebase);
-    }
+  } else {
+    descs = h.getValueByKeys(search_item, 'output', 'description');
+    ['wikipedia', 'freebase'].every(function(key) {
+      if (descs[key]) {
+        text = first_value(descs[key]);
+        provider = key;
+        return false;
+      }
+      return true;
+    });
   }
-  return null;
+  return {
+    text: text,
+    provider: provider,
+    statement: statement,
+    source: source
+  };
 }
 
 /**

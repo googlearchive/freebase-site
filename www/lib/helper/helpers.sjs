@@ -50,6 +50,7 @@ var exports = {
   "splice_with_key": splice_with_key,
   "ellipsify": ellipsify,
   "get_css_name": get_css_name,
+  "getValueByKeys": getValueByKeys,
 
   // MQL
   "is_literal_type": is_literal_type,
@@ -186,6 +187,24 @@ function isEmptyObject(obj) {
     return false;
   }
   return true;
+};
+
+/**
+ * Get a value from an object multiple levels deep. This is useful for pulling
+ * values from deeply nested objects, such as JSON responses.
+ * Example usage: getValueByKeys(jsonObj, 'foo', 'entries', 3).
+ * Copied from Closure (goog.object).
+ */
+function getValueByKeys(obj, var_args) {
+  var keys = isArray(var_args) ? var_args :
+      Array.prototype.slice.call(arguments, 1);
+  for (var i = 0; i < keys.length; i++) {
+    obj = obj[keys[i]];
+    if (obj == null) {
+      break;
+    }
+  }
+  return obj;
 };
 
 function trim(text) {
@@ -381,13 +400,15 @@ function ellipsify(text, opt_max_length, opt_default_text) {
   if (text == null) {
     text = '';
   }
-  if (opt_max_length != null && text.length > opt_max_length) {
-    text = text.substring(0, opt_max_length+1);
-    var i = text.lastIndexOf(' ');
-    if (i !== -1) {
-      text = text.substring(0, i);
+  if (opt_max_length != null) {
+    if (text.length > opt_max_length) {
+      text = text.substring(0, opt_max_length+1);
+      var i = text.lastIndexOf(' ');
+      if (i !== -1) {
+        text = text.substring(0, i);
+      }
+      text += '...';
     }
-    text += '...';
   }
   else if (opt_default_text != null) {
     return opt_default_text;

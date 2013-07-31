@@ -35,7 +35,7 @@
           "path": "/api"
         },
         "to": {
-          "route_as": "redirect",
+          "route_as": "gone",
           "location": "https://developers.google.com/freebase/v1/getting-started#"
         }
      },
@@ -44,7 +44,7 @@
           "path": "/private/suggest"
         },
         "to": {
-          "route_as": "redirect",
+          "route_as": "gone",
           "location": "https://developers.google.com/freebase/v1/search-widget#"
         }
      },
@@ -53,7 +53,7 @@
           "path": "/experimental"
         },
         "to": {
-          "route_as": "redirect",
+          "route_as": "gone",
           "location": "https://developers.google.com/freebase/v1/getting-started#"
         }
      },
@@ -62,7 +62,7 @@
           "path": "/widget/topic"
         },
         "to": {
-          "route_as": "redirect",
+          "route_as": "gone",
           "location": "https://developers.google.com/freebase/v1/getting-started#"
         }
      }

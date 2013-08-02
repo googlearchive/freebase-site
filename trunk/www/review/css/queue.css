@@ -30,7 +30,7 @@
  */
 
 /* Review Queue Header */
-.queue-header {    
+.queue-header {
     margin: 0px;
     padding: .5em;
     border-top: 1px solid #a4a4a4;
@@ -41,11 +41,11 @@
     background-repeat: repeat;
     color: white;
     font-size: 1.5em;
-    text-align:center;    
+    text-align:center;
     clear: both;
     overflow: hidden;
-    min-width: 1200px;  
-    position: relative;  
+    min-width: 1200px;
+    position: relative;
 }
 .queue-back-button {
     display: none;
@@ -54,32 +54,40 @@
     top: 22%;
 }
 .queue-forward-button {
-    display: none; 
+    display: none;
     position: absolute;
     right: 10px;
     top: 22%;
 }
-.queue-header-message { 
-    width: 50%;    
+.queue-header-message {
+    width: 50%;
     font-size: 1.5em;
     margin: 0px auto;
 }
 .queue-message {
-    width:50%;    
+    width:50%;
     position: relative;
     color: #525254;
     font-size: 1.5em;
     text-align:center;
     line-height: 120%;
-    margin: 0 auto;    
+    margin: 0 auto;
     border: 1px solid;
-    border-color: #CAE3F5;    
+    border-color: #CAE3F5;
     background-color: #E5F2FB;
-    background-position: -1220px 15px; 
-    padding: 1.5em 1.5em 1.5em 40px;   
+    background-position: -1220px 15px;
+    padding: 1.5em 1.5em 1.5em 40px;
 }
 #storage {
+    bottom: 50px;
+    left: 0;
     min-width: 1200px;
+    position: absolute;
+    right: 0;
+    top: 92px;
+}
+#storage > div {
+  height:100%;
 }
 
 .keyboard-shortcuts {

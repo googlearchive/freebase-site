@@ -63,8 +63,10 @@ var PROCESS_VOTE_ERROR = 'There was a problem with the previous vote. ' +
         'Please try again later.';
 
 // processFlag constants
-var INSUFFICIENT_VOTES = 'Insufficient votes to process';
-var CONFLICTING_VOTES = 'Conflicting votes. Escalated to admin queue.';
+var INSUFFICIENT_VOTES = 'Vote recorded. Insufficient number of votes ' +
+        'to process';
+var CONFLICTING_VOTES = 'Vote recorded. Conflicting votes. ' +
+        'Escalated to admin queue.';
 var ERROR_ESCALATING = 'Error escalating flag ';
 var CONSENSUS_OF_VOTES = 'Consensus reached. Action being performed.';
 var LANG_IN_REVIEW = 'Found lang object in review. Escalating.';
@@ -169,9 +171,17 @@ function processVote(flag, vote, item, user) {
         }
 
     }).then(function(result) {
-        return deferred.resolved(SUCCESS);
+        if (result === PROMISE_OK) {
+            return deferred.resolved(SUCCESS);
+        } else {
+            return result;
+        }
     }, function(error) {
-        return deferred.rejected(PROCESS_VOTE_ERROR);
+        if (error && error.name === "Error") {
+            return error;
+        } else {
+            return deferred.rejected(PROCESS_VOTE_ERROR);
+        }
     });
 }
 
@@ -399,8 +409,6 @@ function processFlag(mid) {
                 return executeVote(flagInfo, verifiedJudgments);
             });
         }
-    }, function (err) {
-        return deferred.rejected(PROCESS_VOTE_ERROR);
     });
 }
 

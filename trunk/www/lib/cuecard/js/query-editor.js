@@ -371,12 +371,16 @@ CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
 
             if (CueCard.QueryEditor.BNS) {
                 var bns = CueCard.QueryEditor.BNS;
+                var urlre = /^http[s]?:\/\/[a-zA-Z.\-]+\.corp\.google\.com(:[0-9]{0,4})?(\/.*)?$/;
                 // Validate bns
-                if (bns.indexOf("/bns/") !== 0) {
-                    return onError("Invalid BNS address: " + bns);
+                if (bns.indexOf("/bns/") === 0) {
+                    // Always enforce HTTP for bns
+                    url = encodeURI("http:/"+bns+"/mqlread");
+                } else if (urlre.test(bns)) {
+                    url = bns;
+                } else {
+                    return onError("Invalid address: " + bns);
                 }
-                // Always enforce HTTP, because /bns/ doesn't serve HTTPS
-                url = encodeURI("http:/"+bns+"/mqlread");
                 // TODO(pmikota): Either do CORS POST or send request from
                 // parent of current iframe so it can send queries longer
                 // than 2048 chars

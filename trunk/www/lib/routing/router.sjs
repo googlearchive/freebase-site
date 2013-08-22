@@ -289,7 +289,8 @@ function init_rules(lib) {
       "properties": [
         "/freebase/domain_profile/category"
       ],
-      "promises": h.extend(true, [], DEFAULT_BANNERS, DEFAULT_PROMISES),
+      "promises": h.extend(true, [], DEFAULT_BANNERS)
+          .concat(h.extend(true, [], DEFAULT_PROMISES)),
       "tabs": [
         {
           "name": _("Data"),
@@ -341,7 +342,8 @@ function init_rules(lib) {
         "/freebase/type_hints/enumeration",
         "/freebase/type_hints/never_assert"
       ],
-      "promises": h.extend(true, [], DEFAULT_BANNERS, DEFAULT_PROMISES),
+      "promises": h.extend(true, [], DEFAULT_BANNERS)
+          .concat(h.extend(true, [], DEFAULT_PROMISES)),
       "tabs": [
         {
           "name": _("Schema"),
@@ -418,7 +420,8 @@ function init_rules(lib) {
         "/freebase/property_hints/display_none",
         "/type/property/delegated"
       ],
-      "promises": h.extend(true, [], DEFAULT_BANNERS, DEFAULT_PROMISES),
+      "promises": h.extend(true, [], DEFAULT_BANNERS)
+          .concat(h.extend(true, [], DEFAULT_PROMISES)),
       "tabs": [
         {
           "name": _("Schema"),

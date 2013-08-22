@@ -164,13 +164,18 @@ function getFlagKind(flagInfo) {
     }
 }
 
-// Returns creator of flag from attribution
-function getFlagCreator(flagInfo) {
+/**
+ * Returns creator of flag from attribution.
+ * @param  {Object} flagInfo Object representing flag.
+ * @param  {Boolean} readable If true return creator of a flag in readable form
+ *     (i.e. /user/pmikota instead of /m/0n5pyqg).
+ */
+function getFlagCreator(flagInfo, readable) {
     var creator = h.get_first_value(flagInfo, '/type/object/attribution');
     if (!creator) {
         return null;
     } else {
-        return creator.id;
+        return creator.creator && readable ? creator.creator : creator.id;
     }
 }
 

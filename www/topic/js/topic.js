@@ -453,7 +453,7 @@
       if (filters == null) {
         filters = topic.get_filters();
       }
-      var all = $('#show-all').is(':checked');;
+      var all = $('#show-all').is(':checked');
       var params = {props:'', lang:fb.h.lang_code(fb.lang)};
       if (filters.length) {
         params.filter = filters;
@@ -462,14 +462,18 @@
         params.all = true;
       }
       // update window history
-      var url_parts = window.location.href.split('?');
+      var url_fragment_parts = window.location.href.split('#');
+      var url_parts = url_fragment_parts[0].split('?');
       var new_url = url_parts[0];
       new_url = fb.h.build_url(new_url, params);
+      if (url_fragment_parts.length > 0) {
+        new_url += "#" + url_fragment_parts[1];
+      }
       if (new_url != window.location.href) {
         if (typeof history.replaceState === 'function') {
           history.replaceState(null, "", new_url);
         } else {
-          window.loaction.href = new_url;
+          window.location.href = new_url;
         }
       }
     },

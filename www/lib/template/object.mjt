@@ -107,7 +107,7 @@
       if (typeof history.replaceState === 'function') {
         history.replaceState(null, "", new_url);
       } else {
-        window.loaction.href = new_url;
+        window.location.href = new_url;
       }
     })();
   </script>

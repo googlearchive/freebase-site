@@ -143,7 +143,13 @@
     <acre:block if="c.banners && c.banners.length">
       <acre:block for="banner in c.banners">
         <div class="page-flag">
-          <span class="page-flag-msg">${banner}</span>
+          <acre:block if="banner.link && banner.text && banner.text_for_link">
+            ${h.template_sprintf(banner.text,
+                link(banner.link, banner.text_for_link))}
+          </acre:block>
+          <acre:block else="">
+            <span class="page-flag-msg">${banner}</span>
+          </acre:block>
         </div>
       </acre:block>
     </acre:block>
@@ -525,4 +531,8 @@
   <acre:block if="that_exports.acre_javascript_vars">
     ${that_exports.acre_javascript_vars()}
   </acre:block>
+</acre:block>
+
+<acre:block def="link(href, text)">
+  <a href="${href}">${text}</a>
 </acre:block>

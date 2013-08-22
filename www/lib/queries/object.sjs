@@ -323,14 +323,17 @@ function get_object_banners(obj, obj_type) {
       banners.push(_('This property requires permission.'));
     }
     if (hidden && hidden.value === true) {
-      banners.push(_('This property is hidden by default'));
+      banners.push(_('This property is hidden by default.'));
     }
     if (disambiguator && disambiguator.value === true) {
       banners.push(_('This property is a disambiguator.'));
     }
     if (delegated && delegated.id) {
-      banners.push(h.sprintf(
-          _('This property is delegated to %s'), delegated.id));
+      banners.push({
+        link: h.fb_url(delegated.id),
+        text: _('This property is delegated to %s.'),
+        text_for_link: delegated.id
+      });
     }
     var types = get_values(obj, '/type/object/type') || [];
     types.every(function(t) {
@@ -342,7 +345,7 @@ function get_object_banners(obj, obj_type) {
     });
   }
   return deferred.resolved(banners);
-};
+}
 
 /**
  * Get /common/topic/official_website, /common/topic/social_media_presence,

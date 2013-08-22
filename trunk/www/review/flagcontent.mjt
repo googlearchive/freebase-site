@@ -65,6 +65,8 @@
     var FLAGGED = _("Flagged");
     var S_BY_S = _("%s by %s");
     var S_VS_S = _("%s vs. %s");
+    var ITEM_MISSING = "This topic is flagged for merge, but flag is" +
+      " missing target topic to merge with.";
 </acre:script>
 
 <acre:block def="content(displayInfo)">
@@ -74,7 +76,12 @@
     </div>
     <acre:block if="displayInfo.adminVote">
       <div class="page-flag" style="text-align: center; margin: 0">
-       <span class="page-flag-msg">${_("Admin Voting")}</span>
+        <span class="page-flag-msg">${_("Admin Voting")}</span>
+      </div>
+    </acre:block>
+    <acre:block if="displayInfo.kind === 'merge' && !(displayInfo.items[0] && displayInfo.items[1])">
+      <div class="page-flag error" style="text-align: center; margin: 0">
+        <span class="page-flag-msg">${ITEM_MISSING}</span>
       </div>
     </acre:block>
     ${itempanel(displayInfo)}
@@ -171,7 +178,7 @@
       ${helper.template_sprintf(S_VS_S, tag_a(displayInfo.items[0].name, displayInfo.items[0].url), tag_a(displayInfo.items[1].name, displayInfo.items[1].url))}
     </acre:block>
     <acre:block if="displayInfo.status">
-        <span class="flagreview-admin-message">${ADMIN_QUEUE}</span>
+      <span class="flagreview-admin-message">${ADMIN_QUEUE}</span>
     </acre:block>
   </div>
 </acre:block>
@@ -179,12 +186,14 @@
 <acre:block def="flagreview_buttons(displayInfo)">
   <div class="vote-choices">
     <div acre:if="displayInfo.kind === 'merge'">
-      <span class="vote-label">${MERGE_THESE_TOPICS}</span>
-      ${votebutton(LEFT_WINS ,  displayInfo.id, "agree", displayInfo.items[0].mid, displayInfo)}
-      ${votebutton(RIGHT_WINS,  displayInfo.id, "agree", displayInfo.items[1].mid, displayInfo)}
-      ${votebutton(DONT_MERGE, displayInfo.id, "disagree", null, displayInfo)}
-      <span class="vote-label vote-separator">${NOT_SURE}</span>
-      ${votebutton(SKIP, displayInfo.id, "skip", null, displayInfo)}
+      <acre:block if="displayInfo.items[0] && displayInfo.items[1]">
+        <span class="vote-label">${MERGE_THESE_TOPICS}</span>
+        ${votebutton(LEFT_WINS ,  displayInfo.id, "agree", displayInfo.items[0].mid, displayInfo)}
+        ${votebutton(RIGHT_WINS,  displayInfo.id, "agree", displayInfo.items[1].mid, displayInfo)}
+        ${votebutton(DONT_MERGE, displayInfo.id, "disagree", null, displayInfo)}
+        <span class="vote-label vote-separator">${NOT_SURE}</span>
+        ${votebutton(SKIP, displayInfo.id, "skip", null, displayInfo)}
+      </acre:block>
     </div>
     <div acre:if="displayInfo.kind === 'delete'">
       <span class="vote-label">${DELETE_THIS_TOPIC}</span>

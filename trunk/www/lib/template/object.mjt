@@ -88,6 +88,7 @@
 
 <acre:block def="freebase_js()">
   <script src="template/object.mf.js"></script>
+  <script src="template/tablesorter.mf.js"></script>
 </acre:block>
 
 <acre:block def="freebase_css()">

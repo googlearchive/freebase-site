@@ -240,9 +240,10 @@
     var count = prop && prop.count || 0;
   </acre:script>
   <table class="data-table">
-    <thead>
+    <thead acre:if="prop_structure.properties && prop_structure.properties.length > 0">
       <tr>
-        <th acre:for="i,subprop_structure in prop_structure.properties" scope="col" acre:attrs="i === 0 ? {'class':'first'} : {}">
+        <th acre:for="i,subprop_structure in prop_structure.properties"
+            scope="col" acre:attrs="i === 0 ? {'class':'first'} : {}">
           <span class="property-header" data-id="${subprop_structure.id}">
             ${subprop_structure.text}
           </span>

@@ -64,6 +64,8 @@
         });
 
       propbox.init_menus(context);
+
+      $(".data-table").addClass("table-sortable").tablesorter();
     },
 
     init_menus: function(context, nicemenu) {
@@ -308,7 +310,11 @@
       var prop_section = $(context).parents('.property-section');
       // We need formlib
       propbox.get_script('/propbox-edit.mf.js', function() {
-        propbox.edit.more(prop_section, topic_id, prop_id);
+        propbox.edit.more(prop_section, topic_id, prop_id, function() {
+          // Old table is removed so we need to traverse to new one again.
+          var table = prop_section.find("table");
+          table.addClass("table-sortable").tablesorter();
+        });
       });
     }
 

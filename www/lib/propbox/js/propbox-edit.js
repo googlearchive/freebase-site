@@ -692,8 +692,10 @@
      * @param {object} prop_section Jquery element of the property section.
      * @param {string} topic_id The topic id.
      * @param {string} prop_id The property id.
+     * @param {Function} callback The callback to be executed after properties
+     *     are fetched.
      */
-    more: function(prop_section, topic_id, prop_id) {
+    more: function(prop_section, topic_id, prop_id, callback) {
       $.ajax($.extend(formlib.default_begin_ajax_options(), {
         url: propbox.options.base_ajax_url + "/more.ajax",
         data: {
@@ -708,6 +710,7 @@
           prop_section.append(new_values);
           propbox.init_menus(prop_section, true);
           $(".nicemenu-item.edit", prop_section).show();
+          if (callback) callback();
         }
       }));
     },

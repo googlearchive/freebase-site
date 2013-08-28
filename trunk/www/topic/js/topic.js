@@ -466,7 +466,7 @@
       var url_parts = url_fragment_parts[0].split('?');
       var new_url = url_parts[0];
       new_url = fb.h.build_url(new_url, params);
-      if (url_fragment_parts.length > 0) {
+      if (url_fragment_parts.length > 1) {
         new_url += "#" + url_fragment_parts[1];
       }
       if (new_url != window.location.href) {

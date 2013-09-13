@@ -46,6 +46,9 @@
           var name = $(this).attr('name');
           topic.add_filter(name);
           return false;
+        })
+        .on("propbox-change", function(e) {
+          topic.init_hilite(e.target);
         });
 
 
@@ -148,6 +151,63 @@
             opacity: 0.5
           }
       });
+
+      topic.init_hilite();
+    },
+
+    /**
+     * Init hilite of values based on creator's usergroup.
+     */
+    init_hilite: function(target) {
+      var result = {};
+
+      // Parse query params
+      var query = window.location.search && window.location.search.substr(1);
+      var params = query ? query.split("&") : [];
+      for(var i=0; i < params.length; i++) {
+        var item = params[i].split("=");
+        if (item[1] && item[1].indexOf("/") === 0) {
+          result[item[0]] = item[1];
+        } else {
+          result[item[0]] = "/m/0jsjgs5"; // Default to Metaweb Freshness
+        }
+      }
+
+      if (result["hilite"]) {
+        var data = {
+          usergroup_id: result["hilite"]
+        };
+        // We need to get formlib first
+        fb.get_script(
+            fb.h.static_url("lib/propbox") + '/propbox-edit.mf.js',
+            function() {
+              var formlib = window.formlib;
+              $.ajax($.extend(formlib.default_begin_ajax_options(), {
+                url: fb.h.ajax_url('usergroup_members.ajax'),
+                data: data,
+                onsuccess: function(data) {
+                  if (data && data.result) {
+                    var members = {};
+                    $.each(data.result, function(i, v){
+                      members[v.id] = true;
+                      members[v.mid] = true;
+                    });
+
+                    var rows = target ?
+                        $(target).find(".property-value[data-creator]") :
+                        $(".property-value[data-creator]");
+
+                    rows.each(function(i, elm){
+                      creator = $(elm).attr("data-creator");
+                      if(members[creator]) {
+                        $(elm).closest(".data-list li").toggleClass("hilite", true);
+                      }
+                    });
+                  }
+                }
+              }));
+            });
+      }
     },
 
     /**

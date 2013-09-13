@@ -287,6 +287,33 @@
     },
 
     /**
+    * Get a value from an object multiple levels deep.  This is useful for
+    * pulling values from deeply nested objects, such as JSON responses.
+    * Example usage: get_value_by_keys(jsonObj, 'foo', 'entries', 3)
+    *
+    * @param {!Object} obj An object to get the value from.  Can be array-like.
+    * @param {...(string|number|!Array.<number|string>)} var_args A number
+    *     of keys (as strings, or numbers, for array-like objects).  Can also be
+    *     specified as a single array of keys.
+    * @return {*} The resulting value.  If, at any point, the value for a key
+    *     is undefined, returns undefined.
+    */
+    get_value_by_keys: function(obj, var_args) {
+     var isArrayLike = $.isArray(var_args);
+     var keys = isArrayLike ? var_args : arguments;
+
+     // Start with the 2nd parameter for the variable parameters syntax.
+     for (var i = isArrayLike ? 0 : 1; i < keys.length; i++) {
+       obj = obj[keys[i]];
+       if (obj === undefined) {
+         break;
+       }
+     }
+
+     return obj;
+    },
+
+    /**
      * Get the language code given a freebase lang id
      * lang_code("/lang/<code>") == "<code>"
      *

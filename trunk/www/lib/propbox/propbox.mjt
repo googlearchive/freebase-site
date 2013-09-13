@@ -417,6 +417,7 @@
     <acre:script>
       var attrs = h.extend({}, microdata.value(prop_structure, prop_value));
       attrs["class"] = "property-value";
+      attrs["data-creator"] = prop_value.creator;
       if (ect != '/type/text' && ect != '/type/rawstring' &&
           ect != '/type/uri' && ect != '/type/key') {
         // We can't store the above values in the data-value attribute
@@ -493,7 +494,8 @@
       </acre:script>
       <a title="${prop_value.id}" class="property-value"
          href="${h.fb_url(true, prop_value.id)}"
-         data-id="${prop_value.id}">${text}</a>
+         data-id="${prop_value.id}"
+         data-creator="${prop_value.creator}">${text}</a>
       <acre:block if="show_lang">
         ${i18n_c.lang_code(prop_value.lang, lang)}
       </acre:block>

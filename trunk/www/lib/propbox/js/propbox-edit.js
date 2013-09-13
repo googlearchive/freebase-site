@@ -710,6 +710,7 @@
           prop_section.append(new_values);
           propbox.init_menus(prop_section, true);
           $(".nicemenu-item.edit", prop_section).show();
+          prop_section.trigger("propbox-change");
           if (callback) callback();
         }
       }));

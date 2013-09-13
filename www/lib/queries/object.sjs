@@ -223,6 +223,7 @@ var BADGES = {
   STAFF_ICO:        '/m/0rz7qgp',
   STAFF_JS:         '/m/0rz7p9x',
   STAFF_OD:         '/m/0rz7pvw',
+  STAFF_SS:         '/m/0vp75bj',
   TOP_CONTRIBUTOR:  '/m/02h53fx'
 };
 

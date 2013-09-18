@@ -282,6 +282,18 @@
     },
 
     /**
+     * Add IS_REVIEWED flag on property
+     */
+    add_is_reviewed : function (context) {
+      var prop_section = $(context).parents(".submenu")
+        .data("headmenu").parents(".property-section");
+      propbox.get_script("/propbox-edit.mf.js", function() {
+        propbox.edit.add_is_reviewed(prop_section);
+      });
+      return false;
+    },
+
+    /**
      * Remove HAS_NO_VALUE flag from property
      */
     remove_has_no_value : function (context) {

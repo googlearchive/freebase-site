@@ -69,6 +69,7 @@
   var VIEW_CVT = _("View CVT");
   var HAS_NO_VALUE = _("Flag as having no values");
   var HAS_VALUE = _("Flag as having unknown values");
+  var IS_REVIEWED = _("Flag as reviewed");
   var FLAGGED_NO_VALUES = _("This property has been flagged " +
     "as having no values.");
   var REMOVE_NO_VALUES = _("Remove this flag to add new values.");
@@ -205,6 +206,7 @@
       if (prop_structure.authorities != null) {
         extra_class = ' property-requires-authority';
       }
+      var ps = ph.get_property_status(topic, prop_structure, prop_values);
     </acre:script>
     <div class="sub-foobar kbs hover-row${extra_class}">
       <span class="header-label">
@@ -216,6 +218,14 @@
            href="${h.fb_url(prop_structure.id, [['schema']])}">
           ${prop_structure.id}</a>
       </span>
+      <acre:block if="ps.reviewed">
+        <acre:script>
+          var datetime = ps.reviewed.split("T");
+        </acre:script>
+        <span class="is-reviewed">
+          ${datetime[0]}
+        </span>
+      </acre:block>
     </div>
     ${databox(topic, prop_structure, prop_values, lang)}
   </div>
@@ -541,6 +551,10 @@
               <a href="#" onclick="return propbox.add_has_value(this);">${HAS_VALUE}</a>
             </li>
           </acre:block>
+          <li class="row-menu-item fb-site-only">
+            <a href="#" onclick="return propbox.add_is_reviewed(this);">
+              ${IS_REVIEWED}</a>
+          </li>
           <li class="row-menu-item fb-site-only">
             <a href="${h.build_query_url(topic.id, null, prop_structure.id)}">${QUERY_PROPERTY}</a>
           </li>

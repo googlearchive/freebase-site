@@ -262,6 +262,7 @@ function do_mql(type_ids, lang) {
         properties: [{
             optional: true,
             id: null,
+            mid: null,
             key: [{
               value: null,
               namespace: null

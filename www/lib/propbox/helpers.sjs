@@ -164,6 +164,7 @@ function minimal_prop_structure(prop_schema, lang) {
   var ect_name = i18n.mql.get_text(lang, ect.name);
   var structure = {
     id: prop_schema.id,
+    mid: prop_schema.mid,
     text: name ? name.value : prop_schema.id,
     lang: name ? name.lang : null,
     schema: prop_schema.schema,
@@ -534,11 +535,26 @@ function get_property_status(topic, prop_structure, prop_values) {
   var empty = !prop_values || !prop_values.length;
   var status = prop && prop.status;
   var unique_edit = (prop_structure && prop_structure.unique && !empty);
+
+  var reviewed = null;
+  var reviewed_props = h.get_values(topic,
+      "/freebase/valuenotation/is_reviewed");
+  if (reviewed_props) {
+    reviewed_props.some(function(prop) {
+      if (prop.id === prop_structure.mid) {
+       reviewed = prop.timestamp;
+       return true;
+      }
+      return false;
+    });
+  }
+
   return {
     is_empty: empty,
     has_status: status != null,
     has_value: status === "has_value" || false,
     has_no_value: status === "has_no_value" || false,
-    unique_edit: unique_edit
+    unique_edit: unique_edit,
+    reviewed: reviewed
   };
 }

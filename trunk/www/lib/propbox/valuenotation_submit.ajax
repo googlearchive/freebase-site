@@ -51,6 +51,7 @@ var SPEC = {
       validators.MqlId(params, 's', {required:true}),
       validators.OneOf(params, 'p', {required:true, oneof:[
         '/freebase/valuenotation/has_value',
+        '/freebase/valuenotation/is_reviewed',
         '/freebase/valuenotation/has_no_value'] }),
       validators.MqlId(params, 'o', {required:true}),
       validators.OneOf(params, 'connect', {required:true, oneof: [
@@ -61,16 +62,36 @@ var SPEC = {
   },
 
   run: function(s, p, o, connect, lang) {
+    var promise = deferred.resolved();
+
+    // First try to delete IS_REVIEWED flag when inserting
+    if (p === "/freebase/valuenotation/is_reviewed" && connect === "insert") {
+      var delete_query = {id: s};
+      delete_query[p] = {
+        id: o,
+        connect: "delete"
+      };
+      promise = freebase.mqlwrite(delete_query).then(function(env) {
+        return env;
+      }, function(err){
+        return err;
+      });
+    }
+
     var q = {id: s};
     q[p] = {
       id: o,
       connect: connect
     };
-    return freebase.mqlwrite(q)
-      .then(function(env) {
+
+    return promise.then(function() {
+      return freebase.mqlwrite(q).then(function(env) {
         var result = env.result;
         var options = {
-          filter: o,
+          filter: [
+            o,
+            "/freebase/valuenotation/is_reviewed"
+          ],
           lang: h.lang_code(i18n.get_lang(true, lang))
         };
         var promises = {
@@ -92,8 +113,7 @@ var SPEC = {
                 propbox.propbox(topic, prop_structure, values, lang))
             };
           });
-
       });
-
+    });
   }
 };

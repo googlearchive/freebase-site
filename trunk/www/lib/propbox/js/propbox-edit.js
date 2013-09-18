@@ -649,6 +649,12 @@
         'insert');
     },
 
+    add_is_reviewed: function (prop_section) {
+      edit.valuenotation_submit(prop_section,
+        '/freebase/valuenotation/is_reviewed',
+        'insert');
+    },
+
     remove_has_no_value: function (prop_section) {
       edit.valuenotation_submit(prop_section,
         '/freebase/valuenotation/has_no_value',

@@ -12,8 +12,6 @@ $(function() {
     }
   }));
 
-
-
   test("script_injection", function() {
     test_input1.suggest(default_options);
     var inst = get_instance();
@@ -142,4 +140,31 @@ $(function() {
       .trigger("textchange");
   });
 
+  test("script_injection spell", function() {
+    test_input1.suggest(default_options);
+    var inst = get_instance();
+    $.suggest.suggest.prototype.response = function(data) {
+      data.correction = ['<a href="#" onclick="prompt(0)">'];
+      return base.response.apply(this, arguments);
+    };
+    stop(TIMEOUT_DELAY);
+    test_input1
+      .bind('fb-select', function() {
+        var spell = $('.fbs-spell-link', inst.pane);
+        ok(spell.length, "Got spell link");
+        var injected = $('a', spell);
+        //  make sure there are no <a> tag
+        ok(!injected.length, "xss injection!");
+        start();
+      })
+      .bind("fb-pane-show", function() {
+          if ($(">li", inst.list).length) {
+            var first = $("li:first", inst.list).simulate("mouseover");
+            simulate_keypress(test_input1, $.simulate.VK_ENTER);
+          }
+      })
+      .focus()
+      .val("bob dylan")
+      .trigger("textchange");
+  });
 });

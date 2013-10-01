@@ -354,7 +354,7 @@
             setTimeout(function() {
                 status.sprintf(
                   'warning',
-                  'The value you are trying remove is no longer valid. ' +
+                  'The value you are trying to remove is no longer valid. ' +
                   'Please %s to continue editing.',
                   "reload", function() {
                     window.location.reload(true);
@@ -667,6 +667,12 @@
         'delete');
     },
 
+    remove_is_reviewed: function (prop_section) {
+      edit.valuenotation_submit(prop_section,
+        '/freebase/valuenotation/is_reviewed',
+        'delete');
+    },
+
     /**
      * Submit valuenotation change
      */
@@ -687,6 +693,22 @@
           prop_section.replaceWith(html);
           propbox.init_menus(html, true);
           $(".nicemenu-item.edit", html).show();
+
+          // "undo" for is_reviewed
+          if (predicate === "/freebase/valuenotation/is_reviewed" &&
+              connect === "insert") {
+            status.clear();
+            setTimeout(function() {
+                status.sprintf("warning",
+                               "You have flagged " +
+                               prop_section.attr("data-id") +
+                               " as Reviewed. %s. ",
+                               "Undo", function() {
+                                   edit.remove_is_reviewed(html);
+                                   return false;
+                               });
+                });
+          }
         }
       }));
 

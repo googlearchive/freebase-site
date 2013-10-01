@@ -56,7 +56,10 @@ var SPEC = {
     return queries.prop_structure(p, lang)
       .then(function(prop_structure) {
         var options = {
-          filter: p,
+          filter: [
+            p,
+            "/freebase/valuenotation/is_reviewed"
+          ],
           limit: 0
         };
         if (prop_structure.expected_type.id === '/type/text') {

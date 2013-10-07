@@ -319,19 +319,65 @@
      * AJAX and inline all the values of the topic property.
      * @param {string} topic_id The topic id.
      * @param {string} prop_id The property id.
+     * @param {Function} callback The callback to be executed after properties
+     *     are fetched.
      */
-    more: function(context, topic_id, prop_id) {
+    more: function(context, topic_id, prop_id, callback) {
       var prop_section = $(context).parents('.property-section');
       // We need formlib
       propbox.get_script('/propbox-edit.mf.js', function() {
-        propbox.edit.more(prop_section, topic_id, prop_id, function() {
+        propbox.edit.more(prop_section,
+              topic_id, prop_id, function(prop_section) {
+
           if($.tablesorter) {
             // Old table is removed so we need to traverse to new one again.
-            var table = prop_section.find("table");
-            table.addClass("table-sortable").tablesorter();
+            var table = prop_section.find(".data-table");
+            table.toggleClass("table-sortable", true).tablesorter();
+          }
+          if (callback) {
+            callback(prop_section);
           }
         });
       });
+    },
+
+    /**
+     * Call more to fetch more properties and then trigger sorting.
+     */
+    more_and_sort: function(context, index, topic_id, prop_id) {
+      var prop_section = $(context).parents(".property-section");
+      propbox.more(context, topic_id, prop_id, function(prop_section){
+        var table = prop_section.find(".data-table");
+        if (table.length) {
+          table.trigger("sorton", [[[index, 0]]]);
+        } else {
+          propbox.sort_values($(":first-child", prop_section),
+              index, topic_id, prop_id);
+        }
+      });
+    },
+
+    /**
+     * Sort values in unordered list.
+     */
+    sort_values: function(context, index, topic_id, prop_id) {
+      var prop_section = $(context).parents(".property-section");
+      var desc = prop_section.hasClass("column-header-desc");
+      var list = prop_section.find(".data-list");
+      var items = list.find("li.data-row");
+      items.sort(function(a, b) {
+          var val_a = $(a).find(".property-value").text();
+          var val_b = $(b).find(".property-value").text();
+          if(val_a.toLowerCase() < val_b.toLowerCase()) {
+            return desc ? 1 : -1;
+          } else {
+            return desc ? -1: 1;
+          }
+      });
+      list.empty().html(items);
+      prop_section.toggleClass("column-header-desc", !desc)
+          .toggleClass("column-header-asc", desc);
+      propbox.init_menus(prop_section, true);
     }
 
   };

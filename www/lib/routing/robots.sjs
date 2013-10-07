@@ -35,8 +35,10 @@
       acre.request.server_name === "dev.freebase.com") {
 
     var disallow_folders = [
-      "/static/",
-      "/ajax/"
+      "/ajax/",
+      "/api/",
+      "/private/",
+      "/static/"
     ];
 
     var output_text = "User-agent: *";

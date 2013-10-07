@@ -254,9 +254,19 @@
       <tr>
         <th acre:for="i,subprop_structure in prop_structure.properties"
             scope="col" acre:attrs="i === 0 ? {'class':'first'} : {}">
-          <span class="property-header" data-id="${subprop_structure.id}">
-            ${subprop_structure.text}
-          </span>
+            <acre:block if="count > prop_values.length">
+              <a href="javascript:void(0);"
+                  onclick="return propbox.more_and_sort(this, ${i}, '${topic.id}', '${prop_structure.id}')">
+                <span class="property-header" data-id="${subprop_structure.id}">
+                    ${subprop_structure.text}
+                </span>
+              </a>
+            </acre:block>
+            <acre:block else="">
+              <span class="property-header" data-id="${subprop_structure.id}">
+                ${subprop_structure.text}
+              </span>
+            </acre:block>
         </th>
       </tr>
     </thead>
@@ -389,6 +399,20 @@
     var prop = h.get_property(topic, prop_structure.id);
     var count = prop && prop.count || 0;
   </acre:script>
+  <acre:block if="prop_values && prop_values.length > 1">
+    <acre:block if="count > prop_values.length">
+      <a href="javascript:void(0);"
+           onclick="return propbox.more_and_sort(this, 0, '${topic.id}', '${prop_structure.id}')">
+        <span class="header-sortable" title="Click to sort">${prop_structure.text}</span>
+      </a>
+    </acre:block>
+    <acre:block else="">
+      <a href="javascript:void(0);"
+           onclick="return propbox.sort_values(this, 0, '${topic.id}', '${prop_structure.id}')">
+        <span class="header-sortable" title="Click to sort">${prop_structure.text}</span>
+      </a>
+    </acre:block>
+  </acre:block>
   <ul class="data-list">
     <acre:block if="empty">
       ${empty_row_li(false, topic, prop_structure)}

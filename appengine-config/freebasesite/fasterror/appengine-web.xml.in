@@ -4,10 +4,12 @@
     <version>@APPENGINE_APP_VERSION@</version>
     <system-properties>
       <property name="configDir" value="META-INF" />
-      <property name="java.util.logging.config.file" value="META-INF/logging.properties" />
+      <property name="java.util.logging.config.file" value="../META-INF/logging.properties" />
     </system-properties>
     <threadsafe>true</threadsafe>
-    <static-files>
-      <include path="/policies/freebase-cc-by-61x23.png" expiration="1d" ></include>
-    </static-files>
+
+    <module>fasterror</module>
+    <instance-class>F4_1G</instance-class>
+    <automatic-scaling>
+    </automatic-scaling>
 </appengine-web-app>

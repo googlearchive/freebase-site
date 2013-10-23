@@ -206,8 +206,9 @@ class ActionDeployAcre:
     c.log("  AppEngine Dashboard: https://appengine.google.com/dashboard?&app_id=%s\n" % app_id, color=c.BLUE)
     c.log("*" * 65 + "\n", color=c.BLUE)
 
-    if os.path.isdir(acre.site_dir(war=True) + '/googlecode'):
-      shutil.rmtree(acre.site_dir(war=True)+ '/googlecode')
+    for directory in acre.site_dir(war=True):
+      if os.path.isdir(directory + '/googlecode'):
+        shutil.rmtree(directory + '/googlecode')
 
     if not c.options.nosite:
       apps = acre.fs_routed_apps()

@@ -979,8 +979,12 @@ class App:
     return True
 
   def copy_to_acre_dir(self, war=False):
-    target_dir = Acre.Get(self.context).site_dir(war=war) + '/' + self.app_dir()
-    return self.copy(target_dir)
+    dir_list = Acre.Get(self.context).site_dir(war=war)
+    for directory in dir_list:
+      target_dir = directory + '/' + self.app_dir()
+      self.copy(target_dir)
+
+    return True
 
   def svn_path(self, warn=True):
     """
@@ -1697,22 +1701,23 @@ class Acre:
     parts = site.conf("acre_id_suffix")[1:].split('.')[0:-1]
     parts.reverse()
 
-    target_dir = os.path.join(self.acre_dir(war=True), "WEB-INF/scripts", *parts)
-    target_dir = os.path.join(target_dir, 'environments')
+    for directory in self.site_dir(war=True):
+      target_dir = os.path.join(directory, *parts)
+      target_dir = os.path.join(target_dir, 'environments')
 
-    if os.path.isdir(target_dir):
-      shutil.rmtree(target_dir)
+      if os.path.isdir(target_dir):
+        shutil.rmtree(target_dir)
 
-    environments_url = site.conf("svn_url") + "/environments"
+      environments_url = site.conf("svn_url") + "/environments"
 
-    r = SVNLocation(c, environments_url).checkout(target_dir)
+      r = SVNLocation(c, environments_url).checkout(target_dir)
 
-    if not r:
-        return c.error('Failed to svn checkout %s into %s' % (environments_url, target_dir))
+      if not r:
+          return c.error('Failed to svn checkout %s into %s' % (environments_url, target_dir))
 
-    shutil.rmtree(target_dir + '/.svn')
+      shutil.rmtree(target_dir + '/.svn')
 
-    c.log('Copied environments file into acre: %s' % target_dir)
+      c.log('Copied environments file into acre: %s' % target_dir)
 
     return True
 
@@ -1726,17 +1731,8 @@ class Acre:
     if not site:
         return c.error("Could not resolve site.")
 
-    target_dir = self.acre_dir(war=True)
-
-    static_files_url = site.conf("svn_url") + "/trunk/static"
-
-    r = SVNLocation(c, static_files_url).checkout(target_dir)
-
-    if not r:
-        return c.error('Failed to svn checkout %s into %s' % (static_files_url, target_dir))
-
     # recursively remove .svn and other 'hidden' folders
-    def remove_unwanted_directories(directory=''):
+    def remove_unwanted_directories(directory='', target_dir=''):
       """
       Removes any directories under static directory tree that start with a .
       """
@@ -1746,11 +1742,23 @@ class Acre:
           continue
 
         if os.path.isdir(os.path.join(target_dir, directory, f)):
-          remove_unwanted_directories(os.path.join(directory, f))
+          remove_unwanted_directories(os.path.join(directory, f), target_dir)
 
-    remove_unwanted_directories()
+    modules = self.modules_dir_list(war=True)
+    if not modules:
+      modules = [self.acre_dir(war=True)]
 
-    c.log('Copied static files into acre: %s' % target_dir)
+    for target_dir in modules:
+      static_files_url = site.conf("svn_url") + "/trunk/static"
+
+      r = SVNLocation(c, static_files_url).checkout(target_dir)
+
+      if not r:
+          return c.error('Failed to svn checkout %s into %s' % (static_files_url, target_dir))
+
+      remove_unwanted_directories(directory='', target_dir=target_dir)
+
+      c.log('Copied static files into acre: %s' % target_dir)
 
     return True
 
@@ -1913,21 +1921,41 @@ class Acre:
   def port(self):
     return self._acre_port
 
+  def modules_dir_list(self, war=False):
+    '''Returns the list of modules full path if available, otherwise returns empty list'''
+
+    dir_list = []
+    non_modules = ["META-INF", "WEB-INF", "policies", ".svn", ".git"]
+
+    # If there is Appengine Modules definition file (application.xml)
+    # iterate through all modules
+    f = os.path.join(self.acre_dir(war), "META-INF", "application.xml")
+    if os.path.exists(f):
+      for module_dir in os.listdir(self.acre_dir(war)):
+        module_path = os.path.join(self.acre_dir(war), module_dir)
+        if os.path.isdir(module_path) and module_dir not in non_modules:
+          dir_list.append(module_path)
+
+    return dir_list
+
   def site_dir(self, war=False):
-    '''Returns the acre scripts directory under the specified acre instance'''
+    '''Returns the list of acre scripts directories under the specified acre instance'''
 
-    #App Engine directory location
-    #target_dir = self.acre_dir + '/_build/war/WEB-INF/scripts'
-    #Jetty/Acre directory location
-    target_dir = self.acre_dir(war) + '/WEB-INF/scripts'
+    modules = self.modules_dir_list(war)
 
-    if not os.path.isdir(target_dir):
-      try:
-        os.makedirs(target_dir)
-      except:
-        return c.error('There was a problem creating the directory %s' % target_dir)
+    dir_list = [os.path.join(module_dir, "WEB-INF", "scripts") for module_dir in modules]
+    if not dir_list:
+         dir_list = [os.path.join(self.acre_dir(war), "WEB-INF", "scripts")]
 
-    return target_dir
+    c = self.context
+    for target_dir in dir_list:
+      if not os.path.isdir(target_dir):
+        try:
+          os.makedirs(target_dir)
+        except:
+          return c.error('There was a problem creating the directory %s' % target_dir)
+
+    return dir_list
 
   def display_error_log(self, url):
 

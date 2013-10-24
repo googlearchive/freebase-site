@@ -4,7 +4,7 @@
     <version>@APPENGINE_APP_VERSION@</version>
     <system-properties>
       <property name="configDir" value="META-INF" />
-      <property name="java.util.logging.config.file" value="../META-INF/logging.properties" />
+      <property name="java.util.logging.config.file" value="META-INF/logging.properties" />
     </system-properties>
     <threadsafe>true</threadsafe>
 

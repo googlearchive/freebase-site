@@ -13,7 +13,9 @@
 
     <module>default</module>
     <instance-class>F4_1G</instance-class>
-    <automatic-scaling>
-      <max-idle-instances>975</max-idle-instances>
-    </automatic-scaling>
+    <instance-class>B8</instance-class>
+    <basic-scaling>
+      <max-instances>20</max-instances>
+      <idle-timeout>1h</idle-timeout>
+    </basic-scaling>
 </appengine-web-app>

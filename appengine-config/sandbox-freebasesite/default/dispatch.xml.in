@@ -1,7 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dispatch-entries>
   <dispatch>
-    <url>*/api/*</url>
+    <url>www.sandbox-freebase.com/api/*</url>
     <module>fasterror</module>
   </dispatch>
+  <dispatch>
+    <url>api.sandbox-freebase.com/api/*</url>
+    <module>fasterror</module>
+  </dispatch>
+  <dispatch>
+    <url>img.sandbox-freebase.com/api/*</url>
+    <module>fasterror</module>
+  </dispatch>
+  <dispatch>
+    <url>www.sandbox-freebase.com/experimental/*</url>
+    <module>fasterror</module>
+  </dispatch>
+  <dispatch>
+    <url>www.sandbox-freebase.com/widget/*</url>
+    <module>fasterror</module>
+  </dispatch>
+  <dispatch>
+    <url>www.sandbox-freebase.com/ajax/*</url>
+    <module>ajax</module>
+  </dispatch>
+  <dispatch>
+    <url>www.sandbox-freebase.com/static/*</url>
+    <module>ajax</module>
+  </dispatch>
 </dispatch-entries>
+

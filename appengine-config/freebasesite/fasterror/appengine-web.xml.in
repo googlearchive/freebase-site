@@ -9,7 +9,7 @@
     <threadsafe>true</threadsafe>
 
     <module>fasterror</module>
-    <instance-class>F4_1G</instance-class>
+    <instance-class>F2</instance-class>
     <automatic-scaling>
     </automatic-scaling>
 </appengine-web-app>

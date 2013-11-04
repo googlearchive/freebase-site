@@ -10,7 +10,15 @@
           "route_as": "script",
           "location": "//environments.svn.freebase-site.googlecode.dev/@ACRE_SITE_HOST@/_fs_routing"
         }
-
+     },
+     {
+        "from": {
+          "path": "/_ah/start"
+        },
+        "to": {
+          "route_as": "script",
+          "location": "//environments.svn.freebase-site.googlecode.dev/@ACRE_SITE_HOST@/_fs_routing"
+        }
      },
      {
         "from": {

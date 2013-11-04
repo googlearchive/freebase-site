@@ -21,4 +21,10 @@
       <context-root>fasterror</context-root>
     </web>
   </module>
+  <module>
+    <web>
+      <web-uri>ajax</web-uri>
+      <context-root>ajax</context-root>
+    </web>
+  </module>
 </application>

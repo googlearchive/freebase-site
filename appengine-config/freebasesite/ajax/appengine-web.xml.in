@@ -7,14 +7,9 @@
       <property name="java.util.logging.config.file" value="META-INF/logging.properties" />
     </system-properties>
     <threadsafe>true</threadsafe>
-    <static-files>
-      <include path="/policies/freebase-cc-by-61x23.png" expiration="7d" ></include>
-    </static-files>
 
-    <module>default</module>
-    <instance-class>B8</instance-class>
-    <basic-scaling>
-      <max-instances>20</max-instances>
-      <idle-timeout>1h</idle-timeout>
-    </basic-scaling>
+    <module>ajax</module>
+    <instance-class>F4_1G</instance-class>
+    <automatic-scaling>
+    </automatic-scaling>
 </appengine-web-app>

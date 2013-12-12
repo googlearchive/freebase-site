@@ -154,8 +154,12 @@
            mode: MODE
          };
          var image_api = fb.h.image_url(user.id, params);
-         var user_image = $('<a class="user-thumb" href="' + user.id + '"><img src="' + image_api + '" /></a>');
-         u.prepend(user_image);
+         var usr_img = $('<a class="user-thumb"><img /></a>');
+         // Use attr to escape user.id, which may contain mallicious code.
+         usr_img.attr('href', user.id);
+         usr_img.find('img').attr('src', image_api);
+
+         u.prepend(usr_img);
        }
        $("#signedin").show();
        $(".signedin").show();

@@ -97,7 +97,8 @@ function processVote(flag, vote, item, user) {
         flagInfo = results[0];
         userInfo = results[1];
         // Authenitcate user
-        if (reviewHelpers.userOwnsFlag(flagInfo, userInfo)) {
+        if (reviewHelpers.userOwnsFlag(flagInfo, userInfo) &&
+                !reviewHelpers.userIsAdmin(userInfo)) {
             return deferred.rejected(VOTE_ON_OWN_FLAG);
         }
         if (!reviewHelpers.userCanVoteForFlag(flagInfo, userInfo)) {
@@ -164,7 +165,7 @@ function processVote(flag, vote, item, user) {
                 });
         } else {
             var judgements = reviewHelpers.getFlagVotes(flagInfo);
-            if (judgements && judgements.length > 2) {
+            if (judgements && judgements.length > 1) {
                 return processFlag(flag);
             }
             return deferred.resolved(PROMISE_OK);
@@ -278,14 +279,13 @@ function processFlag(mid) {
     return reviewHelpers.getAndValidateFlagInfo(mid).then(function(result){
         var flagInfo = result;
 
-        // Check if there are more than 2 votes
+        // Check if there are 2 or more votes
         var flagJudgments = reviewHelpers.getFlagVotes(flagInfo);
-        if (!flagJudgments || flagJudgments.length < 3) {
+        if (!flagJudgments || flagJudgments.length < 2) {
             return deferred.resolved(INSUFFICIENT_VOTES);
         }
 
         var flagItems = reviewHelpers.getFlagItems(flagInfo);
-        var flagCreator = reviewHelpers.getFlagCreator(flagInfo);
 
         // Topic api returns in reverse chronological - (earliest first)
         // Sort by creator, then by reverse chronological
@@ -310,7 +310,7 @@ function processFlag(mid) {
             var creator1 = sortedJudgments[i].creator;
             var creator2 = sortedJudgments[i + 1].creator;
 
-            if (creator1 !== flagCreator && creator1 !== creator2) {
+            if (creator1 !== creator2) {
                 if (vote1 && vote1 != skipVote) {
                     verifiedJudgments.push(sortedJudgments[i]);
                 }
@@ -318,14 +318,12 @@ function processFlag(mid) {
         }
         var vote1 = h.get_first_value(sortedJudgments[sortedJudgments.length - 1], '/freebase/flag_judgment/vote').id;
         var creator1 = sortedJudgments[sortedJudgments.length - 1].creator;
-        if (creator1 !== flagCreator) {
-            if (vote1 && vote1 != skipVote) {
-                verifiedJudgments.push(sortedJudgments[i]);
-            }
+        if (vote1 && vote1 != skipVote) {
+            verifiedJudgments.push(sortedJudgments[i]);
         }
 
         // Check and tally the votes
-        if (verifiedJudgments.length < 3) {
+        if (verifiedJudgments.length < 2) {
             return deferred.resolved(INSUFFICIENT_VOTES);
         }
         // Check for unanimous-ness

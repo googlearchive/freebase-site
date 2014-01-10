@@ -44,8 +44,9 @@ var agreeVote = '/m/092s60c';
 var disagreeVote = '/m/092s60j';
 var skipVote = '/m/092s60p';
 var freebaseExperts = '/m/0432s8d'; // /freebase/badges/freebaseexpert
-var pipelineAdmins = '/m/03p3rjs'; // /pipeline/admin
-var staffCL = '/m/0rz7plz'; // /en/staff_cl
+var pipelineAdmins = '/m/03p3rjs';  // /pipeline/admin
+var staffCL = '/m/0rz7plz';         // /en/staff_cl
+var staffGoogle = '/m/02h53fj';     // /en/staff_google
 
 var INVALID_USER = 'Invalid user parameter.';
 var INVALID_FLAG = 'MID did not match a flag.';
@@ -197,20 +198,26 @@ function userOwnsFlag(flagInfo, userInfo) {
     return false;
 }
 
+// Checks if user is in one of the admin groups
+function userIsAdmin(userInfo) {
+    if (h.has_value(userInfo, '/type/user/usergroup')) {
+        var groups = h.get_values(userInfo, '/type/user/usergroup');
+        for (var i = 0, l = groups.length; i < l; i++) {
+            if (groups[i].id === freebaseExperts ||
+                groups[i].id === pipelineAdmins ||
+                groups[i].id === staffCL ||
+                groups[i].id === staffGoogle) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 // Checks if user has permission to vote on a flag
 function userCanVoteForFlag(flagInfo, userInfo) {
     if (h.has_value(flagInfo, '/freebase/review_flag/status')) {
-        if (h.has_value(userInfo, '/type/user/usergroup')) {
-            var groups = h.get_values(userInfo, '/type/user/usergroup');
-            for (var i = 0, l = groups.length; i < l; i++) {
-                if (groups[i].id === freebaseExperts ||
-                    groups[i].id === pipelineAdmins ||
-                    groups[i].id === staffCL) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return userIsAdmin(flagInfo);
     }
     return true;
 }

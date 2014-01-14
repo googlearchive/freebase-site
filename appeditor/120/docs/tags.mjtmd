@@ -1,0 +1,52 @@
+Acre Templates - *Block Tags*
+=============================
+
+## `doc`
+
+A root tag that can be used to declare the mime-type of the template output. Acre templates default to `text/html`, so `<acre:doc>` is only required if you are generating something else.  Template definition files that will be used as libraries for other files within an application also require a top-level `<acre:doc>` tag.
+
+>     <acre:doc type="application/atom+xml">
+>         ...template content...
+>     </acre:doc>
+
+Note that if you are generating XML, you probably also want to parse your template as XML.  You can make this occur by including the XML processing instruction `<?xml version="1.0"?>` as the first line of the template file. 
+
+## `block`
+
+Many Acre template commands are attributes and can be put directly on HTML/XML tags. However, if you don't want a tag in the resulting output, you can always use `<acre:block>` as a placeholder instead:
+
+#### code
+>     <acre:block if="true">
+>       it's true!
+>     </acre:block>
+
+#### output
+<blockquote>
+     <acre:block if="true">
+       it's true!
+     </acre:block>
+</blockquote>
+
+
+## `script`
+
+`<acre:script>` is used to enclose JavaScript to be executed by the Acre server. No output is generated directly and no `$$`-substitution is done within an `<acre:script>` block, however variables defined within an `<acre:script>` block are available for `$$`-substitution elsewhere in the template (provided they're within the same scope).
+
+#### code
+>     <acre:script>
+>       var foo = "bar"
+>     </acre:script>
+> 
+>     $$foo
+
+#### output
+<blockquote>
+    <acre:script>
+      var foo = "bar"
+    </acre:script>
+
+    $foo
+</blockquote>
+
+The standard HTML `<script>` tag will be untouched by Acre and left intact for the browser to evaluate, so you can still use that to pass client-side JavaScript.
+

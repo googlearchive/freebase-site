@@ -1,0 +1,35 @@
+.nicemenu {
+  display: inline;
+}
+
+.nicemenu li {
+  padding: 0;
+}
+
+.nicemenu-item {
+  display: inline;
+  position: relative;
+}
+
+.headmenu {
+  position: relative;
+}
+
+.submenu {
+  position: absolute;
+  display: none;
+  min-width: 10em;
+}
+
+.submenu a {
+  display: block;
+}
+
+.nicemenu-arrow {
+  cursor: pointer;
+}
+
+.expanded .nicemenu-arrow {
+  background: #ccc;
+}
+

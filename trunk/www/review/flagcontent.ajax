@@ -117,7 +117,7 @@ function flagContent(flag, user) {
                         }
                     }
                     if (h.has_value(judgment, '/freebase/flag_judgment/item')) {
-                        displayInfo.previousVoteItem = get_first_value(judgment, '/freebase/flag_judgment/item').id;
+                        displayInfo.previousVoteItem = h.get_first_value(judgment, '/freebase/flag_judgment/item').id;
                     }
                     break;
                 }

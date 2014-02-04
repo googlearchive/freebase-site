@@ -43,23 +43,23 @@ var validators = acre.require("validator/validators.sjs");
  * Use the new topic api (googleapis) and lib/typeloader.sjs to retrieve
  * topic and schema information that can be used to display a topic page.
  *
- * @param object:Object (required) - The object returned by the object 
+ * @param object:Object (required) - The object returned by the object
          router (becomes c.object)
  * @param options:Object (optional) - Api/filter options for topic api.
- *     - lang:String (optional) - The primary language to topic data. 
+ *     - lang:String (optional) - The primary language to topic data.
  *           Default is "en".
  *     - domain:String (optional) - If "all" retrieve all user/base domain data.
- *           You can also specify a domain id to only retrieve properties 
- *           within that domain. Default is to only retrieve data 
+ *           You can also specify a domain id to only retrieve properties
+ *           within that domain. Default is to only retrieve data
  *           from "Commons".
  *     - type:String (optional) - Only retrieve properties within this type id.
- *     - property:String (optional) - Only retrieve the property data for 
+ *     - property:String (optional) - Only retrieve the property data for
  *           this property id.
  * The domain, type and property exclusive options where you can only specify
  * one of them. If multiple options are specified then, the domain option takes
  * precedence, then the type and then the property.
- * 
- * The topic structure will be a union of all topic "bare properties" and 
+ *
+ * The topic structure will be a union of all topic "bare properties" and
  * their sibling properties along with all the topic's types's properties
  * that meet the constraint of the options parameter filters.
  */
@@ -69,7 +69,7 @@ function topic_structure(id, options) {
     var lang = options.lang || "/lang/en";
     var domain_filter, type_filter, prop_filter;
     var api_options = {
-        lang: h.lang_code(i18n.get_lang(true, lang))
+        lang: h.lang_code(i18n.get_lang(false, lang))
     };
     if (options.domain === "all") {
         api_options.filter = ["all"];
@@ -100,7 +100,7 @@ function topic_structure(id, options) {
                 // to determine what types to display
 
                 // These are actual instanceof types
-                var instanceof_types = 
+                var instanceof_types =
                   h.get_values(topic_result, "/type/object/type") || [];
                 var types = [];
                 var types_seen = {};
@@ -120,7 +120,7 @@ function topic_structure(id, options) {
                         }
                     }
                 }
-                
+
                 if (types.length) {
                     // If domain, type, or prop filter, only get the type(s)
                     // corresponding to the filter
@@ -152,7 +152,7 @@ function topic_structure(id, options) {
                 if (types.length) {
                     return typeloader.loads(types, lang)
                         .then(function(typeloader_result) {
-                            // Don't show /type/object properties 
+                            // Don't show /type/object properties
                             // unless explicity asked.
                             if (!(options.domain === 'all' ||
                                   domain_filter === '/type' ||
@@ -165,11 +165,11 @@ function topic_structure(id, options) {
                             var structure = get_structure(
                                 typeloader_result, lang);
                             if (prop_filter) {
-                                var show_prop = 
+                                var show_prop =
                                     structure.properties[prop_filter];
                                 if (show_prop) {
                                     structure.properties = {};
-                                    structure.properties[prop_filter] = 
+                                    structure.properties[prop_filter] =
                                         show_prop;
                                 }
                             }
@@ -189,7 +189,7 @@ function is_mql_id(id) {
 };
 
 /**
- * Get a structure that is easy to iterate from 
+ * Get a structure that is easy to iterate from
  * a list of domains -> types -> properties.
  * The domains and types will be sorted by timestamp.
  *
@@ -204,7 +204,7 @@ function get_structure(types_by_id, lang) {
 
 
 /**
- * Convert a map of types by their ids to a sorted list of domains 
+ * Convert a map of types by their ids to a sorted list of domains
  * and their types where the domains will be sorted by timestamp.
  */
 function sort_domains_and_types(types_by_id) {
@@ -217,7 +217,7 @@ function sort_domains_and_types(types_by_id) {
           var domain_id = type.domain.id;
           var domain = domains_by_id[domain_id];
           if (!domain) {
-              domain = domains_by_id[domain_id] = 
+              domain = domains_by_id[domain_id] =
                   h.extend(true, {
                       'types':[]
                   }, type.domain);
@@ -247,7 +247,7 @@ function sort_domains_and_types(types_by_id) {
  * Note that the result will be compatible to the old topic api:
  * http://api.freebase.com/api/experimental/topic/full?id=/en/google
  *
- * @param domains_list:Array - A sorted list of domains and 
+ * @param domains_list:Array - A sorted list of domains and
  *   their respective types
  * @return A structure outlining the order of domains,
  *   the order of their respective types and

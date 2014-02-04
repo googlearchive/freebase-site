@@ -61,7 +61,7 @@ var OBJECT_FILTERS = [
  */
 function object(id, props) {
     var api_options = {
-        lang: h.lang_code(i18n.get_lang(true)),
+        lang: h.lang_code(i18n.get_lang(false)),
         filter: OBJECT_FILTERS.concat(props || []),
         limit: 0
     };

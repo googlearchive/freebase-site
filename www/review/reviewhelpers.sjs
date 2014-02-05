@@ -90,7 +90,6 @@ function getFlagAndUserInfo(flag, user) {
     }
 
     return deferred.all([flagTopic, userTopic]).then(function(results) {
-
         // Error checking
         if (!results[0] || results[0].errors || !results[0].id) {
             return deferred.rejected(INVALID_FLAG);
@@ -217,7 +216,7 @@ function userIsAdmin(userInfo) {
 // Checks if user has permission to vote on a flag
 function userCanVoteForFlag(flagInfo, userInfo) {
     if (h.has_value(flagInfo, '/freebase/review_flag/status')) {
-        return userIsAdmin(flagInfo);
+        return userIsAdmin(userInfo);
     }
     return true;
 }

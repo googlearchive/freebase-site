@@ -1,0 +1,126 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var h = acre.require("lib/helper/helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var _ = i18n.gettext;
+  var form = acre.require("lib/propbox/form.mjt");
+</acre:script>
+
+<acre:block def="add_type_form(domain_id, mediator, type)">
+  <table class="edit-form clear">
+    <tbody>
+      <tr class="edit-row">
+        <td colspan="5">
+          <div class="edit-row-loader"></div>
+          <div class="form-field fb-type-name">
+            <label>
+              <span class="form-label">${_('Name')}</span>
+              <acre:script>
+                var attrs = {name:"name", type:"text", "class":"text-input"};
+                if (type) {
+                   attrs.value = i18n.display_name(type, "", null, i18n.lang);
+                }
+              </acre:script>
+              <input acre:attrs="attrs"/>
+            </label>
+          </div>
+          <div class="form-field fb-type-key">
+            <label>
+              <span class="form-label">
+                ${_('Key')}
+                <span class="key">${domain_id}/</span>
+              </span>
+              <input acre:if="type" name="key" type="text" class="text-input" value="${type.key.value}"/>
+              <input acre:else=""   name="key" type="text" class="text-input"/>
+              <span class="key-status"></span>
+            </label>
+          </div>
+          <div class="form-field fb-type-description">
+            <label>
+              <span class="form-label">${_('Description')}</span>
+              <acre:script>
+                var desc = "";
+                var attrs = {"name":"description", "class":"textarea", rows:3};
+                if (type) {
+                   desc = i18n.display_text(type, "", "/common/topic/description");
+                }
+              </acre:script>
+              <textarea acre:attrs="attrs">${desc}</textarea>
+            </label>
+            <div class="fb-type-display">
+              <acre:block if="mediator">
+                <input type="checkbox" name="mediator" value="1" checked="checked" style="display:none;"/>
+              </acre:block>
+              <acre:block else="">
+                <label for="enumeration" class="boolean-field">
+                  <input type="checkbox" name="enumeration" value="1"
+                         acre:attrs="(type && type['/freebase/type_hints/enumeration']) ? {checked:'checked'} : {}"/>
+                  ${_("Enumerated")}
+                </label>
+                <a class="help" href="http://wiki.freebase.com/wiki/Enumerated_type">${_("What's this?")}</a>
+              </acre:block>
+                <label for="deprecated" class="boolean-field">
+                  <input type="checkbox" name="deprecated" value="1"
+                         acre:attrs="(type && type['/freebase/type_hints/deprecated']) ? {checked:'checked'} : {}"/>
+                  ${_("Deprecated")}
+                </label>
+                <a class="help" href="http://wiki.freebase.com/wiki/Deprecated_type">${_("What's this?")}</a>            
+                <label for="never_assert" class="boolean-field">
+                  <input type="checkbox" name="never_assert" value="1"
+                         acre:attrs="(type && type['/freebase/type_hints/never_assert']) ? {checked:'checked'} : {}"/>
+                  ${_("Never assert")}
+                </label>
+                <a class="help" href="http://wiki.freebase.com/wiki/Never_assert_type">${_("What's this?")}</a>        
+            </div>
+          </div>
+        </td>
+      </tr>
+
+      <tr class="edit-row-submit">
+        <td colspan="5">
+          <input name="domain" type="hidden" value="${domain_id}"/>
+          <acre:block if="type">
+            <input type="hidden" name="id" value="${type.id}"/>
+          </acre:block>
+          ${form.submit_buttons()}
+        </td>
+      </tr>
+    <tbody>
+  </table>
+</acre:block>
+
+<acre:block def="edit_type_form(type)">
+  ${add_type_form(type.domain.id, type["/freebase/type_hints/mediator"], type)}
+</acre:block>
+
+

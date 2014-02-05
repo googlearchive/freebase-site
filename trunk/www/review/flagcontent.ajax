@@ -87,8 +87,9 @@ function flagContent(flag, user) {
         var creator = reviewHelpers.getFlagCreator(flagInfo, true);
         displayInfo.creator = h.id_key(creator);
         displayInfo.creatorUrl = h.fb_url(creator);
-        if (creator === user) {
-            displayInfo.authToVote = false;
+
+        if (creator === user.id) {
+            displayInfo.authToVote = reviewHelpers.userIsAdmin(userInfo);
             displayInfo.isCreator = true;
         }
         if (!reviewHelpers.userCanVoteForFlag(flagInfo, userInfo)) {

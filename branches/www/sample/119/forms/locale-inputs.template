@@ -1,0 +1,47 @@
+
+<acre:script>
+  var data_input = acre.require("lib/propbox/propbox.mjt").data_input
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var h = acre.require("lib/helper/helpers.sjs");
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="forms.mf.css" />
+</acre:block>
+
+<acre:block def="content_body()">
+
+  <div id="datetime" class="section">
+    <h1>Datetime Input</h1>
+    <div class="default">
+      <h2 class="ex">&nbsp;</h2>
+      ${data_input("/type/datetime", "datetime", null)}
+      <h2 class="v">&nbsp;</h2>
+    </div>
+  </div>
+
+  <div id="int" class="section">
+    <h1>Integer Input</h1>
+    <div class="default">
+      <h2 class="ex">&nbsp;</h2>
+      ${data_input("/type/int", "int", null)}
+      <h2 class="v">&nbsp;</h2>
+    </div>
+  </div>
+
+  <div id="float" class="section">
+    <h1>Float Input</h1>
+    <div class="default">
+      <h2 class="ex">&nbsp;</h2>
+      ${data_input("/type/float", "float", null)}
+      <h2 class="v">&nbsp;</h2>
+    </div>
+  </div>
+
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="lib/propbox/jquery.validate_input.js"></script>
+  <script src="lib/propbox/jquery.data_input.js"></script>
+  <script src="forms/locale-inputs.js"></script>
+</acre:block>

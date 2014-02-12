@@ -61,10 +61,11 @@ var OBJECT_FILTERS = [
  */
 function object(id, props) {
     var api_options = {
-        lang: h.lang_code(i18n.get_lang(false)),
+        lang: h.lang_code(i18n.get_lang(true)),
         filter: OBJECT_FILTERS.concat(props || []),
         limit: 0
     };
+
     return freebase.get_topic(id, api_options)
       .then(function(topic) {
         var types = get_values(topic, "/type/object/type") || [];

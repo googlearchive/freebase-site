@@ -1,0 +1,112 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+var validators = acre.require("lib/validator/validators.sjs");
+var queries = acre.require("queries.sjs");
+var components = acre.require("type_components.mjt");
+var create_sibling_type = acre.require("add_property_submit.ajax").create_sibling_type;
+var deferred = acre.require("lib/promise/deferred");
+var freebase = acre.require("lib/promise/apis").freebase;
+
+/**
+ * add included type
+ */
+var SPEC = {
+
+  method: "POST",
+
+  auth: true,
+
+  validate: function(params) {
+    var inc = validators.MqlId(params, "included_type", {if_empty:null});
+    var inc_new = validators.String(params, "included_type_new", {if_empty:null});
+    if (!(inc || inc_new)) {
+      throw new validators.Invalid("included_type or included_type_new is required");
+    }
+    return [
+      validators.MqlId(params, "id", {required:true}),             // type id
+      inc,
+      validators.LangId(params, "lang", {if_empty:"/lang/en"}),
+      inc_new
+    ];
+  },
+
+  run: function(id, included_type, lang, included_type_new) {
+    var promise;
+    if (!included_type && included_type_new) {
+      // do we need to create a new expected type?
+      promise = create_sibling_type(id, included_type_new, lang)
+        .then(function(created) {
+          included_type = created.id;
+          return true;
+        });
+    }
+    else {
+      promise = deferred.resolved(true);
+    }
+    return promise
+      .then(function(args) {
+        var promises = [];
+        promises.push(queries.included_types(included_type, lang));
+        promises.push(freebase.mqlread({id:included_type, name:null})
+          .then(function(env) {
+            return env.result;
+          }));
+        return deferred.all(promises)
+          .then(function(result) {
+            // include the included types of included_type
+            var to_include = result[0].concat(result[1]);
+            return to_include;
+          })
+          .then(function(to_include) {
+            return queries.add_included_types(id, [t.id for each (t in to_include)])
+              .then(function(included) {
+                var inserted = [t.id for each (t in included) if (t.connect === "inserted")];
+                if (inserted.length) {
+                  var types_by_id = {};
+                  to_include.forEach(function(type) {
+                    types_by_id[type.id] = type;
+                  });
+                  var html = [];
+                  inserted.forEach(function(type) {
+                    html.push(acre.markup.stringify(components.included_type_thead(id, types_by_id[type].id)));
+                  });
+                  return {
+                    html: html.join("")
+                  };
+                }
+                else {
+                  throw included_type + " is already included";
+                }
+              });
+          });
+      });
+  }
+};

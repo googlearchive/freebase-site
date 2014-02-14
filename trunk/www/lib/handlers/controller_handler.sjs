@@ -65,8 +65,6 @@ function run_spec(spec, scope) {
   if (scope.acre.request.base_path.indexOf("/account/") !== 0) {
     if (h.get_account_cookie()) {
       acre.oauth.get_authorization(h.account_provider());
-    } else {
-      h.ensure_protocol("http");
     }
   }
 

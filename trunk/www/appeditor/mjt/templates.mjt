@@ -142,15 +142,18 @@
     <div acre:elif="is_author">
       <button id="button-trunk" class="button-main" acre:onclick="ui.do_choose_app(ui.get_app().get_path())">
         Edit Current</button>
-      or
-      <button id="button-clone" acre:onclick="ui.do_show_dialog('new_app', [true])">
+      <button id="button-clone" acre:onclick="ui.do_show_dialog('new_app', [true])" style="display:none;">
         Clone this App</button>
     </div>
     <div acre:else="">
-      <button id="button-clone" class="button-main" acre:attrs="user?{}:{'disabled':'disabled'}" acre:onclick="ui.do_show_dialog('new_app', [true])" >
+      <button id="button-clone" class="button-main" acre:attrs="user?{}:{'disabled':'disabled'}" acre:onclick="ui.do_show_dialog('new_app', [true])" style="display:none;">
         Clone this App</button>
         <span acre:if="!user">Sign in to make an app based on this one!</span>
     </div>
+    <em style="padding-left: 7px 10px; font-size: 12px; display: inline-block;">
+      freebaseapps.com is going away on
+      <a href="https://groups.google.com/d/msg/freebase-discuss/miqOEnD9YX4/DGZYcWlzUHUJ" target="_blank">March 31st</a>
+    </em>
     <div id="about-bar-right" class="refresh-right">
       <span acre:if="versions.length"><b>
         Versions:

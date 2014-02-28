@@ -32,7 +32,7 @@
 <acre:script>
   var h = acre.require("helper/helpers.sjs");
   if (h.is_client()) {
-    h.set_cache_policy('public');
+    h.set_cache_policy('nocache');
   }
   var i18n = acre.require("i18n/i18n.sjs");
   var i18n_c = acre.require("i18n/components.mjt");

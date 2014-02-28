@@ -36,7 +36,8 @@
     var apps = ui.get_recents('apps');
     var num_apps = Math.min(apps.length, 10);
   </acre:script>
-  <div class="menu-section selectable" acre:if="user" acre:onclick="ui.do_show_dialog('new_app')">
+  <div class="menu-section selectable" acre:if="user"
+      acre:onclick="ui.do_show_dialog('new_app')" style="display:none;" >
     New App...
   </div>
   <div class="menu-section selectable" acre:onclick="ui.do_acre_home_link('/apps')">
@@ -343,13 +344,17 @@
     <fieldset id="app-clonedelete" acre:if="!ui.get_app().is_remote()">
       <button id='app-general-listing' class="button-main" acre:if="ui.get_app().is_author()">
         Edit Name &amp; Directory Listing</button>
-      <button id='app-general-clone' acre:if="ui.get_user()" acre:onclick="ui.do_show_dialog('new_app',[true])">
+      <button id='app-general-clone' acre:if="ui.get_user()"
+          acre:onclick="ui.do_show_dialog('new_app',[true])"
+          style="display:none;">
         Clone this App</button>
       <button id='app-general-delete' acre:if="writable" acre:onclick="ui.do_show_dialog('delete_app')">
         Delete this App</button>
     </fieldset>
     <fieldset id="app-clonedelete" acre:else="">
-      <button id='app-general-clone' acre:if="ui.get_user()" acre:onclick="ui.do_show_dialog('new_app',[true])">
+      <button id='app-general-clone' acre:if="ui.get_user()"
+          acre:onclick="ui.do_show_dialog('new_app',[true])"
+          style="display:none;">
         Clone this App</button>
     </fieldset>
     <button acre:onclick="ui.do_hide_overlays()">Done</button>

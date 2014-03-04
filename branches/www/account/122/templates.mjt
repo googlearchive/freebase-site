@@ -1,0 +1,78 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var h = acre.require('helpers.sjs');
+</acre:script>
+
+<acre:block def="claiming_account(username)">
+  <div class="inner-content">
+    <h1>Thanks! Now check your email</h1>
+    <p>You should receive an e-mail to the e-mail address associated with
+      ${username} (this is <strong>not</strong> the e-mail address
+      you just signed-in with).
+    </p>
+  </div>
+</acre:block>
+
+<acre:block def="claimed_account(username)">
+  <div class="inner-content">
+    <script type="text/javascript">
+      window.location.href = "/account/signedin";
+    </script>
+    <h1>Accounts connected</h1>
+    <p>Your Google account has been successfully connected to
+      <strong>${username}</strong>.</p>
+    <p>Please <a href="${h.fb_url('/account/signin')}">signin</a>
+      to start contributing to Freebase</p>
+  </div>
+</acre:block>
+
+<acre:block def="create_account(username)">
+  <div class="inner-content">
+    <h1>Account Created</h1>
+    <p>Your account <strong>${username}</strong> has been
+      successfully created.</p>
+    <p>You can now start using <a href="${h.fb_url('/')}">Freebase</a>
+    </p>
+  </div>
+</acre:block>
+
+<acre:block def="claim_account_error(token)">
+  <div class="inner-content">
+    <h1>Could not connect these accounts</h1>
+    <p>Please login with the Google account that you would like to connect to
+      your Freebase account, and input your change request code again.</p>
+    <a href="${h.fb_url('/account/claim', [['code', token]])}" class="button">
+      Try again
+    </a>
+  </div>
+</acre:block>

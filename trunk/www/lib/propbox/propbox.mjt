@@ -670,6 +670,11 @@
       </span>
     </acre:block>
     <acre:block elif="ps.has_no_value">
+      <span class="full-wrapper first">
+        <acre:block if="menu">
+          ${value_menu(topic, prop_structure, prop_value, lang, parent_prop_structure)}
+        </acre:block>
+      </span>
       <acre:block if="is_cvt">
         <span class="property-value inline-message">
           ${FLAGGED_NO_VALUES_SHORT}
@@ -688,6 +693,11 @@
       </acre:block>
     </acre:block>
     <acre:block elif="ps.has_value">
+      <span class="full-wrapper first">
+        <acre:block if="menu">
+          ${value_menu(topic, prop_structure, prop_value, lang, parent_prop_structure)}
+        </acre:block>
+      </span>
       <acre:block if="is_cvt">
         <span class="property-value inline-message">
           ${FLAGGED_HAS_VALUE_SHORT}

@@ -1,0 +1,160 @@
+/*
+ * Copyright 2012, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/* Modal Dialogs */
+
+.modal {
+  position:absolute;
+  width: 55em; /* we should remove this before production */
+  border: 5px solid #dcdbdc;
+  background: #f0f2f3;
+  padding: 1em;
+  .rounded_corners();
+}
+
+.modal-inner {
+  background: #fff;
+  border: 1px solid #dcdbdc;
+  .rounded_corners();
+}
+
+.modal-title {
+  font-size: 1.4em;
+  font-weight: bold;
+  border-bottom: 1px solid #dcdbdc;
+  padding: 7px 10px;
+}
+
+.modal-sub-title {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #333;
+  margin-top: 5px;
+}
+
+.modal.loading .modal-title span {
+  padding-right: 20px;
+  background: url(template/img/loader-snake-small-grey.gif) no-repeat center right;
+}
+
+.modal.loading .modal-content {
+  opacity: 0.5;
+}
+
+.modal-buttons {
+  margin-top: 1em;
+}
+
+.modal-buttons .button-delete,
+.modal-buttons .button-delete:hover {
+  float: right;
+  background: transparent;
+  color: @link_blue;
+  border: 0;
+  font-weight: normal;
+  text-shadow: none;
+}
+
+.modal-buttons .button-delete:hover {
+  text-decoration: underline;
+}
+
+.modal-content {
+  position: relative;
+  padding: 0 10px 20px 10px;
+}
+
+.modal-content p {
+  font-size: 12px;
+  margin-top: 18px;
+}
+
+.modal-content .form-label {
+  font-size: 1.2em;
+  margin-top: 1em;
+}
+
+.modal-content .textarea {
+  clear: left;
+  width: 93%;
+}
+
+.modal-content .text-input {
+  width: 87%;
+}
+
+.modal-help-toggle {
+  float: right;
+  font-size: 11px;
+  font-weight: normal;
+  margin-top: 3px;
+}
+
+.modal-help {
+  display: none;
+  margin: 0 20px;
+  position: absolute;
+  top: 0;
+  left: 0; right: 0;
+  z-index: 1;
+  padding: 10px;
+  background: #fff7d7;
+  border: 1px solid #f1daa9;
+  -webkit-box-shadow: 0 2px 4px #ccc;
+}
+
+.modal-help-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #222;
+  margin-bottom: 5px;
+}
+
+.modal-help p {
+  font-size: 1.2em;
+  color: #444;
+  margin-bottom: 7px;
+}
+
+.modal-content .column {
+  float: left;
+  width: 32%;
+}
+
+
+.modal .message {
+    margin: 1em 0;
+    padding: 0.3em 0.6em;
+    font-size: 1.2em;
+    background: #fff7d7; 
+    border: 1px solid #f1daa0;
+    .rounded_corners();
+}

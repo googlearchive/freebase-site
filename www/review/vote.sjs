@@ -46,8 +46,6 @@ var offensiveId = '/m/092s601';
 var agreeVote = '/m/092s60c';
 var disagreeVote = '/m/092s60j';
 var skipVote = '/m/092s60p';
-var freebaseExperts = '/m/0432s8d';
-var pipelineAdmins = '/m/03p3rjs';
 
 // processVote constants
 var SUCCESS = 'Vote recorded.';

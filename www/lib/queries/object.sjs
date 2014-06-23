@@ -225,6 +225,8 @@ var BADGES = {
   STAFF_JS:         '/m/0rz7p9x',
   STAFF_OD:         '/m/0rz7pvw',
   STAFF_SS:         '/m/0vp75bj',
+  STAFF_BS:         '/m/010jfnv7',
+  STAFF_GL:         '/m/010jfq30',
   TOP_CONTRIBUTOR:  '/m/02h53fx'
 };
 

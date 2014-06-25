@@ -163,7 +163,7 @@ function processVote(flag, vote, item, user) {
                 });
         } else {
             var judgements = reviewHelpers.getFlagVotes(flagInfo);
-            if (judgements && judgements.length > 1) {
+            if (judgements) {
                 return processFlag(flag);
             }
             return deferred.resolved(PROMISE_OK);

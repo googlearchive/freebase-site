@@ -1,0 +1,288 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+
+<acre:block def="tabs(id, controlPane)">
+
+  <acre:script>
+    var TABS = [
+      { name: 'Tools', template: tools, key: "tools"},
+      { name: 'Query Envelope', template: envelope, key: "envelope"},
+      { name: 'Variables', template: variables, key: "variables"},
+      { name: 'Settings', template: settings, key: "settings"}
+    ];
+  </acre:script>
+
+  <div class="cuecard-controlPane section-tabs">
+    <div id="$id">
+      <ul class="section-tabset clear">
+        <li acre:for="index, tab in TABS" class="section-tab tab">
+          <a href="#${id}-${tab.key}"><span>$tab.name</span></a>
+        </li>
+      </ul>
+      <div class="tabbed-content">
+        <div acre:for="tab in TABS" class="cuecard-controlPane-tabBody" id="${id}-${tab.key}">
+          ${tab.template(controlPane)}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <acre:block script="ondomready">
+    controlPane.layout = function(){
+      var el = this._elmt;
+      var height = el.find('.section-tabs').innerHeight() - el.find('.section-tabset').outerHeight();
+      el.find('.cuecard-controlPane-tabBody').css("height", height);
+    }
+    controlPane.layout();
+  </acre:block>
+</acre:block>
+
+
+<acre:block def="tools(controlPane)">
+
+  <acre:script>
+    var BUTTONS = [
+      {
+        label: 'Expand properties',
+        command: '_qualify',
+        hint: 'E.g., "id" becomes "/type/object/id"'
+      },
+      {
+        label: 'Invert query',
+        command: '_redangle',
+        hint: 'Make innermost cursour-containing node the outermost node'
+      },
+      {
+        label: 'Remove linebreaks',
+        command: '_oneLiner',
+        hint: 'Reformat query to a single line'
+      },
+      {
+        label: 'Create Template',
+        command: '_generateCode',
+        hint: 'Create an Acre template that displays the result of this query'
+      }
+    ];
+  </acre:script>
+
+  <div acre:def="button(buttons)" acre:for="b in buttons" class="cuecard-controlPane-powerTool">
+    <input type="submit" class="button" value="$b.label" acre:onclick="controlPane[b.command]()"/>
+    <span class="cuecard-controlPane-powerTool-hint">$b.hint</span>
+  </div>
+
+
+  <div class="cuecard-controlPane-section">
+    <p><em>Transform query</em>, outputting to:
+      <input type="radio" name="tools-result" value="replace" checked="true">query pane
+      <input type="radio" name="tools-result" value="output">results pane</p>
+    ${button(BUTTONS.slice(0,3))}
+  </div>
+
+  <div class="cuecard-controlPane-section">
+    <p><em>Acre Templates</em></p>
+    ${button(BUTTONS.slice(3))}
+  </div>
+
+
+</acre:block>
+
+
+<acre:block def="variables(controlPane)">
+  <table class="cuecard-controlPane-variables">
+    <tr>
+      <th><h3 class="module-section-title">Name</h3></th>
+      <th><h3 class="module-section-title">Value</h3></th>
+      <th></th>
+    </tr>
+    <tr class="query-options-row" acre:def="add_row()">
+      <td><input class="text-input variables-input" /></td>
+      <td><input class="text-input variables-input" /></td>
+      <td style="vertical-align:top">
+        <button class="button small"
+                acre:onclick="controlPane._getTab('variables').find('.cuecard-controlPane-variables').append($.acre(add_row()))">+</button>
+        <button class="button small"
+                acre:onclick="controlPane._removeRow($(this),'tr.query-options-row', add_row)">-</button>
+      </td>
+    </tr>
+    ${add_row()}
+  </table>
+  <div>
+
+  </div>
+</acre:block>
+
+
+<acre:block def="envelope(controlPane)">
+
+  <acre:script>
+    var ENV = [
+      {name: 'Extended', hint: 'Enable MQL extensions'},
+      {name: 'As_of_time', hint: 'Resolve the query based on data in Freebase as of the given time in ISO8601 format, e.g., 2009-02-28, 2009-03-13T22:16:40'},
+      {name: 'page', hint: 'Page number starting from 1 if there is a "limit" property in the top level query node.'},
+      {name: 'cursor', hint: ''},
+      {name: 'Language', hint: 'Return text values in the given language (specified with the language\'s Freebase ID)'},
+      {name: 'Escape', hint: ''},
+      {name: 'uniqueness_failure', hint: ''},
+      {name: 'use_permission_of', hint: 'Specify the id of an object (typically a user, domain or type) whose permission you want to copy (<a href="http://freebaseapps.com/docs/mql/ch06.html#id2972357" target="_blank">more details</a>).'},
+      {name: 'Show Costs', hint: 'Inlcude backend costs of executing the query.'}
+    ];
+
+    var def = controlPane._getDefaults();
+  </acre:script>
+
+  <div class="cuecard-controlPane-explanation">
+    <p>The query envelope contains directives to the query engine, specifying how to execute the query or how to return the results.</p>
+  </div>
+  <div class="cuecard-controlPane-configurations">
+    <div class="query-options-row" acre:for="e in ENV">
+      <p><em>$e.name</em></p>
+        <acre:block choose="e.name">
+
+          <input acre:when="Show Costs" name="costs" class="query-options-input" type="checkbox" acre:attrs="def.costs ? {'checked':''} : {}" />
+
+          <input acre:when="Extended" name="extended" class="query-options-input" type="checkbox" acre:attrs="def.extended ? {'checked':''} : {}" />
+
+          <input acre:when="As_of_time" name="as_of_time" class="query-options-textbox text-input" value="${def.as_of_time||''}" />
+
+          <input acre:when="use_permission_of" name="use_permission_of" class="query-options-textbox text-input" value="${def.use_permission_of||''}" />
+
+          <div acre:when="page" class="cuecard-controlPane-configurations-page">
+            <input name="page" type="text" class="query-options-textbox text-input" />
+            <input type="submit" class="button" value="Previous" acre:onclick="controlPane._runPage(-1)"/>
+            <input type="submit" class="button" value="Next" acre:onclick="controlPane._runPage(1)"/>
+          </div>
+
+          <acre:block when="cursor">
+            <div class="query-options-row">
+              <input type="radio" name="cursor-opt" class="control-pane-radio" id="cursor-unspecified" checked value="">
+              <label class="control-pane-label" for="cursor-unspecified">unspecified (return all results, possibly time-out)</label>
+            </div>
+            <div class="query-options-row">
+              <input type="radio" name="cursor-opt" class="control-pane-radio" id="cursor-true" value="true">
+              <label class="control-pane-label" for="cursor-true">true (start pagination with page size equal "limit" option in query)</label>
+            </div>
+            <div class="query-options-row">
+              <input type="radio" class="control-pane-radio" name="cursor-opt" id="cursor-continue" value="custom">
+              <label class="control-pane-label" for="cursor-continue">continue from cursor: </label>
+              <div class="cuecard-controlPane-configurations-cursor">
+                <input type="text" name="cursor" class="query-options-textbox text-input" acre:onchange="controlPane._getTab('envelope').find('input[name=\'cursor\'][value=\'custom\']').attr('checked','checked')"/>
+                <div class="query-options-row">
+                  <input type="submit" class="button" value="Paste from Last Result" acre:onclick="controlPane._runCursor(false)"/>
+                  <input type="submit" class="button" value="Paste &amp; Run" acre:onclick="controlPane._runCursor(true)"/>
+                </div>
+              </div>
+            </div>
+          </acre:block>
+
+          <select acre:when="Language" class="cuecard-controlPane-configurations-languages">
+            <option value="">--</option>
+            <option acre:for="l in CueCard.Languages" value="$l.id"
+              acre:attrs="fb.lang === l.id ? {'selected':'selected'} : {}">
+              $l.name ($l.id)
+            </option>
+          </select>
+
+          <select acre:when="Escape">
+            <option value="">--</option>
+            <option value="html">html</option>
+            <option value="false">false</option>
+          </select>
+
+          <select acre:when="uniqueness_failure">
+            <option value="">--</option>
+            <option value="soft">soft</option>
+          </select>
+
+        </acre:block>
+        <!-- bless is OK because hints only come from ENV declared statically above -->
+        <div acre:if="e.hint.length > 0" class="cuecard-controlPane-hint">${mjt.bless(e.hint)}</div>
+    </div>
+  </div>
+
+  <acre:script>
+    var env = "env" in controlPane._options ? controlPane._options.env : {};
+    var has_env = false;
+  </acre:script>
+
+  <p><em>Custom Envelope</em></p>
+  <table class="cuecard-controlPane-customEnvelope">
+    <tr>
+      <th><h3 class="module-section-title">Name</h3></th>
+      <th><h3 class="module-section-title">Value</h3></th>
+      <th></th>
+    </tr>
+    <tr class="cuecard-controlPane-customEnvelope-row" acre:def="add_row(dontFocus, name, value)">
+      <td><input class="query-options-textbox text-input variables-input" value="${name||''}"/></td>
+      <td><input class="query-options-textbox text-input variables-input" value="${value||''}"/></td>
+      <td style="vertical-align: top">
+        <button class="button small"
+                acre:onclick="controlPane._getTab('envelope').find('table.cuecard-controlPane-customEnvelope').append($.acre(add_row()))">+</button>
+        <button class="button small"
+                acre:onclick="controlPane._removeRow($(this),'tr.cuecard-controlPane-customEnvelope-row', add_row)">-</button>
+      </td>
+      <acre:block if="!dontFocus" script="ondomready">
+
+      </acre:block>
+    </tr>
+    <acre:block for="key, value in env">
+      <acre:script>has_env = true;</acre:script>
+      ${add_row(true, key, JSON.stringify(value))}
+    </acre:block>
+    <acre:block if="!has_env">
+      ${add_row(true)}
+    </acre:block>
+  </table>
+
+
+</acre:block>
+
+<acre:block def="settings(controlPane)">
+  <div class="cuecard-controlPane-section">
+    <div class="cuecard-controlPane-setting">
+     <input type="checkbox" acre:attrs="($.localstore('cc_cp_clean') == '1') ? {'checked' : ''} : {}">
+     <label class="control-pane-label">Always tidy running query</label>
+    </div>
+    <div class="cuecard-controlPane-setting">
+      <input type="checkbox" acre:attrs="($.localstore('cc_cp_align') == '1') ? {'checked' : ''} : {}">
+      <label class="control-pane-label">Align JSON values with spaces</label>
+    </div>
+    <div class="cuecard-controlPane-setting" style="display: none;">
+      <input type="checkbox">
+      <label class="control-pane-label">Try running query as you edit</label>
+    </div>
+    <div class="cuecard-controlPane-setting">
+      <input type="checkbox" acre:attrs="($.localstore('cc_cp_multi') == '1') ? {'checked' : ''} : {}">
+      <label class="control-pane-label">Show multi-line errors on multiple lines</label>
+    </div>
+  </div>
+</acre:block>
+

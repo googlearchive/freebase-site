@@ -48,16 +48,16 @@ function main(rule, object) {
   var current_tab = null;
 
   var referer_params = {};
-  if (acre.request.headers.referer && 
+  if (acre.request.headers.referer &&
       acre.request.headers.referer.indexOf(acre.request.app_url) === 0) {
       /**
        * Are we coming from within our own domain/site?
        * If so, we want to stay within the same tab/context.
-       * 
+       *
        * For example, if a user is looking at the "Links" tab
        * of a topic and uses the main search suggest to navigate to an object,
        * we want to go to the "Links" tab of that object.
-       * 
+       *
        * To accomplish this we want to look at the referer and it's query
        * string parameters.
        */
@@ -115,7 +115,7 @@ function main(rule, object) {
     gear: rule.gear || [],
     banners: rule.banners || [],
     show_image: rule.show_image,
-    access: acre.cache.request.get("access") || ""
+    access: acre.cache.request.get("access") || "readonly"
   };
 
   // extend object type (global) promises

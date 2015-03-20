@@ -78,15 +78,15 @@
   <div id="page-header">
     <div class="page-flag error" style="text-align: center">
       <span class="page-flag-msg">
-        ${_("Important! Freebase will become read-only on March 31, 2015.")}
+        ${_("Important! Freebase is read-only and will be shut-down on June 30, 2015.")}
         <a href="https://plus.google.com/109936836907132434202/posts/bu3z2wVqcQc">More</a>.
       </span>
     </div>
-    <acre:block if="c.access == 'readonly'">
+    <!--<acre:block if="c.access == 'readonly'">
       <div class="page-flag error" style="text-align: center">
         <span class="page-flag-msg">${_("Freebase is currently in read-only mode")}</span>
       </div>
-    </acre:block>
+    </acre:block>-->
     <div class="page-title">
       <acre:script>
         var total_entities, total_triples;

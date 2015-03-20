@@ -40,7 +40,7 @@ var SPEC = {
 
   run: function() {
     return {
-      access: acre.cache.request.get("access") || ""
+      access: acre.cache.request.get("access") || "readonly"
     };
   }
 };

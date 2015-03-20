@@ -87,7 +87,7 @@ var SPEC = {
         } else if (failure instanceof h.UnregisteredError) {
           return {
             template: 'register_template.mjt',
-            access: acre.cache.request.get("access") || ""
+            access: acre.cache.request.get("access") || "readonly"
           };
         }
         h.temporary_redirect(onfail, false);

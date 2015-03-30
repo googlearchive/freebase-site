@@ -138,8 +138,8 @@
   <div id="page-header">
     <div class="page-flag error" style="text-align: center">
       <span class="page-flag-msg">
-        ${_("Important! Freebase is read-only and will be shut-down on June 30, 2015.")}
-        <a href="https://plus.google.com/109936836907132434202/posts/bu3z2wVqcQc">More</a>.
+        ${_("Important! Freebase is read-only and will be shut-down.")}
+        <a href="https://plus.google.com/109936836907132434202/posts/3aYFVNf92A1">More</a>.
       </span>
     </div>
     <!--<acre:block if="c.access == 'readonly'">

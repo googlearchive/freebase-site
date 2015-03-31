@@ -1,0 +1,10 @@
+<acre:script>
+  var h = acre.require("lib/helper/helpers.sjs");
+</acre:script>
+
+<acre:block def="render_me(id, name)">
+  <acre:script>
+    acre.response.set_header("content-type", "text/html");
+  </acre:script>
+  Hello <a href="${h.fb_url(id)}">${name}</a>!
+</acre:block>
